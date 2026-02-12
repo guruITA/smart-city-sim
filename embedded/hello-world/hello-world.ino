@@ -1,7 +1,7 @@
 // First ESP32 sketch: blink the built-in LED
 // Arduino Docs: Home/Referances/Language Reference (https://docs.arduino.cc/language-reference/)
 
-#define const int LED_PIN = LED_BUILTIN;  // Built-in LED on many ESP32-S3 DevKit boards
+const int LED_PIN = LED_BUILTIN;  // Built-in LED on many ESP32-S3 DevKit boards
 
 void setup() {
   pinMode(LED_PIN, OUTPUT);
