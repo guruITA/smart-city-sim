@@ -2,7 +2,6 @@
 #include <FastLED.h>
 
 #define LED_FASTLED 48
-#define LED_RIGHT 12
 #define BOOTBTN 0
 
 #define NUMPIXELS 1
@@ -11,7 +10,7 @@ CRGB leds[NUMPIXELS];
 const unsigned long period = 750;
 unsigned long startMillis;
 
-bool leftOn = true;
+bool ledOn = true;
 bool blinkOn = true;
 bool lastButtonState = HIGH;
 
@@ -34,25 +33,22 @@ void handleBtn() {
   lastButtonState = currentState;
 }
 
-void alternateBlink() {
+void blink() {
   if (millis() - startMillis >= period) {
     startMillis = millis();
 
-    if (leftOn) {
+    if (ledOn) {
       setRandomColor();
-      digitalWrite(LED_RIGHT, LOW);
     } else {
       turnOffFastLED();
-      digitalWrite(LED_RIGHT, HIGH);
     }
 
-    leftOn = !leftOn;
+    ledOn = !ledOn;
   }
 }
 
 void setup() {
   Serial.begin(115200);
-  pinMode(LED_RIGHT, OUTPUT);
   pinMode(BOOTBTN, INPUT_PULLUP);
 
   FastLED.addLeds<WS2812, LED_FASTLED, GRB>(leds, NUMPIXELS);
@@ -67,9 +63,8 @@ void loop() {
   handleBtn();
 
   if (blinkOn) {
-    alternateBlink();
+    blink();
   } else {
     turnOffFastLED();
-    digitalWrite(LED_RIGHT, LOW);
   }
 }
