@@ -4,6 +4,8 @@
 
 This demo demonstrates a basic concept used in railway systems to predict a train’s arrival time and control a railway crossing barrier.
 
+This demo is located in the folder ```embedded/Thijmen/train-prediction-signal```
+
 Using:
 
 - A push button (simulating detection points)
