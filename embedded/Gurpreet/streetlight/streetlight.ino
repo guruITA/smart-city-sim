@@ -12,11 +12,11 @@ void setup() {
 }
 
 void loop() {
-  lightLevel = analogRead(LDR_PIN); 
+  lightLevel = analogRead(LDR_PIN);
 
   Serial.print("Light Level: ");
   Serial.println(lightLevel);
-  
+
   if (lightLevel < threshold) {
     digitalWrite(RELAY_PIN, HIGH);
     Serial.println("It's dark! turning light on the light...");
@@ -24,6 +24,6 @@ void loop() {
     digitalWrite(RELAY_PIN, LOW);
     Serial.println("It's bright! Turning off the light...");
   }
-  
-  delay(1000); 
+
+  delay(1000);
 }
