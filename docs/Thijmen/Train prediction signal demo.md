@@ -9,11 +9,16 @@ This demo is located in the folder ```embedded/Thijmen/train-prediction-signal``
 Using:
 
 - A push button (simulating detection points)
-- A built-in LED (simulating the warning signal / barrier activation)
+- A LED (simulating the warning signal / barrier activation)
+- A Oled screen 128x64 pixels
 - A finite state machine (FSM)
 - Time prediction based on measured speed
 
 The system estimates when a train will arrive at a crossing and activates the barrier at the correct moment.
+
+### Circuit example
+
+![Train prediction signal circuit](../assets/thijmen/train_prediction_signal_circuit.png)
 
 ---
 
