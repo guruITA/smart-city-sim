@@ -95,7 +95,108 @@ When time expires:
 
 ---
 
-## 6. Why This Is a Basic Concept
+## 6. OLED Display Integration
+
+This version of the demo includes a 128×64 OLED display (SSD1306) to visualize the internal system state and timing in real time.
+
+### Libraries Used
+```c++
+#include <Wire.h>
+#include <Adafruit_GFX.h>
+#include <Adafruit_SSD1306.h>
+```
+
+### Display Initialization
+```c++
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
+```
+
+I2C address used:
+```
+0x3C
+```
+
+### Pin Configuration
+| Function | GPIO |
+|----------|------|
+| SDA | 14 |
+| SCL | 13 | 
+
+### Initialization Code
+```c++
+Wire.begin(SDA_PIN, SCL_PIN);
+
+if (!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
+  for (;;);
+}
+```
+---
+## 7. What the OLED Displays
+
+The OLED provides live feedback of the FSM state and timing values.
+
+### IDLE State
+
+Display output:
+```
+IDLE
+```
+Indicates:
+
+- No active measurement
+- Barrier open (LED OFF)
+
+### MEASURING State
+
+Display output:
+
+```
+MEASURING
+Elapsed: X.XXs
+```
+
+Shows:
+- Current system state
+- Elapsed time between detection point A and B
+- Real-time timing in seconds
+This helps visualize the speed measurement process.
+
+### WAITING State
+
+Display output:
+
+```
+WAITING
+Predicted: X.XX s
+Remaining: X.XX s
+```
+
+Shows:
+- Predicted arrival time at crossing
+- Remaining time before barrier activation
+- Live countdown behavior
+
+When the remaining time reaches zero:
+- The LED turns ON
+- The simulated barrier activates
+
+---
+
+## 8. Display Update Strategy
+
+The display refreshes every 100 ms:
+```c++
+const unsigned long displayInterval = 100;
+```
+This ensures:
+- Smooth visual updates
+- Stable timing behavior
+- No unnecessary I2C overload
+- Efficient embedded execution
+
+---
+
+## 9. Why This Is a Basic Concept
 
 Real railway crossings are much more advanced and include:
 
@@ -111,7 +212,7 @@ Measure speed -> Predict arrival -> Activate barrier in advance
 
 ---
 
-## 7. Why Timing Is Critical
+## 10. Why Timing Is Critical
 
 If the barrier closes:
 
@@ -126,7 +227,7 @@ Accurate prediction ensures:
 
 ---
 
-## 8. Educational Value
+## 11. Educational Value
 
 This project demonstrates:
 
@@ -135,6 +236,7 @@ This project demonstrates:
 - Proportional prediction mathematics  
 - Event-driven system design  
 - Basic industrial automation principles  
+- I2C display integration
 
 It provides a strong foundation for understanding:
 
