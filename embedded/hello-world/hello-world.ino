@@ -1,16 +1,15 @@
-/*
- * Description: This is a basic sketch about blinking an LED on your Arduino device.
- * Author:  Mats Otten
- * Date:    29 august 2023
- */
+// First ESP32 sketch: blink the built-in LED
+// Arduino Docs: Home/Referances/Language Reference (https://docs.arduino.cc/language-reference/)
 
- void setup() {
-    pinMode(LED_BUILTIN, OUTPUT);
-  }
-  
-  void loop() {
-    digitalWrite(LED_BUILTIN, HIGH);  // turn the LED on (HIGH is the voltage level)
-    delay(1000);                      // wait for a second
-    digitalWrite(LED_BUILTIN, LOW);   // turn the LED off by making the voltage LOW
-    delay(1000);                      // wait for a second
-  }  
+const int LED_PIN = LED_BUILTIN;  // Built-in LED on many ESP32-S3 DevKit boards
+
+void setup() {
+  pinMode(LED_PIN, OUTPUT);
+}
+
+void loop() {
+  digitalWrite(LED_PIN, HIGH); // LED on
+  delay(500);
+  digitalWrite(LED_PIN, LOW);  // LED off
+  delay(500);
+}
