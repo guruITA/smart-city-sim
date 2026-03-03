@@ -1,3 +1,5 @@
+#include <Arduino.h>
+
 #define LDR_PIN 4
 #define RELAY_PIN 5
 
@@ -17,12 +19,12 @@ void loop() {
   Serial.print("Light Level: ");
   Serial.println(lightLevel);
 
-  if (lightLevel < threshold) {
+  if (lightLevel > threshold) {
     digitalWrite(RELAY_PIN, HIGH);
-    Serial.println("It's dark! turning light on the light...");
+    Serial.println("It's dark! Turning light on...");
   } else {
     digitalWrite(RELAY_PIN, LOW);
-    Serial.println("It's bright! Turning off the light...");
+    Serial.println("It's bright! Turning light off...");
   }
 
   delay(1000);
