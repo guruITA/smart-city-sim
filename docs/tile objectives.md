@@ -4,6 +4,7 @@
 ![City layout](<assets/tiles city-layout.png>)
 
 ---
+
 ## 2. Tile objectives
 These will be the objectives everyone will focus on.
 
