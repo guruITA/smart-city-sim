@@ -10,16 +10,13 @@ int threshold = 650; // threshold value to determine when to turn the light on o
  * 
  */
 void setup() {
-  Serial.begin(115200); // 
+  Serial.begin(115200); //
   pinMode(LDR_PIN, INPUT); // Set the LDR module pin as an input
   pinMode(RELAY_PIN, OUTPUT); // Set the relay module pin as an output
   Serial.println("Automatic Street Light System"); // Print to the Serial Monitor when the system starts
 }
 
-/**
- * 
- */
-void loop() {
+void updateStreetLight() {
 
   // lightLevel reads the analog value from the LDR module
   lightLevel = analogRead(LDR_PIN);
@@ -30,14 +27,18 @@ void loop() {
 
   // Compare the lightLevel with the threshold to decide whether to turn the light on or off
   if (lightLevel > threshold) {
-
     digitalWrite(RELAY_PIN, HIGH); // Turn the relay on (light on)
     Serial.println("It's dark! Turning light on...");
   } else {
-
     digitalWrite(RELAY_PIN, LOW); // Turn the relay off (light off)
     Serial.println("It's bright! Turning light off...");
   }
+}
 
+/**
+ * 
+ */
+void loop() {
+  updateStreetLight(); // Update the street light status based on the current light level
   delay(1000); // Wait for 1 second before the next reading
 }
