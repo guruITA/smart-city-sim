@@ -4,7 +4,7 @@
 #define RELAY_PIN 5
 
 int lightLevel = 0;
-int threshold = 500;
+int threshold = 650;
 
 void setup() {
   Serial.begin(115200);
