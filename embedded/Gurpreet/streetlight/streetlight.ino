@@ -8,7 +8,7 @@ int threshold = 650; // threshold value to determine when to turn the light on o
 
 // setup() is a function that runs once when the system starts/resets. It is used to initialize the system.
 void setup() {
-  Serial.begin(115200); //
+  Serial.begin(115200); // Enable Serial (USB to ESP32S3) communication for debugging.
   pinMode(LDR_PIN, INPUT); // Set the LDR module pin as an input
   pinMode(RELAY_PIN, OUTPUT); // Set the relay module pin as an output
   Serial.println("Automatic Street Light System"); // Print to the Serial Monitor when the system starts
