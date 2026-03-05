@@ -30,6 +30,7 @@ T - Transfer
 I will use the results of this analysis directly in the next phase, where I design the Fritzing schematic for the smart streetlight. The way I combined problem-analysis with studying the ESP32 documentation will serve as a template for later sprints, for example when I analyse the traffic light with a pressure sensor or the pedestrian crossing.
 
 References (used scribbr)
+
 1. D66jeroen. (2026, January 30). 3. Slimme straatverlichting: licht waar je het nodig hebt. D66 Goes. https://d66.nl/goes/nieuws/3-slimme-straatverlichting-licht-op-maat/
 2. AAA ECO B.V. (2024, December 9). Slimme LED lantaarnpalen en 5G: innovatie of inbreuk op privacy? aaaeco.nl. https://aaaeco.nl/slimme-led-lantaarnpalen-en-5g-innovatie-of-inbreuk-op-privacy/
 3. sm Tronics. (2025, January 12). ESP32 Light Sensor Relay Control - Smart Automation with Wokwi! [Video]. YouTube. https://www.youtube.com/watch?v=V28G_EmqRHg
@@ -62,6 +63,7 @@ Many smart streetlights have additional technology, such as a remote management 
 In this Smart Cities: Learning Group team project, I'm going to develop a smart streetlight prototype that automatically switches on and off based on the ambient light level. Because I'm a beginner with not much experience in Embedded Systems & Robotics, so I'm keeping it simple.
 
 During my research, I specifically started by searching for "ESP32-S3 smart streetlight." Because I find visual explanations easier and understand them better with little prior knowledge, I watched these YouTube videos:
+
 - [(sm Tronics, 2025)](https://www.youtube.com/watch?v=V28G_EmqRHg)
 - [(Arduino Titan, 2024)](https://www.youtube.com/watch?v=mHjWOMrVsTE&t=1008s) 
 - [(Arduino Titan, 2024a)](https://www.youtube.com/watch?v=YhuIzQ6_liw&t=815s)
@@ -173,6 +175,7 @@ Because the LDR module provides an analog voltages thru the AO pin, I connected 
 ![esp32s3_gpio_pin_restrictions_summary](images/esp32s3_gpio_pin_restrictions_summary.png)
 
 The necessary components to run everything are:
+
 - 1x ESP32 S3 that we got from school in the box
 - 1x LDR module from [AliExpress](https://www.aliexpress.com/item/1005006205379253.html?spm=a2g0o.order_list.order_list_main.11.21ef79d2wK6ViM) or just ask our teachers to borrow one
 - 1x Relay module from [AliExpress](https://www.aliexpress.com/item/1005010329414583.html?spm=a2g0o.order_list.order_list_main.17.21ef79d2wK6ViM) or just ask our teachers to borrow one
