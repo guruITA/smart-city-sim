@@ -71,3 +71,16 @@ During my research, I specifically started by searching for "ESP32-S3 smart stre
 - [(hash include electronics, 2021)](https://www.youtube.com/watch?v=YNVfPrFtTno)
 
 What I immediately saw was that all the videos used an LDR module, some also a relay module, and as is usually jumper wires and LEDs. This made me want to first understand what exactly an LDR module and a relay module do and the logic behind it.
+
+## Functional requirements 
+
+1. Automatic switching: The streetlight turns on when the measured light value falls below a threshold durning darknees and turns off when the value rises above the threshold durning light.
+2. Adjustable threshold: The threshold must be easily adjustable, for example thru a variable in the code.
+3. Testable behavior: The system must respond quickly to clear difference between light and dark and must not flicker
+
+## Non-functional requirements
+
+1. Electrical correct: Each LED has its own resistor to prevent overheating or damage.
+2. Reliability: The system must switch on en and off without resets etc.
+3. Beginner friendly: Coponents and code must be kepot simple for beginner knowledge. 
+4. Clarity: Wiring must be logical and reproducible and must have the same structure for each tile, so that troubleshooting remains easy to solve and to expand it.
