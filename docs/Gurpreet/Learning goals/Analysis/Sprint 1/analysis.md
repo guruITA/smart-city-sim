@@ -29,12 +29,6 @@ After finishing this analysis I will reflect on how much my understanding of the
 T - Transfer
 I will use the results of this analysis directly in the next phase, where I design the Fritzing schematic for the smart streetlight. The way I combined problem-analysis with studying the ESP32 documentation will serve as a template for later sprints, for example when I analyse the traffic light with a pressure sensor or the pedestrian crossing.
 
-Appendix (optional)
-
-Detailed logs
-Additional figures/tables
-Full code/artefacts
-
 References (used scribbr)
 - D66jeroen. (2026, January 30). 3. Slimme straatverlichting: licht waar je het nodig hebt. D66 Goes. https://d66.nl/goes/nieuws/3-slimme-straatverlichting-licht-op-maat/
 - AAA ECO B.V. (2024, December 9). Slimme LED lantaarnpalen en 5G: innovatie of inbreuk op privacy? aaaeco.nl. https://aaaeco.nl/slimme-led-lantaarnpalen-en-5g-innovatie-of-inbreuk-op-privacy/
@@ -46,16 +40,11 @@ References (used scribbr)
 - Arduino - LED - Fade | Arduino Getting started. (n.d.). Arduino Getting Started. https://arduinogetstarted.com/tutorials/arduino-led-fade
 - Gotron | LED’s beschermen: zo bereken je de juiste serieweerstand! | Elektronicaspecialist. (n.d.). NL. https://www.gotron.be/leds
 - Instructables. (2025, February 11). 5V 4-Channel relay module with Arduino. Instructables. https://www.instructables.com/5V-4-Channel-Relay-Module-With-Arduino
-
-- esp32: https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32/esp32-devkitc/user_guide.html#what-you-need
-- esp32 S3: https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32s3/esp32-s3-devkitc-1/user_guide_v1.1.html#getting-started
-- https://documentation.espressif.com/esp32_datasheet_en.html#%5B52,%22XYZ%22,56.69,653.91,null%5D
-
-List all sources you used. Use a consistent citation style (e.g., APA/IEEE). Include URLs with access dates for web resources.
-
-Author, A. (Year). Title. Publisher. [https://link](https://link/) (accessed YYYY-MM-DD)
-Organization. (Year). Title of webpage/report. [https://link](https://link/) (accessed YYYY-MM-DD)
-Dataset/Tool. Version. Provider. [https://link](https://link/) (accessed YYYY-MM-DD)
+- ESP32-DevKitC V4 - ESP32 -  — esp-dev-kits latest documentation. (n.d.). https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32/esp32-devkitc/user_guide.html#what-you-need
+- ESP32-S3-DevKitC-1 v1.1 - ESP32-S3 -  — esp-dev-kits latest documentation. (n.d.). https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32s3/esp32-s3-devkitc-1/user_guide_v1.1.html#getting-started
+- Rtek. (n.d.). GitHub - rtek1000/YD-ESP32-23: The device uses the ESP32-S3 chip, which can be used for the test prototype of the Internet of Things application and can also be used for practical applications. It is equipped with two USBs, one is a hardware USB-to-serial port (CH343P WCH Qinheng), and the other is ESP32-S3 usb port. GitHub. https://github.com/rtek1000/YD-ESP32-23?tab=readme-ov-file
+- pro-SIGNAL. (2022). TECHNICAL DATA SHEET. https://www.farnell.com/datasheets/3811080.pdf
+- Electronics, P. (2024, April 9). Using The LDR LM393 Module with Arduino. Phipps Electronics. https://www.phippselectronics.com/using-the-ldr-lm393-module-with-arduino/
 
 # Feedback from Mats
 Mats feedback is that I should think about the overall system and all the tiles, not just my own tile. He advises discussing this with my team to make sure everything connects properly. While developing this, I should also consider how I am going to set it up in a way that it works across the entire city as a whole. Additionally, Mats mentions that the “Result, Reflection and Transfer” section does not need to be filled in yet, and should only be completed after finishing the action. He also advises that I should clearly and concretely describe what I am going to deliver in the action section. Lastly, he emphasizes that I should keep updating this continuously.
@@ -168,11 +157,11 @@ I didn't realize it at first, but the videos used a different ESP32 variant than
 
 So, I checked the official Espressif documentation and a GitHub repository:
 
-- ESP32: https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32/esp32-devkitc/user_guide.html#what-you-need
+- ESP32 from (ESP32-DevKitC V4 - ESP32 -  — Esp-dev-kits Latest Documentation, n.d.)
 ![espressif_ESP32_DevKitC](images/espressif_ESP32_DevKitC.png)
-- ESP32 S3: https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32s3/esp32-s3-devkitc-1/user_guide_v1.1.html#getting-started
+- ESP32 S3 from (ESP32-S3-DevKitC-1 v1.1 - ESP32-S3 -  — Esp-dev-kits Latest Documentation, n.d.)
 ![espressif_ESP32_S3_DevKitC1](images/espressif_ESP32_S3_DevKitC1.png)
-- Github Repository: https://github.com/rtek1000/YD-ESP32-23?tab=readme-ov-file
+- ESP32 S3 clone from (Rtek, n.d.)
 ![github_ESP32_S3_DevKitC1-clone](images/github_ESP32_S3_DevKitC1-clone.png)
 
 I see that ADCX_CH means: “Analog to Digital Converter”.
@@ -190,3 +179,93 @@ The necessary components to run everything are:
 - 20x 220ohm resistors that we got from school in the box
 - 20x White LEDs that we got from school in the box
 - Some jumper wires M2M and F2M that we got from school in the box
+
+## Total power consumption
+
+While discussing my schematic with my teacher Gerald.
+
+![Wokwi schema](images/wokwi_streetlight_schema.png)
+
+Gerald suggested that it's important not to just think about which components to use, but also to calculate the system's total power consumption. My design uses 20 white LEDs, a relay module, an LDR module, and an ESP32-S3. Gerald told me to analyze the power consumption of each component and calculate the total amount of consumtion.
+
+![ESP32_S3_gpio_max_current_vs_usb_supply](images/ESP32_S3_gpio_max_current_vs_usb_supply.png)
+
+### LEDs
+
+According to (pro-SIGNAL, 2022) he forward voltage (Vf) used with a 5mm white LED is 3.0-3.4 V at a current of 20 mA.
+
+    5V - 3V= 2V
+    2V / 0,02A = 100ohm 
+
+of
+
+    5V - 3,4V= 1,6V
+    1,6V / 0,02A = 80ohm
+
+With a supply voltage of 5V, the required resistance for 20 mA should be between 80 ohm and 100 ohm. Because I only have 220 ohm resistors available, I'm using them per LED. This makes the current per LED lower than 20 mA.
+
+I also need to know how much current I'm using for 20 LEDs because I need to think about the whole teams implementation.
+
+    5V - 3V= 2V
+    2V / 220 ohm = 0,0090909090909091 A
+    0,0090909090909091 A x 1000 = 9,090909090909091 mA
+    9,090909090909091 mA x 20 LEDs = 181,82 mA
+
+of
+
+    5V - 3,4V = 1,6V
+    1,6V / 220 ohm = 0,0072727272727273 A
+    0,0072727272727273 A x 1000 = 7,272727272727273 mA
+    7,272727272727273 mA x 20 LEDs = 145,45 mA
+
+De 20LEDs consume approximately 145–182 mA.
+
+### Relay module
+
+For a standard 5V relay module, the following applies:
+
+- OFF (idle): approximately 2–5 mA
+- ON (coil energized): approximately 70–100 mA
+
+The ON state is relevant for the calculation. I assume an average of 80 mA.
+
+![5v_relay_module_current_estimate](images/5v_relay_module_current_estimate.png)
+
+### LDR-module
+
+According to (Electronics, 2024), the LM393 LDR module used consumes approximately **15 mA.**
+
+### ESP32-S3
+
+The ESP32-S3 has a current consumption that depending on the mode.
+
+- Without WiFi/Bluetooth: approximately 20–40 mA
+- With WiFi active: average 80–130 mA, with transmit peaks exceeding 200 mA
+
+My current application does not use WiFi, but maybe in the future it could be used. For now I assume a value of approximately 40 mA.
+
+![ESP32_S3_no_wifi_current_estimate_1](images/ESP32_S3_no_wifi_current_estimate_1.png)
+
+![ESP32_S3_no_wifi_current_estimate_2](images/ESP32_S3_no_wifi_current_estimate_2.png)
+
+## Total current (without Wi-Fi)
+
+Lowest estimate:
+
+- LEDs: 145 mA
+- Relais: 80 mA
+- LDR: 15 mA
+- ESP32: 40 mA
+
+Total = 280 mA
+
+Higher estimate:
+
+- LEDs: 182 mA
+- Relais: 100 mA
+- LDR: 15 mA
+- ESP32: 50 mA
+
+Total = 347 mA
+
+The total continuous current consumption is 280-350 mA.
