@@ -45,8 +45,8 @@ References (used scribbr)
 - Arduino - LDR Module | Arduino Getting Started. (n.d.). Arduino Getting Started. https://arduinogetstarted.com/tutorials/arduino-ldr-module
 - Arduino - LED - Fade | Arduino Getting started. (n.d.). Arduino Getting Started. https://arduinogetstarted.com/tutorials/arduino-led-fade
 - Gotron | LED’s beschermen: zo bereken je de juiste serieweerstand! | Elektronicaspecialist. (n.d.). NL. https://www.gotron.be/leds
+- Instructables. (2025, February 11). 5V 4-Channel relay module with Arduino. Instructables. https://www.instructables.com/5V-4-Channel-Relay-Module-With-Arduino
 
-- https://www.instructables.com/5V-4-Channel-Relay-Module-With-Arduino/
 - esp32: https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32/esp32-devkitc/user_guide.html#what-you-need
 - esp32 S3: https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32s3/esp32-s3-devkitc-1/user_guide_v1.1.html#getting-started
 - https://documentation.espressif.com/esp32_datasheet_en.html#%5B52,%22XYZ%22,56.69,653.91,null%5D
@@ -145,3 +145,21 @@ If you want to connect multiple LEDs in series, you must use the following formu
 ![series_led_resistor_calculation](images/series_led_resistor_calculation.png)
 
 At the bottom of the FAQ, there was also the question "Can I connect multiple LEDs in parallel to a single resistor?" and the answer was "That is possible, but we recommend using a series resistor per LED to avoid uneven currents and differences in brightness."
+
+During my research, I noticed that all the YouTube videos also used a relay module. What I understand is that a relay module is a small electrical switch that allows the ESP32 to safely switch a lamp on and off with a higher voltage or current for example 12V. This was clearly explained in (Instructables, 2025).
+
+The relay has two types of connections:
+
+In my case power and control pins:
+
+- VCC: This should be connected to VCC (5V)
+- GND: GND: This should be connected to GND (0V)
+- IN: Control signal that the ESP32 sets HIGH or LOW.
+
+Relay Output Connections:
+
+- COM (Common Terminal): The common contact for the relay, usually connected to the power source (for example 3V, 3V, 5V, or an external 12V battery).
+- NO (Normally Open Terminal): When the relay is inactive, this terminal is disconnected from COM. When the relay is activated, it connects to COM.
+- NC (Normally Closed Terminal): When the relay is inactive, this terminal remains connected to COM. When the relay is activated, it disconnects from COM.
+
+For the team setup we use 4 streetlights per tile so 20 in total.
