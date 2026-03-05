@@ -107,11 +107,11 @@ Then I looked into why a resistor is necessary needed for LEDs. The source (Gotr
 Also important to know:
 - Forward voltage (Vf): This is the voltage the LED requires to operate and varies by LED type.
     
-    Some typical values:
-     
-    - Red LED: approximately 2.0V
-    - Green LED: approximately 2.2V to 3.0V
-    - Blue and white LED: approximately 3.0V to 3.5V
+Some typical values:
+
+- Red LED: approximately 2.0V
+- Green LED: approximately 2.2V to 3.0V
+- Blue and white LED: approximately 3.0V to 3.5V
 
 - Current (If): This value can also be found in the LED's datasheet. Typical current values ​​for LEDs are between 10mA and 30mA (0.01A to 0.03A). 
 - Supply voltage (V_in): This is the voltage of the source you're using to power the LED. For example, if you're using a 9V battery, then V_in=9V.
