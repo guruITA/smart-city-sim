@@ -16,5 +16,3 @@ These will be the objectives everyone will focus on.
 - Betul - 
 
 ---
-
-test
