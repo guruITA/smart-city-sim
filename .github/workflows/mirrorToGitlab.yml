@@ -3,7 +3,7 @@ name: Mirror to GitLab
 on:
   push:
     branches:
-      - main
+      - '**'
 
 jobs:
   mirror:
@@ -18,30 +18,37 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      - name: Push to GitLab (merge strategy)
+      - name: Push to GitLab
         env:
           GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
+          GITHUB_BRANCH: ${{ github.ref_name }}
         run: |
           GITLAB_URL="https://oauth2:${GITLAB_TOKEN}@gitlab.fdmci.hva.nl/studio/smart-cities/projecten/2025-2026-semester-2/city-sim-learning-group/city-the-embedded-alliance-city-sim-learning-group.git"
 
-          # Add GitLab as a remote
           git remote add gitlab "${GITLAB_URL}"
+          git fetch gitlab || true
 
-          # Fetch the current state of the GitLab repo
-          git fetch gitlab main
-
-          # Try a normal push first (fast-forward)
-          if git push gitlab main; then
-            echo "✅ Fast-forward push succeeded."
+          # Map the target branch on GitLab
+          if [ "${GITHUB_BRANCH}" = "main" ]; then
+            TARGET_BRANCH="matin";
           else
-            echo "⚠️ Fast-forward push failed. Merging GitLab history into GitHub main..."
+            TARGET_BRANCH="${GITHUB_BRANCH}";
+          fi
 
-            # Merge GitLab's main into the current branch, allowing unrelated histories
-            # This keeps ALL commits from both sides
-            git merge gitlab/main --allow-unrelated-histories --no-edit -m "Merge GitLab history into GitHub mirror"
+          echo "🚀 Pushing GitHub '${GITHUB_BRANCH}' → GitLab '${TARGET_BRANCH}'..."
 
-            # Push the merged result
-            git push gitlab main
+          # Try a normal push first
+          if git push gitlab "HEAD:refs/heads/${TARGET_BRANCH}"; then
+            echo "✅ Push succeeded!"
+          else
+            echo "⚠️ Fast-forward push failed. Fetching and merging GitLab history..."
 
-            echo "✅ Merge + push succeeded."
+            git fetch gitlab "${TARGET_BRANCH}" || true
+
+            if git rev-parse "gitlab/${TARGET_BRANCH}" >/dev/null 2>&1; then
+              git merge "gitlab/${TARGET_BRANCH}" --allow-unrelated-histories --no-edit -m "Merge GitLab ${TARGET_BRANCH} history";
+            fi
+
+            git push gitlab "HEAD:refs/heads/${TARGET_BRANCH}"
+            echo "✅ Merge + push succeeded!"
           fi
