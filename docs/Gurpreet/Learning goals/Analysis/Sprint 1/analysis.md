@@ -163,3 +163,30 @@ Relay Output Connections:
 - NC (Normally Closed Terminal): When the relay is inactive, this terminal remains connected to COM. When the relay is activated, it disconnects from COM.
 
 For the team setup we use 4 streetlights per tile so 20 in total.
+
+I didn't realize it at first, but the videos used a different ESP32 variant than my ESP32-S3. For example in (sm Tronics, 2025), the LDR's AO went to pin 34 and the relay's IN went to pin 12. I don't have these pins on my ESP32-S3.
+
+So, I checked the official Espressif documentation and a GitHub repository:
+
+- ESP32: https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32/esp32-devkitc/user_guide.html#what-you-need
+![espressif_ESP32_DevKitC](images/espressif_ESP32_DevKitC.png)
+- ESP32 S3: https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32s3/esp32-s3-devkitc-1/user_guide_v1.1.html#getting-started
+![espressif_ESP32_S3_DevKitC1](images/espressif_ESP32_S3_DevKitC1.png)
+- Github Repository: https://github.com/rtek1000/YD-ESP32-23?tab=readme-ov-file
+![github_ESP32_S3_DevKitC1-clone](images/github_ESP32_S3_DevKitC1-clone.png)
+
+I see that ADCX_CH means: “Analog to Digital Converter”.
+
+Because the LDR module provides an analog voltages thru the AO pin, I connected it to an ADC pin on the ESP32-S3. In my setup, I selected GPIO4 for this so I could read the light value. For the relay module, I connected the IN pin to GPIO5 pin 5, because pin 4 was already being used for the LDR module. The relay's IN pin only expects a digital HIGH/LOW control signal, so it needs to be connected to a GPIO that I can set as an output. The other connections corresponded to their pins, though they were in different locations.
+
+![lldr_ao_to_adc_pin_explanation](images/ldr_ao_to_adc_pin_explanation.png)
+
+![esp32s3_gpio_pin_restrictions_summary](images/esp32s3_gpio_pin_restrictions_summary.png)
+
+The necessary components to run everything are:
+- 1x ESP32 S3 that we got from school in the box
+- 1x LDR module from [AliExpress](https://www.aliexpress.com/item/1005006205379253.html?spm=a2g0o.order_list.order_list_main.11.21ef79d2wK6ViM) or just ask our teachers to borrow one
+- 1x Relay module from [AliExpress](https://www.aliexpress.com/item/1005010329414583.html?spm=a2g0o.order_list.order_list_main.17.21ef79d2wK6ViM) or just ask our teachers to borrow one
+- 20x 220ohm resistors that we got from school in the box
+- 20x White LEDs that we got from school in the box
+- Some jumper wires M2M and F2M that we got from school in the box
