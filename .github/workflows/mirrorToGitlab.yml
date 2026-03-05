@@ -9,9 +9,39 @@ jobs:
   mirror:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - run: |
-          git remote add gitlab https://oauth2:${{ secrets.GITLAB_TOKEN }}@gitlab.fdmci.hva.nl/studio/smart-cities/projecten/2025-2026-semester-2/city-sim-learning-group/city-the-embedded-alliance-city-sim-learning-group.git
-          git push gitlab main
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Push to GitLab (merge strategy)
+        env:
+          GITLAB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
+        run: |
+          GITLAB_URL="https://oauth2:${GITLAB_TOKEN}@gitlab.fdmci.hva.nl/studio/smart-cities/projecten/2025-2026-semester-2/city-sim-learning-group/city-the-embedded-alliance-city-sim-learning-group.git"
+
+          # Add GitLab as a remote
+          git remote add gitlab "${GITLAB_URL}"
+
+          # Fetch the current state of the GitLab repo
+          git fetch gitlab main
+
+          # Try a normal push first (fast-forward)
+          if git push gitlab main; then
+            echo "✅ Fast-forward push succeeded."
+          else
+            echo "⚠️ Fast-forward push failed. Merging GitLab history into GitHub main..."
+
+            # Merge GitLab's main into the current branch, allowing unrelated histories
+            # This keeps ALL commits from both sides
+            git merge gitlab/main --allow-unrelated-histories --no-edit -m "Merge GitLab history into GitHub mirror"
+
+            # Push the merged result
+            git push gitlab main
+
+            echo "✅ Merge + push succeeded."
+          fi
