@@ -44,6 +44,12 @@ References (used scribbr)
 - hash include electronics. (2021, July 31). How to use LDR Sensor with Arduino | Make Automatic street light 💡 [Video]. YouTube. https://www.youtube.com/watch?v=YNVfPrFtTno
 - Arduino - LDR Module | Arduino Getting Started. (n.d.). Arduino Getting Started. https://arduinogetstarted.com/tutorials/arduino-ldr-module
 - Arduino - LED - Fade | Arduino Getting started. (n.d.). Arduino Getting Started. https://arduinogetstarted.com/tutorials/arduino-led-fade
+- Gotron | LED’s beschermen: zo bereken je de juiste serieweerstand! | Elektronicaspecialist. (n.d.). NL. https://www.gotron.be/leds
+
+- https://www.instructables.com/5V-4-Channel-Relay-Module-With-Arduino/
+- esp32: https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32/esp32-devkitc/user_guide.html#what-you-need
+- esp32 S3: https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32s3/esp32-s3-devkitc-1/user_guide_v1.1.html#getting-started
+- https://documentation.espressif.com/esp32_datasheet_en.html#%5B52,%22XYZ%22,56.69,653.91,null%5D
 
 List all sources you used. Use a consistent citation style (e.g., APA/IEEE). Include URLs with access dates for web resources.
 
@@ -106,3 +112,36 @@ Then I ofcource noticed that in every YouTube video a LED was used. I understood
 - Anode (+) long: Used to control the pin's state
 
 What I also noticed when I scrolled down a bit is that most LEDs require a resistor between the anode and VCC; the value of the resistor depends on the LED.
+
+Then I looked into why a resistor is necessary needed for LEDs. The source (Gotron | LED’s Beschermen: Zo Bereken Je De Juiste Serieweerstand! | Elektronicaspecialist, n.d.). explains this clearly. So, as soon as current flows through the LED, the current rises because an LED has no internal resistance. This can lead to overheating and permanent damage to the LED itself.
+
+Also important to know:
+- Forward voltage (Vf): This is the voltage the LED requires to operate and varies by LED type.
+    
+    Some typical values:
+     
+    - Red LED: approximately 2.0V
+    - Green LED: approximately 2.2V to 3.0V
+    - Blue and white LED: approximately 3.0V to 3.5V
+
+- Current (If): This value can also be found in the LED's datasheet. Typical current values ​​for LEDs are between 10mA and 30mA (0.01A to 0.03A). 
+- Supply voltage (V_in): This is the voltage of the source you're using to power the LED. For example, if you're using a 9V battery, then V_in=9V.
+
+With this information, you can calculate the resistance using Ohm's Law. Ohm's law states that resistance is equal to the supply voltage (V in) minus the forward voltage (V f), divided by the current (I f).
+
+<div style="display:flex; gap:16px; align-items:flex-start;">
+  <img src="images/led_resistor_calculation.png" alt="LED resistor calculation" style="width:50%; height:auto;">
+  <img src="images/parallel_led_wiring_with_resistors.png" alt="Parallel LED wiring with resistors" style="width:50%; height:auto;">
+</div>
+
+To measure the resistor's power, you can use the following formula:
+
+![led_resistor_power_calculation](images/led_resistor_power_calculation.png)
+
+It is recommended to choose a resistor with a Power rating that is higher than the calculated power to prevent overheating. 
+
+If you want to connect multiple LEDs in series, you must use the following formula:
+
+![series_led_resistor_calculation](images/series_led_resistor_calculation.png)
+
+At the bottom of the FAQ, there was also the question "Can I connect multiple LEDs in parallel to a single resistor?" and the answer was "That is possible, but we recommend using a series resistor per LED to avoid uneven currents and differences in brightness."
