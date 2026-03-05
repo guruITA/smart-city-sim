@@ -43,6 +43,7 @@ References (used scribbr)
 - Arduino Titan. (2024a, October 28). ESP32 Light Sensor with LED Control | Smart Light Automation Tutorial [Video]. YouTube. https://www.youtube.com/watch?v=YhuIzQ6_liwy
 - hash include electronics. (2021, July 31). How to use LDR Sensor with Arduino | Make Automatic street light 💡 [Video]. YouTube. https://www.youtube.com/watch?v=YNVfPrFtTno
 - Arduino - LDR Module | Arduino Getting Started. (n.d.). Arduino Getting Started. https://arduinogetstarted.com/tutorials/arduino-ldr-module
+- Arduino - LED - Fade | Arduino Getting started. (n.d.). Arduino Getting Started. https://arduinogetstarted.com/tutorials/arduino-led-fade
 
 List all sources you used. Use a consistent citation style (e.g., APA/IEEE). Include URLs with access dates for web resources.
 
@@ -94,7 +95,14 @@ Next, I specifically searched for "Arduino LDR module" and found many websites. 
 
 What I understood is that LDR stands for Light Dependent Resistor and is used to track the amount of light in other words to measure the ambient light level. Because the LDR module has several connections, I also needed to know what each pin does. This was also explained at (Arduino - LDR Module | Arduino Getting Started, n.d.). The LDR light sensor module has 4 pins:
 
-- VCC: This should be connected to VCC (3.3V to 5V)
+- VCC: VCC stands for "Voltage at the Common Collector" and represents the positive power supply voltage. This should be connected to VCC (3.3V to 5V)
 - GND: This should be connected to GND (0V)
 - DO pin: This is the digital output pin. It is "High" when it is dark and "Low" when it is light. The threshold between dark and light can be adjusted using a potentiometer. You can also use the potentiometer to set the sensitivity.
 - AO: This is an analog output pin. The output value decreases as the light becomes brighter and increases as the light becomes stronger.
+
+Then I ofcource noticed that in every YouTube video a LED was used. I understood that LED stands for Light Emitting Diode. Because an LED has two connections, I also needed to know what each pin does. This was clearly explained at (Arduino - LED - Fade | Arduino Getting Started, n.d.). The LED has two pins:
+
+- Cathode (-) short: Connects to GND (0V)
+- Anode (+) long: Used to control the pin's state
+
+What I also noticed when I scrolled down a bit is that most LEDs require a resistor between the anode and VCC; the value of the resistor depends on the LED.
