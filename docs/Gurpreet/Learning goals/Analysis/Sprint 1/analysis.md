@@ -46,6 +46,8 @@ References (used scribbr)
 13. Rtek. (n.d.). GitHub - rtek1000/YD-ESP32-23: The device uses the ESP32-S3 chip, which can be used for the test prototype of the Internet of Things application and can also be used for practical applications. It is equipped with two USBs, one is a hardware USB-to-serial port (CH343P WCH Qinheng), and the other is ESP32-S3 usb port. GitHub. https://github.com/rtek1000/YD-ESP32-23?tab=readme-ov-file
 14. pro-SIGNAL. (2022). TECHNICAL DATA SHEET. https://www.farnell.com/datasheets/3811080.pdf
 15. Electronics, P. (2024, April 9). Using The LDR LM393 Module with Arduino. Phipps Electronics. https://www.phippselectronics.com/using-the-ldr-lm393-module-with-arduino/
+16. Panguloori, R. & Texas Instruments Incorporated. (2018). Basics of eFuses. In Application Report.
+17. Tutorial: Breadboard Power Supply | Learn with Edwin Robotics. (z.d.). https://learn.edwinrobotics.com/tutorial-breadboard-power-supply/
 
 # Feedback from Mats
 Mats feedback is that I should think about the overall system and all the tiles, not just my own tile. He advises discussing this with my team to make sure everything connects properly. While developing this, I should also consider how I am going to set it up in a way that it works across the entire city as a whole. Additionally, Mats mentions that the “Result, Reflection and Transfer” section does not need to be filled in yet, and should only be completed after finishing the action. He also advises that I should clearly and concretely describe what I am going to deliver in the action section. Lastly, he emphasizes that I should keep updating this continuously.
@@ -287,4 +289,10 @@ After receiving this feedback, I looked up the specifications of the breadboard 
 
 It supports 3.3V or 5V output and is specified up to 500 mA. This is sufficient for my current Sprint 1 prototype. However, I noticed that the 500 mA limit could become a problem in later sprints when more additional modules are added.
 
-Because of this, I considered powering the breadboard rails directly from a 5V 1A adapter. Gerald indicated this can be an option, but only if I address the safety risk in case of a wiring mistake or short circuit. With a 2A supply, a short circuit could cause excessive current through wires and components.
+Because of this, I considered powering the breadboard rails directly from a 5V 1A adapter. Gerald indicated this can be an option, but only if I address the safety risk in case of a wiring mistake or short circuit. With a 1A or 2A supply, a short circuit could cause excessive current through wires and components.
+
+I use a 1A or a 2A fuse later in series with the +5V line. This stops too much current if there's a wiring mistake or short circuit matching the adapter's 1A limit exactly (Panguloori & Texas Instruments Incorporated, 2018).
+
+Next, a 1N4007 diode for 1A or a RL207 diode for 2A wrong way plug safety. If you swap plus and minus by accident, it blocks the current so the ESP32-S3 stays safe (Panguloori & Texas Instruments Incorporated, 2018).
+
+And I think to use a 1000µF/25V elco across 5V and GND at the input. It power supply that stores charge to smooth out voltage dips and spikes when relays or LEDs switch on/off (Tutorial: Breadboard Power Supply | Learn With Edwin Robotics, z.d.). But I need to do some more research on this.
