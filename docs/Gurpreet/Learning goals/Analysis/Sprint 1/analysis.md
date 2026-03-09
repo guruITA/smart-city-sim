@@ -251,7 +251,7 @@ My current application does not use WiFi, but maybe in the future it could be us
 
 ![ESP32_S3_no_wifi_current_estimate_2](images/ESP32_S3_no_wifi_current_estimate_2.png)
 
-## Total current (without Wi-Fi)
+## Total current (without Wi-Fi and 20 LEDs)
 
 Lowest estimate:
 
@@ -272,3 +272,19 @@ Higher estimate:
 Total = 347 mA
 
 The total continuous current consumption is 280-350 mA.
+
+## Power supply decision
+
+In my first schematic I planned to power the LEDs using a separate 5V battery.
+
+![streetlight_schematic_fritzing](images/streetlight_schematic_fritzing.png)
+
+During feedback, Gerald advised against using a separate battery and recommended the breadboard power supply provided by school. The reason is that the breadboard power supply provides a stable 3.3V or 5V output directly on the breadboard rails and is easier to integrate safely and consistently in a prototype setup. This reduces wiring mistakes and makes the setup more reproducible.
+
+After receiving this feedback, I looked up the specifications of the breadboard power supply:
+
+![breadboard_power_supply_specs](images/breadboard_power_supply_specs.png)
+
+It supports 3.3V or 5V output and is specified up to 500 mA. This is sufficient for my current Sprint 1 prototype. However, I noticed that the 500 mA limit could become a problem in later sprints when more additional modules are added.
+
+Because of this, I considered powering the breadboard rails directly from a 5V 1A adapter. Gerald indicated this can be an option, but only if I address the safety risk in case of a wiring mistake or short circuit. With a 2A supply, a short circuit could cause excessive current through wires and components.
