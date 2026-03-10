@@ -30,6 +30,7 @@ T - Transfer
 I will use the results of this analysis directly in the next phase, where I design the Fritzing schematic for the smart streetlight. The way I combined problem-analysis with studying the ESP32 documentation will serve as a template for later sprints, for example when I analyse the traffic light with a pressure sensor or the pedestrian crossing.
 
 References (used scribbr)
+
 1. D66jeroen. (2026, January 30). 3. Slimme straatverlichting: licht waar je het nodig hebt. D66 Goes. https://d66.nl/goes/nieuws/3-slimme-straatverlichting-licht-op-maat/
 2. AAA ECO B.V. (2024, December 9). Slimme LED lantaarnpalen en 5G: innovatie of inbreuk op privacy? aaaeco.nl. https://aaaeco.nl/slimme-led-lantaarnpalen-en-5g-innovatie-of-inbreuk-op-privacy/
 3. sm Tronics. (2025, January 12). ESP32 Light Sensor Relay Control - Smart Automation with Wokwi! [Video]. YouTube. https://www.youtube.com/watch?v=V28G_EmqRHg
@@ -45,6 +46,8 @@ References (used scribbr)
 13. Rtek. (n.d.). GitHub - rtek1000/YD-ESP32-23: The device uses the ESP32-S3 chip, which can be used for the test prototype of the Internet of Things application and can also be used for practical applications. It is equipped with two USBs, one is a hardware USB-to-serial port (CH343P WCH Qinheng), and the other is ESP32-S3 usb port. GitHub. https://github.com/rtek1000/YD-ESP32-23?tab=readme-ov-file
 14. pro-SIGNAL. (2022). TECHNICAL DATA SHEET. https://www.farnell.com/datasheets/3811080.pdf
 15. Electronics, P. (2024, April 9). Using The LDR LM393 Module with Arduino. Phipps Electronics. https://www.phippselectronics.com/using-the-ldr-lm393-module-with-arduino/
+16. Panguloori, R. & Texas Instruments Incorporated. (2018). Basics of eFuses. In Application Report.
+17. Tutorial: Breadboard Power Supply | Learn with Edwin Robotics. (z.d.). https://learn.edwinrobotics.com/tutorial-breadboard-power-supply/
 
 # Feedback from Mats
 Mats feedback is that I should think about the overall system and all the tiles, not just my own tile. He advises discussing this with my team to make sure everything connects properly. While developing this, I should also consider how I am going to set it up in a way that it works across the entire city as a whole. Additionally, Mats mentions that the “Result, Reflection and Transfer” section does not need to be filled in yet, and should only be completed after finishing the action. He also advises that I should clearly and concretely describe what I am going to deliver in the action section. Lastly, he emphasizes that I should keep updating this continuously.
@@ -62,6 +65,7 @@ Many smart streetlights have additional technology, such as a remote management 
 In this Smart Cities: Learning Group team project, I'm going to develop a smart streetlight prototype that automatically switches on and off based on the ambient light level. Because I'm a beginner with not much experience in Embedded Systems & Robotics, so I'm keeping it simple.
 
 During my research, I specifically started by searching for "ESP32-S3 smart streetlight." Because I find visual explanations easier and understand them better with little prior knowledge, I watched these YouTube videos:
+
 - [(sm Tronics, 2025)](https://www.youtube.com/watch?v=V28G_EmqRHg)
 - [(Arduino Titan, 2024)](https://www.youtube.com/watch?v=mHjWOMrVsTE&t=1008s) 
 - [(Arduino Titan, 2024a)](https://www.youtube.com/watch?v=YhuIzQ6_liw&t=815s)
@@ -107,11 +111,11 @@ Then I looked into why a resistor is necessary needed for LEDs. The source (Gotr
 Also important to know:
 - Forward voltage (Vf): This is the voltage the LED requires to operate and varies by LED type.
     
-    Some typical values:
-     
-    - Red LED: approximately 2.0V
-    - Green LED: approximately 2.2V to 3.0V
-    - Blue and white LED: approximately 3.0V to 3.5V
+Some typical values:
+
+- Red LED: approximately 2.0V
+- Green LED: approximately 2.2V to 3.0V
+- Blue and white LED: approximately 3.0V to 3.5V
 
 - Current (If): This value can also be found in the LED's datasheet. Typical current values ​​for LEDs are between 10mA and 30mA (0.01A to 0.03A). 
 - Supply voltage (V_in): This is the voltage of the source you're using to power the LED. For example, if you're using a 9V battery, then V_in=9V.
@@ -173,6 +177,7 @@ Because the LDR module provides an analog voltages thru the AO pin, I connected 
 ![esp32s3_gpio_pin_restrictions_summary](images/esp32s3_gpio_pin_restrictions_summary.png)
 
 The necessary components to run everything are:
+
 - 1x ESP32 S3 that we got from school in the box
 - 1x LDR module from [AliExpress](https://www.aliexpress.com/item/1005006205379253.html?spm=a2g0o.order_list.order_list_main.11.21ef79d2wK6ViM) or just ask our teachers to borrow one
 - 1x Relay module from [AliExpress](https://www.aliexpress.com/item/1005010329414583.html?spm=a2g0o.order_list.order_list_main.17.21ef79d2wK6ViM) or just ask our teachers to borrow one
@@ -248,7 +253,7 @@ My current application does not use WiFi, but maybe in the future it could be us
 
 ![ESP32_S3_no_wifi_current_estimate_2](images/ESP32_S3_no_wifi_current_estimate_2.png)
 
-## Total current (without Wi-Fi)
+## Total current (without Wi-Fi and 20 LEDs)
 
 Lowest estimate:
 
@@ -269,3 +274,25 @@ Higher estimate:
 Total = 347 mA
 
 The total continuous current consumption is 280-350 mA.
+
+## Power supply decision
+
+In my first schematic I planned to power the LEDs using a separate 5V battery.
+
+![streetlight_schematic_fritzing](images/streetlight_schematic_fritzing.png)
+
+During feedback, Gerald advised against using a separate battery and recommended the breadboard power supply provided by school. The reason is that the breadboard power supply provides a stable 3.3V or 5V output directly on the breadboard rails and is easier to integrate safely and consistently in a prototype setup. This reduces wiring mistakes and makes the setup more reproducible.
+
+After receiving this feedback, I looked up the specifications of the breadboard power supply:
+
+![breadboard_power_supply_specs](images/breadboard_power_supply_specs.png)
+
+It supports 3.3V or 5V output and is specified up to 500 mA. This is sufficient for my current Sprint 1 prototype. However, I noticed that the 500 mA limit could become a problem in later sprints when more additional modules are added.
+
+Because of this, I considered powering the breadboard rails directly from a 5V 1A adapter. Gerald indicated this can be an option, but only if I address the safety risk in case of a wiring mistake or short circuit. With a 1A or 2A supply, a short circuit could cause excessive current through wires and components.
+
+I use a 1A or a 2A fuse later in series with the +5V line. This stops too much current if there's a wiring mistake or short circuit matching the adapter's 1A limit exactly (Panguloori & Texas Instruments Incorporated, 2018).
+
+Next, a 1N4007 diode for 1A or a RL207 diode for 2A wrong way plug safety. If you swap plus and minus by accident, it blocks the current so the ESP32-S3 stays safe (Panguloori & Texas Instruments Incorporated, 2018).
+
+And I think to use a 1000µF/25V elco across 5V and GND at the input. It power supply that stores charge to smooth out voltage dips and spikes when relays or LEDs switch on/off (Tutorial: Breadboard Power Supply | Learn With Edwin Robotics, z.d.). But I need to do some more research on this.
