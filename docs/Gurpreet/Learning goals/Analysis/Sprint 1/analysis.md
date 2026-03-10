@@ -300,3 +300,7 @@ And I think to use a 1000µF/25V elco across 5V and GND at the input. It power s
 And whats I have found out is that the 5V Vin on my school provided clone only accepts input, not output to power breadboard rails or components, requiring external 5V adapter.
 
 ![clone_5v_pin_issue](images/clone_5v_pin_issue.png)
+
+# Conclusion 
+
+My analysis for Sprint 1 confirms that the smart streetlight prototype fits within the 500 mA limit of the school's breadboard power supply, but an external 5V/1A or 2A adapter with fuse is needed to make it future proof. When investigating I found out that the 5V Vin of the school provided ESP32-S3 clone only accepts input, not output, to power the breadboard rails, making a direct adapter connection necessary. I will implement a 1A fuse expandable to 2A + 1N4007 diode for 1A or RL207 for 2A current, matching the adapter's short circuit and reverse polarity protection capacity. For voltage stability while switching relays + 20 LEDs, I will use a 1000 µF 25 V elco, but I need to do some more investigation to find out which is the correct one to use and why. This beginner friendly way prevents the ESP32 from resetting due to a voltage dip, ensures reproducibility across the team on different city tiles, and is scalable for Sprint 2. Next, I will create a design with Fritzing based on the analysis I have done and also to make sure the rest of the team understands how to implement it on their own tile.
