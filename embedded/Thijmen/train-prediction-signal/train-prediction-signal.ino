@@ -3,13 +3,15 @@
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 
-//Output LED pin
-#define LED 36
+
+// Output LED pins (warning lights)
+#define LED_1 37
+#define LED_2 36
 
 // Input button pin
 #define BTN 45
 
-//distances
+// distances
 #define A_B_DISTANCE 200
 #define B_C_DISTANCE 1000
 
@@ -17,7 +19,7 @@
 #define SCL_PIN 13
 #define SDA_PIN 14
 
-// Oled screen width and heigth
+// Oled screen width and height
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 64
 
@@ -44,6 +46,38 @@ const unsigned long debounceDelay = 50;
 
 unsigned long lastDisplayUpdate = 0;
 const unsigned long displayInterval = 100;
+
+// Warning light variables
+unsigned long blinkTimer = 0;
+const unsigned long blinkInterval = 400;
+bool ledToggle = false;
+
+void handleWarningLEDS() {
+
+  if (currentState != WAITING) {
+    digitalWrite(LED_1, LOW);
+    digitalWrite(LED_2, LOW);
+    return;
+  }
+
+  unsigned long elapsed = millis() - startMillis;
+
+  if (elapsed >= predictedTime - safetyMargin) {
+
+    if (millis() - blinkTimer >= blinkInterval) {
+      blinkTimer = millis();
+
+      ledToggle = !ledToggle;
+
+      digitalWrite(LED_1, ledToggle);
+      digitalWrite(LED_2, !ledToggle);
+    }
+
+  } else {
+    digitalWrite(LED_1, LOW);
+    digitalWrite(LED_2, LOW);
+  }
+}
 
 void handleButton() {
   bool reading = digitalRead(BTN);
@@ -72,7 +106,8 @@ void handleButton() {
 
           case WAITING:
             currentState = IDLE;
-            digitalWrite(LED, LOW);
+            digitalWrite(LED_1, LOW);
+            digitalWrite(LED_2, LOW);
             break;
         }
       }
@@ -80,26 +115,6 @@ void handleButton() {
   }
 
   lastReading = reading;
-}
-
-void handleState() {
-  switch (currentState) {
-
-    case IDLE:
-      digitalWrite(LED, LOW);
-      break;
-
-    case MEASURING:
-      break;
-
-    case WAITING:
-      if (millis() - startMillis >= predictedTime) {
-        digitalWrite(LED, HIGH);
-      } else {
-        digitalWrite(LED, LOW);
-      }
-      break;
-  }
 }
 
 void updateDisplay() {
@@ -116,7 +131,7 @@ void updateDisplay() {
 
     case MEASURING:
       display.println("MEASURING");
-      display.setTextSize(1.5);
+      display.setTextSize(1);
       display.print("Elapsed: ");
       display.print((millis() - startMillis) / 1000.0, 2);
       display.println(" s");
@@ -124,7 +139,7 @@ void updateDisplay() {
 
     case WAITING:
       display.println("WAITING");
-      display.setTextSize(1.5);
+      display.setTextSize(1);
       display.print("Predicted: ");
       display.print(predictedTime / 1000.0, 2);
       display.println(" s");
@@ -146,7 +161,8 @@ void updateDisplay() {
 void setup() {
   Serial.begin(115200);
 
-  pinMode(LED, OUTPUT);
+  pinMode(LED_1, OUTPUT);
+  pinMode(LED_2, OUTPUT);
   pinMode(BTN, INPUT_PULLUP);
 
   Wire.begin(SDA_PIN, SCL_PIN);
@@ -161,7 +177,7 @@ void setup() {
 
 void loop() {
   handleButton();
-  handleState();
+  handleWarningLEDS();
 
   if (millis() - lastDisplayUpdate > displayInterval) {
     lastDisplayUpdate = millis();
