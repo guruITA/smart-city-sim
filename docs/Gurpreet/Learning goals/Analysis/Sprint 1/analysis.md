@@ -296,3 +296,7 @@ I use a 1A or a 2A fuse later in series with the +5V line. This stops too much c
 Next, a 1N4007 diode for 1A or a RL207 diode for 2A wrong way plug safety. If you swap plus and minus by accident, it blocks the current so the ESP32-S3 stays safe (Panguloori & Texas Instruments Incorporated, 2018).
 
 And I think to use a 1000µF/25V elco across 5V and GND at the input. It power supply that stores charge to smooth out voltage dips and spikes when relays or LEDs switch on/off (Tutorial: Breadboard Power Supply | Learn With Edwin Robotics, z.d.). But I need to do some more research on this.
+
+And whats I have found out is that the 5V Vin on my school provided clone only accepts input, not output to power breadboard rails or components, requiring external 5V adapter.
+
+![clone_5v_pin_issue](images/clone_5v_pin_issue.png)
