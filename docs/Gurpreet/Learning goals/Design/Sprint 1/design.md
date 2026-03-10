@@ -24,6 +24,8 @@ Rules I need to remember:
 - I should always check for short circuits before powering the circuit.
 - I should use clear wire colors during wiring, for example red for 5V or 3.3V, black for GND, and other colors for signal wires, so that it stays understandable for the team as described in the discussion on (Miniika, n.d.).
 
+Because I use many LEDs, the breadboard is useful because I can connect them in parallel using the power rails, while each LED still has its own 220ohm resistor.
+
 ## Sources (used scribbr)
 
 1. How to Use a Breadboard - SparkFun Learn. (z.d.). https://learn.sparkfun.com/tutorials/how-to-use-a-breadboard/all#introduction
