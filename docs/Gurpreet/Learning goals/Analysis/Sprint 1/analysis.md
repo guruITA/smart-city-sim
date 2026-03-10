@@ -1,66 +1,34 @@
 # Smart Cities Learning group goal: Analyse
 
-Name: Gurpreet Singh
+- Name: Gurpreet Singh
+- Date: 11-2-2026
 
-Date: 11-2-2026
+## Table of Contents
+- [Smart Cities Learning group goal: Analyse](#smart-cities-learning-group-goal-analyse)
+  - [Table of Contents](#table-of-contents)
+  - [What is a smart streetlight?](#what-is-a-smart-streetlight)
+  - [My current goal: Automatic Smart Streetlight](#my-current-goal-automatic-smart-streetlight)
+    - [Functional requirements](#functional-requirements)
+    - [Non-functional requirements](#non-functional-requirements)
+  - [Findings during research](#findings-during-research)
+  - [Total power consumption](#total-power-consumption)
+    - [LEDs](#leds)
+    - [Relay module](#relay-module)
+    - [LDR-module](#ldr-module)
+    - [ESP32-S3](#esp32-s3)
+    - [Total current (without Wi-Fi and 20 LEDs)](#total-current-without-wi-fi-and-20-leds)
+  - [Power supply decision](#power-supply-decision)
+  - [Conclusion](#conclusion)
+  - [Sources (used scribbr)](#sources-used-scribbr)
 
-Learning question: How can I analyse what is needed to turn a normal streetlight into a “smart” streetlight using an ESP32-S3 and simple sensors, while I am still learning how the ESP32 works?
 
-## Smart Streetlight + ESP32-basis
-
-Learning Question
-How can I analyse what is needed to turn a normal streetlight into a “smart” streetlight using an ESP32-S3 and simple sensors, while I am still learning how the ESP32 works?
-
-S - Situation
-In the first sprint of the City Sim Learning Group I want to build a smart streetlight on my wooden city tile. The idea is that the light should react to the environment instead of always being on, for example by switching on when it is dark. I am new to Embedded & Robotics and I do not yet understand how the ESP32-S3 works or which pins and features I can use. At the same time, the ESP32-S3-DevKitC-1 is the microcontroller I must use in this project.
-
-T - Task
-My goal in this sprint is to analyse what “smart” should mean for this streetlight and what is needed to realise that with the ESP32-S3. I want to find out when and why the streetlight should turn on or off, which sensors and other components are needed for that behaviour, and which basic ESP32-S3 features and pins are relevant for connecting a light sensor and a lamp.
-
-A - Action
-To reach this goal I will first look at examples of smart streetlights and simple IoT lighting projects to understand typical functions such as turning on in the dark, dimming, or reacting to presence. I will then write down functional requirements, for example that the light turns on when a certain darkness level is reached, and simple non-functional requirements such as low energy use and reliability. In parallel, I will study the official Espressif documentation for the ESP32-S3-DevKitC-1 to understand which pins, voltages and features I can use for a light sensor and LED.
-
-R - Result
-The expected result is a short, clear problem-analysis document in which I describe what my smart streetlight must do, which components are realistic candidates, and which ESP32-S3 features I need to use for this first sprint. This document will show how the initial idea is translated into concrete technical needs that I can use in the design phase.
-
-R - Reflection
-After finishing this analysis I will reflect on how much my understanding of the problem has improved and where my lack of ESP32 knowledge still limits me. I will also look at how useful the ESP32 documentation was for me as a beginner and what I still find unclear or confusing.
-
-T - Transfer
-I will use the results of this analysis directly in the next phase, where I design the Fritzing schematic for the smart streetlight. The way I combined problem-analysis with studying the ESP32 documentation will serve as a template for later sprints, for example when I analyse the traffic light with a pressure sensor or the pedestrian crossing.
-
-References (used scribbr)
-
-1. D66jeroen. (2026, January 30). 3. Slimme straatverlichting: licht waar je het nodig hebt. D66 Goes. https://d66.nl/goes/nieuws/3-slimme-straatverlichting-licht-op-maat/
-2. AAA ECO B.V. (2024, December 9). Slimme LED lantaarnpalen en 5G: innovatie of inbreuk op privacy? aaaeco.nl. https://aaaeco.nl/slimme-led-lantaarnpalen-en-5g-innovatie-of-inbreuk-op-privacy/
-3. sm Tronics. (2025, January 12). ESP32 Light Sensor Relay Control - Smart Automation with Wokwi! [Video]. YouTube. https://www.youtube.com/watch?v=V28G_EmqRHg
-4. Arduino Titan. (2024, October 30). ESP32 Auto Light Control | Esp32 full tutorial [Video]. YouTube. https://www.youtube.com/watch?v=mHjWOMrVsTE
-5. Arduino Titan. (2024a, October 28). ESP32 Light Sensor with LED Control | Smart Light Automation Tutorial [Video]. YouTube. https://www.youtube.com/watch?v=YhuIzQ6_liwy
-6. hash include electronics. (2021, July 31). How to use LDR Sensor with Arduino | Make Automatic street light 💡 [Video]. YouTube. https://www.youtube.com/watch?v=YNVfPrFtTno
-7. Arduino - LDR Module | Arduino Getting Started. (n.d.). Arduino Getting Started. https://arduinogetstarted.com/tutorials/arduino-ldr-module
-8. Arduino - LED - Fade | Arduino Getting started. (n.d.). Arduino Getting Started. https://arduinogetstarted.com/tutorials/arduino-led-fade
-9. Gotron | LED’s beschermen: zo bereken je de juiste serieweerstand! | Elektronicaspecialist. (n.d.). NL. https://www.gotron.be/leds
-10. Instructables. (2025, February 11). 5V 4-Channel relay module with Arduino. Instructables. https://www.instructables.com/5V-4-Channel-Relay-Module-With-Arduino
-11. ESP32-DevKitC V4 - ESP32 -  — esp-dev-kits latest documentation. (n.d.). https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32/esp32-devkitc/user_guide.html#what-you-need
-12. ESP32-S3-DevKitC-1 v1.1 - ESP32-S3 -  — esp-dev-kits latest documentation. (n.d.). https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32s3/esp32-s3-devkitc-1/user_guide_v1.1.html#getting-started
-13. Rtek. (n.d.). GitHub - rtek1000/YD-ESP32-23: The device uses the ESP32-S3 chip, which can be used for the test prototype of the Internet of Things application and can also be used for practical applications. It is equipped with two USBs, one is a hardware USB-to-serial port (CH343P WCH Qinheng), and the other is ESP32-S3 usb port. GitHub. https://github.com/rtek1000/YD-ESP32-23?tab=readme-ov-file
-14. pro-SIGNAL. (2022). TECHNICAL DATA SHEET. https://www.farnell.com/datasheets/3811080.pdf
-15. Electronics, P. (2024, April 9). Using The LDR LM393 Module with Arduino. Phipps Electronics. https://www.phippselectronics.com/using-the-ldr-lm393-module-with-arduino/
-16. Panguloori, R. & Texas Instruments Incorporated. (2018). Basics of eFuses. In Application Report.
-17. Tutorial: Breadboard Power Supply | Learn with Edwin Robotics. (z.d.). https://learn.edwinrobotics.com/tutorial-breadboard-power-supply/
-
-# Feedback from Mats
-Mats feedback is that I should think about the overall system and all the tiles, not just my own tile. He advises discussing this with my team to make sure everything connects properly. While developing this, I should also consider how I am going to set it up in a way that it works across the entire city as a whole. Additionally, Mats mentions that the “Result, Reflection and Transfer” section does not need to be filled in yet, and should only be completed after finishing the action. He also advises that I should clearly and concretely describe what I am going to deliver in the action section. Lastly, he emphasizes that I should keep updating this continuously.
-
-# What I've done
-
-# What is a smart streetlight?
+## What is a smart streetlight?
 
 A smart streetlight is a street lamp that not only provides light but can also automatically adjust its lighting and other functions to its surroundings via sensors or and  network connectivity. Instead of always being on according to a fixed schedule, a smart streetlight can dim or brighten its light based on factors such as sunset, presence of people or traffic, and weather conditions, saving energy by not burning brightly all the time. As described in (D66jeroen, 2026)
 
 Many smart streetlights have additional technology, such as a remote management system and IoT modules, allowing each streetlight to be controlled and monitored remotely. They can also perform other functions, such as measuring air quality or noise, providing Wi-Fi, or even serving as a charging station for electric vehicles, turning the lamppost into a multifunctional data collector within the smart city as described in (AAA ECO B.V., 2024)
 
-# My current goal: Automatic Smart Streetlight
+## My current goal: Automatic Smart Streetlight
 
 In this Smart Cities: Learning Group team project, I'm going to develop a smart streetlight prototype that automatically switches on and off based on the ambient light level. Because I'm a beginner with not much experience in Embedded Systems & Robotics, so I'm keeping it simple.
 
@@ -73,20 +41,20 @@ During my research, I specifically started by searching for "ESP32-S3 smart stre
 
 What I immediately saw was that all the videos used an LDR module, some also a relay module, and as is usually jumper wires and LEDs. This made me want to first understand what exactly an LDR module and a relay module do and the logic behind it.
 
-## Functional requirements 
+### Functional requirements 
 
 1. Automatic switching: The streetlight turns on when the measured light value falls below a threshold durning darknees and turns off when the value rises above the threshold durning light.
 2. Adjustable threshold: The threshold must be easily adjustable, for example thru a variable in the code.
 3. Testable behavior: The system must respond quickly to clear difference between light and dark and must not flicker
 
-## Non-functional requirements
+### Non-functional requirements
 
 1. Electrical correct: Each LED has its own resistor to prevent overheating or damage.
 2. Reliability: The system must switch on en and off without resets etc.
 3. Beginner friendly: Coponents and code must be kepot simple for beginner knowledge. 
 4. Clarity: Wiring must be logical and reproducible and must have the same structure for each tile, so that troubleshooting remains easy to solve and to expand it.
 
-# Findings during research
+## Findings during research
 
 As I mentioned before, I started my research by specifically searching for "ESP32-S3 smart streetlight." Because I find visual explanations easier and more enjoyable as a beginner with not much knowledge, I started watched YouTube videos. What I immediately saw was that all the videos used an LDR module, so my first priority was to understand what an LDR module is and what it does.
 
@@ -253,7 +221,7 @@ My current application does not use WiFi, but maybe in the future it could be us
 
 ![ESP32_S3_no_wifi_current_estimate_2](images/ESP32_S3_no_wifi_current_estimate_2.png)
 
-## Total current (without Wi-Fi and 20 LEDs)
+### Total current (without Wi-Fi and 20 LEDs)
 
 Lowest estimate:
 
@@ -296,3 +264,31 @@ I use a 1A or a 2A fuse later in series with the +5V line. This stops too much c
 Next, a 1N4007 diode for 1A or a RL207 diode for 2A wrong way plug safety. If you swap plus and minus by accident, it blocks the current so the ESP32-S3 stays safe (Panguloori & Texas Instruments Incorporated, 2018).
 
 And I think to use a 1000µF/25V elco across 5V and GND at the input. It power supply that stores charge to smooth out voltage dips and spikes when relays or LEDs switch on/off (Tutorial: Breadboard Power Supply | Learn With Edwin Robotics, z.d.). But I need to do some more research on this.
+
+And whats I have found out is that the 5V Vin on my school provided clone only accepts input, not output to power breadboard rails or components, requiring external 5V adapter.
+
+![clone_5v_pin_issue](images/clone_5v_pin_issue.png)
+
+## Conclusion 
+
+My analysis for Sprint 1 confirms that the smart streetlight prototype fits within the 500 mA limit of the school's breadboard power supply, but an external 5V/1A or 2A adapter with fuse is needed to make it future proof. When investigating I found out that the 5V Vin of the school provided ESP32-S3 clone only accepts input, not output, to power the breadboard rails, making a direct adapter connection necessary. I will implement a 1A fuse expandable to 2A + 1N4007 diode for 1A or RL207 for 2A current, matching the adapter's short circuit and reverse polarity protection capacity. For voltage stability while switching relays + 20 LEDs, I will use a 1000 µF 25 V elco, but I need to do some more investigation to find out which is the correct one to use and why. This beginner friendly way prevents the ESP32 from resetting due to a voltage dip, ensures reproducibility across the team on different city tiles, and is scalable for Sprint 2. Next, I will create a design with Fritzing based on the analysis I have done and also to make sure the rest of the team understands how to implement it on their own tile.
+
+## Sources (used scribbr)
+
+1. D66jeroen. (2026, January 30). 3. Slimme straatverlichting: licht waar je het nodig hebt. D66 Goes. https://d66.nl/goes/nieuws/3-slimme-straatverlichting-licht-op-maat/
+2. AAA ECO B.V. (2024, December 9). Slimme LED lantaarnpalen en 5G: innovatie of inbreuk op privacy? aaaeco.nl. https://aaaeco.nl/slimme-led-lantaarnpalen-en-5g-innovatie-of-inbreuk-op-privacy/
+3. sm Tronics. (2025, January 12). ESP32 Light Sensor Relay Control - Smart Automation with Wokwi! [Video]. YouTube. https://www.youtube.com/watch?v=V28G_EmqRHg
+4. Arduino Titan. (2024, October 30). ESP32 Auto Light Control | Esp32 full tutorial [Video]. YouTube. https://www.youtube.com/watch?v=mHjWOMrVsTE
+5. Arduino Titan. (2024a, October 28). ESP32 Light Sensor with LED Control | Smart Light Automation Tutorial [Video]. YouTube. https://www.youtube.com/watch?v=YhuIzQ6_liwy
+6. hash include electronics. (2021, July 31). How to use LDR Sensor with Arduino | Make Automatic street light 💡 [Video]. YouTube. https://www.youtube.com/watch?v=YNVfPrFtTno
+7. Arduino - LDR Module | Arduino Getting Started. (n.d.). Arduino Getting Started. https://arduinogetstarted.com/tutorials/arduino-ldr-module
+8. Arduino - LED - Fade | Arduino Getting started. (n.d.). Arduino Getting Started. https://arduinogetstarted.com/tutorials/arduino-led-fade
+9. Gotron | LED’s beschermen: zo bereken je de juiste serieweerstand! | Elektronicaspecialist. (n.d.). NL. https://www.gotron.be/leds
+10. Instructables. (2025, February 11). 5V 4-Channel relay module with Arduino. Instructables. https://www.instructables.com/5V-4-Channel-Relay-Module-With-Arduino
+11. ESP32-DevKitC V4 - ESP32 -  — esp-dev-kits latest documentation. (n.d.). https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32/esp32-devkitc/user_guide.html#what-you-need
+12. ESP32-S3-DevKitC-1 v1.1 - ESP32-S3 -  — esp-dev-kits latest documentation. (n.d.). https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32s3/esp32-s3-devkitc-1/user_guide_v1.1.html#getting-started
+13. Rtek. (n.d.). GitHub - rtek1000/YD-ESP32-23: The device uses the ESP32-S3 chip, which can be used for the test prototype of the Internet of Things application and can also be used for practical applications. It is equipped with two USBs, one is a hardware USB-to-serial port (CH343P WCH Qinheng), and the other is ESP32-S3 usb port. GitHub. https://github.com/rtek1000/YD-ESP32-23?tab=readme-ov-file
+14. pro-SIGNAL. (2022). TECHNICAL DATA SHEET. https://www.farnell.com/datasheets/3811080.pdf
+15. Electronics, P. (2024, April 9). Using The LDR LM393 Module with Arduino. Phipps Electronics. https://www.phippselectronics.com/using-the-ldr-lm393-module-with-arduino/
+16. Panguloori, R. & Texas Instruments Incorporated. (2018). Basics of eFuses. In Application Report.
+17. Tutorial: Breadboard Power Supply | Learn with Edwin Robotics. (z.d.). https://learn.edwinrobotics.com/tutorial-breadboard-power-supply/
