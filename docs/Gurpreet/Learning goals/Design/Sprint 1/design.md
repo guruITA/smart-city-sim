@@ -1,7 +1,7 @@
 # Smart Cities Learning group goal: Design
 
-- Naam: Gurpreet Singh
-- Datum: 11-2-2026
+- Name: Gurpreet Singh
+- Date: 11-2-2026
 
 ## Table of Contents
 - [Smart Cities Learning group goal: Design](#smart-cities-learning-group-goal-design)
@@ -12,6 +12,7 @@
   - [Findings during design research](#findings-during-design-research)
   - [Created Fritzing schematics](#created-fritzing-schematics)
     - [Breadboard view](#breadboard-view)
+  - [Conclusion](#conclusion)
   - [Sources (used scribbr)](#sources-used-scribbr)
 
 ## What is a breadboard?
@@ -73,6 +74,16 @@ In this view, I can clearly see:
 - and how the LEDs and resistors are placed on the breadboard.
 
 ![breadboard_streetlight_wiring](images/breadboard_streetlight_wiring.png)
+
+## Conclusion 
+
+In this design phase, I made a visual prototype design using Fritzing based on the analysis that I made before. I first researched how a breadboard works and how Fritzing can be used to represent an electronic circuit clearly. This helped me understand how to structure the wiring of the ESP32-S3, fuse-box-holder, diode, LDR module, relay module and LEDs on a breadboard.
+
+I also found out that the exact modules I use were not available in Fritzing, so I imported similar modules from the web.
+
+Based on Gerald’s feedback discussed in the analysis phase in [analysis.md](../../Analysis/Sprint%201/analysis.md), I created this design. This makes the setup easier to understand and better structured for the team.
+
+The next step is to physically realise this design on the breadboard and test whether the prototype works exactly as it should in practice.
 
 ## Sources (used scribbr)
 
