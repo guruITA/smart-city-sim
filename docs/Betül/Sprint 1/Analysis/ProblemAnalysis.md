@@ -116,3 +116,61 @@ Based on my learning question, I want to:
 ---
 
 # A — Action
+
+## 1. Research
+
+First, I will research how pedestrian crossings normally work.
+
+To do this I will:
+
+- Read information from the **Studio Smart Cities knowledge base**.
+- Look at examples of **smart pedestrian crossing systems**.
+- Study simple traffic light systems to understand their behavior.
+
+This will help me understand what the system should do.
+
+---
+
+## 2. Component Exploration
+
+Next, I will look at the components that are available in my embedded kit. Examples include:
+
+- **Push button** → for pedestrians to request crossing
+- **Red and green LEDs** → to show stop or go signals
+- **Resistors** → to protect the LEDs
+- **Optional buzzer** → to make a sound signal
+
+These components are part of the electronics kit provided for the project. 
+Inhoud-van-mijn-embedded-kit
+
+I will research what each component does and how it is used in simple circuits.
+
+---
+
+## 3. System Behavior
+
+After understanding the components, I will think about **how the system should behave**.
+
+For example:
+
+1. The pedestrian presses the button.
+2. The system detects the button press.
+3. The pedestrian light turns green.
+4. After a few seconds the light turns red again.
+5. The system returns to its normal state.
+
+I will write this behavior down step-by-step so that it is clear how the system should work.
+
+---
+
+## 4. Prototype Idea
+
+Finally, I will create a simple idea for how the system could be built.
+
+This includes:
+
+- Deciding where the **button and lights** will be placed on my tile.
+- Thinking about how the **ESP32-S3** will control the lights.
+- Sketching a simple diagram of the system.
+
+I will also write down my ideas and explanations so that they can later be used in the project documentation.
