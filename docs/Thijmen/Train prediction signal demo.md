@@ -25,12 +25,13 @@ The system estimates when a train will arrive and activates the warning lights a
 
 # 2. Hardware Components
 
-| Component   | Purpose                            |
-| ----------- | ---------------------------------- |
-| Push Button | Simulates detection points A and B |
-| LED 1       | Railway warning light              |
-| LED 2       | Railway warning light              |
-| Servo Motor | Simulates the crossing barrier     |
+| Component    | Purpose                            |
+| -----------  | ---------------------------------- |
+| Push Button  | Simulates detection points A and B |
+| LED 1        | Railway warning light              |
+| LED 2        | Railway warning light              |
+| Servo Motor  | Simulates the crossing barrier     |
+| Power Supply | Providing power to the servo       |
 
 ---
 
