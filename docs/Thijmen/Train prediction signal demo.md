@@ -1,4 +1,4 @@
-# Train prediction signal demo
+# Train Prediction Signal Demo
 
 ## 1. Overview
 
@@ -9,12 +9,13 @@ This demo is located in the folder ```embedded/Thijmen/train-prediction-signal``
 Using:
 
 - A push button (simulating detection points)
-- A LED (simulating the warning signal / barrier activation)
-- A Oled screen 128x64 pixels
-- A finite state machine (FSM)
+- Two LEDs (simulating alternating railway warning lights)
+- A Servo motor (simulating the railway barrier)
+- A Finite State Machine (FSM)
 - Time prediction based on measured speed
 
-The system estimates when a train will arrive at a crossing and activates the barrier at the correct moment.
+The system estimates when a train will arrive and activates the warning lights and barrier at the correct moment.
+
 
 ### Circuit example
 
@@ -22,68 +23,117 @@ The system estimates when a train will arrive at a crossing and activates the ba
 
 ---
 
-## 2. Real-World Inspiration: Railway Crossing Systems
+# 2. Hardware Components
 
-In real railway systems:
+| Component   | Purpose                            |
+| ----------- | ---------------------------------- |
+| Push Button | Simulates detection points A and B |
+| LED 1       | Railway warning light              |
+| LED 2       | Railway warning light              |
+| Servo Motor | Simulates the crossing barrier     |
+
+---
+
+# 3. Pin Configuration
+
+| Function | GPIO |
+| -------- | ---- |
+| LED 1    | 37   |
+| LED 2    | 36   |
+| Button   | 45   |
+| Servo    | 18   |
+
+---
+
+# 4. Real-World Inspiration: Railway Crossing Systems
+
+Real railway crossings use multiple detection points.
+
+Typical operation:
 
 1. A train passes detection point A  
 2. The train passes detection point B  
 3. The system calculates the train's speed  
 4. Based on the remaining distance to the crossing (C), it predicts arrival time  
-5. The barrier closes before the train arrives  
+5. Warning lights start flashing
+6. The barrier closes before the train arrives  
 
 This demo simulates that logic in a simplified way.
 
 ---
 
-## 3. Distance Model
+# 5. Distance Model
 
-The code uses:
+The code defines two distances:
 
-```arduino
-#define A_B_DISTANCE 200  
-#define B_C_DISTANCE 1000 
-``` 
+```cpp
+#define A_B_DISTANCE 200
+#define B_C_DISTANCE 1000
+```
 
 Meaning:
 
-- Distance A -> B = 200 units  
-- Distance B -> C (railway crossing) = 1000 units  
+| Distance | Description                                      |
+| -------- | ------------------------------------------------ |
+| A → B    | Distance between the two detection points        |
+| B → C    | Distance from second detection point to crossing |
 
-If the train speed is constant:
+---
 
-Time_BC = Time_AB × (B_C / A_B)
+### Speed Calculation
+
+When the button is pressed twice:
+
+* First press → train passes **sensor A**
+* Second press → train passes **sensor B**
+
+The system measures the time between the two presses.
+
+```
+Time_AB = time between button presses
+```
+
+Assuming constant speed:
+
+```
+Time_BC = Time_AB × (B_C_DISTANCE / A_B_DISTANCE)
+```
 
 Since:
 
+```
 1000 / 200 = 5
+```
 
-The arrival time at point C is:
+The predicted arrival time becomes:
 
-Predicted Time = Measured Time × 5
-
-This is the core mathematical principle behind arrival prediction.
-
----
-
-## 4. Relation to a Barrier System
-
-Step-by-step real-world analogy:
-
-| Demo Action | Real Railway Equivalent |
-|-------------|-------------------------|
-| First button press | Train passes sensor A |
-| Second button press | Train passes sensor B |
-| Time measurement | Speed calculation |
-| Predicted time | Estimated arrival at crossing |
-| LED turns ON | Barrier closing / warning lights activate |
+```
+Predicted Time = Time_AB × 5
+```
 
 ---
 
-## 5. State Machine in Railway Terms
+# 6. Safety Margin
+
+A **safety margin** is used to activate warning signals before the barrier closes.
+
+```cpp
+const unsigned int safetyMargin = 5000;
+```
+
+Meaning:
+
+* Warning lights start **5 seconds before barrier closure**
+
+This simulates real railway crossings where lights start flashing before the barrier moves.
+
+---
+
+# 7. State Machine in Railway Terms
 
 ### IDLE
-No train detected  
+No train detected
+Warning lights are off  
 Barrier is open  
 
 ### MEASURING
@@ -91,157 +141,110 @@ Train traveling between sensor A and B
 System measures travel time  
 
 ### WAITING
-Train is traveling toward crossing  
-System waits predicted arrival time  
 
-When time expires:
-- LED turns ON  
-- Barrier would close  
+The system predicts when the train will reach the crossing.
+
+During this phase:
+
+- System waits the predicted time
+- Warning lights start flashing before arrival
+- Barrier closes at the predicted arrival time
 
 ---
 
-## 6. OLED Display Integration
+# 8. Warning Light Behavior
 
-This version of the demo includes a 128×64 OLED display (SSD1306) to visualize the internal system state and timing in real time.
+The two LEDs simulate railway crossing warning lights.
 
-### Libraries Used
-```c++
-#include <Wire.h>
-#include <Adafruit_GFX.h>
-#include <Adafruit_SSD1306.h>
+When the system reaches the safety margin period, the LEDs begin alternating blinking.
+
+Blink interval:
+
+```
+400 ms
 ```
 
-### Display Initialization
-```c++
-Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
+Pattern:
+
+```
+LED1 ON   LED2 OFF
+LED1 OFF  LED2 ON
 ```
 
-I2C address used:
-```
-0x3C
-```
+This mimics the typical alternating railway signal lights.
 
-### Pin Configuration
-| Function | GPIO |
-|----------|------|
-| SDA | 14 |
-| SCL | 13 | 
-
-### Initialization Code
-```c++
-Wire.begin(SDA_PIN, SCL_PIN);
-
-if (!display.begin(SSD1306_SWITCHCAPVCC, 0x3C)) {
-  for (;;);
-}
-```
 ---
-## 7. What the OLED Displays
 
-The OLED provides live feedback of the FSM state and timing values.
+# 9. Barrier Control (Servo Motor)
 
-### IDLE State
+The servo motor represents the railway barrier.
 
-Display output:
+### Barrier Positions
+
+| Position | Angle |
+| -------- | ----- |
+| Open     | 0°    |
+| Closed   | 90°   |
+
+---
+
+### Behavior
+
+| State     | Barrier Position                      |
+| --------- | ------------------------------------- |
+| IDLE      | Open                                  |
+| MEASURING | Open                                  |
+| WAITING   | Closes when predicted time is reached |
+
+The barrier closes exactly when the predicted arrival time is reached.
+
+---
+
+# 10. Button Interaction
+
+The button controls the simulation of train movement.
+
+| Press     | Meaning               |
+| --------- | --------------------- |
+| 1st press | Train passes sensor A |
+| 2nd press | Train passes sensor B |
+| 3rd press | Reset system          |
+
+Reset returns the system to:
+
 ```
 IDLE
+Barrier open
+LEDs off
 ```
-Indicates:
-
-- No active measurement
-- Barrier open (LED OFF)
-
-### MEASURING State
-
-Display output:
-
-```
-MEASURING
-Elapsed: X.XXs
-```
-
-Shows:
-- Current system state
-- Elapsed time between detection point A and B
-- Real-time timing in seconds
-This helps visualize the speed measurement process.
-
-### WAITING State
-
-Display output:
-
-```
-WAITING
-Predicted: X.XX s
-Remaining: X.XX s
-```
-
-Shows:
-- Predicted arrival time at crossing
-- Remaining time before barrier activation
-- Live countdown behavior
-
-When the remaining time reaches zero:
-- The LED turns ON
-- The simulated barrier activates
 
 ---
 
-## 8. Display Update Strategy
+# 11. Timing Behavior
 
-The display refreshes every 100 ms:
-```c++
-const unsigned long displayInterval = 100;
-```
-This ensures:
-- Smooth visual updates
-- Stable timing behavior
-- No unnecessary I2C overload
-- Efficient embedded execution
+The system relies on **non-blocking timing using `millis()`** instead of delays.
 
----
+This allows:
 
-## 9. Why This Is a Basic Concept
+* Real-time LED blinking
+* Servo updates
+* Button detection
+* Multiple timed events simultaneously
 
-Real railway crossings are much more advanced and include:
-
-- Multiple detection systems  
-- Axle counters  
-- Redundant fail-safe electronics  
-- Continuous monitoring  
-- Safety certifications  
-
-However, the core logic remains the same:
-
-Measure speed -> Predict arrival -> Activate barrier in advance
+This is a common design pattern in **embedded real-time systems**.
 
 ---
 
-## 10. Why Timing Is Critical
-
-If the barrier closes:
-
-- Too early -> unnecessary traffic delay  
-- Too late -> dangerous situation  
-
-Accurate prediction ensures:
-
-- Safety  
-- Efficiency  
-- Proper timing  
-
----
-
-## 11. Educational Value
+# 12. Educational Value
 
 This project demonstrates:
 
-- Finite State Machines (FSM)  
+- Finite State Machines (FSM)
 - Real-time embedded timing  
-- Proportional prediction mathematics  
-- Event-driven system design  
+- Proportional prediction mathematics 
+- Event-driven system design
 - Basic industrial automation principles  
-- I2C display integration
+- Servo motor control   
 
 It provides a strong foundation for understanding:
 
