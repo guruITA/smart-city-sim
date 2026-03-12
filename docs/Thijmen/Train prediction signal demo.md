@@ -103,6 +103,7 @@ Assuming constant speed:
 ```
 Time_BC = Time_AB × (B_C_DISTANCE / A_B_DISTANCE)
 ```
+
 | Distance | Description                                      |
 | -------- | ------------------------------------------------ |
 | A → B    | Distance between the two detection points        |
