@@ -1,9 +1,13 @@
 #include <Arduino.h>
 #include <ESP32Servo.h>
+#include <ESP32Servo.h>
 
 // Output LED pins (warning lights)
 #define LED_1 37
 #define LED_2 36
+
+// Buzzer pin
+#define BUZZER 42
 
 // Servo pin
 #define SERVO_PIN 18
@@ -12,13 +16,16 @@
 #define BTN 45
 
 // distances
+// distances
 #define A_B_DISTANCE 200
 #define B_C_DISTANCE 1000
 
 // Oled screen width and height
+// Oled screen width and height
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 64
 
+// Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
 // Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
 
 enum State {
@@ -28,6 +35,8 @@ enum State {
 };
 
 State currentState = IDLE;
+
+Servo servo;
 
 Servo servo;
 
@@ -48,6 +57,9 @@ const unsigned long debounceDelay = 50;
 unsigned long blinkTimer = 0;
 const unsigned long blinkInterval = 400;
 bool ledToggle = false;
+
+const int buzzerResolution = 8;
+const int buzzerFreq = 1000;
 
 const int BARRIER_OPEN = 0;
 const int BARRIER_CLOSED = 90;
@@ -72,11 +84,12 @@ void handleServo() {
 
 }
 
-void handleWarningLEDS() {
+void handleWarningLEDSAndSound() {
 
   if (currentState != WAITING) {
     digitalWrite(LED_1, LOW);
     digitalWrite(LED_2, LOW);
+    ledcWriteTone(BUZZER, 0);
     return;
   }
 
@@ -91,11 +104,18 @@ void handleWarningLEDS() {
 
       digitalWrite(LED_1, ledToggle);
       digitalWrite(LED_2, !ledToggle);
+
+      if (ledToggle) {
+        ledcWriteTone(BUZZER, 800);
+      } else {
+        ledcWriteTone(BUZZER, 1200);
+      }
     }
 
   } else {
     digitalWrite(LED_1, LOW);
     digitalWrite(LED_2, LOW);
+    ledcWriteTone(BUZZER, 0);
   }
 }
 
@@ -128,6 +148,8 @@ void handleButton() {
             currentState = IDLE;
             digitalWrite(LED_1, LOW);
             digitalWrite(LED_2, LOW);
+            digitalWrite(LED_1, LOW);
+            digitalWrite(LED_2, LOW);
             break;
         }
       }
@@ -141,7 +163,10 @@ void setup() {
   Serial.begin(115200);
   pinMode(LED_1, OUTPUT);
   pinMode(LED_2, OUTPUT);
+  pinMode(LED_1, OUTPUT);
+  pinMode(LED_2, OUTPUT);
   pinMode(BTN, INPUT_PULLUP);
+  ledcAttach(BUZZER, buzzerFreq, buzzerResolution);
 	servo.attach(SERVO_PIN, 500, 2400);
   servo.write(BARRIER_OPEN);
   Serial.println("Setup complete");
@@ -149,6 +174,6 @@ void setup() {
 
 void loop() {
   handleButton();
-  handleWarningLEDS();
+  handleWarningLEDSAndSound();
   handleServo();
 }
