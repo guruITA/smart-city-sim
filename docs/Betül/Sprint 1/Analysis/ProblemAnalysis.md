@@ -77,6 +77,13 @@ Therefore, there is a need for a **smart pedestrian crossing system** that can c
 
 ---
 
+### System Behaviour Diagram
+
+![Smart Pedestrian Crossing](../../images/SmartPedestrianCrossingBehaviour.png)
+Figure 1: Basic behaviour of the smart pedestrian crossing system.
+
+--- 
+
 
 # Learning Goal – Smart Pedestrian Crossing System
 
