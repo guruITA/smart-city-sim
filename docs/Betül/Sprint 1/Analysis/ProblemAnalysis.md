@@ -174,3 +174,18 @@ This includes:
 - Sketching a simple diagram of the system.
 
 I will also write down my ideas and explanations so that they can later be used in the project documentation.
+
+---
+
+## Possible Sensors for the Prototype
+
+Several sensors available in the embedded kit could be used to detect pedestrians or environmental conditions near the crossing.
+
+Examples include:
+
+- **Push button** – allows pedestrians to manually request a crossing.
+- **PIR motion sensor** – detects movement near the crossing area.
+- **Ultrasonic sensor (HC-SR04)** – can detect objects or people close to the road.
+- **Light sensor (LDR / KY-018)** – measures ambient light and could be used to adapt the system for day or night conditions.
+
+For the prototype in this project, a **push button will be used as the main input device**, because it is simple and reliable. Additional sensors such as a PIR motion sensor or light sensor could be added in future versions to make the crossing system more adaptive.
