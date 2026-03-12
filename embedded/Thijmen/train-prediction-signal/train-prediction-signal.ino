@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include <ESP32Servo.h>
+#include <ESP32Servo.h>
 
 // Output LED pins (warning lights)
 #define LED_1 37
@@ -15,13 +16,16 @@
 #define BTN 45
 
 // distances
+// distances
 #define A_B_DISTANCE 200
 #define B_C_DISTANCE 1000
 
 // Oled screen width and height
+// Oled screen width and height
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 64
 
+// Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
 // Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
 
 enum State {
@@ -31,6 +35,8 @@ enum State {
 };
 
 State currentState = IDLE;
+
+Servo servo;
 
 Servo servo;
 
@@ -142,6 +148,8 @@ void handleButton() {
             currentState = IDLE;
             digitalWrite(LED_1, LOW);
             digitalWrite(LED_2, LOW);
+            digitalWrite(LED_1, LOW);
+            digitalWrite(LED_2, LOW);
             break;
         }
       }
@@ -153,6 +161,8 @@ void handleButton() {
 
 void setup() {
   Serial.begin(115200);
+  pinMode(LED_1, OUTPUT);
+  pinMode(LED_2, OUTPUT);
   pinMode(LED_1, OUTPUT);
   pinMode(LED_2, OUTPUT);
   pinMode(BTN, INPUT_PULLUP);

@@ -1,4 +1,5 @@
 # Train Prediction Signal Demo
+# Train Prediction Signal Demo
 
 ## 1. Overview
 
@@ -12,7 +13,12 @@ Using:
 - Two LEDs (simulating alternating railway warning lights)
 - A Servo motor (simulating the railway barrier)
 - A Finite State Machine (FSM)
+- Two LEDs (simulating alternating railway warning lights)
+- A Servo motor (simulating the railway barrier)
+- A Finite State Machine (FSM)
 - Time prediction based on measured speed
+
+The system estimates when a train will arrive and activates the warning lights and barrier at the correct moment.
 
 The system estimates when a train will arrive and activates the warning lights and barrier at the correct moment.
 
@@ -53,11 +59,16 @@ The system estimates when a train will arrive and activates the warning lights a
 Real railway crossings use multiple detection points.
 
 Typical operation:
+Real railway crossings use multiple detection points.
+
+Typical operation:
 
 1. A train passes detection point A  
 2. The train passes detection point B  
 3. The system calculates the train's speed  
 4. Based on the remaining distance to the crossing (C), it predicts arrival time  
+5. Warning lights start flashing
+6. The barrier closes before the train arrives  
 5. Warning lights start flashing
 6. The barrier closes before the train arrives  
 
@@ -66,9 +77,15 @@ This demo simulates that logic in a simplified way.
 ---
 
 # 5. Distance Model
+# 5. Distance Model
 
 The code defines two distances:
+The code defines two distances:
 
+```cpp
+#define A_B_DISTANCE 200
+#define B_C_DISTANCE 1000
+```
 ```cpp
 #define A_B_DISTANCE 200
 #define B_C_DISTANCE 1000
@@ -101,9 +118,35 @@ Assuming constant speed:
 ```
 Time_BC = Time_AB × (B_C_DISTANCE / A_B_DISTANCE)
 ```
+| Distance | Description                                      |
+| -------- | ------------------------------------------------ |
+| A → B    | Distance between the two detection points        |
+| B → C    | Distance from second detection point to crossing |
+
+---
+
+### Speed Calculation
+
+When the button is pressed twice:
+
+* First press → train passes **sensor A**
+* Second press → train passes **sensor B**
+
+The system measures the time between the two presses.
+
+```
+Time_AB = time between button presses
+```
+
+Assuming constant speed:
+
+```
+Time_BC = Time_AB × (B_C_DISTANCE / A_B_DISTANCE)
+```
 
 Since:
 
+```
 ```
 1000 / 200 = 5
 ```
@@ -249,10 +292,14 @@ This is a common design pattern in **embedded real-time systems**.
 This project demonstrates:
 
 - Finite State Machines (FSM)
+- Finite State Machines (FSM)
 - Real-time embedded timing  
 - Proportional prediction mathematics 
 - Event-driven system design
+- Proportional prediction mathematics 
+- Event-driven system design
 - Basic industrial automation principles  
+- Servo motor control   
 - Servo motor control   
 
 It provides a strong foundation for understanding:
