@@ -25,24 +25,26 @@ The system estimates when a train will arrive and activates the warning lights a
 
 # 2. Hardware Components
 
-| Component    | Purpose                            |
-| -----------  | ---------------------------------- |
-| Push Button  | Simulates detection points A and B |
-| LED 1        | Railway warning light              |
-| LED 2        | Railway warning light              |
-| Servo Motor  | Simulates the crossing barrier     |
-| Power Supply | Providing power to the servo       |
+| Component      | Purpose                            |
+| -------------- | ---------------------------------- |
+| Push Button    | Simulates detection points A and B |
+| LED 1          | Railway warning light              |
+| LED 2          | Railway warning light              |
+| Passive Buzzer | Railway warning light              |
+| Servo Motor    | Simulates the crossing barrier     |
+| Power Supply   | Providing power to the servo       |
 
 ---
 
 # 3. Pin Configuration
 
-| Function | GPIO |
-| -------- | ---- |
-| LED 1    | 37   |
-| LED 2    | 36   |
-| Button   | 45   |
-| Servo    | 18   |
+| Function         | GPIO |
+| ---------------- | ---- |
+| LED 1            | 37   |
+| LED 2            | 36   |
+| Passive Buzzer   | 42   |
+| Button           | 45   |
+| Servo            | 18   |
 
 ---
 
@@ -124,17 +126,18 @@ const unsigned int safetyMargin = 5000;
 
 Meaning:
 
-* Warning lights start **5 seconds before barrier closure**
+* Warning lights and Buzzer sounds start **5 seconds before barrier closure**
 
-This simulates real railway crossings where lights start flashing before the barrier moves.
+This simulates real railway crossings where lights start flashing and sound starts playing before the barrier moves.
 
 ---
 
 # 7. State Machine in Railway Terms
 
 ### IDLE
-No train detected
+No train detected  
 Warning lights are off  
+Buzzer off  
 Barrier is open  
 
 ### MEASURING
@@ -149,17 +152,20 @@ During this phase:
 
 - System waits the predicted time
 - Warning lights start flashing before arrival
+- Buzzer makes sound before arrival
 - Barrier closes at the predicted arrival time
 
 ---
 
-# 8. Warning Light Behavior
+# 8. Warning Light and Buzzer Behavior
 
 The two LEDs simulate railway crossing warning lights.
 
-When the system reaches the safety margin period, the LEDs begin alternating blinking.
+The Buzzer simulate the bell sounds.
 
-Blink interval:
+When the system reaches the safety margin period, the LEDs begin alternating blinking and the buzzer makes sound.
+
+Blink and Tone interval:
 
 ```
 400 ms
@@ -168,11 +174,11 @@ Blink interval:
 Pattern:
 
 ```
-LED1 ON   LED2 OFF
-LED1 OFF  LED2 ON
+LED1 ON   LED2 OFF BUZZER_TONE 800
+LED1 OFF  LED2 ON  BUZZER_TONE 1200
 ```
 
-This mimics the typical alternating railway signal lights.
+This mimics the typical alternating railway signal lights and bells.
 
 ---
 
@@ -217,6 +223,7 @@ Reset returns the system to:
 IDLE
 Barrier open
 LEDs off
+Buzzer off
 ```
 
 ---
@@ -228,6 +235,7 @@ The system relies on **non-blocking timing using `millis()`** instead of delays.
 This allows:
 
 * Real-time LED blinking
+* Real-time Buzzer sounds
 * Servo updates
 * Button detection
 * Multiple timed events simultaneously
