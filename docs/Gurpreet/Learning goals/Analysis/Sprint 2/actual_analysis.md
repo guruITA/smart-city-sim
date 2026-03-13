@@ -6,74 +6,119 @@
 ## Table of Contents
 - [Smart cities learning group goal: Analysis](#smart-cities-learning-group-goal-analysis)
   - [Table of Contents](#table-of-contents)
-  - [1. Context](#1-context)
-  - [2. Main research question and subquestions](#2-main-research-question-and-subquestions)
-    - [2.1 Main research question](#21-main-research-question)
-    - [2.2 Subquestions](#22-subquestions)
-  - [3. Smart streetlight context and project goal](#3-smart-streetlight-context-and-project-goal)
-    - [3.1 What is a smart streetlight?](#31-what-is-a-smart-streetlight)
-    - [3.2 Project goal: Automatic smart streetlight](#32-project-goal-automatic-smart-streetlight)
-    - [3.3 Functional requirements](#33-functional-requirements)
-    - [3.4 Non functional requirements](#34-non-functional-requirements)
-    - [3.5 Subconclusion](#35-subconclusion)
-  - [4. Which components are needed and what is their function?](#4-which-components-are-needed-and-what-is-their-function)
-    - [4.1 Orientation phase](#41-orientation-phase)
-    - [4.2 LDR module](#42-ldr-module)
-    - [4.3 LED and resistor](#43-led-and-resistor)
-    - [4.4 Relay module](#44-relay-module)
-    - [4.5 Required components for the prototype](#45-required-components-for-the-prototype)
-    - [4.6 Subconclusion](#46-subconclusion)
-  - [5. Which GPIO connections are suitable for the ESP32-S3?](#5-which-gpio-connections-are-suitable-for-the-esp32-s3)
-    - [5.1 Difference between tutorial examples and the ESP32-S3 used in this project](#51-difference-between-tutorial-examples-and-the-esp32-s3-used-in-this-project)
-    - [5.2 Choosing a GPIO for the LDR module](#52-choosing-a-gpio-for-the-ldr-module)
-    - [5.3 Choosing a GPIO for the relay module](#53-choosing-a-gpio-for-the-relay-module)
-    - [5.4 Subconclusion](#54-subconclusion)
-  - [6. What is the estimated total current consumption of the prototype?](#6-what-is-the-estimated-total-current-consumption-of-the-prototype)
-    - [6.1 Importance of power consumption analysis](#61-importance-of-power-consumption-analysis)
-    - [6.2 LEDs](#62-leds)
-    - [6.3 Relay module](#63-relay-module)
-    - [6.4 LDR module](#64-ldr-module)
-    - [6.5 ESP32-S3](#65-esp32-s3)
-    - [6.6 Total current estimate (without Wi-Fi and with 20 LEDs)](#66-total-current-estimate-without-wi-fi-and-with-20-leds)
-    - [6.7 Subconclusion](#67-subconclusion)
-  - [7. Power Supply and Protection Design](#7-power-supply-and-protection-design)
-    - [7.1 First idea: separate 5V battery](#71-first-idea-separate-5v-battery)
-    - [7.2 Feedback from Gerald](#72-feedback-from-gerald)
-    - [7.3 Breadboard power supply](#73-breadboard-power-supply)
-    - [7.4 External 5V 1A adapter](#74-external-5v-1a-adapter)
-    - [7.5 Fuse for overcurrent protection](#75-fuse-for-overcurrent-protection)
-    - [7.6 Diode for reverse polarity protection](#76-diode-for-reverse-polarity-protection)
-    - [7.7 Capacitor for voltage stability](#77-capacitor-for-voltage-stability)
-    - [7.8 Final power supply choice](#78-final-power-supply-choice)
-    - [7.9 Subconclusion](#79-subconclusion)
-    - [7.9 Subconclusion](#79-subconclusion-1)
-  - [8. Final conclusion](#8-final-conclusion)
-  - [9. Recommendations](#9-recommendations)
-  - [10. Sources](#10-sources)
+  - [1. Introduction](#1-introduction)
+  - [2. Methodology](#2-methodology)
+  - [3. Working method](#3-working-method)
+  - [4. Main research question and subquestions](#4-main-research-question-and-subquestions)
+  - [5 Tools used](#5-tools-used)
+  - [6. Smart streetlight context and project goal](#6-smart-streetlight-context-and-project-goal)
+    - [6.1 What is a smart streetlight?](#61-what-is-a-smart-streetlight)
+    - [6.2 Project goal: Automatic smart streetlight](#62-project-goal-automatic-smart-streetlight)
+    - [6.3 Functional requirements](#63-functional-requirements)
+    - [6.4 Non functional requirements](#64-non-functional-requirements)
+    - [6.5 Subconclusion](#65-subconclusion)
+  - [7. Which components are needed and what is their function?](#7-which-components-are-needed-and-what-is-their-function)
+    - [7.1 Orientation phase](#71-orientation-phase)
+    - [7.2 LDR module](#72-ldr-module)
+    - [7.3 LED and resistor](#73-led-and-resistor)
+    - [7.4 Relay module](#74-relay-module)
+    - [7.5 Required components for the prototype](#75-required-components-for-the-prototype)
+    - [7.6 Subconclusion](#76-subconclusion)
+  - [8. Which GPIO connections are suitable for the ESP32-S3?](#8-which-gpio-connections-are-suitable-for-the-esp32-s3)
+    - [8.1 Difference between tutorial examples and the ESP32-S3 used in this project](#81-difference-between-tutorial-examples-and-the-esp32-s3-used-in-this-project)
+    - [8.2 Choosing a GPIO for the LDR module](#82-choosing-a-gpio-for-the-ldr-module)
+    - [8.3 Choosing a GPIO for the relay module](#83-choosing-a-gpio-for-the-relay-module)
+    - [8.4 Subconclusion](#84-subconclusion)
+  - [9. What is the estimated total current consumption of the prototype?](#9-what-is-the-estimated-total-current-consumption-of-the-prototype)
+    - [9.1 Importance of power consumption analysis](#91-importance-of-power-consumption-analysis)
+    - [9.2 LEDs](#92-leds)
+    - [9.3 Relay module](#93-relay-module)
+    - [9.4 LDR module](#94-ldr-module)
+    - [9.5 ESP32-S3](#95-esp32-s3)
+    - [9.6 Total current estimate (without Wi-Fi and with 20 LEDs)](#96-total-current-estimate-without-wi-fi-and-with-20-leds)
+    - [9.7 Subconclusion](#97-subconclusion)
+  - [10. Power Supply and Protection Design](#10-power-supply-and-protection-design)
+    - [10.1 First idea: separate 5V battery](#101-first-idea-separate-5v-battery)
+    - [10.2 Feedback from Gerald](#102-feedback-from-gerald)
+    - [10.3 Breadboard power supply](#103-breadboard-power-supply)
+    - [10.4 External 5V 1A adapter](#104-external-5v-1a-adapter)
+    - [10.5 Fuse for overcurrent protection](#105-fuse-for-overcurrent-protection)
+    - [10.6 Diode for reverse polarity protection](#106-diode-for-reverse-polarity-protection)
+    - [10.7 Capacitor for voltage stability](#107-capacitor-for-voltage-stability)
+    - [10.8 Final power supply choice](#108-final-power-supply-choice)
+    - [10.9 Subconclusion](#109-subconclusion)
+  - [11. Final conclusion](#11-final-conclusion)
+  - [12. Recommendations](#12-recommendations)
+  - [13. Sources](#13-sources)
 
 
-## 1. Context
+## 1. Introduction
 
+This analysis is part of the Smart Cities Learning Group project. In Sprint 1, the project focuses on developing a prototype of an automatic smart streetlight. The purpose of this prototype is to demonstrate a simple smart city application in which lighting responds automatically to changes in the environment based on the ambient light level.
 
-## 2. Main research question and subquestions
+At the start of the project, it was not yet clear which components were needed, which GPIO connections on the ESP32-S3 were suitable, and how the power supply should be designed in a safe, reliable, and scalable way. At first sight, building an automatic streetlight seemed relatively simple, but during the orientation it became clear that several technical choices had to be made. It was necessary to investigate how the LDR module works, why a relay module is needed, how much current the full prototype is expected to consume, and which power supply configuration is the most appropriate.
 
-### 2.1 Main research question
+Another important point was that the tutorial examples that were reviewed could not be copied directly, because they often used a different ESP32 board than the ESP32-S3 available for this project. In addition, the design had to be not only functional for Sprint 1, but also electrically correct, reliable, reproducible between team members, and suitable for future expansion.
+
+The purpose of this analysis is therefore to determine which components, GPIO connections, and power supply configuration are most suitable for building a safe, reliable, and scalable automatic smart streetlight prototype with the ESP32-S3. The outcome of this analysis provides the foundation for the design and implementation of the Sprint 1 prototype.
+
+## 2. Methodology
+
+For this analysis, several methods were used:
+
+- Orientation on existing examples: tutorial videos and example projects were reviewed to identify which components and circuit logic are commonly used in automatic smart streetlight systems;
+- Source and documentation analysis: datasheets, technical documentation, and other reliable sources were studied for the ESP32-S3, LDR modules, relay modules, LEDs, resistors, and power supply components;
+- Technical analysis: the GPIO options, current consumption, and possible power supply solutions were analysed to determine which technical choices are most suitable for the prototype;
+- Calculations: electrical calculations were made for LED current, total estimated current consumption, and the required safety margin in the power design;
+- Feedback moments: feedback from Gerald on the schematic and power design was used as practical input to improve and validate the design choices.
+
+This combination of methods was chosen because the prototype must not only be theoretically correct, but also practically workable within the Smart Cities Learning Group project. The analysis therefore focuses on both technical correctness and practical applicability in a learning environment.
+
+## 3. Working method
+
+The analysis was carried out step by step. First, the concept of a smart streetlight and the specific goal of the Sprint 1 prototype were defined. After that, the functional and non-functional requirements were established in order to clarify what the prototype must achieve.
+
+Next, the required com in the circuit was explained. After that, the GPIO options of the ESP32-S3 were examined, because the GPIO connections used in tutorial examples could not be directly applied to the ESP32-S3 board used in this project.
+
+Once the component and GPIO analysis  of the prototype was estimated. For this, the current consumption of the LEDs, relay module, LDR module, and ESP32-S3 was analysed separately and then combined into one total estimate.
+
+Finally, different power supply options were compared, including a separate 5 V battery, a breadboard power supply, and an external 5 V 1 A adapter with additional protection and stability components such as a fuse, diode, and capacitor.
+
+By following this working method, the analysis was built up from orientation to technical evaluation and finally to a justified design choice for the Sprint 1 prototype.
+
+## 4. Main research question and subquestions
+
+The main research question of this analysis is:
 
 Which components, GPIO connections, and power supply configuration are most suitable for building a safe, reliable, and scalable automatic smart streetlight prototype with the ESP32-S3 for Sprint 1?
 
-### 2.2 Subquestions
+To answer this main research question, the following subquestions were formulated:
 
-## 3. Smart streetlight context and project goal
+1. What is a smart streetlight, and what is the goal of the automatic smart streetlight prototype in this project?
+2. Which functional and non-functional requirements must the prototype meet?
+3. Which components are needed for the prototype, and what is the function of each component?
+4. Which GPIO connections are suitable for connecting the LDR module and relay module to the ESP32-S3?
+5. What is the estimated total current consumption of the prototype?
+6. Which power supply configuration is most suitable for the prototype, including the use of an external 5 V 1 A adapter and supporting protection or stability components such as a fuse, diode, and capacitor?
+7. How does the chosen design support safety, reproducibility, and scalability for use in later sprints or on multiple team tiles?
 
+## 5 Tools used
 
+For this analysis, the following tools were used:
 
-### 3.1 What is a smart streetlight?
+- all sources included in the reference list;
+- Scribbr for formatting references correctly;
+- ChatGPT for support with language use, phrasing, spelling, and grammar.
+
+## 6. Smart streetlight context and project goal
+
+### 6.1 What is a smart streetlight?
 
 A smart streetlight is a street lamp that does more than only provide light. It can respond to its surroundings by using sensors and, in some cases, network connectivity. Instead of always being switched on according to a fixed schedule, a smart streetlight can automatically adjust its behavior based on conditions such as daylight, traffic, or the presence of pedestrians. This helps reduce unnecessary energy consumption because the lamp does not always need to operate at full intensity [(D66jeroen, 2026)](https://d66.nl/goes/nieuws/3-slimme-straatverlichting-licht-op-maat/).
 
 Smart streetlights can also be part of a broader smart city system. In more advanced applications, they may include remote monitoring, communication modules, or additional functions such as measuring air quality, monitoring noise, or providing Wi-Fi. This turns the streetlight into a multifunctional part of the city infrastructure [(AAA ECO B.V., 2024)](https://aaaeco.nl/slimme-led-lantaarnpalen-en-5g-innovatie-of-inbreuk-op-privacy/). However, for this Sprint 1 prototype, the focus is limited to a basic automatic switching function based on ambient light.
 
-### 3.2 Project goal: Automatic smart streetlight
+### 6.2 Project goal: Automatic smart streetlight
 
 In this Smart Cities Learning Group project, the goal is to develop a prototype of an automatic smart streetlight that switches on when it becomes dark and switches off again when it becomes light. The prototype is based on an ESP32-S3 and is intended as a simple Sprint 1 demonstration of automatic light-based switching.
 
@@ -88,7 +133,7 @@ From these videos, it was observed that an LDR module was used in all examples, 
 
 The purpose of the prototype is not to reproduce a full commercial smart streetlight system, but to create a clear, working, and reproducible prototype for Sprint 1 that can also support further development in later sprints or on multiple team tiles.
 
-### 3.3 Functional requirements
+### 6.3 Functional requirements
 
 The prototype must meet the following functional requirements:
 
@@ -96,7 +141,7 @@ The prototype must meet the following functional requirements:
 2. Adjustable threshold: The light threshold must be adjustable, for example through a variable in the code, so that the switching moment can be tuned.
 3. Testable behavior: The system must respond clearly to differences between light and dark and should not show unstable switching or flickering during normal testing.
 
-### 3.4 Non functional requirements
+### 6.4 Non functional requirements
 
 The prototype must also meet the following non-functional requirements:
 
@@ -106,19 +151,19 @@ The prototype must also meet the following non-functional requirements:
 4. Clarity and reproducibility: The wiring must be logical and consistent so that the same structure can be used on multiple team tiles, making troubleshooting and future expansion easier.
 5. Scalability: The design should support later improvement or extension in future sprints without requiring a completely different setup.
 
-### 3.5 Subconclusion
+### 6.5 Subconclusion
 
 A smart streetlight is a streetlight that can respond to its surroundings instead of only working in a fixed way. In this project, the goal is to build a simplified automatic smart streetlight prototype that switches on and off based on ambient light. The prototype must therefore combine automatic behavior with practical design requirements such as electrical correctness, reliability, simplicity, reproducibility, and scalability. These requirements define the basis for the component choices and design decisions in the following chapters.
 
-## 4. Which components are needed and what is their function?
+## 7. Which components are needed and what is their function?
 
-### 4.1 Orientation phase
+### 7.1 Orientation phase
 
 During the orientation phase, several examples of smart streetlight projects were explored by searching for “ESP32-S3 smart streetlight” and related terms. These examples showed that certain components appeared repeatedly, especially an LDR module, LEDs, jumper wires, and in some cases a relay module. In all reviewed examples, an LDR module was used, while some examples also included a relay module together with LEDs and jumper wires. This indicated that these components form the basis of a simple automatic smart streetlight prototype.
 
 Because the prototype is developed in an introductory learning context, the first step was not to immediately copy an existing example, but to understand the role of the main components. For that reason, the analysis first focused on the function of the LDR module, the LED with resistor, and the relay module before moving on to design choices.
 
-### 4.2 LDR module
+### 7.2 LDR module
 
 The LDR module is used to detect the ambient light level. LDR stands for Light Dependent Resistor. According to [(Arduino - LDR Module | Arduino Getting Started, n.d.-b)](https://arduinogetstarted.com/tutorials/arduino-ldr-module#google_vignette), the LDR sensor module has four pins: 
 
@@ -129,7 +174,7 @@ The LDR module is used to detect the ambient light level. LDR stands for Light D
 
 For this prototype, the analog output is the most important, because the system must measure the light level and use that value to decide whether the streetlight should switch on or off. This makes the LDR module the main input component of the prototype.
 
-### 4.3 LED and resistor
+### 7.3 LED and resistor
 
 The LED is used as the light output of the prototype. LED stands for Light Emitting Diode. According to [(Arduino - LED - Fade | Arduino Getting Started, n.d.-b)](https://arduinogetstarted.com/tutorials/arduino-led-fade), an LED has two pins:
 
@@ -164,7 +209,7 @@ If multiple LEDs are connected in series, another formula is needed:
 
 An important design consideration is that multiple LEDs should not share one resistor in parallel, because this can lead to uneven current distribution and brightness differences. Therefore, the prototype uses one resistor per LED.
 
-### 4.4 Relay module
+### 7.4 Relay module
 
 The relay module functions as an electrically controlled switch. According to [(Instructables, 2025)](https://www.instructables.com/5V-4-Channel-Relay-Module-With-Arduino/), a relay allows a microcontroller such as the ESP32 to switch another circuit on or off by using a digital control signal. 
 
@@ -184,7 +229,7 @@ Switching side
 
 In this prototype, the relay module is used to switch the lighting circuit. This is necessary because the total LED load is higher than what should be powered directly from a single GPIO pin. The relay therefore acts as the switching component between the ESP32-S3 control logic and the LED circuit.
 
-### 4.5 Required components for the prototype
+### 7.5 Required components for the prototype
 
 Based on the orientation and component analysis, the following components are required for the prototype:
 
@@ -199,13 +244,13 @@ Based on the orientation and component analysis, the following components are re
 
 These components together provide the basic input, control, switching, and output functions needed for the automatic smart streetlight prototype.
 
-### 4.6 Subconclusion
+### 7.6 Subconclusion
 
 The prototype requires a limited number of core components. The LDR module is needed to measure ambient light, the LEDs and resistors are needed to create the lighting output safely, and the relay module is needed to switch the LED circuit by means of the ESP32-S3. Together, these components form the functional basis of the Sprint 1 automatic smart streetlight prototype.
 
-## 5. Which GPIO connections are suitable for the ESP32-S3?
+## 8. Which GPIO connections are suitable for the ESP32-S3?
 
-### 5.1 Difference between tutorial examples and the ESP32-S3 used in this project
+### 8.1 Difference between tutorial examples and the ESP32-S3 used in this project
 
 During the orientation phase, it became clear that the tutorial examples could not be copied directly, because they used a different ESP32 microcontroller than the ESP32-S3 used in this project. For example, in one of the reviewed tutorials, the analog output of the LDR module was connected to GPIO34 and the relay input to GPIO12. These pins are not available in the same way on the ESP32-S3 microcontroller used for this prototype.
 
@@ -222,7 +267,7 @@ For that reason, the GPIO selection had to be checked against the actual microco
 
 This comparison showed that GPIO selection for the prototype must be based on the actual ESP32-S3 microctroller layout and not on the GPIO numbering used in other ESP32 tutorial examples.
 
-### 5.2 Choosing a GPIO for the LDR module
+### 8.2 Choosing a GPIO for the LDR module
 
 The LDR module provides both a digital output and an analog output. For this prototype, the analog output is the most relevant, because the system must read the measured light level and decide whether the streetlight should switch on or off based on that value.
 
@@ -232,7 +277,7 @@ In the ESP32-S3 documentation, ADC-related channels are indicated accordingly. T
 
 For this prototype, GPIO4 was selected for the AO pin of the LDR module. This allows the ESP32-S3 to read the light value as an analog signal and use it in the control logic of the smart streetlight.
 
-### 5.3 Choosing a GPIO for the relay module
+### 8.3 Choosing a GPIO for the relay module
 
 The relay module requires a digital control signal through its IN pin. Unlike the AO pin of the LDR module, this signal does not require analog input functionality. Instead, the relay input must be connected to a GPIO pin that can be configured as a digital output.
 
@@ -242,13 +287,13 @@ Because GPIO4 was already selected for the LDR module, GPIO5 was selected for th
 
 The remaining connections of both modules follow their normal power and ground wiring. The most important difference compared with the tutorial examples is therefore not the logic of the circuit itself, but the GPIO selection required by the ESP32-S3 microcontroller used in this project.
 
-### 5.4 Subconclusion
+### 8.4 Subconclusion
 
 The GPIO connections used in tutorial examples could not be copied directly, because the ESP32-S3 used in this project has a different microcontroller layout and different available pins. The LDR module requires an ADC-capable GPIO because its AO pin provides an analog signal, while the relay module requires a GPIO that can function as a digital output. Based on the ESP32-S3 documentation, GPIO4 is a suitable choice for the LDR module and GPIO5 is a suitable choice for the relay module.
 
-## 6. What is the estimated total current consumption of the prototype?
+## 9. What is the estimated total current consumption of the prototype?
 
-### 6.1 Importance of power consumption analysis
+### 9.1 Importance of power consumption analysis
 
 During feedback on the schematic, it was pointed out that selecting the right components is not enough by itself. It is also necessary to estimate the total current consumption of the prototype. This is important because the power supply must be able to support all components at the same time without overloading the system.
 
@@ -263,7 +308,7 @@ This is also relevant when distinguishing between the total available microcontr
 
 For that reason, the power consumption of each main component is analysed separately below.
 
-### 6.2 LEDs
+### 9.2 LEDs
 
 The LEDs form the largest part of the expected current consumption. According to [(pro-SIGNAL, 2022)](https://www.farnell.com/datasheets/3811080.pdf), a 5 mm white LED typically has a forward voltage of 3.0 V to 3.4 V at a forward current of 20 mA.
 
@@ -303,17 +348,17 @@ or
 
 Based on these calculations, the total current consumption of 20 white LEDs is estimated at approximately 145 mA to 182 mA.
 
-### 6.3 Relay module
+### 9.3 Relay module
 
 The relay module also contributes to the total current consumption. According to Components101 (n.d.), a 5 V single-channel relay module has a quiescent current of approximately 2 mA and a current of approximately 70 mA when the relay is active.
 
 For the total power calculation, the active state is the most relevant, because this represents the higher load. A practical estimate for the relay module is therefore 70 mA To allow for variation between modules and a slightly more conservative estimate in the final total calculation, 80 mA can be used as a practical value, while 100 mA can be used as a higher estimate.
 
-### 6.4 LDR module
+### 9.4 LDR module
 
 According to [(Electronics, 2024)](https://www.phippselectronics.com/using-the-ldr-lm393-module-with-arduino/?__cf_chl_rt_tk=dj6yxwlYC_vHO7b1B5tYXHgOrSZuZwOOH_JMTnSM0UE-1771587936-1.0.1.1-2U_8fQk.f_ykkRFMf7Qpda17K8M.JYaOFH9WYIZYch8), the LM393-based LDR module used in this type of circuit consumes approximately 15 mA. Compared with the LEDs and relay module, this is a relatively small part of the total current consumption, but it still needs to be included in the total estimate.
 
-### 6.5 ESP32-S3
+### 9.5 ESP32-S3
 
 The ESP32-S3 also contributes to the total current consumption of the prototype, and its current draw depends on the operating mode, clock frequency, and processing activity.
 
@@ -325,7 +370,7 @@ Because this prototype continuously reads the light sensor and controls the rela
 
 If Wi-Fi is enabled in later sprints, the current consumption would increase significantly. The datasheet shows peak current values of approximately 88 mA to 91 mA in Wi-Fi receive mode and 283 mA to 340 mA in Wi-Fi transmit mode, depending on the transmission mode.
 
-### 6.6 Total current estimate (without Wi-Fi and with 20 LEDs)
+### 9.6 Total current estimate (without Wi-Fi and with 20 LEDs)
 
 The total current consumption of the prototype can now be estimated by combining the expected current of the LEDs, relay module, LDR module, and ESP32-S3.
 
@@ -356,13 +401,13 @@ Based on these calculations, the total current consumption of the Sprint 1 proto
 
 This estimate is based on the configuration without Wi-Fi and with 20 white LEDs. If Wi-Fi is enabled in later sprints, the total current consumption is expected to increase significantly. The same applies if additional modules are added.
 
-### 6.7 Subconclusion
+### 9.7 Subconclusion
 
 The estimated total current consumption of the Sprint 1 prototype is approximately 280 mA to 347 mA without Wi-Fi and with 20 white LEDs. The LEDs form the largest part of the total load, followed by the relay module. The ESP32-S3 also contributes a relevant share of the total current consumption, while the LDR module contributes the smallest amount. This shows that the total current demand must be considered carefully when choosing the power supply, especially if the prototype is extended in later sprints.
 
-## 7. Power Supply and Protection Design
+## 10. Power Supply and Protection Design
 
-### 7.1 First idea: separate 5V battery
+### 10.1 First idea: separate 5V battery
 
 In the first version of the design, the idea was to power the LED circuit with a separate 5 V battery.
 
@@ -373,7 +418,7 @@ At first, this seemed like a simple solution because it would provide the LEDs w
 
 For these reasons, the separate 5 V battery was treated as an initial idea rather than the final design choice.
 
-### 7.2 Feedback from Gerald
+### 10.2 Feedback from Gerald
 
 During feedback on the schematic, Gerald advised against using a separate battery and recommended using the breadboard power supply provided by school instead.
 
@@ -381,7 +426,7 @@ This feedback was important because the prototype is developed in a beginner lea
 
 The feedback therefore shifted the analysis from a separate battery-based design towards a more power supply solution.
 
-### 7.3 Breadboard power supply
+### 10.3 Breadboard power supply
 
 After receiving this feedback, the specifications of the breadboard power supply were reviewed.
 
@@ -394,7 +439,7 @@ Based on the current analysis in Chapter 6, the total current consumption of the
 
 However, the analysis also shows that the available margin is limited. If more modules are added in later sprints, the 500 mA limit may become restrictive. For that reason, the breadboard power supply is suitable for Sprint 1, but it may not be the most scalable option for later development.
 
-### 7.4 External 5V 1A adapter
+### 10.4 External 5V 1A adapter
 
 Because the breadboard power supply has a maximum output of 500 mA, an external 5 V 1 A adapter was also considered as a later power supply option.
 
@@ -404,7 +449,7 @@ At the same time, using an external 5 V 1 A adapter introduces additional risks.
 
 Another important design consideration is that the 5 V Vin pin on the school-provided ESP32-S3 clone was found to function as a power input rather than as a power output for powering the breadboard rails or external components. This means that, if an external 5 V adapter is used, it should feed the circuit directly and should not be assumed to power the breadboard through the ESP32 board itself.
 
-### 7.5 Fuse for overcurrent protection
+### 10.5 Fuse for overcurrent protection
 
 To reduce the risk of excessive current in case of a wiring mistake or short circuit, a fuse is included in the planned power design.
 
@@ -414,7 +459,7 @@ For the current design, a 1 A fuse is the most logical choice when using a 5 V 1
 
 The fuse therefore functions as the primary overcurrent protection measure in the external power supply design [(Wikipedia contributors, 2026a)](https://en.wikipedia.org/wiki/Fuse_(electrical)).
 
-### 7.6 Diode for reverse polarity protection
+### 10.6 Diode for reverse polarity protection
 
 A diode is included in the design to reduce the risk of damage in case the power supply polarity is connected incorrectly.
 
@@ -424,7 +469,7 @@ In the earlier design exploration, a 1N4007 diode (handles 1A, blocks 1000V, dro
 
 The diode is therefore intended as a practical reverse polarity protection component in the external supply design.
 
-### 7.7 Capacitor for voltage stability
+### 10.7 Capacitor for voltage stability
 
 A capacitor is also considered in the power design to improve voltage stability.
 
@@ -445,7 +490,7 @@ The capacitor can temporarily store charge and help smooth short fluctuations in
 
 At this stage, the use of such a capacitor is a practical design choice based on the expected switching behaviour. However, the exact capacitor choice may still require further validation in practice to confirm that it is the most suitable value for the final implementation.
 
-### 7.8 Final power supply choice
+### 10.8 Final power supply choice
 
 Based on the analysis, the breadboard power supply is sufficient for the current Sprint 1 prototype in based on the estimated current consumption. However, this option offers only limited power because it is specified up to 500 mA. Since the design is  not only for the current prototype but also for future development, scalability must be kept in mind from the start.
 
@@ -458,17 +503,9 @@ The preferred power supply design is therefore:
 - 1N4007 diode for reverse polarity protection
 - 1000 µF / 25 V electrolytic capacitor for voltage stability
 
-This means that, although the breadboard power supply would be sufficient for the present Sprint 1 setup, the external adapter-based is selected as the better final choice because it is more solid, safer when properly protected, and more future-proof for further development.
+This means that, although the breadboard power supply would be sufficient for the present Sprint 1 setup, the external adapter-based is selected as the better final choice because it is more solid, safer when properly protected, and more future-proof for further development..
 
-### 7.9 Subconclusion
-
-The first power supply idea, using a separate 5 V battery, was not the most suitable solution because it would make the prototype less simple and less reproducible. Based on feedback and further analysis, the breadboard power supply is the most suitable choice for the current Sprint 1 prototype, because it is easy to use and sufficient for the estimated current consumption of 280 mA to 347 mA.
-
-At the same time, the 500 mA limit of the breadboard power supply means that this option may become restrictive in later sprints. For that reason, an external 5 V 1 A adapter is the more scalable direction for future development. If that option is used, additional protection and stability components are needed, namely a fuse, a diode, and a capacitor.
-
-This shows that the final power supply design must balance simplicity for Sprint 1 with safety, reliability, and scalability for later expansion.
-
-### 7.9 Subconclusion
+### 10.9 Subconclusion
 
 The first power supply idea, using a separate 5 V battery, was not the most suitable solution because it would make the prototype less stable. Based on the feedback and the further analysis, it became clear that the breadboard power supply is sufficient for the  Sprint 1 prototype based on current capacity, but that it is limited because it is specified up to 500 mA.
 
@@ -478,11 +515,25 @@ At the same time, the analysis shows that an external adapter should not be used
 
 This shows that the final power supply design is not based only on what is sufficient for Sprint 1, but on what is also safer, more reliable, and more scalable for further development.
 
-## 8. Final conclusion
+## 11. Final conclusion
 
-## 9. Recommendations
+This analysis examined which components, GPIO connections, and power supply configuration are most suitable for building a safe, reliable, and scalable automatic smart streetlight prototype with the ESP32-S3 for Sprint 1.
 
-## 10. Sources
+First, it was established that the prototype should function as a simplified smart streetlight that automatically switches on and off based on the ambient light level. To make this possible, the prototype must meet both functional and non-functional requirements. The system must be able to switch automatically based on a light threshold, while also remaining electrically correct, reliable, understandable for a beginner, reproducible across multiple team tiles, and scalable for later development.
+
+Second, the analysis showed that the prototype requires a limited but clearly defined set of components. The LDR module is needed to measure the ambient light level, the LEDs and resistors are needed to create the light output safely, and the relay module is needed to switch the LED circuit without placing the full load directly on a GPIO pin of the ESP32-S3. Together, these components form the functional basis of the prototype.
+
+Third, the GPIO selection could not be copied directly from tutorial examples, because those examples used a different ESP32 board. Based on the ESP32-S3 documentation, GPIO4 was selected for the analog output of the LDR module because this signal must be read through an ADC-capable pin. GPIO5 was selected for the relay module because the relay input requires a digital HIGH/LOW control signal. This means that the selected GPIO configuration is technically suitable for the ESP32-S3 used in this project.
+
+Fourth, the total current consumption of the Sprint 1 prototype was estimated. Based on the calculations, the expected current consumption is approximately 280 mA to 347 mA without Wi-Fi and with 20 white LEDs. The LEDs form the largest part of the load, followed by the relay module, while the LDR module and ESP32-S3 contribute a smaller but still relevant share. This confirms that power consumption must be considered carefully in the design, especially in view of later expansion.
+
+Finally, the analysis showed that the separate 5 V battery was not the most suitable power supply option, because it would make the prototype less simple and less reproducible. Although the breadboard power supply is sufficient for the current Sprint 1 setup, its 500 mA limit provides only limited margin. Because the design should also remain suitable for later sprints and broader team use, the preferred final power solution is a 5 V 1 A adapter combined with a 1 A fuse, a 1N4007 diode, and a 1000 µF / 25 V electrolytic capacitor. This configuration offers a better balance between safety, reliability, and scalability.
+
+Based on the full analysis, it can be concluded that the most suitable design for the automatic smart streetlight prototype is an ESP32-S3 setup with an LDR module on GPIO4, a relay module on GPIO5, 20 white LEDs each with their own 220 ohm resistor, and a protected 5 V 1 A external power supply design. This configuration best supports the requirements of Sprint 1 while also providing a more future-proof basis for further development in later sprints.
+
+## 12. Recommendations
+
+## 13. Sources
 
 *Reference formatting was made using [Scribbr](https://www.scribbr.nl/bronvermelding/generator/apa/) APA Generator.*
 
