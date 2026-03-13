@@ -158,6 +158,8 @@ A smart streetlight is a streetlight that can respond to its surroundings instea
 
 ## 7. Needed components and their function
 
+Before building the prototype, it is first necessary to determine which components are required and what role each component has in the system. This chapter describes the results of the orientation phase and explains the function of the main components used in the automatic smart streetlight prototype. The focus is on the LDR module, the LEDs with resistors, and the relay module, because these components form the basis of the input, output, and switching logic of the system.
+
 ### 7.1 Orientation phase
 
 During the orientation phase, several examples of smart streetlight projects were explored by searching for “ESP32-S3 smart streetlight” and related terms. These examples showed that certain components appeared repeatedly, especially an LDR module, LEDs, jumper wires, and in some cases a relay module. In all reviewed examples, an LDR module was used, while some examples also included a relay module together with LEDs and jumper wires. This indicated that these components form the basis of a simple automatic smart streetlight prototype.
@@ -251,6 +253,8 @@ The prototype requires a limited number of core components. The LDR module is ne
 
 ## 8. Suitable GPIO connections for the ESP32-S3
 
+After determining which components are needed for the prototype, the next step is to identify which GPIO connections on the ESP32-S3 are suitable for those components. This chapter explains why the GPIO connections shown in tutorial examples could not be copied directly and how appropriate GPIO pins were selected for the LDR module and the relay module. The focus is on choosing connections that are technically correct and suitable for the ESP32-S3 used in this project.
+
 ### 8.1 Difference between tutorial examples and the ESP32-S3 used in this project
 
 During the orientation phase, it became clear that the tutorial examples could not be copied directly, because they used a different ESP32 microcontroller than the ESP32-S3 used in this project. For example, in one of the reviewed tutorials, the analog output of the LDR module was connected to GPIO34 and the relay input to GPIO12. These pins are not available in the same way on the ESP32-S3 microcontroller used for this prototype.
@@ -293,6 +297,8 @@ The remaining connections of both modules follow their normal power and ground w
 The GPIO connections used in tutorial examples could not be copied directly, because the ESP32-S3 used in this project has a different microcontroller layout and different available pins. The LDR module requires an ADC-capable GPIO because its AO pin provides an analog signal, while the relay module requires a GPIO that can function as a digital output. Based on the ESP32-S3 documentation, GPIO4 is a suitable choice for the LDR module and GPIO5 is a suitable choice for the relay module.
 
 ## 9. Estimated total current consumption of the prototype
+
+After determining the required components and the suitable GPIO connections, the next step is to estimate the total current consumption of the prototype. This chapter analyses how much current is expected to be used by the LEDs, relay module, LDR module, and ESP32-S3. The purpose of this analysis is to determine whether the chosen power supply is sufficient and to support a safe, reliable, and scalable design.
 
 ### 9.1 Importance of power consumption analysis
 
@@ -407,6 +413,8 @@ This estimate is based on the configuration without Wi-Fi and with 20 white LEDs
 The estimated total current consumption of the Sprint 1 prototype is approximately 280 mA to 347 mA without Wi-Fi and with 20 white LEDs. The LEDs form the largest part of the total load, followed by the relay module. The ESP32-S3 also contributes a relevant share of the total current consumption, while the LDR module contributes the smallest amount. This shows that the total current demand must be considered carefully when choosing the power supply, especially if the prototype is extended in later sprints.
 
 ## 10. Power Supply and Protection Design
+
+After estimating the total current consumption of the prototype, the next step is to determine which power supply configuration is the most suitable. This chapter compares different power supply options and analyses which protection and stability components are needed to make the prototype safe, reliable, and scalable. The focus is not only on making the current Sprint 1 setup work, but also on choosing a power design that remains useful for further development in later sprints.
 
 ### 10.1 First idea: separate 5V battery
 
