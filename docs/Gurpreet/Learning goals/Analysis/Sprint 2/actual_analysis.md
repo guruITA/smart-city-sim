@@ -51,7 +51,6 @@
   - [12. Recommendations](#12-recommendations)
   - [13. Sources](#13-sources)
 
-
 ## 1. Introduction
 
 This analysis is part of the Smart Cities Learning Group project. In Sprint 1, the project focuses on developing a prototype of an automatic smart streetlight. The purpose of this prototype is to demonstrate a simple smart city application in which lighting responds automatically to changes in the environment based on the ambient light level.
@@ -111,6 +110,8 @@ For this analysis, the following tools were used:
 - ChatGPT for support with language use, phrasing, spelling, and grammar.
 
 ## 6. Smart streetlight context and project goal
+
+Before analysing the technical choices of the prototype, it is first important to explain the context of the project. This chapter describes what a smart streetlight is, what the goal of this Sprint 1 prototype is, and which functional and non-functional requirements the prototype must meet. These points form the basis for the technical choices made in the next chapters.
 
 ### 6.1 Smart streetlight
 
