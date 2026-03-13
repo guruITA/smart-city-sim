@@ -425,6 +425,21 @@ The capacitor can temporarily store charge and help smooth short fluctuations in
 
 At this stage, the use of such a capacitor is a practical design choice based on the expected switching behaviour. However, the exact capacitor choice may still require further validation in practice to confirm that it is the most suitable value for the final implementation.
 
+### 7.8 Final power supply choice
+
+Based on the analysis, the breadboard power supply is sufficient for the current Sprint 1 prototype in based on the estimated current consumption. However, this option offers only limited power because it is specified up to 500 mA. Since the design is  not only for the current prototype but also for future development, scalability must be kept in mind from the start.
+
+For that reason, the preferred power supply choice is not the breadboard power supply, but an 5 V 1 A adapter combined with  protection and stability components. This solution provides more room than the breadboard power supply and is therefore more suitable for a design that must remain usable when the prototype is expanded in later sprints or applied consistently on multiple team tiles.
+
+The preferred power supply design is therefore:
+
+- 5 V 1 A adapter
+- 1 A fuse for overcurrent protection
+- 1N4007 diode for reverse polarity protection
+- 1000 µF / 25 V electrolytic capacitor for voltage stability
+
+This means that, although the breadboard power supply would be sufficient for the present Sprint 1 setup, the external adapter-based is selected as the better final choice because it is more solid, safer when properly protected, and more future-proof for further development.
+
 ### 7.9 Subconclusion
 
 
