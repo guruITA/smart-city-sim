@@ -4,18 +4,56 @@
 - Date: 11-02-2026
 
 ## Table of Contents
+- [Smart cities learning group goal: Analysis](#smart-cities-learning-group-goal-analysis)
+  - [Table of Contents](#table-of-contents)
+  - [1. Context](#1-context)
+  - [2. Main research question and subquestions](#2-main-research-question-and-subquestions)
+    - [2.1 Main research question](#21-main-research-question)
+    - [2.2 Subquestions](#22-subquestions)
+  - [3. Smart streetlight context and project goal](#3-smart-streetlight-context-and-project-goal)
+    - [3.1 What is a smart streetlight?](#31-what-is-a-smart-streetlight)
+    - [3.2 Project goal: Automatic smart streetlight](#32-project-goal-automatic-smart-streetlight)
+    - [3.3 Functional requirements](#33-functional-requirements)
+    - [3.4 Non functional requirements](#34-non-functional-requirements)
+    - [3.5 Subconclusion](#35-subconclusion)
+  - [4. Which components are needed and what is their function?](#4-which-components-are-needed-and-what-is-their-function)
+    - [4.1 Orientation phase](#41-orientation-phase)
+    - [4.2 LDR module](#42-ldr-module)
+    - [4.3 LED and resistor](#43-led-and-resistor)
+    - [4.4 Relay module](#44-relay-module)
+    - [4.5 Required components for the prototype](#45-required-components-for-the-prototype)
+    - [4.6 Subconclusion](#46-subconclusion)
+  - [5. Which GPIO connections are suitable for the ESP32-S3?](#5-which-gpio-connections-are-suitable-for-the-esp32-s3)
+    - [5.1 Difference between tutorial examples and the ESP32-S3 used in this project](#51-difference-between-tutorial-examples-and-the-esp32-s3-used-in-this-project)
+    - [5.2 Choosing a GPIO for the LDR module](#52-choosing-a-gpio-for-the-ldr-module)
+    - [5.3 Choosing a GPIO for the relay module](#53-choosing-a-gpio-for-the-relay-module)
+    - [5.4 Subconclusion](#54-subconclusion)
+  - [6. What is the estimated total current consumption of the prototype?](#6-what-is-the-estimated-total-current-consumption-of-the-prototype)
+    - [6.1 Importance of power consumption analysis](#61-importance-of-power-consumption-analysis)
+    - [6.2 LEDs](#62-leds)
+    - [6.3 Relay module](#63-relay-module)
+    - [6.4 LDR module](#64-ldr-module)
+    - [6.5 ESP32-S3](#65-esp32-s3)
+    - [6.6 Total current estimate (without Wi-Fi and with 20 LEDs)](#66-total-current-estimate-without-wi-fi-and-with-20-leds)
+    - [6.7 Subconclusion](#67-subconclusion)
+  - [7. Power Supply and Protection Design](#7-power-supply-and-protection-design)
+    - [7.1 First idea: separate 5V battery](#71-first-idea-separate-5v-battery)
+    - [7.2 Feedback from Gerald](#72-feedback-from-gerald)
+    - [7.3 Breadboard power supply](#73-breadboard-power-supply)
+    - [7.4 External 5V 1A adapter](#74-external-5v-1a-adapter)
+    - [7.5 Fuse for overcurrent protection](#75-fuse-for-overcurrent-protection)
+    - [7.6 Diode for reverse polarity protection](#76-diode-for-reverse-polarity-protection)
+    - [7.7 Capacitor for voltage stability](#77-capacitor-for-voltage-stability)
+    - [7.8 Final power supply choice](#78-final-power-supply-choice)
+    - [7.9 Subconclusion](#79-subconclusion)
+    - [7.9 Subconclusion](#79-subconclusion-1)
+  - [8. Final conclusion](#8-final-conclusion)
+  - [9. Recommendations](#9-recommendations)
+  - [10. Sources](#10-sources)
+
 
 ## 1. Context
 
-This analysis is part of the Smart Cities Learning Group project. In Sprint 1, the project focuses on developing a prototype of an automatic smart streetlight that switches on and off based on the ambient light level. The prototype is intended to demonstrate a simple smart city application in which lighting responds automatically to changes in the environment.
-
-The prototype is built around an ESP32-S3, an LDR module, a relay module, and multiple white LEDs. Because this prototype is developed within an introductory learning context, the first version is intentionally kept simple, clear, and reproducible. At the same time, the system must be electrically correct, reliable, safe enough to test in practice, and scalable enough to support further development in later sprints or use on multiple team tiles.
-
-To develop this prototype, it is not enough to only understand what a smart streetlight is or what the individual components do. It is also necessary to determine which components are suitable, how the LDR module and relay module should be connected to the ESP32-S3, how much current the total system is expected to consume, and which power supply setup is most appropriate for the prototype.
-
-During the analysis, special attention is given to the power design of the system. Besides the main components, the prototype also requires a suitable external 5V power supply and supporting protection or stability components, such as a fuse, diode, and capacitor, to reduce risks such as wiring mistakes, reverse polarity, and voltage drops during switching.
-
-This analysis was therefore written to support the design of the Sprint 1 prototype. The focus is on understanding the main components, selecting suitable GPIO connections, estimating the total current consumption, and evaluating a practical, safe, and scalable power supply configuration for the automatic smart streetlight.
 
 ## 2. Main research question and subquestions
 
@@ -25,33 +63,15 @@ Which components, GPIO connections, and power supply configuration are most suit
 
 ### 2.2 Subquestions
 
-1. What is a smart streetlight, and what is the goal of the automatic smart streetlight prototype in this project?
-
-2. Which functional and non-functional requirements must the prototype meet?
-
-3. Which components are needed for the prototype, and what is the function of each component?
-
-4. Which GPIO connections are suitable for connecting the LDR module and relay module to the ESP32-S3?
-
-5. What is the estimated total current consumption of the prototype?
-
-6. Which power supply configuration is most suitable for the prototype, including the use of an external 5V 1A adapter and supporting protection or stability components such as a fuse, diode, and capacitor?
-
-7. How does the chosen design support safety, reproducibility, and scalability for use in later sprints or on multiple team tiles?
-
 ## 3. Smart streetlight context and project goal
+
+
 
 ### 3.1 What is a smart streetlight?
 
 A smart streetlight is a street lamp that does more than only provide light. It can respond to its surroundings by using sensors and, in some cases, network connectivity. Instead of always being switched on according to a fixed schedule, a smart streetlight can automatically adjust its behavior based on conditions such as daylight, traffic, or the presence of pedestrians. This helps reduce unnecessary energy consumption because the lamp does not always need to operate at full intensity [(D66jeroen, 2026)](https://d66.nl/goes/nieuws/3-slimme-straatverlichting-licht-op-maat/).
 
 Smart streetlights can also be part of a broader smart city system. In more advanced applications, they may include remote monitoring, communication modules, or additional functions such as measuring air quality, monitoring noise, or providing Wi-Fi. This turns the streetlight into a multifunctional part of the city infrastructure [(AAA ECO B.V., 2024)](https://aaaeco.nl/slimme-led-lantaarnpalen-en-5g-innovatie-of-inbreuk-op-privacy/). However, for this Sprint 1 prototype, the focus is limited to a basic automatic switching function based on ambient light.
-
-A smart streetlight uses sensors and controllers to automatically adjust its brightness based on the environment instead of staying on full power all night [Mahoor et al., 2020][IEEE Smart Lighting Initiative, 2025]. Technical reviews show these systems typically include light sensors to detect darkness, motion sensors to spot people or cars, and wireless networks so they can be controlled remotely. They save 30-70% energy by dimming when no one's around, using LED lights that can be controlled precisely [Mahoor et al., 2020].
-
-For example, Dutch municipalities use smart streetlights to provide "light only where needed," automatically dimming during quiet hours to save energy [D66jeroen, 2026].
-
-In this Sprint 1 prototype, we're building the basic version: an LDR sensor connected to ESP32-S3 GPIO4 that switches lights on at night and off during the day. This is the core sensor-controller function that all smart streetlights are built on [IEEE Smart Lighting Initiative, 2025].
 
 ### 3.2 Project goal: Automatic smart streetlight
 
