@@ -12,24 +12,24 @@
   - [4. Main research question and subquestions](#4-main-research-question-and-subquestions)
   - [5 Tools used](#5-tools-used)
   - [6. Smart streetlight context and project goal](#6-smart-streetlight-context-and-project-goal)
-    - [6.1 What is a smart streetlight?](#61-what-is-a-smart-streetlight)
+    - [6.1 Smart streetlight](#61-smart-streetlight)
     - [6.2 Project goal: Automatic smart streetlight](#62-project-goal-automatic-smart-streetlight)
     - [6.3 Functional requirements](#63-functional-requirements)
     - [6.4 Non functional requirements](#64-non-functional-requirements)
     - [6.5 Subconclusion](#65-subconclusion)
-  - [7. Which components are needed and what is their function?](#7-which-components-are-needed-and-what-is-their-function)
+  - [7. Needed components and their function](#7-needed-components-and-their-function)
     - [7.1 Orientation phase](#71-orientation-phase)
     - [7.2 LDR module](#72-ldr-module)
     - [7.3 LED and resistor](#73-led-and-resistor)
     - [7.4 Relay module](#74-relay-module)
     - [7.5 Required components for the prototype](#75-required-components-for-the-prototype)
     - [7.6 Subconclusion](#76-subconclusion)
-  - [8. Which GPIO connections are suitable for the ESP32-S3?](#8-which-gpio-connections-are-suitable-for-the-esp32-s3)
+  - [8. Suitable GPIO connections for the ESP32-S3](#8-suitable-gpio-connections-for-the-esp32-s3)
     - [8.1 Difference between tutorial examples and the ESP32-S3 used in this project](#81-difference-between-tutorial-examples-and-the-esp32-s3-used-in-this-project)
     - [8.2 Choosing a GPIO for the LDR module](#82-choosing-a-gpio-for-the-ldr-module)
     - [8.3 Choosing a GPIO for the relay module](#83-choosing-a-gpio-for-the-relay-module)
     - [8.4 Subconclusion](#84-subconclusion)
-  - [9. What is the estimated total current consumption of the prototype?](#9-what-is-the-estimated-total-current-consumption-of-the-prototype)
+  - [9. Estimated total current consumption of the prototype](#9-estimated-total-current-consumption-of-the-prototype)
     - [9.1 Importance of power consumption analysis](#91-importance-of-power-consumption-analysis)
     - [9.2 LEDs](#92-leds)
     - [9.3 Relay module](#93-relay-module)
@@ -112,7 +112,7 @@ For this analysis, the following tools were used:
 
 ## 6. Smart streetlight context and project goal
 
-### 6.1 What is a smart streetlight?
+### 6.1 Smart streetlight
 
 A smart streetlight is a street lamp that does more than only provide light. It can respond to its surroundings by using sensors and, in some cases, network connectivity. Instead of always being switched on according to a fixed schedule, a smart streetlight can automatically adjust its behavior based on conditions such as daylight, traffic, or the presence of pedestrians. This helps reduce unnecessary energy consumption because the lamp does not always need to operate at full intensity [(D66jeroen, 2026)](https://d66.nl/goes/nieuws/3-slimme-straatverlichting-licht-op-maat/).
 
@@ -155,7 +155,7 @@ The prototype must also meet the following non-functional requirements:
 
 A smart streetlight is a streetlight that can respond to its surroundings instead of only working in a fixed way. In this project, the goal is to build a simplified automatic smart streetlight prototype that switches on and off based on ambient light. The prototype must therefore combine automatic behavior with practical design requirements such as electrical correctness, reliability, simplicity, reproducibility, and scalability. These requirements define the basis for the component choices and design decisions in the following chapters.
 
-## 7. Which components are needed and what is their function?
+## 7. Needed components and their function
 
 ### 7.1 Orientation phase
 
@@ -248,7 +248,7 @@ These components together provide the basic input, control, switching, and outpu
 
 The prototype requires a limited number of core components. The LDR module is needed to measure ambient light, the LEDs and resistors are needed to create the lighting output safely, and the relay module is needed to switch the LED circuit by means of the ESP32-S3. Together, these components form the functional basis of the Sprint 1 automatic smart streetlight prototype.
 
-## 8. Which GPIO connections are suitable for the ESP32-S3?
+## 8. Suitable GPIO connections for the ESP32-S3
 
 ### 8.1 Difference between tutorial examples and the ESP32-S3 used in this project
 
@@ -291,7 +291,7 @@ The remaining connections of both modules follow their normal power and ground w
 
 The GPIO connections used in tutorial examples could not be copied directly, because the ESP32-S3 used in this project has a different microcontroller layout and different available pins. The LDR module requires an ADC-capable GPIO because its AO pin provides an analog signal, while the relay module requires a GPIO that can function as a digital output. Based on the ESP32-S3 documentation, GPIO4 is a suitable choice for the LDR module and GPIO5 is a suitable choice for the relay module.
 
-## 9. What is the estimated total current consumption of the prototype?
+## 9. Estimated total current consumption of the prototype
 
 ### 9.1 Importance of power consumption analysis
 
