@@ -542,6 +542,23 @@ Based on the full analysis, it can be concluded that the most suitable design fo
 
 ## 12. Recommendations
 
+Based on the results of this analysis, the following recommendations are made for the next phase of the project.
+
+1. Use the analysis as the basis for the design phase  
+The outcomes of this analysis should be used directly in the next product, namely the design phase. This means that the GPIO choices, component selection, current calculations, and power design should be translated into a clear Fritzing schematic and supporting design documentation.
+
+2. Build and test the prototype with the selected configuration  
+The first recommendation is to build the Sprint 1 prototype using the configuration chosen in this analysis: an ESP32-S3, an LDR module connected to GPIO4, a relay module connected to GPIO5, and 20 white LEDs each with their own 220 ohm resistor. This is necessary to verify in practice whether the analysed design also works as expected in a real setup.
+
+3. Validate the switching threshold in practice  
+Although the analysis shows that the LDR module can be used to measure ambient light and switch the streetlight automatically, the exact threshold value must still be tested in practice. It is recommended to determine through testing which threshold gives the most stable and realistic switching behaviour without flickering.
+
+4. Test the reliability of the relay-based switching  
+The relay module was selected as the switching component for the LED circuit. It is recommended to test whether the relay switches reliably under repeated light-to-dark and dark-to-light changes, and whether the ESP32-S3 remains stable during these switching moments.
+
+5. Verify the power supply and protection design in practice  
+The analysis shows that a 5 V 1 A adapter with a 1 A fuse, 1N4007 diode, and 1000 µF / 25 V electrolytic capacitor is the most future-proof power design. It is recommended to test this setup in practice to verify whether the protection components work as intended and whether the capacitor is sufficient to prevent voltage drops or unwanted resets.
+
 ## 13. Sources
 
 *Reference formatting was made using [Scribbr](https://www.scribbr.nl/bronvermelding/generator/apa/) APA Generator.*
