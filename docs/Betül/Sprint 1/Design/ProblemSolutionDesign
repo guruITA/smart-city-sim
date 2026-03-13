@@ -1,0 +1,82 @@
+# Problem Solution Design
+
+### Proposed Solution
+
+The proposed solution is to develop a **Smart Pedestrian Crossing prototype** for the T-junction tile using an **ESP32-S3 microcontroller**.
+
+The system simulates a real pedestrian crossing by controlling **car traffic lights and pedestrian signals** when a pedestrian requests to cross the road.
+
+The goal is to create a simple embedded system that improves pedestrian safety and demonstrates how smart infrastructure can work within the Smart City simulation.
+
+---
+
+## System Components
+
+The prototype requires several components to simulate a traffic crossing system.
+
+**Controller**
+
+- ESP32-S3 microcontroller
+
+**Input**
+
+- Push button (pedestrian crossing request)
+
+**Outputs**
+
+Car traffic lights
+
+- Red LED
+- Yellow LED
+- Green LED
+
+Pedestrian lights
+
+- Red LED
+- Green LED
+
+Optional component:
+
+- Buzzer for an audio crossing signal.
+
+---
+
+### System Behaviour
+
+The pedestrian crossing follows a simplified traffic control sequence.
+
+**Normal traffic**
+
+- Car light → Green
+- Pedestrian light → Red
+
+**Pedestrian request**
+
+When the button is pressed, the system registers the request.
+
+**Traffic stops**
+
+The car traffic lights change:
+
+Green → Yellow → Red
+
+**Pedestrian crossing**
+
+The pedestrian light turns **Green**, allowing pedestrians to cross safely.
+
+**Return to normal traffic**
+
+After a short timer:
+
+- Pedestrian light → Red
+- Car light → Green
+
+Traffic continues normally.
+
+---
+
+## Position in the City Tile
+
+The pedestrian crossing will be implemented on the **T-junction tile** in the Smart City model.
+
+The ESP32-S3 will control the traffic signals and process pedestrian crossing requests.
