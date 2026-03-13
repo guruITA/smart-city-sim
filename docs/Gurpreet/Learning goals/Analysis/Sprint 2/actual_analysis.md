@@ -442,6 +442,21 @@ This means that, although the breadboard power supply would be sufficient for th
 
 ### 7.9 Subconclusion
 
+The first power supply idea, using a separate 5 V battery, was not the most suitable solution because it would make the prototype less simple and less reproducible. Based on feedback and further analysis, the breadboard power supply is the most suitable choice for the current Sprint 1 prototype, because it is easy to use and sufficient for the estimated current consumption of 280 mA to 347 mA.
+
+At the same time, the 500 mA limit of the breadboard power supply means that this option may become restrictive in later sprints. For that reason, an external 5 V 1 A adapter is the more scalable direction for future development. If that option is used, additional protection and stability components are needed, namely a fuse, a diode, and a capacitor.
+
+This shows that the final power supply design must balance simplicity for Sprint 1 with safety, reliability, and scalability for later expansion.
+
+### 7.9 Subconclusion
+
+The first power supply idea, using a separate 5 V battery, was not the most suitable solution because it would make the prototype less stable. Based on the feedback and the further analysis, it became clear that the breadboard power supply is sufficient for the  Sprint 1 prototype based on current capacity, but that it is limited because it is specified up to 500 mA.
+
+Because this design is not only intended for the present Sprint 1 setup but also for future expansion, the external 5 V 1 A adapter is the more suitable final choice. This option provides more room and is therefore more appropriate for a design that must remain usable in later sprints and on multiple team tiles.
+
+At the same time, the analysis shows that an external adapter should not be used without additional protection and stability components. For that reason, the final power supply design includes a 1 A fuse for overcurrent protection, a 1N4007 diode for reverse polarity protection, and a 1000 µF / 25 V elco for voltage stability.
+
+This shows that the final power supply design is not based only on what is sufficient for Sprint 1, but on what is also safer, more reliable, and more scalable for further development.
 
 ## 8. Final conclusion
 
