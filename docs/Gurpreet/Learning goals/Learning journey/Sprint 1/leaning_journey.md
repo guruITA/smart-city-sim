@@ -1,10 +1,10 @@
-# Smart Cities Learning group goal: Analyse
+# Learning journey
 
 - Name: Gurpreet Singh
 - Date: 11-2-2026
 
 ## Table of Contents
-- [Smart Cities Learning group goal: Analyse](#smart-cities-learning-group-goal-analyse)
+- [Learning journey](#learning-journey)
   - [Table of Contents](#table-of-contents)
   - [What is a smart streetlight?](#what-is-a-smart-streetlight)
   - [My current goal: Automatic Smart Streetlight](#my-current-goal-automatic-smart-streetlight)
@@ -20,6 +20,7 @@
   - [Power supply decision](#power-supply-decision)
   - [Conclusion](#conclusion)
   - [Sources (used scribbr)](#sources-used-scribbr)
+
 
 ## What is a smart streetlight?
 
