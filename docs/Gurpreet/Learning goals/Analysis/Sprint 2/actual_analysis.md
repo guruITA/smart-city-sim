@@ -412,11 +412,14 @@ The reason for this is that switching events, especially from the relay module a
 
 To reduce this risk, a 1000 µF / 25 V electrolytic capacitor is considered across the 5 V and GND input rails.
 
-When relay clicks or LEDs turn on/off, 5V voltage drops briefly. Electrolytic type (big belly) stores lots of current for slow relay/LED switching. Ceramic capacitors are too small for this. 
+When relay clicks or LEDs turn on/off, 5V voltage drops briefly. Electrolytic type (big belly) stores lots of current for slow relay/LED switching. Ceramic capacitors are too small for this [(Storr & Storr, 2024)](https://www.electronics-tutorials.ws/capacitor/cap_1.html).
 
-Relay (100 mA) + LEDs (182 mA) = 282 mA dip × 20 ms = 11 µF needed using C = I × t / ΔV. 1000 µF = 90x safety margin (standard value). 
+Relay (100 mA) + LEDs (182 mA) = 282 mA dip × 20 ms = 11 µF needed using C = I × t / ΔV. 1000 µF = 90x safety margin (standard value) [(Storr & Storr, 2022)](https://www.electronics-tutorials.ws/capacitor/cap_4.html) [(Kuphaldt, 2021)](https://www.allaboutcircuits.com/textbook/direct-current/chpt-13/capacitors-and-calculus/).
 
-25 V strength: 5V adapter but 25V = 5x safety margin for spikes.
+![ohms_law_for_capacitor](images/ohms_law_for_capacitor.png)
+*Formula for capacitor calculation. Source: [(Kuphaldt, 2021)](https://www.allaboutcircuits.com/textbook/direct-current/chpt-13/capacitors-and-calculus/). Viewed on: 12 March 2026.*
+
+25 V strength: 5V adapter but 25V = 5x safety margin for spikes [(AnyPCBA, n.d.)](https://www.anypcba.com/knowledge/component-procurement/understanding-capacitor-voltage-a-practical-guide.html)
 
 The capacitor can temporarily store charge and help smooth short fluctuations in the supply voltage.
 
@@ -481,3 +484,11 @@ At this stage, the use of such a capacitor is a practical design choice based on
 [https://www.onsemi.com/pdf/datasheet/1n4001-d.pdf](https://www.onsemi.com/pdf/datasheet/1n4001-d.pdf) viewed on 12 March 2026
 
 24. Diodes Incorporated. (z.d.). RL201-RL207. In www.diodes.com. [https://media.digikey.com/pdf/Data%20Sheets/Diodes%20PDFs/RL201-207.pdf](https://media.digikey.com/pdf/Data%20Sheets/Diodes%20PDFs/RL201-207.pdf) viewed on 12 March 2026
+
+25. Storr, W., & Storr, W. (2024, January 18). Introduction to capacitors. Basic Electronics Tutorials. [https://www.electronics-tutorials.ws/capacitor/cap_1.html](https://www.electronics-tutorials.ws/capacitor/cap_1.html) viewed on 12 March 2026
+
+26. Storr, W., & Storr, W. (2022, August 7). Capacitance and charge. Basic Electronics Tutorials. [https://www.electronics-tutorials.ws/capacitor/cap_4.html](https://www.electronics-tutorials.ws/capacitor/cap_4.html) viewed on 12 March 2026
+
+27. Kuphaldt, T. R. (2021, January 11). Capacitors and calculus. Capacitors | Electronics Textbook.[ https://www.allaboutcircuits.com/textbook/direct-current/chpt-13/capacitors-and-calculus/](https://www.allaboutcircuits.com/textbook/direct-current/chpt-13/capacitors-and-calculus/) viewed on 12 March 2026
+
+28. AnyPCBA. (n.d.). Understanding capacitor Voltage: a Practical guide. AnyPCBA. [https://www.anypcba.com/knowledge/component-procurement/understanding-capacitor-voltage-a-practical-guide.html](https://www.anypcba.com/knowledge/component-procurement/understanding-capacitor-voltage-a-practical-guide.html) viewed on 12 March 2026
