@@ -20,7 +20,7 @@ The goal of this document is to give a clear overview of the board, while also s
 
 The ESP32-S3-DevKitC-1 is a development board based on the ESP32-S3 module. It is designed for general embedded development and supports Wi-Fi and Bluetooth Low Energy. Most of the available I/O pins are broken out to the side headers, which makes the board easy to use on a breadboard or with jumper wires (Espressif Systems, n.d.-a).
 
-![Figure 1. Main components of the ESP32-S3-DevKitC-1](./ESP32S3_Learning_Revised_assets/figure01_components.png)
+![Figure 1. Main components of the ESP32-S3-DevKitC-1](../assets/ESP32-S3%20Development%20Board:%20Pinout,%20Interfaces,%20and%20Practical%20Board%20Comparison/figure01_components.png)
 
 *Figure 1. Main components of the ESP32-S3-DevKitC-1. Source: Espressif Systems (n.d.-a), https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32s3/esp32-s3-devkitc-1/user_guide_v1.1.html
 
@@ -42,7 +42,7 @@ A practical point is that the USB-to-UART port and the native USB port are not e
 
 The pinout diagram is useful as a quick overview of the board. It shows which pins can be used for digital input and output, which pins support analog functions, and which pins should be handled carefully because they are connected to internal memory or boot configuration.
 
-![Figure 2. ESP32-S3 DevKitC pinout overview](./ESP32S3_Learning_Revised_assets/figure02_official_pinout.png)
+![Figure 2. ESP32-S3 DevKitC pinout overview](../assets/ESP32-S3%20Development%20Board:%20Pinout,%20Interfaces,%20and%20Practical%20Board%20Comparison/figure02_official_pinout.png)
 
 *Figure 2. ESP32-S3 DevKitC pinout overview. Source: Espressif Systems (n.d.-a), https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32s3/esp32-s3-devkitc-1/user_guide_v1.1.html
 
@@ -117,13 +117,13 @@ The board used during class appears to be different from the official ESP32-S3-D
 | Best use | Learning the official functions and hardware layout | Checking the physical labels and wiring on the actual board |
 | Risk | May not fully match the board in class | May not match all official tutorials exactly |
 
-![Figure 4. Pinout image for the board used in class](./ESP32S3_Learning_Revised_assets/figure04_class_board_pinout.png)
+![Figure 3. Pinout image for the board used in class](../assets/ESP32-S3%20Development%20Board:%20Pinout,%20Interfaces,%20and%20Practical%20Board%20Comparison/figure04_class_board_pinout.png)
 
-*Figure 4. Pinout image for the board used in class. Source: Rtek. (n.d.). _YD-ESP32-23_. GitHub. https://github.com/rtek1000/YD-ESP32-23
+*Figure 3. Pinout image for the board used in class. Source: Rtek. (n.d.). _YD-ESP32-23_. GitHub. https://github.com/rtek1000/YD-ESP32-23
 
-![Figure 5. Board photograph of the YD-ESP32-S3 board](./ESP32S3_Learning_Revised_assets/figure05_class_board_photo.png)
+![Figure 4. Board photograph of the YD-ESP32-S3 board](../assets/ESP32-S3%20Development%20Board:%20Pinout,%20Interfaces,%20and%20Practical%20Board%20Comparison/figure05_class_board_photo.png)
 
-*Figure 5. Board photograph of the YD-ESP32-S3 board. Source: Rtek. (n.d.). _YD-ESP32-23_. GitHub. https://github.com/rtek1000/YD-ESP32-23
+*Figure 4. Board photograph of the YD-ESP32-S3 board. Source: Rtek. (n.d.). _YD-ESP32-23_. GitHub. https://github.com/rtek1000/YD-ESP32-23
 
 In practice, this means it is best to use the official documentation to understand how the ESP32-S3 works, but to use the pinout of the class board when connecting components in a real setup.
 
@@ -137,7 +137,7 @@ A very important point is that the board used in class does not seem to be exact
 
 The following screenshot shows the official pin-function tables. These tables are useful as a quick reference when checking which functions belong to which pins.
 
-![Figure A1. Official pin-function table screenshots](./ESP32S3_Learning_Revised_assets/appendix_figureA1_pin_tables.png)
+![Figure A1. Official pin-function table screenshots](../assets/ESP32-S3%20Development%20Board:%20Pinout,%20Interfaces,%20and%20Practical%20Board%20Comparison/appendix_figureA1_pin_tables.png)
 
 *Figure A1. Official pin-function table screenshots. Source: ESP32-S3-DEVKITC-1 v1.1_. (n.d.). espressif.com. https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32s3/esp32-s3-devkitc-1/user_guide_v1.1.html
 
