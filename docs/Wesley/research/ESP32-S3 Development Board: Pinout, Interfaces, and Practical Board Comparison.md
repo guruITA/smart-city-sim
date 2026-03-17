@@ -18,11 +18,11 @@ The goal of this document is to give a clear overview of the board, while also s
 
 ## 1. Board overview and main components
 
-The ESP32-S3-DevKitC-1 is a development board based on the ESP32-S3 module. It is designed for general embedded development and supports Wi-Fi and Bluetooth Low Energy. Most of the available I/O pins are broken out to the side headers, which makes the board easy to use on a breadboard or with jumper wires (Espressif Systems, n.d.-a).
+The ESP32-S3-DevKitC-1 is a development board based on the ESP32-S3 module. It is designed for general embedded development and supports Wi-Fi and Bluetooth Low Energy. Most of the available I/O pins are broken out to the side headers, which makes the board easy to use on a breadboard or with jumper wires (_ESP32-S3-DEVKITC-1 v1.1_, n.d.).
 
 ![Figure 1. Main components of the ESP32-S3-DevKitC-1](../assets/ESP32-S3%20Development%20Board:%20Pinout,%20Interfaces,%20and%20Practical%20Board%20Comparison/figure01_components.png)
 
-*Figure 1. Main components of the ESP32-S3-DevKitC-1. Source: Espressif Systems (n.d.-a), https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32s3/esp32-s3-devkitc-1/user_guide_v1.1.html
+*Figure 1. Main components of the ESP32-S3-DevKitC-1. Source: _ESP32-S3-DEVKITC-1 v1.1_. (n.d.). espressif.com. https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32s3/esp32-s3-devkitc-1/user_guide_v1.1.html
 
 ### Main components
 
@@ -36,7 +36,7 @@ The ESP32-S3-DevKitC-1 is a development board based on the ESP32-S3 module. It i
 | RESET button          | This button restarts the board.                                                                                                   |
 | RGB LED and power LED | The RGB LED can be controlled in software, while the power LED shows that the board is powered.                                   |
 
-A practical point is that the USB-to-UART port and the native USB port are not exactly the same. For serial logging and normal flashing, the USB-to-UART connection is usually the easiest option. The native USB connection is also useful, but it depends more on the firmware configuration and the selected development setup (Espressif Systems, n.d.-f; Espressif Systems, n.d.-g; Espressif Systems, n.d.-h).
+A practical point is that the USB-to-UART port and the native USB port are not exactly the same. For serial logging and normal flashing, the USB-to-UART connection is usually the easiest option. The native USB connection is also useful, but it depends more on the firmware configuration and the selected development setup (_Establish Serial Connection With ESP32-S3_, n.d.; _USB Serial/JTAG Controller Console_, n.d.; _USB OTG Console_, n.d.).
 
 ## 2. Pin layout and functional pin groups
 
@@ -44,7 +44,7 @@ The pinout diagram is useful as a quick overview of the board. It shows which pi
 
 ![Figure 2. ESP32-S3 DevKitC pinout overview](../assets/ESP32-S3%20Development%20Board:%20Pinout,%20Interfaces,%20and%20Practical%20Board%20Comparison/figure02_official_pinout.png)
 
-*Figure 2. ESP32-S3 DevKitC pinout overview. Source: Espressif Systems (n.d.-a), https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32s3/esp32-s3-devkitc-1/user_guide_v1.1.html
+*Figure 2. ESP32-S3 DevKitC pinout overview. Source: _ESP32-S3-DEVKITC-1 v1.1_. (n.d.). espressif.com. https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32s3/esp32-s3-devkitc-1/user_guide_v1.1.html
 
 ### Functional pin groups
 
@@ -137,7 +137,7 @@ A very important point is that the board used in class does not seem to be exact
 
 The following screenshot shows the official pin-function tables. These tables are useful as a quick reference when checking which functions belong to which pins.
 
-![Figure A1. Official pin-function table screenshots](../assets/ESP32-S3%20Development%20Board:%20Pinout,%20Interfaces,%20and%20Practical%20Board%20Comparison/appendix_figureA1_pin_tables.png)
+![Figure A1. Official pin-function table screenshots](../assets/appendix_figureA1_pin_tables.png)
 
 *Figure A1. Official pin-function table screenshots. Source: ESP32-S3-DEVKITC-1 v1.1_. (n.d.). espressif.com. https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32s3/esp32-s3-devkitc-1/user_guide_v1.1.html
 
