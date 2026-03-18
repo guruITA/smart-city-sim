@@ -1,4 +1,4 @@
-## City Sim Learning Group – Design
+# City sim learning group – Design
 
 ### Learning Question
 
@@ -40,7 +40,7 @@ What this phase made especially clear to me is that a technically correct idea s
 
 I will use the results of this design phase directly in the next phase, namely the realisation phase. The Fritzing design, the placement of the components, and the structured power path will be used as the practical basis for physically building the smart streetlight prototype on the breadboard. In that way, the design will function as the direct bridge between analysis and implementation.
 
-I will also be able to use the same working method in later sprints, for example when designing a traffic light with a pressure sensor or a pedestrian crossing with additional inputs and outputs. The combination of technical analysis, visual translation, and structured documentation will therefore become a reusable approach for my further development in Embedded Systems and Robotics.
+I will also be able to use the same working method in later sprints, for example when designing a speed camera with additional inputs and outputs. The combination of technical analysis, visual translation, and structured documentation will therefore become a reusable approach for my further development in Embedded Systems and Robotics.
 
 ### Appendix
 
