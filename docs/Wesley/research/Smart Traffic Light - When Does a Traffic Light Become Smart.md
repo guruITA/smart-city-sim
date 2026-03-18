@@ -48,7 +48,7 @@ This first iteration is the foundation. At this stage, the system is still a nor
 
 - **FR1.** The system shall control three LEDs that represent red, yellow, and green.
     
-- **FR2.** The system shall switch between traffic light states in the order red, yellow, green, red.
+- **FR2.** The system shall switch between traffic light states in the order red, green, yellow, red.
     
 - **FR3.** The system shall use fixed timing values for each state.
     
@@ -176,7 +176,7 @@ Because smart traffic lights rely on real-time data, response time and reliabili
 
 - **AC1.** When the system starts, the red LED turns on first.
     
-- **AC2.** The system always follows the order red, yellow, green, red.
+- **AC2.** The system always follows the order red, green, yellow, red.
     
 - **AC3.** No conflicting LED combination occurs during ten full cycles.
     
