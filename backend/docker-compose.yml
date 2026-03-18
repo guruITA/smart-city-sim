@@ -1,0 +1,37 @@
+version: "3.9"
+
+services:
+  api:
+    build: .
+    container_name: citysim-api
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://citysim:citysim@db:5432/citysim
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./app:/app
+    restart: unless-stopped
+
+  db:
+    image: postgres:16-alpine
+    container_name: citysim-db
+    environment:
+      POSTGRES_USER: citysim
+      POSTGRES_PASSWORD: citysim
+      POSTGRES_DB: citysim
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U citysim"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    restart: unless-stopped
+
+volumes:
+  pgdata:
