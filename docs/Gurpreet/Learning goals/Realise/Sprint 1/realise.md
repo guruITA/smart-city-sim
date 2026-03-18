@@ -269,7 +269,7 @@ Based on this realise report, the following recommendations are made for the nex
 
 4. Check whether the protected power input section continues to work reliably during longer testing.
 
-5. Use the results of this realisation phase as direct input for the advising phase. In that phase, the current relay-based design should be evaluated against possible alternatives, such as a transistor-based or MOSFET-based switching design, in order to determine which solution is the most suitable recommendation for a future version of the smart streetlight.
+5. Use the results of this realisation phase as direct input for the advising phase. In that phase, the current relay-based design should be evaluated against possible alternatives, such as my current relay or a MOSFET-based switching design, in order to determine which solution is the most suitable recommendation for a future version of the smart streetlight.
 
 ## 15. Sources
 
