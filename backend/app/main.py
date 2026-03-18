@@ -1,3 +1,4 @@
+import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -34,6 +35,11 @@ app.add_middleware(
 # Register routers
 app.include_router(readings.router, prefix="/api/v1", tags=["readings"])
 app.include_router(parking.router, prefix="/api/v1/parking", tags=["parking"])
+
+
+# Serve parking dashboard at /dashboard
+static_dir = os.path.join(os.path.dirname(__file__), "static")
+app.mount("/dashboard", StaticFiles(directory=static_dir, html=True), name="dashboard")
 
 
 @app.get("/")

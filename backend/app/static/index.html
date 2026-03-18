@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>City Sim - Parking Dashboard</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: #0f1117;
+            color: #e1e4e8;
+            min-height: 100vh;
+            padding: 32px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: #8b949e;
+            font-size: 14px;
+        }
+
+        .stats {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 20px 32px;
+            text-align: center;
+            min-width: 140px;
+        }
+
+        .stat-card .number {
+            font-size: 36px;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .stat-card .label {
+            font-size: 13px;
+            color: #8b949e;
+            margin-top: 6px;
+        }
+
+        .stat-card.available .number { color: #3fb950; }
+        .stat-card.occupied .number { color: #f85149; }
+        .stat-card.total .number { color: #58a6ff; }
+
+        .spots-grid {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 40px;
+        }
+
+        .spot {
+            width: 160px;
+            height: 200px;
+            border-radius: 12px;
+            border: 2px solid #30363d;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .spot.free {
+            background: linear-gradient(135deg, #0d1f0d, #0f2b0f);
+            border-color: #238636;
+        }
+
+        .spot.occupied {
+            background: linear-gradient(135deg, #2d0e0e, #3b1111);
+            border-color: #da3633;
+        }
+
+        .spot .spot-number {
+            font-size: 14px;
+            color: #8b949e;
+            margin-bottom: 8px;
+        }
+
+        .spot .status-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+
+        .spot .status-text {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .spot.free .status-text { color: #3fb950; }
+        .spot.occupied .status-text { color: #f85149; }
+
+        .spot .distance {
+            font-size: 12px;
+            color: #8b949e;
+            margin-top: 6px;
+        }
+
+        .spot .updated {
+            font-size: 11px;
+            color: #484f58;
+            margin-top: 4px;
+        }
+
+        .connection-status {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .connection-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+
+        .connection-dot.connected { background: #3fb950; }
+        .connection-dot.disconnected { background: #f85149; }
+        .connection-dot.loading { background: #d29922; }
+
+        .connection-text {
+            font-size: 12px;
+            color: #8b949e;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 60px;
+            color: #484f58;
+        }
+
+        .no-data p { margin-bottom: 16px; }
+
+        .no-data code {
+            background: #161b22;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 13px;
+            color: #8b949e;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 12px;
+            color: #484f58;
+        }
+
+        .footer a { color: #58a6ff; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Parking Dashboard</h1>
+        <p>City Sim - The Embedded Alliance</p>
+    </div>
+
+    <div class="connection-status">
+        <span class="connection-dot loading" id="connDot"></span>
+        <span class="connection-text" id="connText">Connecting to API...</span>
+    </div>
+
+    <div class="stats">
+        <div class="stat-card total">
+            <div class="number" id="totalCount">-</div>
+            <div class="label">Total spots</div>
+        </div>
+        <div class="stat-card available">
+            <div class="number" id="availableCount">-</div>
+            <div class="label">Available</div>
+        </div>
+        <div class="stat-card occupied">
+            <div class="number" id="occupiedCount">-</div>
+            <div class="label">Occupied</div>
+        </div>
+    </div>
+
+    <div class="spots-grid" id="spotsGrid">
+        <div class="no-data">
+            <p>No parking spots registered yet.</p>
+            <p>Send a reading to create spots:</p>
+            <code>curl -X POST "http://localhost:8000/api/v1/parking/update/1?distance_cm=5.2"</code>
+        </div>
+    </div>
+
+    <div class="footer">
+        Auto-refreshes every 2 seconds | API: <a href="http://localhost:8000/docs">localhost:8000/docs</a>
+    </div>
+
+    <script>
+        const API_URL = "http://localhost:8000";
+
+        function timeAgo(dateString) {
+            const seconds = Math.floor((new Date() - new Date(dateString)) / 1000);
+            if (seconds < 5) return "just now";
+            if (seconds < 60) return seconds + "s ago";
+            if (seconds < 3600) return Math.floor(seconds / 60) + "m ago";
+            return Math.floor(seconds / 3600) + "h ago";
+        }
+
+        function renderSpots(data) {
+            document.getElementById("totalCount").textContent = data.total_spots;
+            document.getElementById("availableCount").textContent = data.available;
+            document.getElementById("occupiedCount").textContent = data.occupied;
+
+            const grid = document.getElementById("spotsGrid");
+
+            if (data.spots.length === 0) {
+                grid.innerHTML = '<div class="no-data"><p>No spots yet. Send a curl request.</p></div>';
+                return;
+            }
+
+            grid.innerHTML = data.spots.map(spot => `
+                <div class="spot ${spot.is_occupied ? 'occupied' : 'free'}">
+                    <div class="spot-number">Spot ${spot.spot_number}</div>
+                    <div class="status-icon">${spot.is_occupied ? '\u{1F697}' : '\u2705'}</div>
+                    <div class="status-text">${spot.is_occupied ? 'OCCUPIED' : 'FREE'}</div>
+                    <div class="distance">${spot.distance_cm.toFixed(1)} cm</div>
+                    <div class="updated">${timeAgo(spot.updated_at)}</div>
+                </div>
+            `).join("");
+        }
+
+        function setConnection(status) {
+            const dot = document.getElementById("connDot");
+            const text = document.getElementById("connText");
+            dot.className = "connection-dot " + status;
+            if (status === "connected") text.textContent = "Connected to API";
+            else if (status === "disconnected") text.textContent = "API offline - start Docker";
+            else text.textContent = "Connecting...";
+        }
+
+        async function fetchStatus() {
+            try {
+                const response = await fetch(API_URL + "/api/v1/parking/status");
+                const data = await response.json();
+                renderSpots(data);
+                setConnection("connected");
+            } catch (e) {
+                setConnection("disconnected");
+            }
+        }
+
+        fetchStatus();
+        setInterval(fetchStatus, 2000);
+    </script>
+</body>
+</html>
