@@ -1,8 +1,8 @@
-# City Sim Learning Group - Analysis
+# City sim learning group - Analysis
 
 ### Learning Question
 
-How can I analyse which components, GPIO connections, and power supply configuration are needed to build a safe, reliable, and scalable automatic smart streetlight prototype with the ESP32-S3 for Sprint 1?
+Which components, GPIO connections, and power supply configuration are most suitable for building a safe, reliable, and scalable automatic smart streetlight prototype with the ESP32-S3 for Sprint 1?
 
 ### S - Situation
 
