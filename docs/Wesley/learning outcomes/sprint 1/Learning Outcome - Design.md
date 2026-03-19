@@ -1,5 +1,16 @@
 # Sprint 1 — Learning Outcome (Design)
 
+- [Learning Question](#learning-question)
+- [S — Situation](#s--situation)
+- [T — Task](#t--task)
+- [A — Action](#a--action)
+- [R — Result](#r--result)
+- [R — Reflection](#r--reflection)
+- [T — Transfer](#t--transfer)
+- [Appendix A — Linked design proof and supporting files](#appendix-a--linked-design-proof-and-supporting-files)
+  - [A.1 Analysis basis](#a1-analysis-basis)
+  - [A.2 Fritzing design documentation](#a2-fritzing-design-documentation)
+  - [A.3 Wokwi design validation](#a3-wokwi-design-validation)
 
 
 ## Learning Question
