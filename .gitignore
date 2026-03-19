@@ -2,4 +2,9 @@ CLAUDE.md
 .claude/
 .claudeignore
 SETUP_GUIDE.md
+build/
+.vscode/
+.clang-format
+.clang-tidy
+sketch.yaml
 
