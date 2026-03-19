@@ -8,3 +8,9 @@ build/
 .clang-tidy
 sketch.yaml
 
+# Wokwi
+wokwi.toml
+diagram.json
+
+/*/Wesley/*/build/*
+/*/Wesley/*/build_wokwi/
