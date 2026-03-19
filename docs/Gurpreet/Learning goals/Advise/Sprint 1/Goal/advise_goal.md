@@ -44,4 +44,4 @@ I will also be able to use the same working method in later sprints, where I may
 
 ### Appendix
 
-The full advice document that belongs to this learning goal can be found [here]().
+The full advice document that belongs to this learning goal can be found [here](https://city-the-embedded-alliance-city-sim-learning-group-4a0740.dev.hihva.nl/Gurpreet/Learning%20goals/Advise/Sprint%201/Proof/advice/).

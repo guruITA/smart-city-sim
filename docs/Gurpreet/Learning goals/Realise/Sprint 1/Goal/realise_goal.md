@@ -44,4 +44,4 @@ In that way, the realisation phase will not only serve as the practical confirma
 
 ### Appendix
 
-The full realisation document that belongs to this learning goal can be found [here]().
+The full realisation document that belongs to this learning goal can be found [here](https://city-the-embedded-alliance-city-sim-learning-group-4a0740.dev.hihva.nl/Gurpreet/Learning%20goals/Realise/Sprint%201/Proof/realise/).
