@@ -4,6 +4,7 @@ const int RED_PIN = 4;
 const int YELLOW_PIN = 5;
 const int GREEN_PIN = 6;
 
+
 void allOff() {
   digitalWrite(RED_PIN, LOW);
   digitalWrite(YELLOW_PIN, LOW);
@@ -33,6 +34,7 @@ void greenOn() {
 
 void setup() {
   Serial.begin(115200);
+  pinMode(LED_BUILTIN, OUTPUT);
   
   //register pins
   pinMode(RED_PIN, OUTPUT);
@@ -40,6 +42,7 @@ void setup() {
   pinMode(GREEN_PIN, OUTPUT);
 
   // Safe startup: red first
+  digitalWrite(LED_BUILTIN, LOW);
   redOn();
 }
 
