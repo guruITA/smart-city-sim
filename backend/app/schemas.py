@@ -43,14 +43,14 @@ class ParkingStatusResponse(BaseModel):
 
 # --- Rail road crossing ---
 
-class Train(BaseModel):
-    is_approaching = bool
-    first_sensor_time = datetime
-    second_sensor_time = datetime
-    predicted_arrival_seconds = float
+class TrainResponse(BaseModel):
+    is_approaching: bool
+    first_sensor_time: datetime
+    second_sensor_time: datetime
+    predicted_arrival_seconds: float
 
-class Barrier(BaseModel):
-    is_closed = bool
-    input_mode = str
-    train_id = int 
-    updated_at = datetime
+class BarrierResponse(BaseModel):
+    is_closed: bool
+    input_mode: str
+    train_id:  int 
+    updated_at: datetime
