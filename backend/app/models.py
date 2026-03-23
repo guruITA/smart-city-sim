@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, Float, String, Boolean, DateTime, func
+from sqlalchemy import CheckConstraint, Column, ForeignKey, Integer, Float, String, Boolean, DateTime, func
 from database import Base
 
 
@@ -32,3 +32,29 @@ class ParkingSpot(Base):
     is_occupied = Column(Boolean, default=False)
     distance_cm = Column(Float, default=0.0)  # last measured distance
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+class Train(Base):
+    __tablename__ = "train"
+
+    id = Column(Integer, primary_key=True, index=True)
+    is_approaching = Column(Boolean, default=True)
+    first_sensor_time = Column(DateTime, nullable=True, default=None)
+    second_sensor_time = Column(DateTime, nullable=True, default=None)
+    predicted_arrival_seconds = Column(Float, nullable=True, default=None)
+    updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+
+class Barrier(Base):
+    __tablename__ = "barrier"
+    __table_args__ = (
+        CheckConstraint(
+            "input_mode IN ('manual', 'train')",
+            name="check_input_mode"
+        ),
+    )
+    
+    id = Column(Integer, primary_key=True, index=True)
+    is_closed = Column(Boolean, default=False)
+    input_mode = Column(String, default="manual")
+    train_id = Column(Integer, ForeignKey("train.id"))
+    closed_at = Column(DateTime(timezone=True), server_default=func.now())
