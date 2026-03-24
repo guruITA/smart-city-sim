@@ -1,3 +1,5 @@
+from typing import Optional
+
 from pydantic import BaseModel, Field
 from datetime import datetime
 
@@ -56,5 +58,10 @@ class TrainResponse(BaseModel):
 class BarrierResponse(BaseModel):
     is_closed: bool
     input_mode: str
-    train_id:  int 
-    closed_at: datetime
+    train_id:  int | None
+    created_at: datetime
+
+class BarrierCreate(BaseModel):
+    input_mode: str = Field(..., example="manual", description="Type of input (manual or train)")
+    is_closed: bool = Field(..., example=True, description="Barrier closing or opening")
+    train_id: Optional[int] = Field(None, example=123, description="Associated train ID (if input_mode is train)")

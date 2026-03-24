@@ -56,5 +56,5 @@ class Barrier(Base):
     id = Column(Integer, primary_key=True, index=True)
     is_closed = Column(Boolean, default=False)
     input_mode = Column(String, default="manual")
-    train_id = Column(Integer)
-    closed_at = Column(DateTime(timezone=True), server_default=func.now())
+    train_id = Column(Integer, nullable=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
