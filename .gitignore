@@ -7,6 +7,7 @@ build/
 .clang-format
 .clang-tidy
 sketch.yaml
+__pycache__
 
 # Wokwi
 wokwi.toml
