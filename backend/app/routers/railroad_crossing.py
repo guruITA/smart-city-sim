@@ -10,6 +10,30 @@ from schemas import TrainResponse, TrainSecondSensorUpdate
 router = APIRouter()
 
 
+@router.get("/railroadcrossing/train", response_model=list[TrainResponse])
+def get_trains(
+    limit: int = Query(default=50, ge=1, le=500, description="Max results"),
+    db: Session = Depends(get_db),
+):
+    """
+    Get recent train sensor readings, ordered by most recent first.
+    """
+    query = db.query(Train).order_by(Train.updated_at.desc())
+
+    return query.limit(limit).all()
+
+@router.get("/railroadcrossing/train/approaching", response_model=list[TrainResponse])
+def get_approaching_trains(
+    limit: int = Query(default=50, ge=1, le=500, description="Max results"),
+    db: Session = Depends(get_db),
+):
+    """
+    Get recent approaching trains, ordered by most recent first.
+    """
+    query = db.query(Train).filter(Train.is_approaching == True).order_by(Train.updated_at.desc())
+
+    return query.limit(limit).all()
+
 @router.post("/railroadcrossing/train/first", response_model= TrainResponse, status_code=201)
 def create_train_first_sensor( db: Session = Depends(get_db)):
     """Create a new train reading."""
@@ -62,27 +86,3 @@ def update_train_crossed(
     db.refresh(db_train)
 
     return db_train
-
-@router.get("/railroadcrossing/train", response_model=list[TrainResponse])
-def get_trains(
-    limit: int = Query(default=50, ge=1, le=500, description="Max results"),
-    db: Session = Depends(get_db),
-):
-    """
-    Get recent train sensor readings, ordered by most recent first.
-    """
-    query = db.query(Train).order_by(Train.updated_at.desc())
-
-    return query.limit(limit).all()
-
-@router.get("/railroadcrossing/train/approaching", response_model=list[TrainResponse])
-def get_approaching_trains(
-    limit: int = Query(default=50, ge=1, le=500, description="Max results"),
-    db: Session = Depends(get_db),
-):
-    """
-    Get recent approaching trains, ordered by most recent first.
-    """
-    query = db.query(Train).filter(Train.is_approaching == True).order_by(Train.updated_at.desc())
-
-    return query.limit(limit).all()

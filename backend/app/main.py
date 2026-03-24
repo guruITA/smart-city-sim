@@ -34,7 +34,7 @@ app.add_middleware(
 # Register routers
 app.include_router(readings.router, prefix="/api/v1", tags=["readings"])
 app.include_router(parking.router, prefix="/api/v1/parking", tags=["parking"])
-app.include_router(railroad_crossing.router, prefix="/api/v1/railroadcrossing/train", tags=["railroad crossing: train"])
+app.include_router(railroad_crossing.router, prefix="/api/v1/railroadcrossing/train", tags=["railroad crossing - train"])
 
 @app.get("/")
 def root():
