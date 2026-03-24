@@ -20,8 +20,8 @@
 #define HREF_GPIO_NUM 23
 #define PCLK_GPIO_NUM 22
 
-constexpr int FLASH_LED_PIN = 4;
-constexpr int TRIGGER_PIN = 13;
+#define FLASH_LED_PIN 4
+#define TRIGGER_PIN 13
 
 const char* AP_SSID = "ESP32CAM_CAPTURE";
 const char* AP_PASS = "12345678";
