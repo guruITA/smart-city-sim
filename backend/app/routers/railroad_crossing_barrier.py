@@ -9,8 +9,7 @@ from schemas import BarrierCreate, BarrierResponse
 
 router = APIRouter()
 
-
-@router.get("/railroadcrossing/barrier", response_model=list[BarrierResponse])
+@router.get("/", response_model=list[BarrierResponse])
 def get_barrier_logs(
     limit: int = Query(default=50, ge=1, le=500, description="Max results"),
     db: Session = Depends(get_db),
@@ -22,7 +21,7 @@ def get_barrier_logs(
 
     return query.limit(limit).all()
 
-@router.get("/railroadcrossing/barrier/is-closed", response_model=bool)
+@router.get("/is-closed", response_model=bool)
 def is_barrier_closed( db: Session = Depends(get_db)):
     """Return whether the barrier is currently closed based on latest log."""
 
@@ -37,7 +36,7 @@ def is_barrier_closed( db: Session = Depends(get_db)):
 
     return latest_log.is_closed
 
-@router.post("/railroadcrossing/barrier", response_model=BarrierResponse, status_code=201)
+@router.post("/", response_model=BarrierResponse, status_code=201)
 def create_barrier_log(barrier: BarrierCreate, db: Session = Depends(get_db)):
     """Create a new barrier log, optionally linked to a train."""
 

@@ -10,7 +10,7 @@ from schemas import TrainResponse, TrainSecondSensorUpdate
 router = APIRouter()
 
 
-@router.get("/railroadcrossing/train", response_model=list[TrainResponse])
+@router.get("/", response_model=list[TrainResponse])
 def get_trains(
     limit: int = Query(default=50, ge=1, le=500, description="Max results"),
     db: Session = Depends(get_db),
@@ -22,7 +22,7 @@ def get_trains(
 
     return query.limit(limit).all()
 
-@router.get("/railroadcrossing/train/approaching", response_model=list[TrainResponse])
+@router.get("/approaching", response_model=list[TrainResponse])
 def get_approaching_trains(
     limit: int = Query(default=50, ge=1, le=500, description="Max results"),
     db: Session = Depends(get_db),
@@ -34,7 +34,7 @@ def get_approaching_trains(
 
     return query.limit(limit).all()
 
-@router.post("/railroadcrossing/train/first", response_model= TrainResponse, status_code=201)
+@router.post("/first", response_model= TrainResponse, status_code=201)
 def create_train_first_sensor( db: Session = Depends(get_db)):
     """Create a new train reading."""
     db_train = Train()
@@ -46,7 +46,7 @@ def create_train_first_sensor( db: Session = Depends(get_db)):
 from datetime import datetime, timezone
 from fastapi import HTTPException
 
-@router.put("/railroadcrossing/train/{id}/second", response_model=TrainResponse)
+@router.put("/{id}/second", response_model=TrainResponse)
 def update_train_second_sensor(
     id: int,
     data: TrainSecondSensorUpdate,
@@ -67,7 +67,7 @@ def update_train_second_sensor(
 
     return db_train
 
-@router.put("/railroadcrossing/train/{id}/crossed", response_model=TrainResponse)
+@router.put("/{id}/crossed", response_model=TrainResponse)
 def update_train_crossed(
     id: int,
     db: Session = Depends(get_db)

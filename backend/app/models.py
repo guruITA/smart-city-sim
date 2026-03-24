@@ -38,9 +38,9 @@ class Train(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     is_approaching = Column(Boolean, default=True)
-    first_sensor_time = Column(DateTime, nullable=True, default=func.now())
-    second_sensor_time = Column(DateTime, nullable=True)
-    predicted_arrival_seconds = Column(Float, default=0.0)
+    first_sensor_time = Column(DateTime(timezone=True), nullable=True, default=func.now())
+    second_sensor_time = Column(DateTime(timezone=True), nullable=True)
+    predicted_arrival_seconds = Column(Float, nullable=True)
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
 

@@ -52,7 +52,7 @@ class TrainResponse(BaseModel):
     is_approaching: bool
     first_sensor_time: datetime
     second_sensor_time: datetime | None
-    predicted_arrival_seconds: float
+    predicted_arrival_seconds: float | None
     updated_at: datetime
 
 class BarrierResponse(BaseModel):
