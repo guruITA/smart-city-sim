@@ -609,7 +609,7 @@
                 return true;
             } catch (e) { return false; }
         }
-        
+
         async function loadApproachingTrains() {
             try {
                 const res = await fetch(API + "/api/v1/railroadcrossing/train/approaching");
@@ -630,7 +630,7 @@
                 const train = trains[0];
                 trainIdContainer.innerHTML = "Train ID: " + train.id;
 
-                const positions = { A: 0, B: 25, C: 100 }; // percentage positions
+                const positions = { A: 0, B: 25, C: 100 };
 
                 const baseLine = document.createElement("div");
                 baseLine.style.position = "absolute";
@@ -704,7 +704,7 @@
                 distBC.textContent = "BC = 1000m";
                 line.appendChild(distBC);
 
-                function updateRedLine() {
+                function animateLine() {
                     const now = Date.now();
                     let width = 0;
 
@@ -723,14 +723,10 @@
                     }
 
                     redLine.style.width = `${width}%`;
+                    requestAnimationFrame(animateLine);
                 }
 
-                updateRedLine();
-                const interval = setInterval(updateRedLine, 500);
-
-                if (train.predicted_arrival_seconds != null) {
-                    setTimeout(() => clearInterval(interval), (train.predicted_arrival_seconds + 1) * 1000);
-                }
+                requestAnimationFrame(animateLine);
 
             } catch (e) {
                 console.error("Failed to load approaching trains", e);
