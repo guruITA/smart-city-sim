@@ -43,22 +43,18 @@ class ParkingStatusResponse(BaseModel):
 
 # --- Rail road crossing ---
 
-class TrainCreate(BaseModel):
-    """Schema for POST /api/v1/readings — sent by ESP32 devices."""
-
-    is_approaching: bool = Field(..., example="True", description="If the train is approaching")
-    first_sensor_time: datetime = Field(..., example="2024-06-01T12:00:00Z", description="Timestamp of first sensor trigger")
-    second_sensor_time: datetime = Field(..., example="2024-06-01T12:00:00Z", description="Timestamp of second sensor trigger")
-    predicted_arrival_seconds: float = Field(default="", example=12.5, description="Predicted arrival time in seconds")
-
+class TrainSecondSensorUpdate(BaseModel):
+    predicted_arrival_seconds: float
 class TrainResponse(BaseModel):
+    id: int
     is_approaching: bool
     first_sensor_time: datetime
-    second_sensor_time: datetime
+    second_sensor_time: datetime | None
     predicted_arrival_seconds: float
+    updated_at: datetime
 
 class BarrierResponse(BaseModel):
     is_closed: bool
     input_mode: str
     train_id:  int 
-    updated_at: datetime
+    closed_at: datetime

@@ -38,9 +38,9 @@ class Train(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     is_approaching = Column(Boolean, default=True)
-    first_sensor_time = Column(DateTime, nullable=True, default=None)
-    second_sensor_time = Column(DateTime, nullable=True, default=None)
-    predicted_arrival_seconds = Column(Float, nullable=True, default=None)
+    first_sensor_time = Column(DateTime, nullable=True, default=func.now())
+    second_sensor_time = Column(DateTime, nullable=True)
+    predicted_arrival_seconds = Column(Float, default=0.0)
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
 
@@ -56,5 +56,5 @@ class Barrier(Base):
     id = Column(Integer, primary_key=True, index=True)
     is_closed = Column(Boolean, default=False)
     input_mode = Column(String, default="manual")
-    train_id = Column(Integer, ForeignKey("train.id"))
+    train_id = Column(Integer)
     closed_at = Column(DateTime(timezone=True), server_default=func.now())
