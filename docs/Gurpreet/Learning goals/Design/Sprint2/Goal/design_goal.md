@@ -11,3 +11,15 @@ In Sprint 2 of the City Sim Learning Group, I am no longer only focused on the p
 ### T - Task
 
 My task in this phase is to convert the outcomes of the Sprint 2 analysis phase into a clear and reproducible software design for the smart streetlight functionality. To do that, I need to determine which design requirements the code structure must meet, identify which parts of the smart streetlight logic should be separated into classes, describe the responsibilities of those classes, and define how those classes should work together inside one shared ESP32-S3 project. I also need to visualise these design choices in a UML design and document them clearly, so that the result can be used directly in the realisation phase and can also be understood, reused, and merged with the work of other team members.
+
+### A - Action
+
+### R - Result
+
+### R - Reflection
+
+### T - Transfer
+
+### Appendix
+
+The full design document that belongs to this learning goal can be found [here]().
