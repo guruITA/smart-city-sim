@@ -1,0 +1,86 @@
+# Sprint 1 — Learning Outcome (Realise)
+
+- [Learning Question](#learning-question)
+- [S — Situation](#s--situation)
+- [T — Task](#t--task)
+- [A — Action](#a--action)
+- [R — Result](#r--result)
+- [R — Reflection](#r--reflection)
+- [T — Transfer](#t--transfer)
+- [Appendix A — Linked realization proof and supporting files](#appendix-a--linked-realization-proof-and-supporting-files)
+  - [A.1 Analysis basis](#a1-analysis-basis)
+  - [A.2 Design basis](#a2-design-basis)
+  - [A.3 Realization proof](#a3-realization-proof)
+  - [A.4 Source code and demonstration](#a4-source-code-and-demonstration)
+
+## Learning Question
+
+How can I realize the designed first-iteration traffic light on the ESP32-S3, verify that the physical implementation matches the design, and prove with code, wiring, and testing that the prototype works reliably?
+
+## S — Situation
+
+After finishing the analysis and design of the first iteration, I moved to the realization phase. In the analysis, I defined the first version as a basic traffic light with three LED outputs, a fixed red → green → yellow → red sequence, safe startup in red, and no conflicting outputs. In the design phase, I translated those requirements into a concrete hardware and software design, documented in Fritzing and validated in Wokwi. That gave me a clear basis for realization: I was no longer experimenting without direction, but implementing a design that had already been reasoned about and checked.
+
+## T — Task
+
+For the realization part of this sprint, my task was to build the first-iteration traffic light on real hardware and implement the firmware so that the physical prototype behaved according to the designed state sequence and timing. I also needed to prove that the realized system matched the design by documenting the wiring, the GPIO mapping, the code, the physical setup, and the test results. The focus of this phase was not on adding smart features yet, but on successfully building and verifying a stable first working prototype.
+
+## A — Action
+
+I started from the design documentation and used it as the implementation guide. Based on the design, I connected the red, yellow, and green LEDs to the ESP32-S3 using the selected GPIO pins and the required resistors, with a shared ground return. I first compared the physical wiring to the Fritzing design so that the breadboard setup matched the intended hardware layout as closely as possible.
+
+After building the circuit, I wrote and uploaded the firmware in Arduino IDE. In the code, I implemented the fixed traffic-light sequence and made sure that only one LED state was active at a time. I also kept the startup state safe by ensuring that the system begins in red after reset or power-up. To support debugging, I added serial output so I could monitor which state was active while testing.
+
+Before and during physical realization, I used Wokwi as a reference to compare the intended behavior with the real setup. That helped me check whether the GPIO mapping, state order, and overall logic in hardware were consistent with the validated design. When the prototype behaved differently than expected, I used the design files and serial monitor output to trace the issue back to either wiring or code and correct it step by step.
+
+Finally, I tested the prototype by running repeated traffic-light cycles and observing whether the LEDs followed the correct order, whether the timing remained stable, and whether the system always restarted safely in red. I documented the realized setup with photo, code, so the implementation could be reviewed and reproduced.
+
+## R — Result
+
+The result of this realization phase is a working first-iteration traffic light prototype on the ESP32-S3. The physical circuit matches the earlier design, and the firmware successfully controls the red, yellow, and green LEDs in the intended fixed sequence. The system starts safely in red, cycles repeatedly through the traffic-light states, and avoids conflicting outputs.
+
+The realization proof now consists of the physical breadboard implementation, the firmware source code, photo of the realized circuit. Because the realization was based directly on the analysed requirements and documented design, I can clearly trace how the final prototype was built and why the implementation choices were made.
+
+## R — Reflection
+
+This phase taught me that realization in embedded systems is the step where design decisions are really tested. A design can look correct in documentation or simulation, but the physical build still requires careful checking of wiring, GPIO connections, polarity of components, and software behavior. I noticed that using Fritzing and Wokwi before building the real setup made realization much more structured, because I had a clear reference when debugging instead of relying on guesswork.
+
+I also learned that even a simple prototype benefits from explicit proof. Showing only that “it works” is weaker than showing how it was wired, how the code was implemented, and how the behavior was tested against the original requirements. That makes the realization phase not just a build step, but also a verification step.
+
+## T — Transfer
+
+I will reuse this realization approach in later iterations of the project. For future versions with more complex behavior, such as pedestrian inputs, sensor-based control, or multiple traffic-light units, I can follow the same workflow: start from analysed requirements, realize the design carefully in hardware, compare the build to the design documentation, verify behavior with tests, and document the proof clearly. This sprint showed me that a good realization phase depends strongly on the quality of the earlier analysis and design, and that those phases make later implementation faster and easier to debug.
+
+---
+
+## Appendix A — Linked realization proof and supporting files
+
+### A.1 Analysis basis
+
+This file contains the analysed scope, requirements, acceptance criteria, and hardware constraints that formed the basis for the realization.
+
+- `Learning Outcome - Analysis.md`
+
+### A.2 Design basis
+
+This file contains the design documentation that I used as the direct basis for realization, including the Fritzing design, GPIO choices, state model, timing, and design rationale.
+
+- `Learning Outcome - Design.md`
+- `Traffic Light - first iteration - fritzing.md`
+- `Traffic Light - first iteration - wokwi.md`
+
+### A.3 Realization basis
+
+This file contains the realization documentation for the first physical traffic-light prototype, including the implemented hardware setup, the uploaded Arduino code, and the test results used to verify correct startup, sequencing, timing, and stable repeated operation.
+
+- `Traffic Light - first iteration - implementation.md`
+
+## References
+
+List all sources used in a consistent citation style. Include documentation, tutorials, board references, and tools used during the realization phase.
+
+Examples:
+- Espressif Systems. (Year). *ESP32-S3 documentation*. Publisher/Website.
+- Fritzing. (Year). *Fritzing documentation or software page*.
+- Wokwi. (Year). *Wokwi ESP32 simulation documentation*.
+- Arduino. (Year). *Arduino IDE / language reference*.
