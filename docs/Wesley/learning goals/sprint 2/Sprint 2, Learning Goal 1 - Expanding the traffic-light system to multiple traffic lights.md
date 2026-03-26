@@ -1,4 +1,3 @@
-
 # Sprint 2 — Learning Goal 1: Expanding the traffic-light system to multiple traffic lights
 
 ## Learning Question
