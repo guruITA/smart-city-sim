@@ -6,7 +6,6 @@ build/
 .vscode/
 .clang-format
 .clang-tidy
-sketch.yaml
 __pycache__
 
 # Wokwi
