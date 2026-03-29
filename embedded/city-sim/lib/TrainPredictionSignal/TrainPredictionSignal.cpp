@@ -6,7 +6,7 @@
 TrainPredictionSignal::TrainPredictionSignal(int led1Pin, int led2Pin, int buzzerPin, int servoPin, int btnPin,
                                              int aBDistance, int bCDistance, unsigned int safetyMargin,
                                              int buzzerFreq, int buzzerResolution,
-                                             int barrierOpenAngle, int barrierClosedAngle, const String& apiBaseUrl)
+                                             int barrierOpenAngle, int barrierClosedAngle)
   : _led1Pin(led1Pin), _led2Pin(led2Pin), _buzzerPin(buzzerPin), _servoPin(servoPin), _btnPin(btnPin),
     _aBDistance(aBDistance), _bCDistance(bCDistance), _safetyMargin(safetyMargin),
     _buzzerFreq(buzzerFreq), _buzzerResolution(buzzerResolution),
@@ -15,7 +15,7 @@ TrainPredictionSignal::TrainPredictionSignal(int led1Pin, int led2Pin, int buzze
     _startMillis(0), _predictedTime(0),
     _buttonState(HIGH), _lastReading(HIGH), _lastDebounceTime(0),
     _blinkTimer(0), _ledToggle(false),
-    _apiBaseUrl(apiBaseUrl), _trainId(-1) {}
+    _trainId(-1) {}
 
 void TrainPredictionSignal::begin() {
   Serial.begin(115200);
@@ -26,7 +26,8 @@ void TrainPredictionSignal::begin() {
   _servo.attach(_servoPin, 500, 2400);
   _servo.write(_barrierOpenAngle);
   _trainId = -1;
-  Serial.printf("Train Prediction Signal Setup complete, apiBaseUrl=%s\n", _apiBaseUrl.c_str());
+  String currentApiBaseUrl = NetworkController::getApiBaseUrl();
+  Serial.printf("Train Prediction Signal Setup complete, apiBaseUrl=%s\n", currentApiBaseUrl.c_str());
 }
 
 void TrainPredictionSignal::update() {
@@ -36,7 +37,7 @@ void TrainPredictionSignal::update() {
 }
 
 bool TrainPredictionSignal::httpRequest(const String& method, const String& endpoint, const String& body, int& httpCode, String& responseBody) {
-  String url = _apiBaseUrl + endpoint;
+  String url = NetworkController::buildUrl(endpoint);
   Serial.printf("TrainPredictionSignal HTTP %s %s\n", method.c_str(), url.c_str());
   bool ok = NetworkController::request(url, method, body, httpCode, responseBody);
   if (!ok) {

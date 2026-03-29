@@ -51,8 +51,7 @@ private:
   const unsigned long _blinkInterval = 400;
   bool _ledToggle;
 
-  // API / train state
-  String _apiBaseUrl;
+  // Train state
   int _trainId;
 
   // Methods
@@ -69,8 +68,7 @@ public:
   TrainPredictionSignal(int led1Pin, int led2Pin, int buzzerPin, int servoPin, int btnPin,
                         int aBDistance = 200, int bCDistance = 1000, unsigned int safetyMargin = 5000,
                         int buzzerFreq = 1000, int buzzerResolution = 8,
-                        int barrierOpenAngle = 0, int barrierClosedAngle = 90,
-                        const String& apiBaseUrl = "http://127.0.0.1:8000");
+                        int barrierOpenAngle = 0, int barrierClosedAngle = 90);
 
   void begin();
   void update();

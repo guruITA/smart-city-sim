@@ -1,5 +1,36 @@
 #include "NetworkController.h"
 
+String NetworkController::_apiBaseUrl = "";
+
+void NetworkController::setApiBaseUrl(const String& apiBaseUrl) {
+  _apiBaseUrl = apiBaseUrl;
+  if (!_apiBaseUrl.endsWith("/")) {
+    _apiBaseUrl += "/";
+  }
+}
+
+String NetworkController::getApiBaseUrl() {
+  return _apiBaseUrl;
+}
+
+String NetworkController::buildUrl(const String& endpoint) {
+  if (_apiBaseUrl.length() == 0 || endpoint.length() == 0) {
+    return endpoint;
+  }
+
+  if (endpoint.startsWith("http://") || endpoint.startsWith("https://")) {
+    return endpoint;
+  }
+
+  String normalized = _apiBaseUrl;
+  if (endpoint.startsWith("/")) {
+    normalized += endpoint.substring(1);
+  } else {
+    normalized += endpoint;
+  }
+  return normalized;
+}
+
 bool NetworkController::begin(const char* ssid, const char* password, unsigned long timeoutMs) {
   if (WiFi.status() == WL_CONNECTED) {
     Serial.println("Network already connected");

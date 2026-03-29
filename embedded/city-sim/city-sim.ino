@@ -12,7 +12,7 @@ const char* WIFI_PASSWORD = "";
 const String API_BASE_URL = "http://127.0.0.1:8000";
 
 StreetLight lamp(4, 5, 650, 1000);
-TrainPredictionSignal trainSignal(37, 36, 42, 18, 45, 200, 1000, 5000, 1000, 8, 0, 90, API_BASE_URL);
+TrainPredictionSignal trainSignal(37, 36, 42, 18, 45, 200, 1000, 5000, 1000, 8, 0, 90);
 
 void setup() {
   pinMode(builtin, OUTPUT);
@@ -26,6 +26,8 @@ void setup() {
   } else {
     Serial.println("WiFi not connected, some network features will be skipped");
   }
+
+  NetworkController::setApiBaseUrl(API_BASE_URL);
 
   lamp.begin();
   trainSignal.begin();
