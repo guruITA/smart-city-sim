@@ -51,16 +51,26 @@ private:
   const unsigned long _blinkInterval = 400;
   bool _ledToggle;
 
+  // API / train state
+  String _apiBaseUrl;
+  int _trainId;
+
   // Methods
   void handleServo();
   void handleWarningLEDSAndSound();
   void handleButton();
 
+  bool httpRequest(const String& method, const String& endpoint, const String& body, int& httpCode, String& responseBody);
+  bool createTrain();
+  bool updateTrainSecondSensor(float predictedSeconds);
+  bool updateTrainCrossed();
+
 public:
   TrainPredictionSignal(int led1Pin, int led2Pin, int buzzerPin, int servoPin, int btnPin,
                         int aBDistance = 200, int bCDistance = 1000, unsigned int safetyMargin = 5000,
                         int buzzerFreq = 1000, int buzzerResolution = 8,
-                        int barrierOpenAngle = 0, int barrierClosedAngle = 90);
+                        int barrierOpenAngle = 0, int barrierClosedAngle = 90,
+                        const String& apiBaseUrl = "http://127.0.0.1:8000");
 
   void begin();
   void update();
