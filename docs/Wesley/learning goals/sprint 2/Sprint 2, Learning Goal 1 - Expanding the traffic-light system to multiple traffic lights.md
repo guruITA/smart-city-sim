@@ -2,147 +2,39 @@
 
 ## Learning Question
 
-How can I extend my first traffic-light prototype into a system with multiple traffic lights that operate together safely, consistently, and according to a clear control structure?
+How can I turn my first simple traffic light into a small crossroads system with multiple traffic lights that work together safely and clearly?
 
 ## S — Situation
 
-In Sprint 1, I built the first iteration of my traffic-light project. That version focused on one traffic light with a fixed sequence, safe startup in red, and no conflicting outputs. That first version helped me understand the ESP32-S3, the basic wiring, and the control logic for one traffic light.
+At the start of Sprint 2, I already have one working traffic light. I built it with an ESP32-S3, three LEDs, and one resistor for each LED. The system starts safely on red, changes in a fixed order from red to green to yellow, and repeats that cycle correctly. I tested it in simulation and on real hardware, so I know the first version works.
 
-For Sprint 2, I want to make the project more realistic by expanding it from one traffic light to multiple traffic lights. This is the next logical step, because a real traffic situation usually involves more than one light that must work together. That means I now need to think not only about individual LED control, but also about coordination, shared timing, safe state transitions, and a structure that can still be understood and tested.
+That first version helped me understand the basics: how to connect the lights, how to control them, and how to make sure the system stays safe by never turning on conflicting lights at the same time. Right now, the setup only represents one traffic light. That is fine for learning the basics, but it does not yet reflect a real traffic situation. A real crossroads has more than one traffic light, and those lights must work together.
 
-## T — Task
-
-For this learning goal, I will define, design, and prepare the second iteration of the traffic-light system so that multiple traffic lights can operate together in one setup. The main goal is to move from a single-light prototype to a coordinated multi-light system without creating unsafe or conflicting states.
-
-I will make this learning goal concrete by producing the following deliverables:
-
-### Deliverables
-
-**1. Analysis document**
-A document in which I describe:
-
-* the scope of the multi-traffic-light iteration,
-* the functional requirements for controlling multiple traffic lights,
-* the constraints of the ESP32-S3 and available GPIO pins,
-* the safety requirements for avoiding conflicting green states,
-* the acceptance criteria for when the setup is considered correct.
-
-**2. Design document**
-A document in which I show:
-
-* the hardware structure for multiple traffic lights,
-* the pin mapping for all LEDs and components,
-* the state structure for each traffic light,
-* the timing and coordination between the lights,
-* a diagram or table that shows how the lights interact.
-
-**3. Realise document**
-A document in which I record:
-
-* how I build the setup first on the breadboard,
-* how I test the multi-light behavior on the breadboard,
-* how I transfer the working setup into the project tile,
-* what code is used to control the coordinated traffic-light behavior,
-* what test results show that the implementation works correctly.
-
-**4. Advice document**
-A document in which I evaluate:
-
-* whether the multi-traffic-light setup is understandable and maintainable,
-* whether the chosen control structure is suitable for the next iteration,
-* what technical limitations I encountered,
-* what I would improve before continuing with more advanced smart behavior.
-
-## A — Action
-
-Document the steps you take. Be detailed: tools, datasets, parameters, prompts, code snippets, design sketches, and decisions. Include dead-ends—it shows learning.
-
-## R — Result
-
-Present the outcomes clearly and objectively. Include visuals or tables if helpful.
-
-## R — Reflection
-
-Analyze the meaning of the results. Connect back to your Learning Question and to theory/practice.
-
-## T — Transfer
-
-State how you will transfer this learning to new contexts. What’s next?
-
-## Appendix (optional)
-
-Detailed logs
-Additional figures/tables
-Full code/artefacts
-
-## References
-
-List all sources you used. Use a consistent citation style (e.g., APA/IEEE). Include URLs with access dates for web resources.
-
-Author, A. (Year). Title. Publisher. [https://link](https://link) (accessed YYYY-MM-DD)
-Organization. (Year). Title of webpage/report. [https://link](https://link) (accessed YYYY-MM-DD)
-Dataset/Tool. Version. Provider. [https://link](https://link) (accessed YYYY-MM-DD)
-
----
-
----
-
----
-
-# Sprint 2, Learning Goal 4: Applying backend logic in the traffic-light behavior
-
-## Learning Question
-
-How can I apply backend-driven logic in my traffic-light prototype while keeping the local traffic-light behavior safe, predictable, and technically clear?
-
-## S — Situation
-
-Once the traffic-light system can send data to the backend and receive information back, the next challenge is how the local controller should use that backend information in its actual behavior. This is an important step, because a smart traffic-light system does not become smart only by communicating with a backend. It becomes smart when that communication influences decisions in the system in a useful and controlled way.
-
-For Sprint 2, I therefore want to focus on the relationship between backend logic and local safety. The backend may decide or suggest what should happen, but the local traffic-light controller still needs to remain safe and understandable. That means I need to think clearly about what logic belongs in the backend, what safety rules must remain local, and how to prevent invalid or conflicting traffic-light behavior.
+In this sprint, I want to take the next step by expanding my project from one traffic light to multiple traffic lights. The reason is practical: traffic lights are not useful on their own at a crossroads. They need to be coordinated so road users can clearly understand when they must stop and when they may go. If that coordination is wrong, the situation becomes confusing or unsafe. By adding multiple traffic lights, I move from a simple demo to a more realistic traffic situation.
 
 ## T — Task
 
-For this learning goal, I will investigate and prepare how backend logic can influence the local traffic-light behavior without removing local control over safety. The main goal is to create a clear and testable approach in which backend decisions are applied only within safe boundaries.
+For this learning goal, my task is to turn my first working traffic light into a small crossroads system with multiple traffic lights that can work together properly. The purpose of this step is not only to add more lights, but to make sure the full situation remains understandable and safe. I want to solve the practical problem that one traffic light on its own does not yet show how traffic control works in a real environment.
 
-I will make this learning goal concrete by producing the following deliverables:
+To do that, I will first work out what the expanded system needs to do and what rules it has to follow. After that, I will design how the traffic lights should be connected and how they should take turns. I will then build and test the setup, first on the breadboard and later in the project tile. During that process, I will check whether the lights work together in a logical way and whether unsafe combinations are prevented. The goal is to create a working multi-traffic-light system that is not only technically correct, but also makes sense from the perspective of real traffic use.
 
 ### Deliverables
 
-**1. Analysis document**
-A document in which I describe:
+1. Analysis document
 
-* what decisions may come from the backend,
-* what decisions must remain local on the ESP32-S3,
-* what safety rules must always be enforced locally,
-* the risks of invalid or unsafe backend instructions,
-* the acceptance criteria for backend-driven traffic-light control.
+In this document, I explain what I am adding in this second version of the project and what the crossroads system should do in practice. I describe the most important safety rules that the system has to follow so that the traffic lights work together in a clear and safe way. I also explain what I see as a correct result for this step and which limits I still have in my current hardware setup.
 
-**2. Design document**
-A document in which I show:
+2. Design document
 
-* the division of responsibility between backend logic and local control logic,
-* the state model for applying backend-driven behavior,
-* the fallback behavior when backend input is invalid or unavailable,
-* the safety checks that block unsafe state changes,
-* how the design prevents conflicting traffic-light states.
+In this document, I show how the multiple traffic lights are connected and which pins and components I use for the full setup. I explain how the traffic lights are grouped and how they take turns during the traffic cycle. I also include a diagram or table that makes clear how the full system works as one coordinated setup.
 
-**3. Realise document**
-A document in which I record:
+3. Realisation document
 
-* how I implement backend-influenced logic in the breadboard setup,
-* how I test whether the local controller accepts or rejects backend instructions correctly,
-* how I verify that local safety rules always remain active,
-* how I transfer the working setup into the project tile,
-* what tests prove that backend-driven behavior works without unsafe states.
+In this document, I record how I first build the setup on a breadboard and how I test whether the traffic lights work together correctly. I describe how I transfer the working setup into the project tile and which code I use to control the different traffic lights. I also show the test results that prove the system works safely and as intended.
 
-**4. Advice document**
-A document in which I evaluate:
+4. Advice document
 
-* whether the backend-driven logic is suitable for the project,
-* whether the safety strategy is strong enough,
-* what limitations or risks remain,
-* what should be changed before this logic is expanded further in a next iteration.
+In this document, I evaluate whether the system is easy to understand and whether the chosen structure is good enough for the next sprint. I reflect on the problems or limitations I ran into during this step and explain what I would improve before continuing with smarter behaviour in a later iteration.
 
 ## A — Action
 
