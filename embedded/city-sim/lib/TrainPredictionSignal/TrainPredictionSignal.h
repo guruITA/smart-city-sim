@@ -51,10 +51,18 @@ private:
   const unsigned long _blinkInterval = 400;
   bool _ledToggle;
 
+  // Train state
+  int _trainId;
+
   // Methods
   void handleServo();
   void handleWarningLEDSAndSound();
   void handleButton();
+
+  bool httpRequest(const String& method, const String& endpoint, const String& body, int& httpCode, String& responseBody);
+  bool createTrain();
+  bool updateTrainSecondSensor(float predictedSeconds);
+  bool updateTrainCrossed();
 
 public:
   TrainPredictionSignal(int led1Pin, int led2Pin, int buzzerPin, int servoPin, int btnPin,

@@ -7,9 +7,10 @@ profiles:
     libraries:
       - dir: lib/StreetLight
       - dir: lib/TrainPredictionSignal
+      - dir: lib/NetworkController
       - ESP32Servo (3.1.3)
     programmer: ""
-    port: COM7
+    port: COM11
     port_config:
       baudrate: "115200"
       lineEnding: "\r\n"
