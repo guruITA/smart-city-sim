@@ -1,0 +1,16 @@
+CLAUDE.md
+.claude/
+.claudeignore
+SETUP_GUIDE.md
+build/
+.vscode/
+.clang-format
+.clang-tidy
+__pycache__
+
+# Wokwi
+wokwi.toml
+diagram.json
+
+/*/Wesley/*/build/*
+/*/Wesley/*/build_wokwi/
