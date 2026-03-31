@@ -217,7 +217,7 @@ After creating the reusable component, the smart streetlight was integrated into
 
 ```cpp
 #include "NetworkController.h"
-#include "Streetlight.h"
+#include "StreetLight.h"
 #include "TrainPredictionSignal.h"
 
 #define builtin LED_BUILTIN
