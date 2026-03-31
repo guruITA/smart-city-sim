@@ -215,7 +215,7 @@ Compared with the original standalone sketch, the logic is now grouped more clea
 
 After creating the reusable component, the smart streetlight was integrated into the shared `city-sim.ino` file. In this file, the smart streetlight is no longer implemented directly. Instead, the main project includes the smart streetlight header, creates a `StreetLight` object, and calls its methods from the central `setup()` and `loop()` functions.
 
-```cpp
+```txt
   #include "NetworkController.h"
   #include "StreetLight.h"
   #include "TrainPredictionSignal.h"
