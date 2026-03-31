@@ -135,7 +135,7 @@ The header file was used to define the reusable smart streetlight component.
 
 In this file, the `StreetLight` class was declared. The file contains the private attributes for the LDR pin, relay pin, threshold value, interval, and timing variable. It also contains the public constructor and the public methods `begin()` and `update()`.
 
-```cpp
+```txt
     #ifndef STREETLIGHT_H
     #define STREETLIGHT_H
 
