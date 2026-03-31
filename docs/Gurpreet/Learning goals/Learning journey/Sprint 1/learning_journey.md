@@ -4,23 +4,21 @@
 - Date: 11-2-2026
 
 ## Table of Contents
-- [Learning journey](#learning-journey)
-  - [Table of Contents](#table-of-contents)
-  - [What is a smart streetlight?](#what-is-a-smart-streetlight)
-  - [My current goal: Automatic Smart Streetlight](#my-current-goal-automatic-smart-streetlight)
-    - [Functional requirements](#functional-requirements)
-    - [Non-functional requirements](#non-functional-requirements)
-  - [Findings during research](#findings-during-research)
-  - [Total power consumption](#total-power-consumption)
-    - [LEDs](#leds)
-    - [Relay module](#relay-module)
-    - [LDR-module](#ldr-module)
-    - [ESP32-S3](#esp32-s3)
-    - [Total current (without Wi-Fi and 20 LEDs)](#total-current-without-wi-fi-and-20-leds)
-  - [Power supply decision](#power-supply-decision)
-  - [Conclusion](#conclusion)
-  - [Sources (used scribbr)](#sources-used-scribbr)
-
+- [Table of Contents](#table-of-contents)
+- [What is a smart streetlight?](#what-is-a-smart-streetlight)
+- [My current goal: Automatic Smart Streetlight](#my-current-goal-automatic-smart-streetlight)
+  - [Functional requirements](#functional-requirements)
+  - [Non-functional requirements](#non-functional-requirements)
+- [Findings during research](#findings-during-research)
+- [Total power consumption](#total-power-consumption)
+  - [LEDs](#leds)
+  - [Relay module](#relay-module)
+  - [LDR-module](#ldr-module)
+  - [ESP32-S3](#esp32-s3)
+  - [Total current (without Wi-Fi and 20 LEDs)](#total-current-without-wi-fi-and-20-leds)
+- [Power supply decision](#power-supply-decision)
+- [Conclusion](#conclusion)
+- [Sources (used scribbr)](#sources-used-scribbr)
 
 ## What is a smart streetlight?
 
