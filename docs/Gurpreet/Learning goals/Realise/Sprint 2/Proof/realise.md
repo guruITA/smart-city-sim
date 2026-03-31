@@ -135,30 +135,30 @@ The header file was used to define the reusable smart streetlight component.
 
 In this file, the `StreetLight` class was declared. The file contains the private attributes for the LDR pin, relay pin, threshold value, interval, and timing variable. It also contains the public constructor and the public methods `begin()` and `update()`.
 
-```txt
-  #ifndef STREETLIGHT_H
-  #define STREETLIGHT_H
+```cpp
+#ifndef STREETLIGHT_H
+#define STREETLIGHT_H
 
-  #include <Arduino.h>
+#include <Arduino.h>
 
-  class StreetLight {
+class StreetLight {
 
-  private:
-    int _ldrPin;
-    int _relayPin;
-    int _threshold;
+private:
+  int _ldrPin;
+  int _relayPin;
+  int _threshold;
 
-    int _interval;
-    unsigned long _previousMillis;
+  int _interval;
+  unsigned long _previousMillis;
 
-  public:
-    StreetLight(int ldrPin, int relayPin, int threshold, int interval);
+public:
+  StreetLight(int ldrPin, int relayPin, int threshold, int interval);
 
-    void begin();
-    void update();
-  };
+  void begin();
+  void update();
+};
 
-  #endif
+#endif
 ```
 
 This implementation follows the intended role of the header file, because it defines the interface of the smart streetlight component without placing the full working logic in the main project file.
@@ -169,44 +169,44 @@ The `StreetLight.cpp` file was used to implement the actual behaviour of the sma
 
 This file contains the constructor, the initialisation logic inside `begin()`, and the operational logic inside `update()`. In this way, the original standalone behaviour was moved out of the main sketch and placed into the internal implementation of the component.
 
-```txt
-  #include "StreetLight.h"
+```cpp
+#include "StreetLight.h"
 
-  StreetLight::StreetLight(int ldrPin, int relayPin, int threshold, int interval) {
-    _ldrPin = ldrPin;
-    _relayPin = relayPin;
-    _threshold = threshold;
-    _interval = interval;
-    _previousMillis = 0;
-  }
+StreetLight::StreetLight(int ldrPin, int relayPin, int threshold, int interval) {
+  _ldrPin = ldrPin;
+  _relayPin = relayPin;
+  _threshold = threshold;
+  _interval = interval;
+  _previousMillis = 0;
+}
 
-  void StreetLight::begin() {
-    Serial.begin(115200);
-    pinMode(_ldrPin, INPUT);
-    pinMode(_relayPin, OUTPUT);
-    Serial.println("Automatic Street Light System");
-  }
+void StreetLight::begin() {
+  Serial.begin(115200);
+  pinMode(_ldrPin, INPUT);
+  pinMode(_relayPin, OUTPUT);
+  Serial.println("Automatic Street Light System");
+}
 
-  void StreetLight::update() {
-    unsigned long currentMillis = millis();
+void StreetLight::update() {
+  unsigned long currentMillis = millis();
 
-    if (currentMillis - _previousMillis >= _interval) {
-      _previousMillis = currentMillis;
+  if (currentMillis - _previousMillis >= _interval) {
+    _previousMillis = currentMillis;
 
-      int lightLevel = analogRead(_ldrPin);
+    int lightLevel = analogRead(_ldrPin);
 
-      Serial.print("Light Level: ");
-      Serial.println(lightLevel);
+    Serial.print("Light Level: ");
+    Serial.println(lightLevel);
 
-      if (lightLevel > _threshold) {
-        digitalWrite(_relayPin, HIGH);
-        Serial.println("It's dark! Turning light on...");
-      } else {
-        digitalWrite(_relayPin, LOW);
-        Serial.println("It's bright! Turning light off...");
-      }
+    if (lightLevel > _threshold) {
+      digitalWrite(_relayPin, HIGH);
+      Serial.println("It's dark! Turning light on...");
+    } else {
+      digitalWrite(_relayPin, LOW);
+      Serial.println("It's bright! Turning light off...");
     }
   }
+}
 ```
 
 Compared with the original standalone sketch, the logic is now grouped more clearly. The sensor reading, threshold comparison, relay switching, and timed updates are all handled by the smart streetlight component itself.
@@ -216,45 +216,45 @@ Compared with the original standalone sketch, the logic is now grouped more clea
 After creating the reusable component, the smart streetlight was integrated into the shared `city-sim.ino` file. In this file, the smart streetlight is no longer implemented directly. Instead, the main project includes the smart streetlight header, creates a `StreetLight` object, and calls its methods from the central `setup()` and `loop()` functions.
 
 ```cpp
-  #include "NetworkController.h"
-  #include "StreetLight.h"
-  #include "TrainPredictionSignal.h"
+#include "NetworkController.h"
+#include "Streetlight.h"
+#include "TrainPredictionSignal.h"
 
-  #define builtin LED_BUILTIN
+#define builtin LED_BUILTIN
 
-  //  WiFi details
-  const char* WIFI_SSID = "";
-  const char* WIFI_PASSWORD = "";
+//  WiFi details
+const char* WIFI_SSID = "";
+const char* WIFI_PASSWORD = "";
 
-  // backend URL
-  const String API_BASE_URL = "http://127.0.0.1:8000";
+// backend URL
+const String API_BASE_URL = "http://127.0.0.1:8000";
 
-  StreetLight lamp(4, 5, 650, 1000);
-  TrainPredictionSignal trainSignal(37, 36, 42, 18, 45, 200, 1000, 5000, 1000, 8, 0, 90);
+StreetLight lamp(4, 5, 650, 1000);
+TrainPredictionSignal trainSignal(37, 36, 42, 18, 45, 200, 1000, 5000, 1000, 8, 0, 90);
 
-  void setup() {
-    pinMode(builtin, OUTPUT);
-    digitalWrite(builtin, LOW);
+void setup() {
+  pinMode(builtin, OUTPUT);
+  digitalWrite(builtin, LOW);
 
-    Serial.begin(115200);
-    Serial.println("Setup start");
+  Serial.begin(115200);
+  Serial.println("Setup start");
 
-    if (NetworkController::begin(WIFI_SSID, WIFI_PASSWORD)) {
-      Serial.println("WiFi connected, network fetch availability up");
-    } else {
-      Serial.println("WiFi not connected, some network features will be skipped");
-    }
-
-    NetworkController::setApiBaseUrl(API_BASE_URL);
-
-    lamp.begin();
-    trainSignal.begin();
+  if (NetworkController::begin(WIFI_SSID, WIFI_PASSWORD)) {
+    Serial.println("WiFi connected, network fetch availability up");
+  } else {
+    Serial.println("WiFi not connected, some network features will be skipped");
   }
 
-  void loop() {
-    lamp.update();
-    trainSignal.update();
-  }
+  NetworkController::setApiBaseUrl(API_BASE_URL);
+
+  lamp.begin();
+  trainSignal.begin();
+}
+
+void loop() {
+  lamp.update();
+  trainSignal.update();
+}
 ```
 
 This shows clearly that the smart streetlight now functions as one module inside a wider City Hub project together with other modules. The shared main file is now more focused on project integration instead of containing all smart streetlight logic itself.
