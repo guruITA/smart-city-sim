@@ -137,6 +137,7 @@ In this file, the `StreetLight` class was declared. The file contains the privat
 
 
 
+
 This implementation follows the intended role of the header file, because it defines the interface of the smart streetlight component without placing the full working logic in the main project file.
 
 ### 9.4 Implementing the cpp file
@@ -153,7 +154,47 @@ Compared with the original standalone sketch, the logic is now grouped more clea
 
 After creating the reusable component, the smart streetlight was integrated into the shared `city-sim.ino` file. In this file, the smart streetlight is no longer implemented directly. Instead, the main project includes the smart streetlight header, creates a `StreetLight` object, and calls its methods from the central `setup()` and `loop()` functions.
 
+```cpp
+#include "NetworkController.h"
+#include "StreetLight.h"
+#include "TrainPredictionSignal.h"
 
+#define builtin LED_BUILTIN
+
+//  WiFi details
+const char* WIFI_SSID = "";
+const char* WIFI_PASSWORD = "";
+
+// backend URL
+const String API_BASE_URL = "http://127.0.0.1:8000";
+
+StreetLight lamp(4, 5, 650, 1000);
+TrainPredictionSignal trainSignal(37, 36, 42, 18, 45, 200, 1000, 5000, 1000, 8, 0, 90);
+
+void setup() {
+  pinMode(builtin, OUTPUT);
+  digitalWrite(builtin, LOW);
+
+  Serial.begin(115200);
+  Serial.println("Setup start");
+
+  if (NetworkController::begin(WIFI_SSID, WIFI_PASSWORD)) {
+    Serial.println("WiFi connected, network fetch availability up");
+  } else {
+    Serial.println("WiFi not connected, some network features will be skipped");
+  }
+
+  NetworkController::setApiBaseUrl(API_BASE_URL);
+
+  lamp.begin();
+  trainSignal.begin();
+}
+
+void loop() {
+  lamp.update();
+  trainSignal.update();
+}
+```
 
 This shows clearly that the smart streetlight now functions as one module inside a wider City Hub project together with other modules. The shared main file is now more focused on project integration instead of containing all smart streetlight logic itself.
 
