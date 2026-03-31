@@ -135,30 +135,30 @@ The header file was used to define the reusable smart streetlight component.
 
 In this file, the `StreetLight` class was declared. The file contains the private attributes for the LDR pin, relay pin, threshold value, interval, and timing variable. It also contains the public constructor and the public methods `begin()` and `update()`.
 
-```txt
-    #ifndef STREETLIGHT_H
-    #define STREETLIGHT_H
+```
+#ifndef STREETLIGHT_H
+#define STREETLIGHT_H
 
-    #include <Arduino.h>
+#include <Arduino.h>
 
-    class StreetLight {
+class StreetLight {
 
-    private:
-      int _ldrPin;
-      int _relayPin;
-      int _threshold;
+private:
+  int _ldrPin;
+  int _relayPin;
+  int _threshold;
 
-      int _interval;
-      unsigned long _previousMillis;
+  int _interval;
+  unsigned long _previousMillis;
 
-    public:
-      StreetLight(int ldrPin, int relayPin, int threshold, int interval);
+public:
+  StreetLight(int ldrPin, int relayPin, int threshold, int interval);
 
-      void begin();
-      void update();
-    };
+  void begin();
+  void update();
+};
 
-    #endif
+#endif
 ```
 
 This implementation follows the intended role of the header file, because it defines the interface of the smart streetlight component without placing the full working logic in the main project file.
