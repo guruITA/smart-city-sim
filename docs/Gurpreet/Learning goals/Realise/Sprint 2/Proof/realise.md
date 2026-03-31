@@ -135,7 +135,7 @@ The header file was used to define the reusable smart streetlight component.
 
 In this file, the `StreetLight` class was declared. The file contains the private attributes for the LDR pin, relay pin, threshold value, interval, and timing variable. It also contains the public constructor and the public methods `begin()` and `update()`.
 
-```txt
+```cpp
   #ifndef STREETLIGHT_H
   #define STREETLIGHT_H
 
@@ -169,7 +169,7 @@ The `StreetLight.cpp` file was used to implement the actual behaviour of the sma
 
 This file contains the constructor, the initialisation logic inside `begin()`, and the operational logic inside `update()`. In this way, the original standalone behaviour was moved out of the main sketch and placed into the internal implementation of the component.
 
-```txt
+```cpp
   #include "StreetLight.h"
 
   StreetLight::StreetLight(int ldrPin, int relayPin, int threshold, int interval) {
@@ -215,7 +215,7 @@ Compared with the original standalone sketch, the logic is now grouped more clea
 
 After creating the reusable component, the smart streetlight was integrated into the shared `city-sim.ino` file. In this file, the smart streetlight is no longer implemented directly. Instead, the main project includes the smart streetlight header, creates a `StreetLight` object, and calls its methods from the central `setup()` and `loop()` functions.
 
-```txt
+```cpp
   #include "NetworkController.h"
   #include "StreetLight.h"
   #include "TrainPredictionSignal.h"
