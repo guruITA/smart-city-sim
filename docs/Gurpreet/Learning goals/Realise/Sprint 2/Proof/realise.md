@@ -146,7 +146,31 @@ The `StreetLight.cpp` file was used to implement the actual behaviour of the sma
 
 This file contains the constructor, the initialisation logic inside `begin()`, and the operational logic inside `update()`. In this way, the original standalone behaviour was moved out of the main sketch and placed into the internal implementation of the component.
 
+```cpp
+#ifndef STREETLIGHT_H
+#define STREETLIGHT_H
 
+#include <Arduino.h>
+
+class StreetLight {
+
+private:
+  int _ldrPin;
+  int _relayPin;
+  int _threshold;
+
+  int _interval;
+  unsigned long _previousMillis;
+
+public:
+  StreetLight(int ldrPin, int relayPin, int threshold, int interval);
+
+  void begin();
+  void update();
+};
+
+#endif
+```
 
 Compared with the original standalone sketch, the logic is now grouped more clearly. The sensor reading, threshold comparison, relay switching, and timed updates are all handled by the smart streetlight component itself.
 
