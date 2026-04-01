@@ -49,6 +49,7 @@ To achieve the learning goal for Problem Solution Design, I will take the follow
 - Why the timing was set as it is.
 - How the interaction between the two pedestrian crossings works.
 - This documentation will serve as a reference for the Realise phase.
+
 **Wokwi Simulation**
 - Create a simulation in Wokwi to test the concept:
 - Virtually connect LEDs and buttons as shown in the diagram.
