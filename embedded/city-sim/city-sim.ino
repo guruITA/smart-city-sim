@@ -1,18 +1,26 @@
 #include "NetworkController.h"
 #include "Streetlight.h"
-#include "TrainPredictionSignal.h"
+#include "TrainDetector.h"
+#include "SignalController.h"
+#include "CommunicationHandler.h"
+#include "CrossingController.h"
 
 #define builtin LED_BUILTIN
 
-//  WiFi details
+// WiFi details
 const char* WIFI_SSID = "";
 const char* WIFI_PASSWORD = "";
 
 // backend URL
-const String API_BASE_URL = "http://127.0.0.1:8000";
+const String API_BASE_URL = "";
 
 StreetLight lamp(4, 5, 650, 1000);
-TrainPredictionSignal trainSignal(37, 36, 42, 18, 45, 200, 1000, 5000, 1000, 8, 0, 90);
+
+// Railroad crossing tile
+TrainDetector detector(45, 200, 1000);
+SignalController signalController(37, 36, 42, 18);
+CommunicationHandler comm;
+CrossingController crossing(detector, signalController, comm);
 
 void setup() {
   pinMode(builtin, OUTPUT);
@@ -30,10 +38,10 @@ void setup() {
   NetworkController::setApiBaseUrl(API_BASE_URL);
 
   lamp.begin();
-  trainSignal.begin();
+  crossing.begin();
 }
 
 void loop() {
   lamp.update();
-  trainSignal.update();
+  crossing.update();
 }
