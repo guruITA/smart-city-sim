@@ -4,6 +4,31 @@
 - Date: 27-03-2026  
 
 ## Table of Contents
+- [1. Introduction](#1-introduction)
+- [2. Methodology](#2-methodology)
+- [3. Working method](#3-working-method)
+- [4. Main design question and subquestions](#4-main-design-question-and-subquestions)
+- [5. Tools used](#5-tools-used)
+- [6. Design goal and design requirements](#6-design-goal-and-design-requirements)
+    - [6.1 Design goal](#61-design-goal)
+    - [6.2 Functional design requirements](#62-functional-design-requirements)
+    - [6.3 Non-functional design requirements](#63-non-functional-design-requirements)
+    - [6.4 Subconclusion](#64-subconclusion)
+- [7. Design choices for the smart streetlight structure](#7-design-choices-for-the-smart-streetlight-structure)
+    - [7.1 Main project file as central integration point](#71-main-project-file-as-central-integration-point)
+    - [7.2 Header file as component declaration](#72-header-file-as-component-declaration)
+    - [7.3 Implementation file as behavioural logic](#73-implementation-file-as-behavioural-logic)
+    - [7.4 Relation between the files](#74-relation-between-the-files)
+    - [7.5 Subconclusion](#75-subconclusion)
+- [8. UML design of the software structure](#8-uml-design-of-the-software-structure)
+    - [8.1 UML diagram](#81-uml-diagram)
+    - [8.2 What is visible in the UML design](#82-what-is-visible-in-the-uml-design)
+    - [8.3 Why this UML design fits the project](#83-why-this-uml-design-fits-the-project)
+    - [8.4 Subconclusion](#84-subconclusion)
+- [9. Evaluation of the software design](#9-evaluation-of-the-software-design)
+- [10. Final conclusion](#10-final-conclusion)
+- [11. Recommendations](#11-recommendations)
+- [12. Sources](#12-sources)
 
 
 ## 1. Introduction
