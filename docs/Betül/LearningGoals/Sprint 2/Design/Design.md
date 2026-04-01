@@ -24,4 +24,34 @@ I aim to:
 
 # A — Action
 
-To achieve this, I will:
+To achieve the learning goal for Problem Solution Design, I will take the following actions:
+
+**Map Control Logic**
+ - Create a step-by-step control logic for the buttons and pedestrian signals.
+ - Define how the two pedestrian crossings synchronize when a button is pressed.
+ - Establish the timing for red/green signals to ensure the system is safe and consistent.
+
+**Create Circuit Diagram**
+ - Draw a conceptual circuit diagram showing how:
+ - Push buttons
+ - LEDs (red/green)
+ - Resistors
+ - ESP32-S3 pins are connected.
+ - This diagram is intended to visualize the logic and connections before physically building the prototype.
+
+**Plan Component Placement**
+- Decide where each component will be placed on the tile.
+- Ensure buttons and LEDs are clearly and functionally arranged for easy assembly in the Realise phase.
+
+**Document Design Decisions**
+- Record all design choices:
+- Why specific pins were selected.
+- Why the timing was set as it is.
+- How the interaction between the two pedestrian crossings works.
+- This documentation will serve as a reference for the Realise phase.
+**Wokwi Simulation**
+- Create a simulation in Wokwi to test the concept:
+- Virtually connect LEDs and buttons as shown in the diagram.
+- Simulate the control logic on the ESP32.
+- Check that the system behaves as intended without physical errors.
+- Use feedback from the simulation to refine the design before building the physical prototype.
