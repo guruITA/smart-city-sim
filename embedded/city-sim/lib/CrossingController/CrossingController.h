@@ -7,17 +7,21 @@
 
 class CrossingController {
 public:
-  CrossingController(TrainDetector detector,
-                     SignalController signalController,
-                     CommunicationHandler comm);
+  CrossingController(TrainDetector& detector,
+                     SignalController& signalController,
+                     CommunicationHandler& comm,
+                     unsigned long safetyMargin);
 
   void begin();
   void update();
 
 private:
-  TrainDetector _detector;
-  SignalController _signal;
-  CommunicationHandler _comm;
+  TrainDetector& _detector;
+  SignalController& _signal;
+  CommunicationHandler& _comm;
+
+  unsigned long _safetyMargin;
+  unsigned long _startTime;
 
   int _trainId;
 };

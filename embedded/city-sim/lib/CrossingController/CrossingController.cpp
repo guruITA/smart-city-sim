@@ -1,9 +1,17 @@
 #include "CrossingController.h"
 
-CrossingController::CrossingController(TrainDetector detector,
-                                       SignalController signalController,
-                                       CommunicationHandler comm)
-  : _detector(detector), _signal(signalController), _comm(comm), _trainId(-1) {}
+CrossingController::CrossingController(
+    TrainDetector& detector,
+    SignalController& signalController,
+    CommunicationHandler& comm,
+    unsigned long safetyMargin
+)
+  : _detector(detector),
+    _signal(signalController),
+    _comm(comm),
+    _safetyMargin(safetyMargin),
+    _startTime(0),
+    _trainId(-1) {}
 
 void CrossingController::begin() {
   _detector.begin();
@@ -13,22 +21,32 @@ void CrossingController::begin() {
 void CrossingController::update() {
   _detector.update();
 
+  unsigned long now = millis();
+  unsigned long elapsed = now - _startTime;
+  unsigned long predictedTime = _detector.getPredictedTime();
+
+  unsigned long warningStart = (predictedTime * 1000 > _safetyMargin)
+      ? predictedTime * 1000 - _safetyMargin
+      : 0;
+
   if (_detector.firstTriggered()) {
-    if (_comm.createTrain(_trainId)) {
-      Serial.println("Train created");
-    }
+    _comm.createTrain(_trainId);
+    _startTime = now;
   }
 
   if (_detector.secondTriggered()) {
-    float t = _detector.getPredictedTime();
-    _comm.sendPrediction(_trainId, t);
+    predictedTime = _detector.getPredictedTime();
+    _comm.sendPrediction(_trainId, predictedTime);
+  }
+
+  if (elapsed > warningStart && elapsed < predictedTime * 1000) {
     _signal.setState(SIGNAL_WARNING);
   }
 
   if (_detector.trainPassed()) {
     _comm.sendCrossed(_trainId);
-    _signal.setState(SIGNAL_IDLE);
     _trainId = -1;
+    _signal.setState(SIGNAL_IDLE);
   }
 
   _signal.update();

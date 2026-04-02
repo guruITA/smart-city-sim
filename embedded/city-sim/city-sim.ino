@@ -20,7 +20,7 @@ StreetLight lamp(4, 5, 650, 1000);
 TrainDetector detector(45, 200, 1000);
 SignalController signalController(37, 36, 42, 18);
 CommunicationHandler comm;
-CrossingController crossing(detector, signalController, comm);
+CrossingController crossing(detector, signalController, comm, 5000);
 
 void setup() {
   pinMode(builtin, OUTPUT);
