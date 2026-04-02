@@ -1,0 +1,26 @@
+# Learning Goal – Realise (Sprint 2)
+
+## Learning Question
+
+**How can I implement and test a functional smart pedestrian crossing subsystem with two opposite crossings using an ESP32-S3, based on my design, ensuring correct behavior and reliability?**
+
+---
+
+# S — Situation
+
+In Sprint 2 of the City Sim project, I will move from design to implementation of my smart pedestrian crossing subsystem.
+
+Based on the previously created design, I will build a system with two opposite pedestrian crossings, each with a button and signal lights, controlled by an ESP32-S3.
+
+Since I am still relatively new to embedded systems, this phase will require me to apply my design in practice and learn how to translate a conceptual design into a working prototype.
+
+# T — Task
+
+I aim to:
+- Build the pedestrian crossing system on a breadboard prototype.
+- Correctly connect all components (buttons, LEDs, resistors) to the ESP32-S3.
+- Implement the control logic in code based on my design.
+- Test the system to ensure it behaves correctly and consistently.
+- Identify and fix any issues in wiring, logic, or timing.
+
+# A — Action
