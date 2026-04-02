@@ -14,6 +14,7 @@ Based on the previously created design, I will build a system with two opposite 
 
 Since I am still relatively new to embedded systems, this phase will require me to apply my design in practice and learn how to translate a conceptual design into a working prototype.
 
+
 # T — Task
 
 I aim to:
@@ -24,3 +25,22 @@ I aim to:
 - Identify and fix any issues in wiring, logic, or timing.
 
 # A — Action
+
+To achieve this, I will:
+
+1. Build the Circuit
+- Assemble the components on a breadboard based on my design.
+- Connect LEDs, buttons, and resistors to the correct ESP32 pins.
+2. Implement Control Logic in Code
+- Translate the designed system logic into working code.
+- Program the ESP32-S3 to control LEDs and read button inputs.
+3. Test System Behavior
+- Test how the system reacts to button presses.
+- Verify that both pedestrian crossings are synchronized correctly.
+- Check timing of red/green signals.
+4. Debug and Improve
+- Identify issues such as incorrect wiring, logic errors, or timing problems.
+- Adjust code or connections to improve system behavior.
+5. Validate Functionality
+- Ensure the system works reliably under repeated use.
+- Confirm that the system meets the intended design and behavior.
