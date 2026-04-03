@@ -4,7 +4,7 @@ StreetLight::StreetLight(int ldrPin, int relayPin, int threshold, int interval) 
   _ldrPin = ldrPin;
   _relayPin = relayPin;
   _threshold = threshold;
-  _interval = interval;
+  _interval = interval; 
   _previousMillis = 0;
 }
 

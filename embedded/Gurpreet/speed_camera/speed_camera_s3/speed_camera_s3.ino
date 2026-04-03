@@ -1,4 +1,5 @@
 #include <Wire.h>
+#include <WiFi.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
 
@@ -6,7 +7,6 @@
 #define IR2_PIN 12
 #define OLED_SDA_PIN 18
 #define OLED_SCL_PIN 46
-#define CAM_TRIGGER_PIN 7
 
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 64
@@ -18,9 +18,13 @@
 #define SPEED_LIMIT_KMH 1.0f
 
 #define PASS_TIMEOUT_US 2000000UL
-#define CAM_TRIGGER_PULSE_MS 100
 #define MEASUREMENT_COOLDOWN_MS 500
 #define RESULT_SCREEN_HOLD_MS 2000
+
+const char* CAM_WIFI_SSID = "ESP32CAM_CAPTURE";
+const char* CAM_WIFI_PASS = "12345678";
+const char* CAM_IP = "192.168.4.1";
+const uint16_t CAM_PORT = 80;
 
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
 bool displayReady = false;
@@ -46,10 +50,79 @@ bool sensorActive(int pin) {
   return digitalRead(pin) == IR_ACTIVE_STATE;
 }
 
-void pulseCameraTrigger() {
-  digitalWrite(CAM_TRIGGER_PIN, HIGH);
-  delay(CAM_TRIGGER_PULSE_MS);
-  digitalWrite(CAM_TRIGGER_PIN, LOW);
+void connectToCamWiFi() {
+  WiFi.mode(WIFI_STA);
+  WiFi.begin(CAM_WIFI_SSID, CAM_WIFI_PASS);
+
+  Serial.print("Verbinden met ESP32-CAM wifi");
+  unsigned long startAttempt = millis();
+
+  while (WiFi.status() != WL_CONNECTED && millis() - startAttempt < 15000) {
+    delay(500);
+    Serial.print(".");
+  }
+
+  Serial.println();
+
+  if (WiFi.status() == WL_CONNECTED) {
+    Serial.println("WiFi verbonden.");
+    Serial.print("ESP32-S3 IP: ");
+    Serial.println(WiFi.localIP());
+  } else {
+    Serial.println("WiFi verbinden mislukt.");
+  }
+}
+
+bool ensureWiFiConnected() {
+  if (WiFi.status() == WL_CONNECTED) {
+    return true;
+  }
+
+  Serial.println("WiFi weggevallen, opnieuw verbinden...");
+  WiFi.disconnect();
+  WiFi.begin(CAM_WIFI_SSID, CAM_WIFI_PASS);
+
+  unsigned long startAttempt = millis();
+  while (WiFi.status() != WL_CONNECTED && millis() - startAttempt < 5000) {
+    delay(250);
+    Serial.print(".");
+  }
+  Serial.println();
+
+  return WiFi.status() == WL_CONNECTED;
+}
+
+void triggerCameraOverWiFi() {
+
+  if (!ensureWiFiConnected()) {
+    Serial.println("Kan camera niet triggeren, geen wifi.");
+    return;
+  }
+
+  WiFiClient client;
+
+  Serial.println("Verbinden met ESP32-CAM...");
+  if (!client.connect(CAM_IP, CAM_PORT)) {
+    Serial.println("Verbinding met ESP32-CAM mislukt.");
+    return;
+  }
+
+  client.print(String("GET /capture HTTP/1.1\r\n") + "Host: " + CAM_IP + "\r\n" +
+               "Connection: close\r\n\r\n");
+
+  Serial.println("Capture request verzonden.");
+
+  unsigned long timeout = millis();
+  while (client.connected() && millis() - timeout < 2000) {
+    while (client.available()) {
+      String line = client.readStringUntil('\n');
+      Serial.println(line);
+      timeout = millis();
+    }
+  }
+
+  client.stop();
+  Serial.println("Camera via wifi getriggerd.");
 }
 
 void drawBootScreen() {
@@ -65,7 +138,7 @@ void drawBootScreen() {
   display.println("IR1 = GPIO6");
   display.println("IR2 = GPIO12");
   display.println("OLED SDA/SCL = 18/46");
-  display.println("CAM trigger = GPIO7");
+  display.println("Camera via WiFi");
   display.display();
 }
 
@@ -99,10 +172,10 @@ void drawStatusScreen(bool ir1, bool ir2) {
   display.print("Direction: ");
   display.println(lastDirection);
 
-  if (millis() - lastMeasurementDoneMs < MEASUREMENT_COOLDOWN_MS) {
-    display.println("STATUS: cooldown");
+  if (WiFi.status() == WL_CONNECTED) {
+    display.println("WiFi: connected");
   } else {
-    display.println("STATUS: waiting");
+    display.println("WiFi: offline");
   }
 
   display.display();
@@ -185,8 +258,7 @@ void processMeasurement(int fromSensor, int toSensor, unsigned long dtUs) {
   drawMeasurementScreen(speedKmh, tooFast, lastDirection, dtUs);
 
   if (tooFast) {
-    Serial.println("Camera trigger HIGH");
-    pulseCameraTrigger();
+    triggerCameraOverWiFi();
   }
 
   resetMeasurement();
@@ -199,18 +271,20 @@ void setup() {
   pinMode(IR1_PIN, INPUT);
   pinMode(IR2_PIN, INPUT);
 
-  pinMode(CAM_TRIGGER_PIN, OUTPUT);
-  digitalWrite(CAM_TRIGGER_PIN, LOW);
-
   Wire.begin(OLED_SDA_PIN, OLED_SCL_PIN);
 
   if (display.begin(SSD1306_SWITCHCAPVCC, OLED_ADDR)) {
     displayReady = true;
     drawBootScreen();
-    delay(1500);
-    drawStatusScreen(false, false);
   } else {
     Serial.println("OLED not found.");
+  }
+
+  connectToCamWiFi();
+
+  if (displayReady) {
+    delay(1500);
+    drawStatusScreen(false, false);
   }
 
   lastIr1Active = sensorActive(IR1_PIN);
