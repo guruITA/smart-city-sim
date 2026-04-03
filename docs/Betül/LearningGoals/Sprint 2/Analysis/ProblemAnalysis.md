@@ -103,3 +103,15 @@ To do this, I will:
 
 This will help me understand how the system logic is implemented in practice and how software and hardware interact.
 
+## 5. ESP32 Standalone Operation
+
+To better understand how the system will function in a real-world scenario, I will analyze how the ESP32-S3 operates independently.
+
+To do this, I will:
+
+- Investigate how code is uploaded from a laptop to the ESP32-S3
+- Understand how the ESP32 stores and executes code without being connected to a computer
+- Explore different ways to power the ESP32 (e.g., USB adapter, battery, powerbank)
+- Analyze how the system continues to function after being disconnected from the laptop
+
+This will help me ensure that the pedestrian crossing system can operate as a **standalone embedded system**, which is essential for real-world smart city applications.
