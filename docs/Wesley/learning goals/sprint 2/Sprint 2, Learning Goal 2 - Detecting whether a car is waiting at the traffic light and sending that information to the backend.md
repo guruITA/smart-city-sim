@@ -64,6 +64,8 @@ Full code/artefacts
 List all sources you used. Use a consistent citation style (e.g., APA/IEEE). Include URLs with access dates for web resources.
 
 Author, A. (Year). Title. Publisher. [https://link](https://link) (accessed YYYY-MM-DD)
+
 Organization. (Year). Title of webpage/report. [https://link](https://link) (accessed YYYY-MM-DD)
+
 Dataset/Tool. Version. Provider. [https://link](https://link) (accessed YYYY-MM-DD)
 
