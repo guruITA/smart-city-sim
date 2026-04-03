@@ -32,13 +32,18 @@ Because embedded systems development is new to me, I want to first analyze and u
 
 Based on my learning question, I want to:
 - Identify which electronic components are needed for a dual-sided pedestrian crossing system.
-- Understand the function of each component (e.g., push buttons, LEDs, optional sensors).
-- Learn how these components can be connected to the ESP32-S3.
-- Understand how the system should react when a pedestrian presses the button.
-- Design a clear system logic that handles input from both sides.- Create a basic prototype idea for how the system could work on my tile.
-- Ensure that both pedestrian signals behave consistently and safely.
-- Create a basic prototype concept for implementation on my tile.
-- Document my findings so that my team members can understand the design.
+- Understand the function of each component (e.g., push buttons, LEDs, resistors).
+- Learn how these components interact within an embedded system.
+- Understand how the system should react when a pedestrian presses a button.
+- Analyze how multiple inputs (two buttons) influence the system behavior.
+- Describe a clear and logical system behavior for safe pedestrian crossing.
+- Document my findings so that they can be used in the next phase (design).
+- Understand how the ESP32-S3 functions as a microcontroller within the system.
+- Learn how the ESP32-S3 is programmed and how code controls inputs and outputs.
+- Understand how the ESP32 connects to a laptop and how code is uploaded and executed.
+- Understand how the ESP32-S3 operates independently after uploading code.
+- Investigate how the microcontroller can be powered without a constant laptop connection.
+- Analyze how embedded systems function as standalone systems in real-world scenarios.
 
 ---
 
