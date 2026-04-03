@@ -69,7 +69,7 @@ I will focus on:
 - Push buttons (input)
 - LEDs (output signals)
 - Resistors (current limitation)
-- Breadbord 
+- Breadboard 
 
 For each component, I will:
 
@@ -84,18 +84,22 @@ After understanding the components, I will define how the system should behave.
 I will:
 
 - Describe how the system reacts to a button press
-- Define how both pedestrian sides interact with each other
-- Ensure the system behaves consistently and safely
+- Analyze how both pedestrian sides interact with each other
+- Examine how the system ensures safe and consistent behavior
 
-This will result in a step-by-step system behavior description.
+This will result in a **clear, step-by-step description of the system behavior**, which will serve as input for the design phase.
 
-## 4. Conceptual Design 
-Finally, I will create a conceptual design of the system.
+## 4. ESP32 Functionality and Programming
 
-This includes:
+In addition to analyzing the components and system behavior, I will study how the ESP32-S3 operates within an embedded system.
 
-- A simple diagram of the components and connections
-- A description of how the ESP32-S3 controls the system
-- A clear interaction flow between input (buttons) and output (signals)
+To do this, I will:
 
-This conceptual design will be used as a foundation for the next phase: the detailed system design and prototype implementation.
+- Explore how the ESP32-S3 functions as the central controller of the system
+- Learn how digital inputs (buttons) and outputs (LEDs) are handled in code
+- Understand how GPIO pins are used to control hardware components
+- Practice uploading code from my laptop to the ESP32-S3
+- Analyze how the written code translates into physical behavior of the system
+
+This will help me understand how the system logic is implemented in practice and how software and hardware interact.
+
