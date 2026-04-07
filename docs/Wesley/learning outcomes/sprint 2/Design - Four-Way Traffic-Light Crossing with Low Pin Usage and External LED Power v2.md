@@ -388,7 +388,7 @@ This appendix contains the design proof for this deliverable. It is meant to sho
 
 **Figure A1. Fritzing schematic view of the design**
 
-[Insert Fritzing schematic image here]
+![Fritzing schematic](../../assets/Design%20-%20Four-Way%20Traffic-Light%20Crossing%20with%20Low%20Pin%20Usage%20and%20External%20LED%20Power/Traffic%20lights%20with%20chips_schem.jpg)
 
 This figure should show the logical wiring of the design in Fritzing. It should make clear how the controller side, output-expansion layer, driver stage, and lamp branches are connected.
 
@@ -396,18 +396,13 @@ This figure should show the logical wiring of the design in Fritzing. It should 
 
 **Figure A2. Fritzing breadboard view of the design**
 
-[Insert Fritzing breadboard image here]
+![Fritzing breadboard](../../assets/Design%20-%20Four-Way%20Traffic-Light%20Crossing%20with%20Low%20Pin%20Usage%20and%20External%20LED%20Power/Traffic%20lights%20with%20chips_bb.png)
 
 This figure should show the practical breadboard layout of the design. It should help explain how the components are placed physically and how the prototype can be built step by step.
 
-## A.3 Short proof note
+## A.3 Bill of Materials - BOM
 
-The appendix figures support the design deliverable because they provide visual proof of:
+**Figure A3. Fritzing Bill of Materials**
 
-* the chosen hardware structure;
-* the separation between controller logic and lamp power;
-* the mapping from ESP32-S3 to MCP23017 to ULN2803 to traffic-light outputs;
-* the intended implementation structure for breadboard realization.
+![Fritzing Bill of Materials](../../assets/Design%20-%20Four-Way%20Traffic-Light%20Crossing%20with%20Low%20Pin%20Usage%20and%20External%20LED%20Power/Fritzing%20bill%20of%20materials.png)
 
-Wokwi:
-![alt text](image.png)
