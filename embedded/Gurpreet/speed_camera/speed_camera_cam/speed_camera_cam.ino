@@ -21,7 +21,6 @@
 #define PCLK_GPIO_NUM 22
 
 #define FLASH_LED_PIN 4
-#define TRIGGER_PIN 13
 
 const char* AP_SSID = "ESP32CAM_CAPTURE";
 const char* AP_PASS = "12345678";
@@ -30,7 +29,6 @@ camera_fb_t* lastFrame = nullptr;
 
 WebServer server(80);
 
-bool lastTriggerState = false;
 unsigned long lastCaptureMs = 0;
 
 bool initCamera() {
@@ -162,10 +160,10 @@ void handleCapture() {
 }
 
 void setup() {
+  Serial.begin(115200);
+
   pinMode(FLASH_LED_PIN, OUTPUT);
   digitalWrite(FLASH_LED_PIN, LOW);
-
-  pinMode(TRIGGER_PIN, INPUT_PULLDOWN);
 
   if (!initCamera()) {
     while (true) {
@@ -177,7 +175,17 @@ void setup() {
   }
 
   WiFi.mode(WIFI_AP);
-  WiFi.softAP(AP_SSID, AP_PASS);
+  bool apStarted = WiFi.softAP(AP_SSID, AP_PASS);
+
+  if (!apStarted) {
+    Serial.println("SoftAP starten mislukt.");
+  } else {
+    Serial.println("SoftAP gestart.");
+    Serial.print("SSID: ");
+    Serial.println(AP_SSID);
+    Serial.print("IP address: ");
+    Serial.println(WiFi.softAPIP());
+  }
 
   server.on("/", HTTP_GET, handleRoot);
   server.on("/photo", HTTP_GET, handlePhoto);
@@ -189,15 +197,4 @@ void setup() {
 
 void loop() {
   server.handleClient();
-
-  bool triggerNow = digitalRead(TRIGGER_PIN) == HIGH;
-
-  if (triggerNow && !lastTriggerState) {
-    if (millis() - lastCaptureMs > 1000) {
-      captureTriggeredPhoto();
-      lastCaptureMs = millis();
-    }
-  }
-
-  lastTriggerState = triggerNow;
 }
