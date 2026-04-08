@@ -1,6 +1,6 @@
-#include "lib/NetworkController/NetworkController.h"
-#include "lib/Streetlight/Streetlight.h"
-#include "lib/TrainPredictionSignal/TrainPredictionSignal.h"
+#include "NetworkController.h"
+#include "Streetlight.h"
+#include "TrainPredictionSignal.h"
 
 #define builtin LED_BUILTIN
 
