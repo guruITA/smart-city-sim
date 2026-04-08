@@ -224,7 +224,7 @@ void loop() {
 }
 ```
 
----
+
 
 ## Appendix B — I2C Scanner Test Code
 
