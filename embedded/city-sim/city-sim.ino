@@ -1,9 +1,6 @@
-#include "NetworkController.h"
-#include "Streetlight.h"
-#include "TrainDetector.h"
-#include "SignalController.h"
-#include "CommunicationHandler.h"
-#include "CrossingController.h"
+#include "lib/NetworkController/NetworkController.h"
+#include "lib/Streetlight/Streetlight.h"
+#include "lib/TrainPredictionSignal/TrainPredictionSignal.h"
 
 #define builtin LED_BUILTIN
 
@@ -17,10 +14,8 @@ const String API_BASE_URL = "";
 StreetLight lamp(4, 5, 650, 1000);
 
 // Railroad crossing tile
-TrainDetector detector(45, 200, 1000);
-SignalController signalController(37, 36, 42, 18);
-CommunicationHandler comm;
-CrossingController crossing(detector, signalController, comm, 5000);
+TrainPredictionSignal trainSignal(37, 36, 42, 18, 45, 200, 1000, 5000, 1000, 8, 0, 90);
+
 
 void setup() {
   pinMode(builtin, OUTPUT);
@@ -38,10 +33,10 @@ void setup() {
   NetworkController::setApiBaseUrl(API_BASE_URL);
 
   lamp.begin();
-  crossing.begin();
+  trainSignal.begin();
 }
 
 void loop() {
   lamp.update();
-  crossing.update();
+  trainSignal.update();
 }
