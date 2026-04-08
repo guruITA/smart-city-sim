@@ -1,0 +1,398 @@
+# Realisation — Developing and Using Tests During Realisation for MCP23017 and ULN2803 Integration
+
+## 1. Introduction
+
+During the realisation phase of this project, I developed and used a set of focused tests for the **MCP23017** and **ULN2803**. I created these tests to support the building process, to debug the hardware setup, and to verify that each part of the circuit worked correctly before continuing to the next step.
+
+I used these tests to check whether I understood the hardware correctly and whether each connection and implementation step was functioning as intended. By testing each building block separately and later combining them, I was able to validate both my understanding and the correctness of the setup during construction.
+
+This deliverable describes the tests I created, why I created them, how I used them for debugging, and how they helped me successfully get the complete setup working.
+
+
+
+## 2. Goal
+
+The goal of creating these tests was to support the realisation process in a structured way. Instead of building the complete system at once and only testing at the end, I divided the system into smaller parts and tested them individually.
+
+By doing this, I was able to:
+
+- verify correct hardware connections,
+- check whether communication between components worked,
+- confirm the logic of each subsystem,
+- detect mistakes earlier in the build process,
+- and build confidence that the system was functioning correctly step by step.
+
+This approach helped me reduce complexity and made debugging more manageable.
+
+
+
+## 3. Components Used
+
+The tests were created around the following components:
+
+- **ESP32-S3**
+- **MCP23017** I2C I/O expander
+- **ULN2803** Darlington transistor array
+- LEDs with **330Ω current-limiting resistors**
+- **5.1kΩ pull-up resistors** on SDA and SCL
+
+The signal path I wanted to validate was:
+
+**ESP32-S3 → MCP23017 → ULN2803 → LED**
+
+
+
+## 4. Why I Created These Tests
+
+While building the circuit, several kinds of problems were possible, such as:
+
+- wrong wiring,
+- wrong assumptions about component behavior,
+- missing communication between devices,
+- incorrect output logic,
+- or errors in the combined setup.
+
+To prevent these issues from becoming difficult to trace in the full system, I created separate tests for each stage. This allowed me to verify one subsystem at a time before combining everything together.
+
+In this way, the tests served two purposes:
+
+1. **debugging the hardware and software implementation**,  
+2. **confirming that I understood each step correctly**.
+
+
+
+## 5. Overview of the Created Tests
+
+### 5.1 Serial Monitor Test
+
+The first test I created was a serial monitor test. I used this to verify that the ESP32-S3 could print output correctly and that I could observe the program while it was running.
+
+This test was important because all later debugging depended on having visible runtime feedback. It allowed me to confirm:
+
+- the correct USB connection,
+- the correct serial port,
+- the correct baud rate,
+- and that the code was executing as expected.
+
+This formed the basis for the rest of the debugging process.
+
+
+
+### 5.2 I2C Scanner Test
+
+After confirming serial output, I created an I2C scanner test. I used this to check whether the ESP32-S3 could detect the MCP23017 on the I2C bus.
+
+This test helped me verify:
+
+- SDA and SCL wiring,
+- pull-up resistor placement,
+- power and ground connections,
+- address selection through A0, A1 and A2,
+- and correct RESET behavior.
+
+I used this as the first direct validation of MCP23017 communication before attempting to control outputs.
+
+
+
+### 5.3 MCP23017 Standalone Test
+
+Once I had a dedicated I2C test, I created a standalone MCP23017 test. In this test, I used the MCP23017 to control an LED directly without using the ULN2803.
+
+The purpose of this test was to verify that:
+
+- the MCP23017 was functioning correctly,
+- its outputs could be configured correctly,
+- and I understood how to control an output pin over I2C.
+
+This allowed me to isolate the MCP23017 and validate it independently from the transistor driver stage.
+
+
+### 5.4 ULN2803 Standalone Test
+
+I also created a standalone ULN2803 test. In this test, the ULN2803 was driven directly by the ESP32-S3 and used to switch an LED.
+
+This helped me confirm:
+
+- correct ULN2803 input and output wiring,
+- correct LED wiring,
+- correct low-side switching behavior,
+- and my understanding of how the ULN2803 sinks current.
+
+This was useful because it isolated the output driver stage from the MCP23017 and allowed me to test it independently.
+
+
+
+### 5.5 MCP23017 and ULN2803 Combined Test
+
+After testing both components separately, I created a combined test in which the ESP32-S3 controlled the MCP23017, the MCP23017 drove the ULN2803, and the ULN2803 switched an LED.
+
+This was the most important staged integration test before expanding to the full system. It allowed me to verify:
+
+- that the MCP23017 output could correctly drive the ULN2803 input,
+- that the ULN2803 could switch the LED correctly,
+- that the logic across the full output chain was correct,
+- and that the complete signal path worked as intended.
+
+
+
+## 6. How I Used the Tests During Realisation
+
+I used these tests actively during the realisation process while building the hardware setup. They were not just written for documentation, but were part of the actual development workflow.
+
+By using the tests in sequence, I was able to isolate problems more easily. When a test failed, I knew that the issue had to be located within that specific part of the setup. When a test succeeded, I could continue with greater confidence.
+
+This made it possible to:
+
+- debug communication issues,
+- identify wiring mistakes,
+- verify power distribution,
+- confirm correct logic,
+- and avoid debugging the complete system all at once.
+
+The tests therefore acted as checkpoints during construction.
+
+
+
+## 7. How the Tests Helped Me Verify My Understanding
+
+An important benefit of creating these tests was that they helped me confirm whether I understood the components correctly.
+
+Each test verified a different part of my understanding:
+
+- The serial monitor test confirmed that I could observe and interpret runtime behavior.
+- The I2C scanner test confirmed that I understood the basic communication requirements of the MCP23017.
+- The MCP23017 standalone test confirmed that I understood how to control outputs through the expander.
+- The ULN2803 standalone test confirmed that I understood the principle of low-side switching.
+- The combined test confirmed that I understood how both components interact in one signal chain.
+
+Because of this, the tests were not only useful for debugging, but also for validating my own learning during the realisation phase.
+
+
+
+## 8. Step-by-Step Verification During Building
+
+I used the tests as part of a step-by-step building strategy. Instead of waiting until the entire system was assembled, I tested every important part during the process.
+
+The order I followed was:
+
+1. serial communication,
+2. I2C communication,
+3. MCP23017 output behavior,
+4. ULN2803 output behavior,
+5. combined MCP23017 and ULN2803 behavior.
+
+This staged approach allowed me to verify every part before moving on. It reduced uncertainty and made the building process more controlled and understandable.
+
+
+
+## 9. Result
+
+By creating and using these tests, I was able to debug the setup in a structured way and verify that each subsystem worked correctly before moving to the next stage.
+
+This gave me confidence that:
+
+- I understood the behavior of the hardware,
+- the implementation steps were correct,
+- and the full system was built on a solid basis.
+
+Because of this structured testing process, I was eventually able to get the complete setup working successfully.
+
+
+
+## 10. Conclusion
+
+Creating these tests during the realisation phase was an important part of the development process. The tests helped me verify communication, check wiring, debug problems, and confirm that I understood the behavior of the MCP23017 and ULN2803 correctly.
+
+By using the tests throughout the build process, I could confirm that each stage worked correctly before continuing to the next one. This made the realisation process more systematic and directly contributed to the successful completion of the setup.
+
+
+
+## Appendix A — Serial Monitor Test Code
+
+```cpp
+void setup() {
+  Serial.begin(115200);
+  delay(1000);
+
+  Serial.println("Serial test start");
+  Serial.println("If you can read this, the serial monitor works.");
+}
+
+void loop() {
+  Serial.println("Serial monitor heartbeat");
+  delay(1000);
+}
+```
+
+
+
+## Appendix B — I2C Scanner Test Code
+
+```cpp
+#include <Wire.h>
+
+const int I2C_SDA_PIN = 5;
+const int I2C_SCL_PIN = 4;
+
+void setup() {
+  Serial.begin(115200);
+  Wire.begin(I2C_SDA_PIN, I2C_SCL_PIN);
+  delay(1000);
+
+  Serial.println("I2C scan start");
+
+  for (uint8_t addr = 1; addr < 127; addr++) {
+    Wire.beginTransmission(addr);
+    uint8_t error = Wire.endTransmission();
+
+    if (error == 0) {
+      Serial.print("Found I2C device at 0x");
+      if (addr < 16) Serial.print("0");
+      Serial.println(addr, HEX);
+    }
+  }
+
+  Serial.println("I2C scan done");
+}
+
+void loop() {
+}
+```
+
+## Appendix C — MCP23017 Standalone Test Code
+
+```cpp
+#include <Wire.h>
+
+const int I2C_SDA_PIN = 5;
+const int I2C_SCL_PIN = 4;
+const uint8_t MCP_ADDR = 0x20;
+
+const uint8_t IODIRB = 0x01;
+const uint8_t GPIOB  = 0x13;
+
+void mcpWriteRegister(uint8_t reg, uint8_t value) {
+  Wire.beginTransmission(MCP_ADDR);
+  Wire.write(reg);
+  Wire.write(value);
+  Wire.endTransmission();
+}
+
+void setup() {
+  Serial.begin(115200);
+  Wire.begin(I2C_SDA_PIN, I2C_SCL_PIN);
+
+  // GPB0 output, others input
+  mcpWriteRegister(IODIRB, 0b11111110);
+
+  // GPB0 HIGH = off
+  mcpWriteRegister(GPIOB, 0b00000001);
+}
+
+void loop() {
+  // GPB0 LOW = LED on
+  mcpWriteRegister(GPIOB, 0b00000000);
+  delay(500);
+
+  // GPB0 HIGH = LED off
+  mcpWriteRegister(GPIOB, 0b00000001);
+  delay(500);
+}
+```
+
+## Appendix D — ULN2803 Standalone Test Code
+
+```cpp
+const int IN_PIN = 6;
+
+void setup() {
+  pinMode(IN_PIN, OUTPUT);
+}
+
+void loop() {
+  digitalWrite(IN_PIN, HIGH);  // ULN input on -> output sinks -> LED on
+  delay(500);
+  digitalWrite(IN_PIN, LOW);   // LED off
+  delay(500);
+}
+```
+
+## Appendix E — MCP23017 with ULN2803 Combined Test Code
+
+```cpp
+#include <Wire.h>
+
+const int I2C_SDA_PIN = 5;
+const int I2C_SCL_PIN = 4;
+const uint8_t MCP_ADDR = 0x20;
+
+// MCP23017 registers
+const uint8_t IODIRB = 0x01;
+const uint8_t GPIOB  = 0x13;
+
+void mcpWriteRegister(uint8_t reg, uint8_t value) {
+  Wire.beginTransmission(MCP_ADDR);
+  Wire.write(reg);
+  Wire.write(value);
+  Wire.endTransmission();
+}
+
+uint8_t mcpReadRegister(uint8_t reg) {
+  Wire.beginTransmission(MCP_ADDR);
+  Wire.write(reg);
+  Wire.endTransmission(false);
+
+  Wire.requestFrom(MCP_ADDR, (uint8_t)1);
+  if (Wire.available()) {
+    return Wire.read();
+  }
+  return 0xFF;
+}
+
+void setup() {
+  Serial.begin(115200);
+  delay(1000);
+
+  Wire.begin(I2C_SDA_PIN, I2C_SCL_PIN);
+  delay(100);
+
+  Serial.println("MCP -> ULN -> LED test start");
+
+  // Quick I2C presence check
+  Wire.beginTransmission(MCP_ADDR);
+  uint8_t err = Wire.endTransmission();
+
+  if (err != 0) {
+    Serial.print("MCP23017 not found at 0x");
+    Serial.println(MCP_ADDR, HEX);
+    while (true) {
+      delay(1000);
+    }
+  }
+
+  Serial.println("MCP23017 detected at 0x20");
+
+  // GPB0 = output, all others = input
+  // 1 = input, 0 = output
+  mcpWriteRegister(IODIRB, 0b11111110);
+
+  // Start with GPB0 low -> ULN off -> LED off
+  mcpWriteRegister(GPIOB, 0b00000000);
+
+  Serial.println("Blinking GPB0...");
+}
+
+void loop() {
+  // GPB0 HIGH -> ULN input high -> ULN sinks -> LED ON
+  mcpWriteRegister(GPIOB, 0b00000001);
+  Serial.println("LED ON");
+  delay(1000);
+
+  // GPB0 LOW -> ULN off -> LED OFF
+  mcpWriteRegister(GPIOB, 0b00000000);
+  Serial.println("LED OFF");
+  delay(1000);
+}
+```
+
+
