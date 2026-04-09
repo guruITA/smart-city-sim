@@ -1,3 +1,5 @@
+from typing import Optional
+
 from pydantic import BaseModel, Field
 from datetime import datetime
 
@@ -40,3 +42,31 @@ class ParkingStatusResponse(BaseModel):
     occupied: int
     available: int
     spots: list[ParkingSpotResponse]
+
+
+# --- Rail road crossing ---
+
+class TrainSecondSensorUpdate(BaseModel):
+    predicted_arrival_seconds: float
+
+
+class TrainResponse(BaseModel):
+    id: int
+    is_approaching: bool
+    first_sensor_time: datetime
+    second_sensor_time: datetime | None
+    predicted_arrival_seconds: float | None
+    updated_at: datetime
+
+
+class BarrierResponse(BaseModel):
+    is_closed: bool
+    input_mode: str
+    train_id: int | None
+    created_at: datetime
+
+
+class BarrierCreate(BaseModel):
+    input_mode: str = Field(..., example="manual", description="Type of input (manual or train)")
+    is_closed: bool = Field(..., example=True, description="Barrier closing or opening")
+    train_id: Optional[int] = Field(None, example=123, description="Associated train ID (if input_mode is train)")

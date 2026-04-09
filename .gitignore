@@ -4,4 +4,14 @@ CLAUDE.md
 SETUP_GUIDE.md
 __pycache__/
 *.pyc
+build/
+.vscode/
+.clang-format
+.clang-tidy
 
+# Wokwi
+wokwi.toml
+diagram.json
+
+/*/Wesley/*/build/*
+/*/Wesley/*/build_wokwi/

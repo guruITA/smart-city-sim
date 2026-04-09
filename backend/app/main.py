@@ -6,7 +6,7 @@ from contextlib import asynccontextmanager
 
 from database import engine
 from models import Base
-from routers import readings, parking
+from routers import readings, parking, railroad_crossing_train, railroad_crossing_barrier
 
 
 @asynccontextmanager
@@ -35,12 +35,13 @@ app.add_middleware(
 # Register routers
 app.include_router(readings.router, prefix="/api/v1", tags=["readings"])
 app.include_router(parking.router, prefix="/api/v1/parking", tags=["parking"])
+app.include_router(railroad_crossing_train.router, prefix="/api/v1/railroadcrossing/train", tags=["railroad crossing - train"])
+app.include_router(railroad_crossing_barrier.router, prefix="/api/v1/railroadcrossing/barrier", tags=["railroad crossing - barrier"])
 
 
 # Serve parking dashboard at /dashboard
 static_dir = os.path.join(os.path.dirname(__file__), "static")
 app.mount("/dashboard", StaticFiles(directory=static_dir, html=True), name="dashboard")
-
 
 @app.get("/")
 def root():

@@ -251,6 +251,44 @@
             opacity: 0.7;
         }
 
+        .approach-line {
+            position: relative;
+            height: 4px;
+            background-color: var(--muted);
+            margin: 2rem;
+        }
+
+        .railroad-dot {
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            top: -6px; /* vertically center on the line */
+            background-color: var(--muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .dot-label {
+            position: absolute;
+            top: -20px;
+            font-size: 11px;
+            transform: translateX(calc(-50% + calc(18px / 2)));
+            font-family: 'DM Mono', monospace;
+            color: var(--text);
+            white-space: nowrap;
+        }
+
+        .distance-label {
+            position: absolute;
+            top: 10px;
+            font-size: 11px;
+            transform: translateX(-50%);
+            font-family: 'DM Mono', monospace;
+            color: var(--muted);
+        }
+
         .readings-list {
             flex: 1;
             display: flex;
@@ -519,9 +557,18 @@
                     <div class="owner">thijmen / esp32 + ir + oled</div>
                 </div>
             </div>
-            <div class="section-label">Recent readings</div>
             <div class="railroad-info" id="railroadGrid">
-                <div class="no-data-msg">No railroad data yet</div>
+            <div class="section-label">Current approaching train</div>
+            <div class="tile-stats">
+                <div class="mini-stat">
+                    <div>
+                        <div class="lbl" id="trainId">
+                            -
+                        </div>
+                    </div>
+                    <div class="approach-line" id="approachLine"></div>
+                </div>
+            </div>
             </div>
         </div>
     </div>
@@ -561,6 +608,129 @@
                 }
                 return true;
             } catch (e) { return false; }
+        }
+
+        async function loadApproachingTrains() {
+            try {
+                const res = await fetch(API + "/api/v1/railroadcrossing/train/approaching");
+                const trains = await res.json();
+                const line = document.getElementById("approachLine");
+                const trainIdContainer = document.getElementById("trainId");
+
+                line.innerHTML = "";
+                trainIdContainer.innerHTML = "";
+
+                if (!trains.length) {
+                    line.style.display = "none";
+                    trainIdContainer.textContent = "No trains approaching";
+                    return;
+                }
+
+                line.style.display = "block";
+                const train = trains[0];
+                trainIdContainer.innerHTML = "Train ID: " + train.id;
+
+                const positions = { A: 0, B: 25, C: 100 };
+
+                const baseLine = document.createElement("div");
+                baseLine.style.position = "absolute";
+                baseLine.style.left = "0%";
+                baseLine.style.width = "100%";
+                baseLine.style.height = "4px";
+                baseLine.style.top = "0";
+                baseLine.style.backgroundColor = "var(--muted)";
+                line.appendChild(baseLine);
+
+                const redLine = document.createElement("div");
+                redLine.style.position = "absolute";
+                redLine.style.left = "0%";
+                redLine.style.width = "0%";
+                redLine.style.height = "4px";
+                redLine.style.top = "0";
+                redLine.style.backgroundColor = "var(--red)";
+                line.appendChild(redLine);
+
+                function createDot(pos, labelText, timestamp, isSensor = false, predictedTime = null) {
+                    const dot = document.createElement("div");
+                    dot.className = "railroad-dot";
+
+                    if (isSensor && timestamp) {
+                        dot.style.backgroundColor = "var(--red)";
+                    } else if (!isSensor && predictedTime != null) {
+                        const predictedDate = new Date(new Date(train.second_sensor_time).getTime() + predictedTime * 1000);
+                        if (Date.now() >= predictedDate.getTime()) {
+                            dot.style.backgroundColor = "var(--red)";
+                        } else {
+                            dot.style.backgroundColor = "var(--muted)";
+                        }
+                    } else {
+                        dot.style.backgroundColor = "var(--muted)";
+                    }
+                    dot.style.left = `${pos}%`;
+                    line.appendChild(dot);
+
+                    const label = document.createElement("div");
+                    label.className = "dot-label";
+                    label.style.left = `${pos}%`;
+                    if (timestamp) {
+                        label.textContent = new Date(timestamp).toLocaleTimeString();
+                    } else if (predictedTime != null) {
+                        const predictedDate = new Date(new Date(train.second_sensor_time).getTime() + predictedTime * 1000);
+                        label.textContent = predictedDate.toLocaleTimeString();
+                    }
+                    line.appendChild(label);
+
+                    const name = document.createElement("div");
+                    name.className = "dot-label";
+                    name.style.top = "20px";
+                    name.style.left = `${pos}%`;
+                    name.textContent = labelText;
+                    line.appendChild(name);
+                }
+
+                createDot(positions.A, "A", train.first_sensor_time, true);
+                createDot(positions.B, "B", train.second_sensor_time, true);
+                createDot(positions.C, "C", null, false, train.predicted_arrival_seconds);
+
+                const distAB = document.createElement("div");
+                distAB.className = "distance-label";
+                distAB.style.left = `${(positions.A + positions.B) / 2}%`;
+                distAB.textContent = "AB = 200m";
+                line.appendChild(distAB);
+
+                const distBC = document.createElement("div");
+                distBC.className = "distance-label";
+                distBC.style.left = `${(positions.B + positions.C) / 2}%`;
+                distBC.textContent = "BC = 1000m";
+                line.appendChild(distBC);
+
+                function animateLine() {
+                    const now = Date.now();
+                    let width = 0;
+
+                    const aTime = new Date(train.first_sensor_time).getTime();
+                    const bTime = new Date(train.second_sensor_time).getTime();
+                    const predictedMs = train.predicted_arrival_seconds ? train.predicted_arrival_seconds * 1000 : null;
+
+                    if (now < bTime) {
+                        const progressAB = (now - aTime) / (bTime - aTime);
+                        width = (positions.B - positions.A) * Math.max(Math.min(progressAB, 1), 0);
+                    } else if (now >= bTime && predictedMs != null) {
+                        const progressBC = (now - bTime) / predictedMs;
+                        width = (positions.B - positions.A) + (positions.C - positions.B) * Math.max(Math.min(progressBC, 1), 0);
+                    } else {
+                        width = (positions.B - positions.A) / 1.5;
+                    }
+
+                    redLine.style.width = `${width}%`;
+                    requestAnimationFrame(animateLine);
+                }
+
+                requestAnimationFrame(animateLine);
+
+            } catch (e) {
+                console.error("Failed to load approaching trains", e);
+            }
         }
 
         async function loadTile(tile, containerId, renderFn) {
@@ -624,6 +794,7 @@
                 loadTile("streetlight", "streetlightGrid", renderStreetlight);
                 loadTile("trafficLight", "trafficGrid", renderTraffic);
                 loadTile("railroadCrossing", "railroadGrid", renderRailroad);
+                loadApproachingTrains();
             }
         }
 
