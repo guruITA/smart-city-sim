@@ -6,21 +6,32 @@ This section contains all documentation for the **Parking** tile and the **share
 
 ## Contents
 
+### Architecture & API
 - [System architecture](./system-architecture.md) — overview of how hardware, backend, and frontend connect
 - [API specification](./api-specification.md) — all REST endpoints with examples
 - [Database schema](./database-schema.md) — table design and data model
 
+### Portflow Evidence
+- [Sprint 1 evidence](./portflowEvidenceSprint1.md) — backend architecture, API implementation, team integration
+- [Sprint 2 evidence](./portflowEvidenceSprint2.md) — production deployment, Pi setup, team code integration
+
 ## Quick start
 
-Start the backend locally:
-
+### Local development
 ```bash
 cd backend
 docker compose up --build
 ```
 
-The API will be available at `http://localhost:8000`.
-Interactive docs (Swagger UI) at `http://localhost:8000/docs`.
+### Deploy on Raspberry Pi
+```bash
+cd backend
+bash deploy.sh
+```
+
+The API will be available at `http://<host-ip>:8000`.
+Interactive docs (Swagger UI) at `http://<host-ip>:8000/docs`.
+Dashboard at `http://<host-ip>:8000/dashboard`.
 
 ## Tile overview
 

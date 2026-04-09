@@ -43,10 +43,13 @@ class ParkingStatusResponse(BaseModel):
     available: int
     spots: list[ParkingSpotResponse]
 
+
 # --- Rail road crossing ---
 
 class TrainSecondSensorUpdate(BaseModel):
     predicted_arrival_seconds: float
+
+
 class TrainResponse(BaseModel):
     id: int
     is_approaching: bool
@@ -55,11 +58,13 @@ class TrainResponse(BaseModel):
     predicted_arrival_seconds: float | None
     updated_at: datetime
 
+
 class BarrierResponse(BaseModel):
     is_closed: bool
     input_mode: str
-    train_id:  int | None
+    train_id: int | None
     created_at: datetime
+
 
 class BarrierCreate(BaseModel):
     input_mode: str = Field(..., example="manual", description="Type of input (manual or train)")

@@ -33,6 +33,7 @@ class ParkingSpot(Base):
     distance_cm = Column(Float, default=0.0)  # last measured distance
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
+
 class Train(Base):
     __tablename__ = "train"
 
@@ -52,7 +53,7 @@ class Barrier(Base):
             name="check_input_mode"
         ),
     )
-    
+
     id = Column(Integer, primary_key=True, index=True)
     is_closed = Column(Boolean, default=False)
     input_mode = Column(String, default="manual")

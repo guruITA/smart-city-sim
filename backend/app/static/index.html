@@ -251,7 +251,7 @@
             opacity: 0.7;
         }
 
-       .approach-line {
+        .approach-line {
             position: relative;
             height: 4px;
             background-color: var(--muted);
@@ -557,7 +557,7 @@
                     <div class="owner">thijmen / esp32 + ir + oled</div>
                 </div>
             </div>
-           <div class="railroad-info" id="railroadGrid">
+            <div class="railroad-info" id="railroadGrid">
             <div class="section-label">Current approaching train</div>
             <div class="tile-stats">
                 <div class="mini-stat">
@@ -574,7 +574,7 @@
     </div>
 
     <script>
-        const API = "http://localhost:8000";
+        const API = window.location.origin;
 
         function ago(d) {
             const s = Math.floor((Date.now() - new Date(d)) / 1000);

@@ -2,11 +2,13 @@ CLAUDE.md
 .claude/
 .claudeignore
 SETUP_GUIDE.md
+__pycache__/
+*.pyc
+.env
 build/
 .vscode/
 .clang-format
 .clang-tidy
-__pycache__
 
 # Wokwi
 wokwi.toml

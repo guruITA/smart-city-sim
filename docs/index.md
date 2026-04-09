@@ -1,86 +1,81 @@
 # City of The Embedded Alliance
 
-## 📋 Project Overview
+## Project Overview
 
-Welcome to **The Embedded Alliance** project repository. This project is developed as part of our group assignment, focusing on embedded systems development and collaboration.
+Welcome to **The Embedded Alliance** project repository. We are building a Smart City simulator as part of Studio Smart Cities at Hogeschool van Amsterdam (semester 2, 2025-2026). Each team member builds a physical tile with embedded sensors that connect to a shared backend API.
 
-## 👥 Team Members
+## Team Members
 
-- **Betul Aydin** - Scrum Master/Backend Developer
-- **Gurpreet Singh** - Developer/Embedded Robotics
-- **Thijmen Walter** - Developer/Embedded Robotics
-- **Wesley Oerlmans** - Developer/Embedded Robotics
-- **Matin Khajehfard** - Developer/Backend Developer
+| Name | Role | Tile |
+|------|------|------|
+| **Betul Aydin** | Scrum Master | Pedestrian Crossing |
+| **Gurpreet Singh** | Developer | Streetlight (ESP32 + LDR + relay) |
+| **Thijmen Walter** | Developer | Railroad Crossing (ESP32 + IR + OLED) |
+| **Wesley Oerlmans** | Developer | Traffic Light (ESP32 + MCP23017 + ULN2803) |
+| **Matin Khajehfard** | Developer / Backend | Parking (ESP32 + HC-SR04 sonar) + shared backend |
 
+## Architecture
 
-## 🎯 Project Goals
+All tiles send sensor data to a shared **FastAPI** backend over WiFi HTTP. The backend stores data in **PostgreSQL** and serves a live dashboard.
 
-The main objectives of this project are:
+```
+ESP32 sensors  ──HTTP POST──>  FastAPI backend  ──SQLAlchemy──>  PostgreSQL
+                                    │
+                              /dashboard (HTML)
+```
 
-1. Develop a robust embedded Smart City 
-2. Implement efficient communication protocols
-3. Create documentation
-4. Demonstrate team collaboration and version control skills
+## Technology Stack
 
-<!-- ## 🚀 Features
+- **Hardware**: ESP32-S3, HC-SR04, LDR, IR sensors, MCP23017, ULN2803, LEDs, OLED displays
+- **Backend**: Python 3.11, FastAPI, SQLAlchemy 2.0, PostgreSQL 16, Docker Compose
+- **Embedded**: Arduino C++ (Arduino IDE / Wokwi)
+- **Documentation**: mkdocs with Material theme (deployed via GitLab CI)
+- **Version Control**: GitLab (HvA)
 
-- Feature 1:
-- Feature 2:
-- Feature 3:
-- Feature 4: -->
+## Quick Start
 
-## 🛠️ Technology Stack
+### Run the backend
 
-- **Hardware**: List your hardware components Arduino, sensors
-- **Programming Languages**: C++, Python, Java ????
-- **Tools & Frameworks**: IDEs, libraries, frameworks used
-- **Version Control**: GitLab
+```bash
+cd backend
+docker compose up --build
+```
 
+- API: `http://localhost:8000`
+- Swagger docs: `http://localhost:8000/docs`
+- Dashboard: `http://localhost:8000/dashboard`
 
-## 🔧 Installation & Setup
+### Deploy on Raspberry Pi (Sprint 2+)
 
-### Prerequisites
+```bash
+cd backend
+bash deploy.sh
+```
 
-- Arduino IDE 2.0+
-- 360 Fusion
-- Postman
-- Docker
-- Mysql
+### Build documentation locally
 
-### Installation Steps
+```bash
+pip install -r requirements.txt
+mkdocs serve
+```
 
-1. Clone this repository:
-   ```bash
-   git clone https://gitlab.fdmci.hva.nl/studio/smart-cities/projecten/2025-2026-semester-2/city-sim-learning-group/city-the-embedded-alliance-city-sim-learning-group.git
-   cd the-embedded-alliance
-   ```
+## Project Timeline
 
-2. Install dependencies:
-   ```bash
-   # ???
-   ```
-
-3. Configure the environment:
-   ```bash
-   # ???
-   ```
-
-4. Build and run:
-   ```bash
-   # ????
-   ```
-## 📊 Project Timeline
-
-| Phase | Description | Deadline |
+| Phase | Description | Timeline |
 |-------|-------------|----------|
 | Sprint 0 | Planning & Requirements | Week 1-3 |
-| Sprint 1 | Problem analysis & Problem solution design & Prototype & Show and tell | Week 3-6 |
-| Sprint 2 | Problem analysis & Problem solution design & Prototype & Show and tell | Week 6-9 |
-| Sprint 3 | Problem analysis & Problem solution design & Prototype & Show and tell | Week 9-12 |
-| Sprint 4 | Problem analysis & Problem solution design & Prototype & Show and tell | Week 12-15 |
-| Sprint 5 | Final Product Delivery at Product Market | Week 15-18 |
+| Sprint 1 | Analysis, Design, Prototype, Show & Tell | Week 3-6 |
+| Sprint 2 | Integration, Pi deployment, Show & Tell | Week 6-9 |
+| Sprint 3 | Iteration, improvements | Week 9-12 |
+| Sprint 4 | Iteration, improvements | Week 12-15 |
+| Sprint 5 | Final Product Delivery | Week 15-18 |
 
-### Commit Guidelines
+## Documentation per team member
+
+- [Matin - Parking & Backend](Matin/index.md)
+- [Thijmen - Railroad Crossing](Thijmen/index.md)
+
+## Commit Guidelines
 
 Follow conventional commit messages:
 - `feat:` - New feature
@@ -89,31 +84,12 @@ Follow conventional commit messages:
 - `test:` - Test additions or changes
 - `refactor:` - Code refactoring
 
-## 📝 Documentation
+## Acknowledgments
 
-Detailed documentation can be found in the `/docs` directory:
-
-- [Requirements Specification](docs/requirements.md)
-- [Design Document](docs/design.md)
-- [User Manual](docs/user-manual.md)
-- [API Documentation](docs/api.md)
-
-## 📄 License
-
-This project is developed for educational purposes as part of [HVA] coursework.
-
-## 📞 Contact
-
-For questions or feedback, please contact:
-
-- Project Lead: matin.khajehfard@hva.nl
-
-## 🙏 Acknowledgments
-
-- Thanks to our coachs: Mats Otten , Gerald Stap
-- Special thanks to: Raymond Bookelman,Bernardo Villalba Frias,Dolinde van Beek, Wilko Oskam
+- Coaches: Mats Otten, Gerald Stap
+- Assessors: Raymond Bookelman, Bernardo Villalba Frias, Dolinde van Beek, Wilko Oskam
 
 ---
 
-**Last Updated**: 2026-02-09  
-**Project Status**: 🚧 In Development
+**Last Updated**: 2026-04-09
+**Project Status**: In Development (Sprint 2)
