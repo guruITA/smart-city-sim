@@ -13,6 +13,6 @@ These will be the objectives everyone will focus on.
 - Gurpreet - Streetlights
 - Wesley - Traffic lights
 - Matin - Parking
-- Betul - 
+- Betül - Pedestrian Light
 
 ---

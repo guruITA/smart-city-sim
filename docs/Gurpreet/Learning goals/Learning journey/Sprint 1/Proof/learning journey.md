@@ -165,29 +165,37 @@ Gerald suggested that it's important not to just think about which components to
 
 According to (pro-SIGNAL, 2022) he forward voltage (Vf) used with a 5mm white LED is 3.0-3.4 V at a current of 20 mA.
 
+```txt
     5V - 3V= 2V
     2V / 0,02A = 100ohm 
+```
 
 of
 
+```txt
     5V - 3,4V= 1,6V
     1,6V / 0,02A = 80ohm
+```
 
 With a supply voltage of 5V, the required resistance for 20 mA should be between 80 ohm and 100 ohm. Because I only have 220 ohm resistors available, I'm using them per LED. This makes the current per LED lower than 20 mA.
 
 I also need to know how much current I'm using for 20 LEDs because I need to think about the whole teams implementation.
 
+```txt
     5V - 3V= 2V
     2V / 220 ohm = 0,0090909090909091 A
     0,0090909090909091 A x 1000 = 9,090909090909091 mA
     9,090909090909091 mA x 20 LEDs = 181,82 mA
+```
 
 of
 
+```txt
     5V - 3,4V = 1,6V
     1,6V / 220 ohm = 0,0072727272727273 A
     0,0072727272727273 A x 1000 = 7,272727272727273 mA
     7,272727272727273 mA x 20 LEDs = 145,45 mA
+```
 
 De 20LEDs consume approximately 145–182 mA.
 

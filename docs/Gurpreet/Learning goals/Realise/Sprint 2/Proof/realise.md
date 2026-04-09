@@ -222,9 +222,11 @@ After creating the reusable component, the smart streetlight was integrated into
 
 #define builtin LED_BUILTIN
 
+//  WiFi details
 const char* WIFI_SSID = "";
 const char* WIFI_PASSWORD = "";
 
+// backend URL
 const String API_BASE_URL = "http://127.0.0.1:8000";
 
 StreetLight lamp(4, 5, 650, 1000);
@@ -341,5 +343,5 @@ Based on this realise report, the following recommendations are made for the nex
 
 *Reference formatting was made using Scribbr APA Generator.*
 
-1. Sprint 2 [analysis document]().
+1. Sprint 2 [analysis document](https://city-the-embedded-alliance-city-sim-learning-group-4a0740.dev.hihva.nl/Gurpreet/Learning%20goals/Realise/Sprint%201/Proof/realise/).
 2. Previous Sprint 1 [realisation document](https://city-the-embedded-alliance-city-sim-learning-group-4a0740.dev.hihva.nl/Gurpreet/Learning%20goals/Realise/Sprint%201/Proof/realise/).
