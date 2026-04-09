@@ -35,8 +35,8 @@ def is_barrier_closed(db: Session = Depends(get_db)):
     )
 
     if latest_log:
-        return bool(latest_log.is_closed)
-
+        return latest_log.is_closed
+    
     approaching_train = (
         db.query(Train)
         .filter(Train.is_approaching == True)
