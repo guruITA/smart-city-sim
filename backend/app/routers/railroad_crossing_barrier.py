@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
 from database import get_db
-from models import Barrier
+from models import Barrier, Train
 from schemas import BarrierCreate, BarrierResponse
 
 router = APIRouter()
@@ -22,8 +22,11 @@ def get_barrier_logs(
     return query.limit(limit).all()
 
 @router.get("/is-closed", response_model=bool)
-def is_barrier_closed( db: Session = Depends(get_db)):
-    """Return whether the barrier is currently closed based on latest log."""
+def is_barrier_closed(db: Session = Depends(get_db)):
+    """
+    Return whether the barrier is currently closed based on latest log.
+    Falls back to train status if no barrier logs exist.
+    """
 
     latest_log = (
         db.query(Barrier)
@@ -31,10 +34,20 @@ def is_barrier_closed( db: Session = Depends(get_db)):
         .first()
     )
 
-    if not latest_log:
-        raise HTTPException(status_code=404, detail="No barrier logs found")
+    if latest_log:
+        return bool(latest_log.is_closed)
 
-    return latest_log.is_closed
+    approaching_train = (
+        db.query(Train)
+        .filter(Train.is_approaching == True)
+        .order_by(Train.updated_at.desc())
+        .first()
+    )
+
+    if approaching_train:
+        return True  # barrier moet dicht
+
+    return False  # barrier open
 
 @router.post("/", response_model=BarrierResponse, status_code=201)
 def create_barrier_log(barrier: BarrierCreate, db: Session = Depends(get_db)):
