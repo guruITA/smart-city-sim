@@ -3,7 +3,6 @@
 #include "Streetlight.h"
 #include "TrainPredictionSignal.h"
 #include "SpeedCamera.h"
-#include "SpeedCamera.h"
 
 #define builtin LED_BUILTIN
 
@@ -43,12 +42,10 @@ void setup() {
   lamp.begin();
   trainSignal.begin();
   speedCamera.begin();
-  speedCamera.begin();
 }
 
 void loop() {
   lamp.update();
   trainSignal.update();
-  speedCamera.update();
   speedCamera.update();
 }
