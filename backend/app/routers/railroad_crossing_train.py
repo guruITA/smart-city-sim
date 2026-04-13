@@ -67,6 +67,23 @@ def update_train_second_sensor(
 
     return db_train
 
+
+@router.put("/crossed/all")
+def update_all_trains_crossed(
+    db: Session = Depends(get_db)
+):
+    """Set all approaching trains to not approaching."""
+
+    updated_count = (
+        db.query(Train)
+        .filter(Train.is_approaching == True)
+        .update({Train.is_approaching: False}, synchronize_session=False)
+    )
+
+    db.commit()
+
+    return {"updated": updated_count}
+
 @router.put("/{id}/crossed", response_model=TrainResponse)
 def update_train_crossed(
     id: int,

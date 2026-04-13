@@ -3,3 +3,6 @@ How can I structure the train crossing functionality as reusable and mergeable c
 
 ## Deliverables
 1. [Analysis](./Analysis.md)
+2. [Design](./Design.md)
+3. [Realise](./Realise.md)
+4. [Advice](./Advice.md)
