@@ -1,3 +1,4 @@
+#include "Config.h"
 #include "NetworkController.h"
 #include "Streetlight.h"
 #include "TrainPredictionSignal.h"
@@ -13,7 +14,12 @@ const char* WIFI_PASSWORD = "12345678";
 // backend URL
 const String API_BASE_URL = "";
 
-StreetLight lamp(4, 5, 650, 1000);
+StreetLight lamp(
+  Config::Streetlight::LDR_PIN,
+  Config::Streetlight::RELAY_PIN,
+  Config::Streetlight::THRESHOLD,
+  Config::Streetlight::INTERVAL_MS
+);
 
 // Railroad crossing tile
 TrainPredictionSignal trainSignal(37, 36, 42, 18, 45, 200, 1000, 5000, 1000, 8, 0, 90);
@@ -36,8 +42,8 @@ void setup() {
 
   lamp.begin();
   trainSignal.begin();
-  speedCamera.begin();  
-  speedCamera.begin();  
+  speedCamera.begin();
+  speedCamera.begin();
 }
 
 void loop() {
