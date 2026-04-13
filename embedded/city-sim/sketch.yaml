@@ -7,6 +7,7 @@ profiles:
     libraries:
       - dir: lib/StreetLight
       - dir: lib/NetworkController
+      - dir: lib/SpeedCamera
       - dir: lib/CrossingController
       - dir: lib/CommunicationHandler
       - dir: lib/SignalController
