@@ -37,6 +37,9 @@ private:
   unsigned long _measurementCooldownMs;
   unsigned long _resultScreenHoldMs;
 
+  unsigned long _bootScreenStartMs;
+  bool _bootScreenShowing;
+
   String _camCaptureUrl;
 
   Adafruit_SSD1306 _display;
