@@ -20,9 +20,18 @@ StreetLight lamp(
   Config::Streetlight::INTERVAL_MS
 );
 
+SpeedCamera speedCamera(Config::SpeedCamera::IR1_PIN, Config::SpeedCamera::IR2_PIN,
+                        Config::SpeedCamera::OLED_SDA_PIN, Config::SpeedCamera::OLED_SCL_PIN,
+                        Config::SpeedCamera::SCREEN_WIDTH, Config::SpeedCamera::SCREEN_HEIGHT,
+                        Config::SpeedCamera::OLED_ADDRESS, Config::SpeedCamera::IR_ACTIVE_STATE,
+                        Config::SpeedCamera::SENSOR_DISTANCE_M,
+                        Config::SpeedCamera::SPEED_LIMIT_KMH, Config::SpeedCamera::PASS_TIMEOUT_US,
+                        Config::SpeedCamera::MEASUREMENT_COOLDOWN_MS,
+                        Config::SpeedCamera::RESULT_SCREEN_HOLD_MS,
+                        Config::SpeedCamera::CAMERA_CAPTURE_URL);
+
 // Railroad crossing tile
 TrainPredictionSignal trainSignal(37, 36, 42, 18, 45, 200, 1000, 5000, 1000, 8, 0, 90);
-SpeedCamera speedCamera(6, 12, 17, 46, 128, 64, 0x3C, LOW, 0.10f, 1.0f, 2000000UL, 500, 2000, "http://192.168.4.1/capture");
 
 void setup() {
   pinMode(builtin, OUTPUT);
