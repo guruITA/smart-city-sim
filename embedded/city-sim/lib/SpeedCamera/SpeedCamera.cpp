@@ -18,7 +18,8 @@ SpeedCamera::SpeedCamera(int ir1Pin, int ir2Pin, int oledSdaPin, int oledSclPin,
       _camCaptureUrl(camCaptureUrl), _display(screenWidth, screenHeight, &Wire, -1),
       _displayReady(false), _measureState(IDLE), _firstSensor(0), _tStartUs(0),
       _lastIr1Active(false), _lastIr2Active(false), _lastSpeedKmh(0.0f), _lastTooFast(false),
-      _lastDirection("-"), _lastEventMs(0), _lastMeasurementDoneMs(0), _lastUiRefresh(0) {}
+      _lastDirection("-"), _lastEventMs(0), _lastMeasurementDoneMs(0), _lastUiRefresh(0),
+      _bootScreenStartMs(0), _bootScreenShowing(false) {}
 
 void SpeedCamera::begin() {
   pinMode(_ir1Pin, INPUT);
@@ -29,8 +30,8 @@ void SpeedCamera::begin() {
   if (_display.begin(SSD1306_SWITCHCAPVCC, _oledAddr)) {
     _displayReady = true;
     drawBootScreen();
-    delay(1500);
-    drawStatusScreen(false, false);
+    _bootScreenStartMs = millis();
+    _bootScreenShowing = true;
   } else {
     Serial.println("OLED not found.");
   }
@@ -45,6 +46,11 @@ void SpeedCamera::begin() {
 void SpeedCamera::update() {
   bool ir1 = sensorActive(_ir1Pin);
   bool ir2 = sensorActive(_ir2Pin);
+
+  if (_bootScreenShowing && (millis() - _bootScreenStartMs >= 1500)) {
+    drawStatusScreen(ir1, ir2);
+    _bootScreenShowing = false;
+  }
 
   bool edge1 = ir1 && !_lastIr1Active;
   bool edge2 = ir2 && !_lastIr2Active;
@@ -83,7 +89,7 @@ void SpeedCamera::update() {
   }
   }
 
-  if (millis() - _lastUiRefresh > 150) {
+  if (!_bootScreenShowing && millis() - _lastUiRefresh > 150) {
     if ((millis() - _lastEventMs) >= _resultScreenHoldMs) {
       drawStatusScreen(ir1, ir2);
     }
