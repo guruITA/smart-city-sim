@@ -9,12 +9,14 @@ SpeedCamera::SpeedCamera(int ir1Pin, int ir2Pin, int oledSdaPin, int oledSclPin,
                          int screenHeight, int oledAddr, int irActiveState, float sensorDistanceM,
                          float speedLimitKmh, unsigned long passTimeoutUs,
                          unsigned long measurementCooldownMs, unsigned long resultScreenHoldMs,
+                         unsigned long bootScreenHoldMs, unsigned long uiRefreshIntervalMs,
                          const String& camCaptureUrl)
     : _ir1Pin(ir1Pin), _ir2Pin(ir2Pin), _oledSdaPin(oledSdaPin), _oledSclPin(oledSclPin),
       _screenWidth(screenWidth), _screenHeight(screenHeight), _oledAddr(oledAddr),
       _irActiveState(irActiveState), _sensorDistanceM(sensorDistanceM),
       _speedLimitKmh(speedLimitKmh), _passTimeoutUs(passTimeoutUs),
       _measurementCooldownMs(measurementCooldownMs), _resultScreenHoldMs(resultScreenHoldMs),
+      _bootScreenHoldMs(bootScreenHoldMs), _uiRefreshIntervalMs(uiRefreshIntervalMs),
       _camCaptureUrl(camCaptureUrl), _display(screenWidth, screenHeight, &Wire, -1),
       _displayReady(false), _measureState(IDLE), _firstSensor(0), _tStartUs(0),
       _lastIr1Active(false), _lastIr2Active(false), _lastSpeedKmh(0.0f), _lastTooFast(false),
@@ -47,7 +49,7 @@ void SpeedCamera::update() {
   bool ir1 = sensorActive(_ir1Pin);
   bool ir2 = sensorActive(_ir2Pin);
 
-  if (_bootScreenShowing && (millis() - _bootScreenStartMs >= 1500)) {
+  if (_bootScreenShowing && (millis() - _bootScreenStartMs >= _bootScreenHoldMs)) {
     drawStatusScreen(ir1, ir2);
     _bootScreenShowing = false;
   }
@@ -89,7 +91,7 @@ void SpeedCamera::update() {
   }
   }
 
-  if (!_bootScreenShowing && millis() - _lastUiRefresh > 150) {
+  if (!_bootScreenShowing && millis() - _lastUiRefresh > _uiRefreshIntervalMs) {
     if ((millis() - _lastEventMs) >= _resultScreenHoldMs) {
       drawStatusScreen(ir1, ir2);
     }
