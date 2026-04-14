@@ -36,6 +36,9 @@ namespace Config {
         constexpr unsigned long MEASUREMENT_COOLDOWN_MS = 500;
         constexpr unsigned long RESULT_SCREEN_HOLD_MS = 2000;
 
+        constexpr unsigned long BOOT_SCREEN_HOLD_MS = 1500;
+        constexpr unsigned long UI_REFRESH_INTERVAL_MS = 150;
+
         constexpr const char* CAMERA_CAPTURE_URL = "http://192.168.4.1/capture";
     }
 
