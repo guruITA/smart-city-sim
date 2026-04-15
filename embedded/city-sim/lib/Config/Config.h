@@ -3,10 +3,11 @@
 
 #include <stdint.h>
 
+/** */
 namespace Config {
 
     /**
-     * @brief Streetlight configuration parameters.
+     * @brief Configuration parameters for the Streetlight component.
      */
     namespace Streetlight {
 
