@@ -6,13 +6,20 @@
 namespace Config {
 
     /**
-     * Streetlight configuration parameters
+     * @brief Streetlight configuration parameters.
      */
     namespace Streetlight {
+
+        /** @brief GPIO pin connected to the analog output of the LDR sensor. */
         constexpr uint8_t LDR_PIN = 4;
+
+        /** @brief GPIO pin connected to the relay control signal. */
         constexpr uint8_t RELAY_PIN = 5;
 
+        /** @brief Light threshold for streetlight activation. */
         constexpr int THRESHOLD = 650;
+
+        /** @brief Interval for updating streetlight status. */
         constexpr unsigned long INTERVAL_MS = 1000;
     }
 
