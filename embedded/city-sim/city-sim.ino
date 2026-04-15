@@ -28,6 +28,8 @@ SpeedCamera speedCamera(Config::SpeedCamera::IR1_PIN, Config::SpeedCamera::IR2_P
                         Config::SpeedCamera::SPEED_LIMIT_KMH, Config::SpeedCamera::PASS_TIMEOUT_US,
                         Config::SpeedCamera::MEASUREMENT_COOLDOWN_MS,
                         Config::SpeedCamera::RESULT_SCREEN_HOLD_MS,
+                        Config::SpeedCamera::BOOT_SCREEN_HOLD_MS,
+                        Config::SpeedCamera::UI_REFRESH_INTERVAL_MS,
                         Config::SpeedCamera::CAMERA_CAPTURE_URL);
 
 // Railroad crossing tile
