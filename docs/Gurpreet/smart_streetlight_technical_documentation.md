@@ -30,7 +30,7 @@ The logic is separated into its own module so it can be maintained and reused mo
 
 The streetlight logic is implemented across the following files:
 
-- `Config.h`
+- `Config/Config.h`
 - `Streetlight/StreetLight.h`
 - `Streetlight/StreetLight.cpp`
 - `city-sim.ino`
