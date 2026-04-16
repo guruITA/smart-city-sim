@@ -27,8 +27,6 @@ const unsigned long ECHO_TIMEOUT_MICROSECONDS = 100000UL;
 
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
 
-bool displayReady = false;
-
 float distance1 = INVALID_DISTANCE_CM;
 float distance2 = INVALID_DISTANCE_CM;
 float distance3 = INVALID_DISTANCE_CM;
@@ -85,9 +83,6 @@ const char* getStateText(bool occupied) {
 }
 
 void drawStatusScreen() {
-  if (!displayReady) {
-    return;
-  }
 
   display.clearDisplay();
   display.setTextSize(1);
@@ -142,10 +137,7 @@ void setup() {
 
   Wire.begin(OLED_SDA_PIN, OLED_SCL_PIN);
 
-  if (display.begin(SSD1306_SWITCHCAPVCC, OLED_ADDR)) {
-    displayReady = true;
-    delay(1500);
-  }
+  display.begin(SSD1306_SWITCHCAPVCC, OLED_ADDR);
 }
 
 void loop() {
