@@ -25,17 +25,15 @@ const float ECHO_TRAVEL_DIVIDER = 2.0f;
 
 const unsigned long ECHO_TIMEOUT_MICROSECONDS = 100000UL;
 
+const int TOTAL_SPOTS = 4;
+const int echoPins[TOTAL_SPOTS] = {ECHO1_PIN, ECHO2_PIN, ECHO3_PIN, ECHO4_PIN};
+
+float distances[TOTAL_SPOTS] = {INVALID_DISTANCE_CM, INVALID_DISTANCE_CM, INVALID_DISTANCE_CM,
+                                INVALID_DISTANCE_CM};
+
+bool occupied[TOTAL_SPOTS] = {false, false, false, false};
+
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
-
-float distance1 = INVALID_DISTANCE_CM;
-float distance2 = INVALID_DISTANCE_CM;
-float distance3 = INVALID_DISTANCE_CM;
-float distance4 = INVALID_DISTANCE_CM;
-
-bool occupied1 = false;
-bool occupied2 = false;
-bool occupied3 = false;
-bool occupied4 = false;
 
 unsigned long lastUiRefreshMs = 0;
 
@@ -66,24 +64,23 @@ float readDistanceOnceCm(int echoPin) {
   return (duration * SOUND_SPEED) / ECHO_TRAVEL_DIVIDER;
 }
 
-void updateOccupiedState(float distanceCm, bool& occupied) {
+void updateOccupiedState(float distanceCm, bool& isOccupied) {
   if (distanceCm < 0) {
     return;
   }
 
-  if (!occupied && distanceCm < PARKED_THRESHOLD_ON_CM) {
-    occupied = true;
-  } else if (occupied && distanceCm > PARKED_THRESHOLD_OFF_CM) {
-    occupied = false;
+  if (!isOccupied && distanceCm < PARKED_THRESHOLD_ON_CM) {
+    isOccupied = true;
+  } else if (isOccupied && distanceCm > PARKED_THRESHOLD_OFF_CM) {
+    isOccupied = false;
   }
 }
 
-const char* getStateText(bool occupied) {
-  return occupied ? "OCCUPPIED" : "FREE";
+const char* getStateText(bool isOccupied) {
+  return isOccupied ? "OCCUPIED" : "FREE";
 }
 
 void drawStatusScreen() {
-
   display.clearDisplay();
   display.setTextSize(1);
   display.setTextColor(SSD1306_WHITE);
@@ -92,32 +89,16 @@ void drawStatusScreen() {
   display.println("Parking Status");
   display.println("---------------------");
 
-  display.print("P1: ");
-  if (distance1 < 0) {
-    display.println("NO DATA");
-  } else {
-    display.println(getStateText(occupied1));
-  }
+  for (int i = 0; i < TOTAL_SPOTS; i++) {
+    display.print("P");
+    display.print(i + 1);
+    display.print(": ");
 
-  display.print("P2: ");
-  if (distance2 < 0) {
-    display.println("NO DATA");
-  } else {
-    display.println(getStateText(occupied2));
-  }
-
-  display.print("P3: ");
-  if (distance3 < 0) {
-    display.println("NO DATA");
-  } else {
-    display.println(getStateText(occupied3));
-  }
-
-  display.print("P4: ");
-  if (distance4 < 0) {
-    display.println("NO DATA");
-  } else {
-    display.println(getStateText(occupied4));
+    if (distances[i] < 0) {
+      display.println("NO DATA");
+    } else {
+      display.println(getStateText(occupied[i]));
+    }
   }
 
   display.display();
@@ -128,36 +109,22 @@ void setup() {
   delay(300);
 
   pinMode(TRIG_PIN, OUTPUT);
-  pinMode(ECHO1_PIN, INPUT);
-  pinMode(ECHO2_PIN, INPUT);
-  pinMode(ECHO3_PIN, INPUT);
-  pinMode(ECHO4_PIN, INPUT);
-
   digitalWrite(TRIG_PIN, LOW);
 
-  Wire.begin(OLED_SDA_PIN, OLED_SCL_PIN);
+  for (int i = 0; i < TOTAL_SPOTS; i++) {
+    pinMode(echoPins[i], INPUT);
+  }
 
+  Wire.begin(OLED_SDA_PIN, OLED_SCL_PIN);
   display.begin(SSD1306_SWITCHCAPVCC, OLED_ADDR);
 }
 
 void loop() {
-  distance1 = readDistanceOnceCm(ECHO1_PIN);
-  updateOccupiedState(distance1, occupied1);
-
-  delay(80);
-
-  distance2 = readDistanceOnceCm(ECHO2_PIN);
-  updateOccupiedState(distance2, occupied2);
-
-  delay(80);
-
-  distance3 = readDistanceOnceCm(ECHO3_PIN);
-  updateOccupiedState(distance3, occupied3);
-
-  delay(80);
-
-  distance4 = readDistanceOnceCm(ECHO4_PIN);
-  updateOccupiedState(distance4, occupied4);
+  for (int i = 0; i < TOTAL_SPOTS; i++) {
+    distances[i] = readDistanceOnceCm(echoPins[i]);
+    updateOccupiedState(distances[i], occupied[i]);
+    delay(80);
+  }
 
   if (millis() - lastUiRefreshMs > 250) {
     drawStatusScreen();
