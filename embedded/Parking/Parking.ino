@@ -141,7 +141,6 @@ void drawStatusScreen() {
 
 void setup() {
   Serial.begin(115200);
-  delay(300);
 
   pinMode(TRIG_PIN, OUTPUT);
   digitalWrite(TRIG_PIN, LOW);
@@ -165,6 +164,4 @@ void loop() {
     drawStatusScreen();
     lastUiRefreshMs = millis();
   }
-
-  delay(100);
 }
