@@ -111,9 +111,9 @@ void drawStatusScreen() {
   display.setTextColor(SSD1306_WHITE);
   display.setCursor(0, 0);
   display.println("Parking");
+  display.println();
 
   for (int i = 0; i < TOTAL_SPOTS; i++) {
-    display.setCursor(0, 12 + (i * 10));
     display.print("P");
     display.print(i + 1);
     display.print(": ");
