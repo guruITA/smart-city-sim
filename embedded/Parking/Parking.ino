@@ -9,6 +9,7 @@
 #define TRIG_PIN 13
 #define ECHO1_PIN 14
 #define ECHO2_PIN 15
+#define ECHO3_PIN 3
 
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 64
@@ -29,9 +30,11 @@ bool displayReady = false;
 
 float distance1 = INVALID_DISTANCE_CM;
 float distance2 = INVALID_DISTANCE_CM;
+float distance3 = INVALID_DISTANCE_CM;
 
 bool occupied1 = false;
 bool occupied2 = false;
+bool occupied3 = false;
 
 unsigned long lastUiRefreshMs = 0;
 
@@ -106,17 +109,17 @@ void drawStatusScreen() {
   }
 
   display.print("P3: ");
-  if (distance2 < 0) {
-    display.println("NOT DATA");
+  if (distance3 < 0) {
+    display.println("NO DATA");
   } else {
-    display.println(getStateText(occupied2));
+    display.println(getStateText(occupied3));
   }
 
   display.print("P4: ");
-  if (distance2 < 0) {
-    display.println("NOT DATA");
+  if (distance3 < 0) {
+    display.println("NO DATA");
   } else {
-    display.println(getStateText(occupied2));
+    display.println(getStateText(occupied3));
   }
 
   display.display();
@@ -129,6 +132,7 @@ void setup() {
   pinMode(TRIG_PIN, OUTPUT);
   pinMode(ECHO1_PIN, INPUT);
   pinMode(ECHO2_PIN, INPUT);
+  pinMode(ECHO3_PIN, INPUT);
 
   digitalWrite(TRIG_PIN, LOW);
 
@@ -137,39 +141,22 @@ void setup() {
   if (display.begin(SSD1306_SWITCHCAPVCC, OLED_ADDR)) {
     displayReady = true;
     delay(1500);
-  } else {
-    Serial.println("OLED not found.");
   }
-
-  Serial.println("ESP32-S3 2x HC-SR04 + OLED started.");
 }
 
 void loop() {
   distance1 = readDistanceOnceCm(ECHO1_PIN);
   updateOccupiedState(distance1, occupied1);
 
-  Serial.print("P1 -> Afstand: ");
-  if (distance1 < 0) {
-    Serial.print("NO DATA");
-  }
-  
-  Serial.print(" -> Status: ");
-  Serial.println(getStateText(occupied1));
-
   delay(80);
 
   distance2 = readDistanceOnceCm(ECHO2_PIN);
   updateOccupiedState(distance2, occupied2);
 
-  Serial.print("P2 -> Afstand: ");
-  if (distance2 < 0) {
-    Serial.print("NO DATA");
-  }
+  delay(80);
 
-  Serial.print(" -> Status: ");
-  Serial.println(getStateText(occupied2));
-
-  Serial.println("--------------------");
+  distance3 = readDistanceOnceCm(ECHO3_PIN);
+  updateOccupiedState(distance3, occupied3);
 
   if (millis() - lastUiRefreshMs > 250) {
     drawStatusScreen();
