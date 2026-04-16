@@ -10,6 +10,7 @@
 #define ECHO1_PIN 14
 #define ECHO2_PIN 15
 #define ECHO3_PIN 3
+#define ECHO4_PIN 10
 
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 64
@@ -31,10 +32,12 @@ bool displayReady = false;
 float distance1 = INVALID_DISTANCE_CM;
 float distance2 = INVALID_DISTANCE_CM;
 float distance3 = INVALID_DISTANCE_CM;
+float distance4 = INVALID_DISTANCE_CM;
 
 bool occupied1 = false;
 bool occupied2 = false;
 bool occupied3 = false;
+bool occupied4 = false;
 
 unsigned long lastUiRefreshMs = 0;
 
@@ -116,10 +119,10 @@ void drawStatusScreen() {
   }
 
   display.print("P4: ");
-  if (distance3 < 0) {
+  if (distance4 < 0) {
     display.println("NO DATA");
   } else {
-    display.println(getStateText(occupied3));
+    display.println(getStateText(occupied4));
   }
 
   display.display();
@@ -133,6 +136,7 @@ void setup() {
   pinMode(ECHO1_PIN, INPUT);
   pinMode(ECHO2_PIN, INPUT);
   pinMode(ECHO3_PIN, INPUT);
+  pinMode(ECHO4_PIN, INPUT);
 
   digitalWrite(TRIG_PIN, LOW);
 
@@ -157,6 +161,11 @@ void loop() {
 
   distance3 = readDistanceOnceCm(ECHO3_PIN);
   updateOccupiedState(distance3, occupied3);
+
+  delay(80);
+
+  distance4 = readDistanceOnceCm(ECHO4_PIN);
+  updateOccupiedState(distance4, occupied4);
 
   if (millis() - lastUiRefreshMs > 250) {
     drawStatusScreen();
