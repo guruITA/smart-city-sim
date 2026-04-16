@@ -23,8 +23,11 @@ const float INVALID_DISTANCE_CM = -1.0f;
 const float ECHO_TRAVEL_DIVIDER = 2.0f;
 const unsigned long ECHO_TIMEOUT_MICROSECONDS = 100000UL;
 const unsigned long UI_REFRESH_INTERVAL_MS = 250UL;
+const unsigned long SENSOR_MEASURE_INTERVAL_MS = 80UL;
 
 unsigned long lastUiRefreshMs = 0;
+unsigned long lastSensorMeasureMs = 0;
+int currentSensorIndex = 0;
 
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
 
@@ -153,10 +156,21 @@ void setup() {
 }
 
 void loop() {
-  for (int i = 0; i < TOTAL_SPOTS; i++) {
-    parkingSpots[i].distance = readDistanceOnceCm(parkingSpots[i].echoPin);
-    updateOccupiedState(parkingSpots[i].distance, parkingSpots[i].occupied);
-    delay(80);
+  unsigned long currentMillis = millis();
+  
+  if (currentMillis - lastSensorMeasureMs >= SENSOR_MEASURE_INTERVAL_MS) {
+    parkingSpots[currentSensorIndex].distance =
+        readDistanceOnceCm(parkingSpots[currentSensorIndex].echoPin);
+
+    updateOccupiedState(parkingSpots[currentSensorIndex].distance,
+                        parkingSpots[currentSensorIndex].occupied);
+
+    currentSensorIndex++;
+    if (currentSensorIndex >= TOTAL_SPOTS) {
+      currentSensorIndex = 0;
+    }
+
+    lastSensorMeasureMs = currentMillis;
   }
 
   if (millis() - lastUiRefreshMs >= UI_REFRESH_INTERVAL_MS) {
