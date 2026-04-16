@@ -16,7 +16,7 @@
 
 const float SOUND_SPEED = 0.0343f;
 
-const float PARKED_THRESHOLD_ON_CM = 10.0f;
+const float PARKED_THRESHOLD_ON_CM = 5.0f;
 const float PARKED_THRESHOLD_OFF_CM = 15.0f;
 const float INVALID_DISTANCE_CM = -1.0f;
 const float ECHO_TRAVEL_DIVIDER = 2.0f;
