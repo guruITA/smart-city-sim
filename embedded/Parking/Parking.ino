@@ -75,7 +75,7 @@ void updateOccupiedState(float distanceCm, bool& occupied) {
 }
 
 const char* getStateText(bool occupied) {
-  return occupied ? "NOT FREE" : "FREE";
+  return occupied ? "OCCUPPIED" : "FREE";
 }
 
 void drawStatusScreen() {
@@ -89,31 +89,35 @@ void drawStatusScreen() {
   display.setCursor(0, 0);
 
   display.println("Parking Status");
-  display.println("--------------");
+  display.println("---------------------");
 
-  display.print("Parking 1: ");
+  display.print("P1: ");
   if (distance1 < 0) {
     display.println("NO DATA");
   } else {
-    display.print(distance1, 1);
-    display.print("cm ");
     display.println(getStateText(occupied1));
   }
 
-  display.print("Parking 2: ");
+  display.print("P2: ");
   if (distance2 < 0) {
     display.println("NO DATA");
   } else {
-    display.print(distance2, 1);
-    display.print("cm ");
     display.println(getStateText(occupied2));
   }
 
-  display.println();
-  display.print("On<");
-  display.print(PARKED_THRESHOLD_ON_CM, 0);
-  display.print(" Off>");
-  display.println(PARKED_THRESHOLD_OFF_CM, 0);
+  display.print("P3: ");
+  if (distance2 < 0) {
+    display.println("NOT DATA");
+  } else {
+    display.println(getStateText(occupied2));
+  }
+
+  display.print("P4: ");
+  if (distance2 < 0) {
+    display.println("NOT DATA");
+  } else {
+    display.println(getStateText(occupied2));
+  }
 
   display.display();
 }
@@ -144,13 +148,11 @@ void loop() {
   distance1 = readDistanceOnceCm(ECHO1_PIN);
   updateOccupiedState(distance1, occupied1);
 
-  Serial.print("Plek 1 -> Afstand: ");
+  Serial.print("P1 -> Afstand: ");
   if (distance1 < 0) {
     Serial.print("NO DATA");
-  } else {
-    Serial.print(distance1, 2);
-    Serial.print(" cm");
   }
+  
   Serial.print(" -> Status: ");
   Serial.println(getStateText(occupied1));
 
@@ -159,13 +161,11 @@ void loop() {
   distance2 = readDistanceOnceCm(ECHO2_PIN);
   updateOccupiedState(distance2, occupied2);
 
-  Serial.print("Plek 2 -> Afstand: ");
+  Serial.print("P2 -> Afstand: ");
   if (distance2 < 0) {
     Serial.print("NO DATA");
-  } else {
-    Serial.print(distance2, 2);
-    Serial.print(" cm");
   }
+
   Serial.print(" -> Status: ");
   Serial.println(getStateText(occupied2));
 
