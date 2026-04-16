@@ -19,7 +19,7 @@
 const float SOUND_SPEED = 0.0343f;
 
 const float PARKED_THRESHOLD_ON_CM = 5.0f;
-const float PARKED_THRESHOLD_OFF_CM = 15.0f;
+const float PARKED_THRESHOLD_OFF_CM = 10.0f;
 const float INVALID_DISTANCE_CM = -1.0f;
 const float ECHO_TRAVEL_DIVIDER = 2.0f;
 
@@ -88,16 +88,32 @@ const char* getStateText(bool isOccupied) {
   return isOccupied ? "OCCUPIED" : "FREE";
 }
 
+/**
+ * 
+ */
+int countAvailableSpots() {
+  int availableSpots = 0;
+
+  for (int i = 0; i < TOTAL_SPOTS; i++) {
+    if (parkingSpots[i].distance >= 0 && !parkingSpots[i].occupied) {
+      availableSpots++;
+    }
+  }
+
+  return availableSpots;
+}
+
 void drawStatusScreen() {
+  int availableSpots = countAvailableSpots();
+
   display.clearDisplay();
   display.setTextSize(1);
   display.setTextColor(SSD1306_WHITE);
   display.setCursor(0, 0);
-
-  display.println("Parking Status");
-  display.println("---------------------");
+  display.println("Parking");
 
   for (int i = 0; i < TOTAL_SPOTS; i++) {
+    display.setCursor(0, 12 + (i * 10));
     display.print("P");
     display.print(i + 1);
     display.print(": ");
@@ -108,6 +124,17 @@ void drawStatusScreen() {
       display.println(getStateText(parkingSpots[i].occupied));
     }
   }
+
+  display.drawLine(78, 0, 78, 63, SSD1306_WHITE);
+
+  display.setTextSize(1);
+  display.setCursor(88, 4);
+  display.println("Free");
+
+
+  display.setTextSize(3);
+  display.setCursor(95, 24);
+  display.print(availableSpots);
 
   display.display();
 }
