@@ -21,7 +21,7 @@ const float PARKED_THRESHOLD_OFF_CM = 15.0f;
 const float INVALID_DISTANCE_CM = -1.0f;
 const float ECHO_TRAVEL_DIVIDER = 2.0f;
 
-const unsigned long ECHO_TIMEOUT_MICROSECONDS = 10000UL;
+const unsigned long ECHO_TIMEOUT_MICROSECONDS = 100000UL;
 
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
 
