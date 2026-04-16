@@ -33,7 +33,7 @@ unsigned long lastUiRefreshMs = 0;
  * 
  */
 struct ParkingSpot {
-  int echoPin;
+  int8_t echoPin;
   float distance;
   bool occupied;
 };
@@ -43,7 +43,7 @@ ParkingSpot parkingSpots[] = {{ECHO1_PIN, INVALID_DISTANCE_CM, false},
                               {ECHO3_PIN, INVALID_DISTANCE_CM, false},
                               {ECHO4_PIN, INVALID_DISTANCE_CM, false}};
 
-const int TOTAL_SPOTS = sizeof(parkingSpots) / sizeof(parkingSpots[0]);
+const int8_t TOTAL_SPOTS = sizeof(parkingSpots) / sizeof(parkingSpots[0]);
 
 /**
  * 
