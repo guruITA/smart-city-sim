@@ -28,6 +28,7 @@ const unsigned long ECHO_TIMEOUT_MICROSECONDS = 100000UL;
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
 
 unsigned long lastUiRefreshMs = 0;
+const unsigned long UI_REFRESH_INTERVAL_MS = 250UL;
 
 /**
  * 
@@ -160,7 +161,7 @@ void loop() {
     delay(80);
   }
 
-  if (millis() - lastUiRefreshMs > 250) {
+  if (millis() - lastUiRefreshMs >= UI_REFRESH_INTERVAL_MS) {
     drawStatusScreen();
     lastUiRefreshMs = millis();
   }
