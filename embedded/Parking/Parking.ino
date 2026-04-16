@@ -25,17 +25,25 @@ const float ECHO_TRAVEL_DIVIDER = 2.0f;
 
 const unsigned long ECHO_TIMEOUT_MICROSECONDS = 100000UL;
 
-const int TOTAL_SPOTS = 4;
-const int echoPins[TOTAL_SPOTS] = {ECHO1_PIN, ECHO2_PIN, ECHO3_PIN, ECHO4_PIN};
-
-float distances[TOTAL_SPOTS] = {INVALID_DISTANCE_CM, INVALID_DISTANCE_CM, INVALID_DISTANCE_CM,
-                                INVALID_DISTANCE_CM};
-
-bool occupied[TOTAL_SPOTS] = {false, false, false, false};
-
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
 
 unsigned long lastUiRefreshMs = 0;
+
+/**
+ * 
+ */
+struct ParkingSpot {
+  int echoPin;
+  float distance;
+  bool occupied;
+};
+
+ParkingSpot parkingSpots[] = {{ECHO1_PIN, INVALID_DISTANCE_CM, false},
+                              {ECHO2_PIN, INVALID_DISTANCE_CM, false},
+                              {ECHO3_PIN, INVALID_DISTANCE_CM, false},
+                              {ECHO4_PIN, INVALID_DISTANCE_CM, false}};
+
+const int TOTAL_SPOTS = sizeof(parkingSpots) / sizeof(parkingSpots[0]);
 
 /**
  * 
@@ -94,10 +102,10 @@ void drawStatusScreen() {
     display.print(i + 1);
     display.print(": ");
 
-    if (distances[i] < 0) {
+    if (parkingSpots[i].distance < 0) {
       display.println("NO DATA");
     } else {
-      display.println(getStateText(occupied[i]));
+      display.println(getStateText(parkingSpots[i].occupied));
     }
   }
 
@@ -112,7 +120,7 @@ void setup() {
   digitalWrite(TRIG_PIN, LOW);
 
   for (int i = 0; i < TOTAL_SPOTS; i++) {
-    pinMode(echoPins[i], INPUT);
+    pinMode(parkingSpots[i].echoPin, INPUT);
   }
 
   Wire.begin(OLED_SDA_PIN, OLED_SCL_PIN);
@@ -121,8 +129,8 @@ void setup() {
 
 void loop() {
   for (int i = 0; i < TOTAL_SPOTS; i++) {
-    distances[i] = readDistanceOnceCm(echoPins[i]);
-    updateOccupiedState(distances[i], occupied[i]);
+    parkingSpots[i].distance = readDistanceOnceCm(parkingSpots[i].echoPin);
+    updateOccupiedState(parkingSpots[i].distance, parkingSpots[i].occupied);
     delay(80);
   }
 
