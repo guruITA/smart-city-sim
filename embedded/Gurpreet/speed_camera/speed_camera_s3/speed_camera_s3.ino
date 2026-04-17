@@ -26,7 +26,8 @@ const char* CAM_WIFI_PASS = "12345678";
 const char* CAM_IP = "192.168.4.1";
 const uint16_t CAM_PORT = 80;
 
-Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
+TwoWire speedCameraWire = TwoWire(0);
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &speedCameraWire, -1);
 bool displayReady = false;
 
 enum MeasureState { IDLE, WAIT_FOR_SECOND_SENSOR };
@@ -222,7 +223,7 @@ void setup() {
   pinMode(IR1_PIN, INPUT);
   pinMode(IR2_PIN, INPUT);
 
-  Wire.begin(OLED_SDA_PIN, OLED_SCL_PIN);
+  speedCameraWire.begin(OLED_SDA_PIN, OLED_SCL_PIN);
 
   display.begin(SSD1306_SWITCHCAPVCC, OLED_ADDR);
   displayReady = true;
