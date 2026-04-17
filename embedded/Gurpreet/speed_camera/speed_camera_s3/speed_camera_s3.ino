@@ -108,9 +108,6 @@ void triggerCameraOverWiFi() {
 }
 
 void drawStatusScreen(bool ir1, bool ir2) {
-  if (!displayReady) {
-    return;
-  }
 
   display.clearDisplay();
   display.setTextSize(1);
@@ -148,9 +145,6 @@ void drawStatusScreen(bool ir1, bool ir2) {
 
 void drawMeasurementScreen(float speedKmh, bool tooFast, const String& direction,
                            unsigned long dtUs) {
-  if (!displayReady) {
-    return;
-  }
 
   display.clearDisplay();
   display.setTextSize(1);
@@ -226,14 +220,10 @@ void setup() {
   speedCameraWire.begin(OLED_SDA_PIN, OLED_SCL_PIN);
 
   display.begin(SSD1306_SWITCHCAPVCC, OLED_ADDR);
-  displayReady = true;
 
   connectToCamWiFi();
 
-  if (displayReady) {
-    delay(1500);
-    drawStatusScreen(false, false);
-  }
+  drawStatusScreen(false, false);
 
   lastIr1Active = sensorActive(IR1_PIN);
   lastIr2Active = sensorActive(IR2_PIN);
