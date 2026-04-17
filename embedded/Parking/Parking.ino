@@ -29,7 +29,8 @@ unsigned long lastUiRefreshMs = 0;
 unsigned long lastSensorMeasureMs = 0;
 int currentSensorIndex = 0;
 
-Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
+TwoWire parkingWire = TwoWire(0);
+Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &parkingWire, -1);
 
 /**
  * 
@@ -237,7 +238,7 @@ void setup() {
     pinMode(parkingSpots[i].echoPin, INPUT);
   }
 
-  Wire.begin(OLED_SDA_PIN, OLED_SCL_PIN);
+  parkingWire.begin(OLED_SDA_PIN, OLED_SCL_PIN);
   display.begin(SSD1306_SWITCHCAPVCC, OLED_ADDR);
 }
 
