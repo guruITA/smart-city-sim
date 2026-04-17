@@ -17,17 +17,18 @@ SpeedCamera::SpeedCamera(int ir1Pin, int ir2Pin, int oledSdaPin, int oledSclPin,
       _speedLimitKmh(speedLimitKmh), _passTimeoutUs(passTimeoutUs),
       _measurementCooldownMs(measurementCooldownMs), _resultScreenHoldMs(resultScreenHoldMs),
       _bootScreenHoldMs(bootScreenHoldMs), _uiRefreshIntervalMs(uiRefreshIntervalMs),
-      _camCaptureUrl(camCaptureUrl), _display(screenWidth, screenHeight, &Wire, -1),
-      _displayReady(false), _measureState(IDLE), _firstSensor(0), _tStartUs(0),
-      _lastIr1Active(false), _lastIr2Active(false), _lastSpeedKmh(0.0f), _lastTooFast(false),
-      _lastDirection("-"), _lastEventMs(0), _lastMeasurementDoneMs(0), _lastUiRefresh(0),
-      _bootScreenStartMs(0), _bootScreenShowing(false) {}
+      _camCaptureUrl(camCaptureUrl), _displayWire(1),
+      _display(screenWidth, screenHeight, &_displayWire, -1), _displayReady(false),
+      _measureState(IDLE), _firstSensor(0), _tStartUs(0), _lastIr1Active(false),
+      _lastIr2Active(false), _lastSpeedKmh(0.0f), _lastTooFast(false), _lastDirection("-"),
+      _lastEventMs(0), _lastMeasurementDoneMs(0), _lastUiRefresh(0), _bootScreenStartMs(0),
+      _bootScreenShowing(false) {}
 
 void SpeedCamera::begin() {
   pinMode(_ir1Pin, INPUT);
   pinMode(_ir2Pin, INPUT);
 
-  Wire.begin(_oledSdaPin, _oledSclPin);
+  _displayWire.begin(_oledSdaPin, _oledSclPin);
 
   if (_display.begin(SSD1306_SWITCHCAPVCC, _oledAddr)) {
     _displayReady = true;
@@ -130,7 +131,7 @@ void SpeedCamera::drawBootScreen() {
   _display.println("Speed Camera S3 start...");
   _display.println("IR1 = GPIO6");
   _display.println("IR2 = GPIO12");
-  _display.println("OLED SDA/SCL = 18/46");
+  _display.println("OLED SDA/SCL = 17y/46");
   _display.println("Camera via WiFi");
   _display.display();
 }
