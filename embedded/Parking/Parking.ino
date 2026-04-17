@@ -27,7 +27,7 @@ const unsigned long SENSOR_MEASURE_INTERVAL_MS = 80UL;
 
 unsigned long lastUiRefreshMs = 0;
 unsigned long lastSensorMeasureMs = 0;
-int currentSensorIndex = 0;
+int8_t currentSensorIndex = 0;
 
 TwoWire parkingWire = TwoWire(0);
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &parkingWire, -1);
