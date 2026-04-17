@@ -4,6 +4,7 @@
 #include <Arduino.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
+#include <Wire.h>
 
 class SpeedCamera {
 public:
@@ -45,6 +46,7 @@ private:
 
   String _camCaptureUrl;
 
+  TwoWire _displayWire;
   Adafruit_SSD1306 _display;
   bool _displayReady;
 
