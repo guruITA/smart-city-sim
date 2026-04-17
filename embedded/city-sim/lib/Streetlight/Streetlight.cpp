@@ -12,7 +12,6 @@ void StreetLight::begin() {
   Serial.begin(115200);
   pinMode(_ldrPin, INPUT);
   pinMode(_relayPin, OUTPUT);
-  Serial.println("Automatic Street Light System");
 }
 
 void StreetLight::update() {
@@ -23,15 +22,10 @@ void StreetLight::update() {
 
     int lightLevel = analogRead(_ldrPin);
 
-    Serial.print("Light Level: ");
-    Serial.println(lightLevel);
-
     if (lightLevel > _threshold) {
       digitalWrite(_relayPin, HIGH);
-      Serial.println("It's dark! Turning light on...");
     } else {
       digitalWrite(_relayPin, LOW);
-      Serial.println("It's bright! Turning light off...");
     }
   }
 }
