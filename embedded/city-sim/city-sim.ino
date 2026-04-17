@@ -3,6 +3,7 @@
 #include "Streetlight.h"
 #include "TrainPredictionSignal.h"
 #include "SpeedCamera.h"
+#include "Parking.h"
 
 #define builtin LED_BUILTIN
 
@@ -32,6 +33,16 @@ SpeedCamera speedCamera(Config::SpeedCamera::IR1_PIN, Config::SpeedCamera::IR2_P
                         Config::SpeedCamera::UI_REFRESH_INTERVAL_MS,
                         Config::SpeedCamera::CAMERA_CAPTURE_URL);
 
+Parking parking(Config::Parking::TRIG_PIN, Config::Parking::ECHO1_PIN, Config::Parking::ECHO2_PIN,
+                Config::Parking::ECHO3_PIN, Config::Parking::ECHO4_PIN,
+                Config::Parking::OLED_SDA_PIN, Config::Parking::OLED_SCL_PIN,
+                Config::Parking::SCREEN_WIDTH, Config::Parking::SCREEN_HEIGHT,
+                Config::Parking::OLED_ADDRESS, Config::Parking::SOUND_SPEED,
+                Config::Parking::PARKED_THRESHOLD_ON_CM, Config::Parking::PARKED_THRESHOLD_OFF_CM,
+                Config::Parking::INVALID_DISTANCE_CM, Config::Parking::ECHO_TRAVEL_DIVIDER,
+                Config::Parking::ECHO_TIMEOUT_MICROSECONDS, Config::Parking::UI_REFRESH_INTERVAL_MS,
+                Config::Parking::SENSOR_MEASURE_INTERVAL_MS);
+
 // Railroad crossing tile
 TrainPredictionSignal trainSignal(37, 36, 42, 18, 45, 200, 1000, 5000, 1000, 8, 0, 90);
 
@@ -53,10 +64,12 @@ void setup() {
   lamp.begin();
   trainSignal.begin();
   speedCamera.begin();
+  parking.begin();
 }
 
 void loop() {
   lamp.update();
   trainSignal.update();
   speedCamera.update();
+  parking.update();
 }
