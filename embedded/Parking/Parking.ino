@@ -34,44 +34,130 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
 /**
  * 
  */
-struct ParkingSpot {
-  int8_t echoPin;
-  float distance;
-  bool occupied;
-};
-
-ParkingSpot parkingSpots[] = {{ECHO1_PIN, INVALID_DISTANCE_CM, false},
-                              {ECHO2_PIN, INVALID_DISTANCE_CM, false},
-                              {ECHO3_PIN, INVALID_DISTANCE_CM, false},
-                              {ECHO4_PIN, INVALID_DISTANCE_CM, false}};
-
-const int8_t TOTAL_SPOTS = sizeof(parkingSpots) / sizeof(parkingSpots[0]);
+enum SensorState { IDLE, WAITING_FOR_ECHO_START, WAITING_FOR_ECHO_END };
 
 /**
  * 
  */
-float readDistanceOnceCm(int echoPin) {
-  // Sets the trigger pin LOW to make sure the sensor starts with a clean signal
-  digitalWrite(TRIG_PIN, LOW);
-  delayMicroseconds(2);
+struct ParkingSpot {
+  int8_t echoPin;
+  float distance;
+  bool occupied;
+  SensorState state;
+  unsigned long triggerTimeUs;
+  unsigned long echoStartUs;
+};
 
-  // Send a short trigger pulse of 10 microseconds to start the ultrasonic measurement
-  digitalWrite(TRIG_PIN, HIGH);
-  delayMicroseconds(10);
-  digitalWrite(TRIG_PIN, LOW);
+ParkingSpot parkingSpots[] = {{ECHO1_PIN, INVALID_DISTANCE_CM, false, IDLE, 0, 0},
+                              {ECHO2_PIN, INVALID_DISTANCE_CM, false, IDLE, 0, 0},
+                              {ECHO3_PIN, INVALID_DISTANCE_CM, false, IDLE, 0, 0},
+                              {ECHO4_PIN, INVALID_DISTANCE_CM, false, IDLE, 0, 0}};
 
-  // Measuring how long the echo pin stays HIGH
-  // This is the time the sound wave needed to travel to the object and back
-  long duration = pulseIn(echoPin, HIGH, ECHO_TIMEOUT_MICROSECONDS);
+const int8_t TOTAL_SPOTS = sizeof(parkingSpots) / sizeof(parkingSpots[0]);
 
-  // If no valid echo is received within the given timeout an invalid distance value is returned
-  if (duration <= 0) {
-    return INVALID_DISTANCE_CM;
+volatile bool echoRiseDetected = false;
+volatile bool echoMeasurementDone = false;
+volatile unsigned long echoStartUsInterrupt = 0;
+volatile unsigned long echoEndUsInterrupt = 0;
+volatile int activeEchoPin = -1;
+
+/**
+ * Interrupt handler for the currently active echo pin.
+ */
+void IRAM_ATTR handleEchoChange() {
+  if (activeEchoPin < 0) {
+    return;
   }
 
-  // Converted the measured travel time into distance in centimeters
-  // Divideed by 2 because the sound travels to the object and back
-  return (duration * SOUND_SPEED) / ECHO_TRAVEL_DIVIDER;
+  int pinState = digitalRead(activeEchoPin);
+  unsigned long nowUs = micros();
+
+  if (!echoRiseDetected && pinState == HIGH) {
+    echoStartUsInterrupt = nowUs;
+    echoRiseDetected = true;
+  } else if (echoRiseDetected && pinState == LOW) {
+    echoEndUsInterrupt = nowUs;
+    echoMeasurementDone = true;
+  }
+}
+
+/**
+ * Updates one sensor step by step without pulseIn().
+ * Returns true when a full measurement is finished.
+ */
+bool updateDistanceMeasurement(ParkingSpot& spot) {
+  unsigned long currentMicros = micros();
+
+  switch (spot.state) {
+  case IDLE:
+    activeEchoPin = spot.echoPin;
+    echoRiseDetected = false;
+    echoMeasurementDone = false;
+    echoStartUsInterrupt = 0;
+    echoEndUsInterrupt = 0;
+
+    attachInterrupt(digitalPinToInterrupt(activeEchoPin), handleEchoChange, CHANGE);
+
+    digitalWrite(TRIG_PIN, LOW);
+    delayMicroseconds(2);
+    digitalWrite(TRIG_PIN, HIGH);
+    delayMicroseconds(10);
+    digitalWrite(TRIG_PIN, LOW);
+
+    spot.triggerTimeUs = micros();
+    spot.state = WAITING_FOR_ECHO_START;
+    return false;
+
+  case WAITING_FOR_ECHO_START:
+    if (echoRiseDetected) {
+      noInterrupts();
+      spot.echoStartUs = echoStartUsInterrupt;
+      interrupts();
+
+      spot.state = WAITING_FOR_ECHO_END;
+    } else if (currentMicros - spot.triggerTimeUs >= ECHO_TIMEOUT_MICROSECONDS) {
+      detachInterrupt(digitalPinToInterrupt(activeEchoPin));
+      activeEchoPin = -1;
+
+      spot.distance = INVALID_DISTANCE_CM;
+      spot.state = IDLE;
+      return true;
+    }
+    return false;
+
+  case WAITING_FOR_ECHO_END:
+    if (echoMeasurementDone) {
+      unsigned long localEchoEndUs = 0;
+
+      noInterrupts();
+      localEchoEndUs = echoEndUsInterrupt;
+      echoMeasurementDone = false;
+      interrupts();
+
+      detachInterrupt(digitalPinToInterrupt(activeEchoPin));
+      activeEchoPin = -1;
+
+      if (localEchoEndUs > spot.echoStartUs) {
+        unsigned long duration = localEchoEndUs - spot.echoStartUs;
+        spot.distance = (duration * SOUND_SPEED) / ECHO_TRAVEL_DIVIDER;
+      } else {
+        spot.distance = INVALID_DISTANCE_CM;
+      }
+
+      spot.state = IDLE;
+      return true;
+    } else if (currentMicros - spot.echoStartUs >= ECHO_TIMEOUT_MICROSECONDS) {
+      detachInterrupt(digitalPinToInterrupt(activeEchoPin));
+      activeEchoPin = -1;
+
+      spot.distance = INVALID_DISTANCE_CM;
+      spot.state = IDLE;
+      return true;
+    }
+    return false;
+  }
+
+  return false;
 }
 
 void updateOccupiedState(float distanceCm, bool& isOccupied) {
@@ -159,22 +245,22 @@ void loop() {
   unsigned long currentMillis = millis();
   
   if (currentMillis - lastSensorMeasureMs >= SENSOR_MEASURE_INTERVAL_MS) {
-    parkingSpots[currentSensorIndex].distance =
-        readDistanceOnceCm(parkingSpots[currentSensorIndex].echoPin);
+    bool measurementFinished = updateDistanceMeasurement(parkingSpots[currentSensorIndex]);
 
-    updateOccupiedState(parkingSpots[currentSensorIndex].distance,
-                        parkingSpots[currentSensorIndex].occupied);
+    if (measurementFinished) {
+      updateOccupiedState(parkingSpots[currentSensorIndex].distance, parkingSpots[currentSensorIndex].occupied);
 
-    currentSensorIndex++;
-    if (currentSensorIndex >= TOTAL_SPOTS) {
-      currentSensorIndex = 0;
+      currentSensorIndex++;
+      if (currentSensorIndex >= TOTAL_SPOTS) {
+        currentSensorIndex = 0;
+      }
     }
 
     lastSensorMeasureMs = currentMillis;
   }
 
-  if (millis() - lastUiRefreshMs >= UI_REFRESH_INTERVAL_MS) {
+  if (currentMillis - lastUiRefreshMs >= UI_REFRESH_INTERVAL_MS) {
     drawStatusScreen();
-    lastUiRefreshMs = millis();
+    lastUiRefreshMs = currentMillis;
   }
 }
