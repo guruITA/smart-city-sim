@@ -70,7 +70,7 @@ namespace Config {
         constexpr float INVALID_DISTANCE_CM = -1.0f;
         constexpr float ECHO_TRAVEL_DIVIDER = 2.0f;
 
-        constexpr unsigned long ECHO_TIMEOUT_MICROSECONDS = 50000UL;
+        constexpr unsigned long ECHO_TIMEOUT_MICROSECONDS = 100000UL;
         constexpr unsigned long UI_REFRESH_INTERVAL_MS = 250UL;
         constexpr unsigned long SENSOR_MEASURE_INTERVAL_MS = 80UL;
     }
