@@ -7,10 +7,9 @@ profiles:
     libraries:
       - dir: lib/StreetLight
       - dir: lib/NetworkController
-      - dir: lib/CrossingController
-      - dir: lib/CommunicationHandler
-      - dir: lib/SignalController
-      - dir: lib/TrainDetector
+      - dir: lib/SpeedCamera
+      - dir: lib/TrainPredictionSignal
+      - dir: lib/Config
       - ESP32Servo (3.1.3)
       - Adafruit GFX Library (1.12.5)
       - Adafruit SSD1306 (2.5.16)
