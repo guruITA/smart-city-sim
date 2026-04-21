@@ -35,7 +35,7 @@
 
 ## 1. Introduction
 
-This document was written for The Embedded Alliance and Mayor Mats Otten.  
+This document is written for The Embedded Alliance and Mayor Mats Otten.  
 The context of this document is the current stage of the Smart City project, where a smart parking prototype must be developed for four parking spaces.
 
 The purpose of this document is to investigate how parking occupancy can be detected in a simple and reliable way with one ESP32-S3. This is relevant because a smart parking system can reduce search time, improve traffic flow in the city model, and make parking status visible in real time (Tips, 2026).
@@ -60,7 +60,7 @@ To answer this main research question, the following subquestions were formulate
 
 ## 3. Methodology
 
-This document was created using the following methods:
+This document is created using the following methods:
 
 - literature research on smart parking and ultrasonic distance measurement;
 - analysis of the HC-SR04 datasheet and its technical limits;
@@ -211,7 +211,7 @@ Based on this chapter, it can be concluded that the best direction is a four-sen
 
 This document examined how four parking spaces can be reliably monitored with one ESP32-S3 using a suitable sensor setup.
 
-First, the HC-SR04 was identified as the most suitable sensor because it is simple and accurate enough for this prototype.  
+First, the HC-SR04 is identified as the most suitable sensor because it is simple and accurate enough for this prototype.  
 Second, four parking spaces can be measured with one ESP32-S3 by using multiple sensors with shared trigger logic.  
 Third, reliable operation depends on sequential readings, stable thresholds, and good sensor placement.  
 Fourth, the best direction is a practical prototype focused on stable parking detection before adding extra features.
