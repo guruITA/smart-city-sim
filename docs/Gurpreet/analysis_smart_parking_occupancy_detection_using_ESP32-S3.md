@@ -1,4 +1,4 @@
-# Smart parking occupancy detection using ESP32-S3 (4 parking spaces)
+# Analysis: Smart parking occupancy detection using ESP32-S3 (4 parking spaces)
 
 - **Author:** Gurpreet Singh  
 - **Date:** 16-04-2026  
