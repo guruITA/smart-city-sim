@@ -1,4 +1,4 @@
-## Sprint 3, Learning Goal 2 - Recognizing when a car is waiting at the traffic light and sending that information to the backend
+# Sprint 3, Learning Goal 1 - Recognizing when a car is waiting at the traffic light and sending that information to the backend
 
 ## Learning Question
 
