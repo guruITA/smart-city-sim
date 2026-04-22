@@ -33,7 +33,18 @@ SpeedCamera speedCamera(Config::SpeedCamera::IR1_PIN, Config::SpeedCamera::IR2_P
                         Config::SpeedCamera::CAMERA_CAPTURE_URL);
 
 // Railroad crossing tile
-TrainPredictionSignal trainSignal(37, 36, 42, 18, 45, 200, 1000, 5000, 1000, 8, 0, 90);
+TrainPredictionSignal trainSignal(Config::TrainPredictionSignal::LED1_PIN, 
+                                  Config::TrainPredictionSignal::LED2_PIN, 
+                                  Config::TrainPredictionSignal::BUZZER_PIN, 
+                                  Config::TrainPredictionSignal::SERVO_PIN, 
+                                  Config::TrainPredictionSignal::BTN_PIN, 
+                                  Config::TrainPredictionSignal::AB_DISTANCE, 
+                                  Config::TrainPredictionSignal::BC_DISTANCE, 
+                                  Config::TrainPredictionSignal::SAFETY_MARGIN, 
+                                  Config::TrainPredictionSignal::BUZZER_FREQ, 
+                                  Config::TrainPredictionSignal::BUZZER_RESOLUTION, 
+                                  Config::TrainPredictionSignal::BARRIER_OPEN_ANGLE, 
+                                  Config::TrainPredictionSignal::);
 
 void setup() {
   pinMode(builtin, OUTPUT);
