@@ -213,14 +213,14 @@ After that, I should take one controlled next step by adding one real smart feat
 
 ## References
 
-Wesley. *Sprint 2, Learning Goal 1 - Expanding the traffic-light system to multiple traffic lights.*
+Wesley. (2026). *Analysis: Expanding the traffic-light prototype to a four-way crossing* [Analysis deliverable].
 
-Wesley. *Analysis - Expanding the Traffic-Light Prototype to a Four-Way Crossing.*
+Wesley. (2026). *Design: Four-way traffic-light crossing with low pin usage and external LED power* [Design deliverable].
 
-Wesley. *Design - Four-Way Traffic-Light Crossing with Low Pin Usage and External LED Power.*
+Wesley. (2026). *Realisation: Breadboard realisation of the four-way traffic-light setup* [Realisation deliverable].
 
-Wesley. *Realisation - Breadboard Realisation of the Four-Way Traffic-Light Setup.*
+Wesley. (2026). *Realisation: Developing and using tests during realisation for MCP23017 and ULN2803 integration* [Realisation deliverable].
 
-Wesley. *Realisation - Developing and Using Tests During Realisation for MCP23017 and ULN2803 Integration.*
+Wesley. (2026). *Smart traffic light: When does a traffic light become smart?* [Project document].
 
-Wesley. *Smart Traffic Light - When Does a Traffic Light Become Smart?*
+Wesley. (2026). *Sprint 2, learning goal 1: Expanding the traffic-light system to multiple traffic lights* [Learning goal document].
