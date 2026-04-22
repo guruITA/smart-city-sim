@@ -135,15 +135,17 @@ That means the controller should combine sensor state, signal duration, and traf
 
 ## References
 
-Wesley. (2026a). *Analysis - Expanding the traffic-light prototype to a four-way crossing* [Analysis deliverable].
+ESP32-S3-DEVKITC-1 v1.1. (n.d.). espressif.com. https://docs.espressif.com/projects/esp-dev-kits/en/latest/esp32s3/esp32-s3-devkitc-1/user_guide_v1.1.html
 
-Wesley. (2026b). *Realisation: Breadboard realisation of the four-way traffic-light setup* [Realisation deliverable].
+Wesley. (2026a). *Analysis - Expanding the traffic-light prototype to a four-way crossing v2* https://gitlab.fdmci.hva.nl/studio/smart-cities/projecten/2025-2026-semester-2/city-sim-learning-group/city-the-embedded-alliance-city-sim-learning-group/-/blob/8febfd00c6ceb887593016ed8d4fcd316f0c3ac8/docs/Wesley/learning%20outcomes/sprint%202/Analysis%20-%20Expanding%20the%20Traffic-Light%20Prototype%20to%20a%20Four-Way%20Crossing%20v2.md
 
-Wesley. (2026c). *Smart traffic light - When does a traffic light become smart?* [Project document].
+Wesley. (2026b). *Realisation - Breadboard realisation of the four-way traffic-light setup* https://gitlab.fdmci.hva.nl/studio/smart-cities/projecten/2025-2026-semester-2/city-sim-learning-group/city-the-embedded-alliance-city-sim-learning-group/-/blob/8febfd00c6ceb887593016ed8d4fcd316f0c3ac8/docs/Wesley/learning%20outcomes/sprint%202/Realisation%20-%20Breadboard%20Realisation%20of%20the%20Four-Way%20Traffic-Light%20Setup.md
 
-Wesley. (2026d). *Sprint 2, learning goal 1: Expanding the traffic-light system to multiple traffic lights* [Learning goal document].
+Wesley. (2026c). *Smart traffic light - When does a traffic light become smart?* https://gitlab.fdmci.hva.nl/studio/smart-cities/projecten/2025-2026-semester-2/city-sim-learning-group/city-the-embedded-alliance-city-sim-learning-group/-/blob/8febfd00c6ceb887593016ed8d4fcd316f0c3ac8/docs/Wesley/research/Smart%20Traffic%20Light%20-%20When%20Does%20a%20Traffic%20Light%20Become%20Smart.md
 
-Wesley. (2026e). *Traffic Light - first iteration - implementation* [Project deliverable].
+Wesley. (2026d). *Sprint 2, learning goal 1: Expanding the traffic-light system to multiple traffic lights* https://gitlab.fdmci.hva.nl/studio/smart-cities/projecten/2025-2026-semester-2/city-sim-learning-group/city-the-embedded-alliance-city-sim-learning-group/-/blob/8febfd00c6ceb887593016ed8d4fcd316f0c3ac8/docs/Wesley/learning%20goals/sprint%202/Sprint%202,%20Learning%20Goal%201%20-%20Expanding%20the%20traffic-light%20system%20to%20multiple%20traffic%20lights.md
 
-Wesley. (2026f). *Advice — Learning Goal 1 - Expanding the traffic-light system to multiple traffic lights* [Advice deliverable].
+Wesley. (2026e). *Traffic Light - first iteration - implementation* https://gitlab.fdmci.hva.nl/studio/smart-cities/projecten/2025-2026-semester-2/city-sim-learning-group/city-the-embedded-alliance-city-sim-learning-group/-/blob/8febfd00c6ceb887593016ed8d4fcd316f0c3ac8/docs/Wesley/research/Traffic%20Light%20-%20first%20iteration%20-%20implementation.md
+
+Wesley. (2026f). *Advice — Learning Goal 1 - Expanding the traffic-light system to multiple traffic lights* https://gitlab.fdmci.hva.nl/studio/smart-cities/projecten/2025-2026-semester-2/city-sim-learning-group/city-the-embedded-alliance-city-sim-learning-group/-/blob/8febfd00c6ceb887593016ed8d4fcd316f0c3ac8/docs/Wesley/learning%20outcomes/sprint%202/Advice%20%E2%80%94%20Learning%20Goal%201%20-%20Expanding%20the%20traffic-light%20system%20to%20multiple%20traffic%20lights.md
 
