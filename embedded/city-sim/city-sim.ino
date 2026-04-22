@@ -44,7 +44,7 @@ TrainPredictionSignal trainSignal(Config::TrainPredictionSignal::LED1_PIN,
                                   Config::TrainPredictionSignal::BUZZER_FREQ, 
                                   Config::TrainPredictionSignal::BUZZER_RESOLUTION, 
                                   Config::TrainPredictionSignal::BARRIER_OPEN_ANGLE, 
-                                  Config::TrainPredictionSignal::);
+                                  Config::TrainPredictionSignal::BARRIER_CLOSED_ANGLE);
 
 void setup() {
   pinMode(builtin, OUTPUT);
