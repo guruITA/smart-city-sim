@@ -6,7 +6,7 @@ The Raspberry Pi serves as the central server for the City Sim project. It runs 
 
 ```
 ESP32 tiles (all team members)  ──┐
-                                  ├──>  http://145.92.8.137:8000  ──>  PostgreSQL
+                                  ├──>  http://145.92.8.137:80  ──>  PostgreSQL
 Browsers (dashboard)            ──┘         Raspberry Pi 4
 ```
 
@@ -78,30 +78,30 @@ This script:
 
 ```bash
 # Health check
-curl http://145.92.8.137:8000/health
+curl http://145.92.8.137:80/health
 
 # Parking status
-curl http://145.92.8.137:8000/api/v1/parking/status
+curl http://145.92.8.137:80/api/v1/parking/status
 
 # Test a parking reading
-curl -X POST "http://145.92.8.137:8000/api/v1/parking/update/1?distance_cm=5.2"
+curl -X POST "http://145.92.8.137:80/api/v1/parking/update/1?distance_cm=5.2"
 ```
 
 ## Access Points
 
 | Service | URL |
 |---------|-----|
-| API root | `http://145.92.8.137:8000` |
-| Swagger docs | `http://145.92.8.137:8000/docs` |
-| Dashboard | `http://145.92.8.137:8000/dashboard` |
-| Health check | `http://145.92.8.137:8000/health` |
+| API root | `http://145.92.8.137:80` |
+| Swagger docs | `http://145.92.8.137:80/docs` |
+| Dashboard | `http://145.92.8.137:80/dashboard` |
+| Health check | `http://145.92.8.137:80/health` |
 
 ## ESP32 Configuration
 
 Each team member must update their ESP32 sketch to point to the Pi:
 
 ```cpp
-const char* API_BASE_URL = "http://145.92.8.137:8000";
+const char* API_BASE_URL = "http://145.92.8.137:80";
 ```
 
 ### WiFi requirements

@@ -2,11 +2,12 @@ import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from fastapi.responses import HTMLResponse
 from contextlib import asynccontextmanager
 
 from database import engine
 from models import Base
-from routers import readings, parking, railroad_crossing_train, railroad_crossing_barrier
+from routers import readings, parking, railroad_crossing_train, railroad_crossing_barrier, speed_camera
 
 
 @asynccontextmanager
@@ -37,20 +38,17 @@ app.include_router(readings.router, prefix="/api/v1", tags=["readings"])
 app.include_router(parking.router, prefix="/api/v1/parking", tags=["parking"])
 app.include_router(railroad_crossing_train.router, prefix="/api/v1/railroadcrossing/train", tags=["railroad crossing - train"])
 app.include_router(railroad_crossing_barrier.router, prefix="/api/v1/railroadcrossing/barrier", tags=["railroad crossing - barrier"])
+app.include_router(speed_camera.router, prefix="/api/v1/speedcamera", tags=["speed camera"])
 
 
-# Serve parking dashboard at /dashboard
+# Serve dashboard HTML at root
 static_dir = os.path.join(os.path.dirname(__file__), "static")
-app.mount("/dashboard", StaticFiles(directory=static_dir, html=True), name="dashboard")
 
-@app.get("/")
+
+@app.get("/", response_class=HTMLResponse)
 def root():
-    return {
-        "project": "City Sim - The Embedded Alliance",
-        "version": "0.1.0",
-        "docs": "/docs",
-        "tiles": ["parking", "streetlight", "trafficLight", "railroadCrossing"],
-    }
+    with open(os.path.join(static_dir, "index.html")) as f:
+        return f.read()
 
 
 @app.get("/health")

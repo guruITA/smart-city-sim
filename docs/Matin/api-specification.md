@@ -3,12 +3,12 @@
 ## Base URL
 
 ```
-http://localhost:8000/api/v1
+http://145.92.8.137/api/v1
 ```
 
-When deployed on the Raspberry Pi, replace `localhost` with the Pi's IP address.
+For local development: `http://localhost:8000/api/v1`
 
-Interactive documentation (Swagger UI) is available at `/docs`.
+The dashboard is served at the root (`/`). Interactive documentation (Swagger UI) is available at `/docs`.
 
 ---
 
@@ -127,6 +127,78 @@ Get status of a specific parking spot.
 
 ---
 
+## Speed camera endpoints
+
+### POST /speedcamera/
+
+Store a new speed measurement from the ESP32 speed camera.
+
+**Request body (JSON):**
+
+```json
+{
+  "speed_kmh": 2.4,
+  "direction": "1->2",
+  "is_violation": true,
+  "speed_limit_kmh": 1.0
+}
+```
+
+**Response (201 Created):**
+
+```json
+{
+  "id": 1,
+  "speed_kmh": 2.4,
+  "direction": "1->2",
+  "is_violation": true,
+  "speed_limit_kmh": 1.0,
+  "created_at": "2026-04-23T10:30:00Z"
+}
+```
+
+### GET /speedcamera/
+
+Get recent speed camera readings, ordered by most recent first.
+
+**Query parameters:**
+
+| Param | Type | Default | Description |
+|-------|------|---------|-------------|
+| limit | int | 50 | Max number of results (1 to 500) |
+
+### GET /speedcamera/violations
+
+Get only speed limit violations.
+
+**Query parameters:**
+
+| Param | Type | Default | Description |
+|-------|------|---------|-------------|
+| limit | int | 50 | Max number of results (1 to 500) |
+
+### GET /speedcamera/latest
+
+Get the most recent speed camera reading. Returns `null` if no readings exist.
+
+### GET /speedcamera/stats
+
+Get aggregated speed camera statistics.
+
+**Response:**
+
+```json
+{
+  "total_readings": 42,
+  "total_violations": 8,
+  "average_speed_kmh": 1.35,
+  "max_speed_kmh": 3.72,
+  "violation_rate_percent": 19.0
+}
+```
+
+---
+
 ## Testing with curl
 
 Send a parking reading:
@@ -147,6 +219,20 @@ Get parking status:
 
 ```bash
 curl http://localhost:8000/api/v1/parking/status
+```
+
+Send a speed camera reading:
+
+```bash
+curl -X POST http://localhost:8000/api/v1/speedcamera/ \
+  -H "Content-Type: application/json" \
+  -d '{"speed_kmh": 2.4, "direction": "1->2", "is_violation": true, "speed_limit_kmh": 1.0}'
+```
+
+Get speed camera stats:
+
+```bash
+curl http://localhost:8000/api/v1/speedcamera/stats
 ```
 
 ---

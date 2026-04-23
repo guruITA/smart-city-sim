@@ -11,9 +11,14 @@ This section contains all documentation for the **Parking** tile and the **share
 - [API specification](./api-specification.md) — all REST endpoints with examples
 - [Database schema](./database-schema.md) — table design and data model
 
+### Deployment
+- [Raspberry Pi deployment](./raspberry-pi-deployment.md) — network setup, Docker, SSH, maintenance
+- [Challenges overview](./challenges-overview.md) — problems solved across all sprints
+
 ### Portflow Evidence
 - [Sprint 1 evidence](./portflowEvidenceSprint1.md) — backend architecture, API implementation, team integration
 - [Sprint 2 evidence](./portflowEvidenceSprint2.md) — production deployment, Pi setup, team code integration
+- [Sprint 3 evidence](./portflowEvidenceSprint3.md) — Pi port 80, speed camera API, dashboard expansion
 
 ## Quick start
 
@@ -29,9 +34,9 @@ cd backend
 bash deploy.sh
 ```
 
-The API will be available at `http://<host-ip>:8000`.
-Interactive docs (Swagger UI) at `http://<host-ip>:8000/docs`.
-Dashboard at `http://<host-ip>:8000/dashboard`.
+Dashboard at `http://<host-ip>/` (root, port 80).
+API at `http://<host-ip>/api/v1/...`.
+Interactive docs (Swagger UI) at `http://<host-ip>/docs`.
 
 ## Tile overview
 
