@@ -1,5 +1,6 @@
 #include "Parking.h"
 
+// https://www.instructables.com/Non-blocking-Ultrasonic-Sensor-for-Arduino/
 Parking* Parking::_instance = NULL;
 
 Parking::Parking(uint8_t trigPin, uint8_t echo1Pin, uint8_t echo2Pin, uint8_t echo3Pin, uint8_t echo4Pin,
@@ -134,9 +135,7 @@ bool Parking::updateDistanceMeasurement(ParkingSpot& spot) {
 
     case WAITING_FOR_ECHO_START:
       if (_echoRiseDetected) {
-        noInterrupts();
         spot.echoStartUs = _echoStartUsInterrupt;
-        interrupts();
 
         spot.state = WAITING_FOR_ECHO_END;
       } else if (currentMicros - spot.triggerTimeUs >= _echoTimeoutMicroseconds) {
@@ -153,10 +152,8 @@ bool Parking::updateDistanceMeasurement(ParkingSpot& spot) {
       if (_echoMeasurementDone) {
         unsigned long localEchoEndUs = 0;
 
-        noInterrupts();
         localEchoEndUs = _echoEndUsInterrupt;
         _echoMeasurementDone = false;
-        interrupts();
 
         detachInterrupt(digitalPinToInterrupt(_activeEchoPin));
         _activeEchoPin = -1;
