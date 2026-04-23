@@ -33,10 +33,10 @@ Parking::Parking(uint8_t trigPin, uint8_t echo1Pin, uint8_t echo2Pin, uint8_t ec
       _echoEndUsInterrupt(0),
       _activeEchoPin(-1) {
 
-  _parkingSpots[0] = {echo1Pin, _invalidDistanceCm, false, IDLE, 0, 0};
-  _parkingSpots[1] = {echo2Pin, _invalidDistanceCm, false, IDLE, 0, 0};
-  _parkingSpots[2] = {echo3Pin, _invalidDistanceCm, false, IDLE, 0, 0};
-  _parkingSpots[3] = {echo4Pin, _invalidDistanceCm, false, IDLE, 0, 0};
+  _parkingSpots[0] = {int8_t(echo1Pin), _invalidDistanceCm, false, IDLE, 0, 0};
+  _parkingSpots[1] = {int8_t(echo2Pin), _invalidDistanceCm, false, IDLE, 0, 0};
+  _parkingSpots[2] = {int8_t(echo3Pin), _invalidDistanceCm, false, IDLE, 0, 0};
+  _parkingSpots[3] = {int8_t(echo4Pin), _invalidDistanceCm, false, IDLE, 0, 0};
 }
 
 void Parking::begin() {
