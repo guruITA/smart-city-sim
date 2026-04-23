@@ -83,7 +83,7 @@ void Parking::update() {
 }
 
 void IRAM_ATTR Parking::handleEchoChangeISR() {
-  if (_instance != nullptr) {
+  if (_instance != NULL) {
     _instance->handleEchoChange();
   }
 }
