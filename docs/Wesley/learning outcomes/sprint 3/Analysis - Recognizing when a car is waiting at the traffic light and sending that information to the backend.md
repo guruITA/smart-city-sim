@@ -8,8 +8,8 @@ For this learning goal, the system must determine whether a car is actually wait
 
 The chosen prototype direction uses the KY-021 as a simplified sensor so the focus remains on the logic of interpretation rather than on complex hardware. The backend should receive a meaningful message that includes the sensor, the current phase, the interpreted state, the time of change, and whether the reading was accepted as valid. The most important requirement is that sensor logic must never break the safe timing and safe phase transitions of the traffic-light controller. A correct result for this sprint is therefore a prototype that can detect presence, classify it meaningfully, send that interpretation to the backend, and remain safe when input is missing, unstable, or unclear.
 
+## Table of Contents
 
-- [Summary](#summary)
 - [Introduction](#introduction)
 - [Current Situation](#current-situation)
 - [Problem Definition](#problem-definition)
