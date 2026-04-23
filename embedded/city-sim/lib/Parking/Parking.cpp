@@ -1,6 +1,6 @@
 #include "Parking.h"
 
-Parking* Parking::_instance = nullptr;
+Parking* Parking::_instance = NULL;
 
 Parking::Parking(uint8_t trigPin, uint8_t echo1Pin, uint8_t echo2Pin, uint8_t echo3Pin, uint8_t echo4Pin,
                  uint8_t oledSdaPin, uint8_t oledSclPin, int screenWidth, int screenHeight,
