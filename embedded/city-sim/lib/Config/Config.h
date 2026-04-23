@@ -72,7 +72,7 @@ namespace Config {
 
         constexpr unsigned long ECHO_TIMEOUT_MICROSECONDS = 100000UL;
         constexpr unsigned long UI_REFRESH_INTERVAL_MS = 250UL;
-        constexpr unsigned long SENSOR_MEASURE_INTERVAL_MS = 80UL;
+        constexpr unsigned long SENSOR_MEASURE_INTERVAL_MS = 10UL;
     }
 
     namespace TrainPredictionSignal {
