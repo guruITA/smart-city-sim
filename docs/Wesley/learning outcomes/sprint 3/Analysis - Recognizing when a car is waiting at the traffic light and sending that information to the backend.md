@@ -1,5 +1,14 @@
 # Analysis - Recognizing when a car is waiting at the traffic light and sending that information to the backend
 
+## Summary
+
+This analysis shows that the main challenge in this sprint is not only detecting a vehicle, but correctly interpreting what that detection means in the context of the traffic light. The project has already moved beyond a single simple traffic light and now uses a coordinated four-way crossing with safe startup, fixed phase order, all-red transitions, no conflicting green states, and a non-blocking millis() based controller. Because that foundation is already working, the next step is to make the system respond to traffic input instead of only following a fixed cycle.
+
+For this learning goal, the system must determine whether a car is actually waiting at the traffic light and send that interpreted result to the backend. A simple raw sensor trigger is not enough, because the same signal could represent either a waiting vehicle or a passing vehicle. In this analysis, the relevant interpreted states are defined as no vehicle, waiting vehicle, passing vehicle, and unclear input. A stable active signal during red is treated as a waiting car, while a short signal during green is treated as passing traffic.
+
+The chosen prototype direction uses the KY-021 as a simplified sensor so the focus remains on the logic of interpretation rather than on complex hardware. The backend should receive a meaningful message that includes the sensor, the current phase, the interpreted state, the time of change, and whether the reading was accepted as valid. The most important requirement is that sensor logic must never break the safe timing and safe phase transitions of the traffic-light controller. A correct result for this sprint is therefore a prototype that can detect presence, classify it meaningfully, send that interpretation to the backend, and remain safe when input is missing, unstable, or unclear.
+
+
 ## Introduction
 
 At the start of this sprint, I was no longer at the stage of only one simple traffic light. Before this learning goal, I had already completed the first physical traffic-light prototype and then expanded that prototype in Sprint 2 into a coordinated four-way crossing with multiple traffic lights that work together safely and clearly. The first version already proved the basic traffic-light logic, safe startup in red, fixed state order, stable timing, and repeated cycling on real hardware (Wesley, 2026e).  
