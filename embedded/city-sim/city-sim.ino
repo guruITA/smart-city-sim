@@ -4,6 +4,8 @@
 #include "TrainPredictionSignal.h"
 #include "EinkDisplay.h"
 // #include "SpeedCamera.h"
+#include "SpeedCamera.h"
+#include "Parking.h"
 
 #define builtin LED_BUILTIN
 
@@ -42,6 +44,16 @@ EinkDisplay eink(
   Config::EinkDisplay::BUSY_PIN
 );
 
+Parking parking(Config::Parking::TRIG_PIN, Config::Parking::ECHO1_PIN, Config::Parking::ECHO2_PIN,
+                Config::Parking::ECHO3_PIN, Config::Parking::ECHO4_PIN,
+                Config::Parking::OLED_SDA_PIN, Config::Parking::OLED_SCL_PIN,
+                Config::Parking::SCREEN_WIDTH, Config::Parking::SCREEN_HEIGHT,
+                Config::Parking::OLED_ADDRESS, Config::Parking::SOUND_SPEED,
+                Config::Parking::PARKED_THRESHOLD_ON_CM, Config::Parking::PARKED_THRESHOLD_OFF_CM,
+                Config::Parking::INVALID_DISTANCE_CM, Config::Parking::ECHO_TRAVEL_DIVIDER,
+                Config::Parking::ECHO_TIMEOUT_MICROSECONDS, Config::Parking::UI_REFRESH_INTERVAL_MS,
+                Config::Parking::SENSOR_MEASURE_INTERVAL_MS);
+
 // Railroad crossing tile
 TrainPredictionSignal trainSignal(Config::TrainPredictionSignal::LED1_PIN, 
                                   Config::TrainPredictionSignal::LED2_PIN, 
@@ -77,10 +89,14 @@ void setup() {
   eink.begin();
   trainSignal.begin();
   // speedCamera.begin();
+  speedCamera.begin();
+  parking.begin();
 }
 
 void loop() {
   lamp.update();
   trainSignal.update();
   // speedCamera.update();
+  speedCamera.update();
+  parking.update();
 }

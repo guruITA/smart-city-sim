@@ -228,16 +228,6 @@ static void beginWebServer() {
   WiFi.mode(WIFI_AP);
   bool apStarted = WiFi.softAP(AP_SSID, AP_PASS);
 
-  if (!apStarted) {
-    Serial.println("Starting SoftAP failed.");
-  } else {
-    Serial.println("Started SoftAP.");
-    Serial.print("SSID: ");
-    Serial.println(AP_SSID);
-    Serial.print("IP address: ");
-    Serial.println(WiFi.softAPIP());
-  }
-
   server.on("/", HTTP_GET, handleRoot);
   server.on("/photo", HTTP_GET, handlePhoto);
   server.on("/capture", HTTP_GET, handleCapture);
@@ -266,7 +256,7 @@ static void updateErrorBlink() {
   }
 }
 
-void beginEsp32Cam() {
+void begin() {
   Serial.begin(115200);
 
   pinMode(FLASH_LED_PIN, OUTPUT);
@@ -287,7 +277,7 @@ void beginEsp32Cam() {
   controllerState = CONTROLLER_READY;
 }
 
-void updateEsp32Cam() {
+void update() {
   if (controllerState == CONTROLLER_CAMERA_ERROR) {
     updateErrorBlink();
     return;
