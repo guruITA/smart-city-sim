@@ -5,3 +5,11 @@ In this document, I describe how I realised the first smart-input extension of m
 The analysis already defined that this sprint is not only about detection, but about interpretation. It also defined that the project should distinguish between no vehicle, waiting vehicle, passing vehicle, and unclear input, and that the traffic-light phase must be part of that interpretation (Wesley, 2026a). The design then translated that into a concrete hardware and software structure using a KY-021 on GPIO 6, a phase-aware interpretation step, and a backend-ready message structure (Wesley, 2026b).
 
 This realisation phase focuses on building and testing that design in practice.
+
+## 2. What is already handled in the previous deliverables
+
+The analysis deliverable already explains the project background, the practical problem, the interpreted states, the interpretation rules, the risks, and the acceptance criteria for this sprint (Wesley, 2026a). The design deliverable already explains the chosen hardware addition, the use of the KY-021, the proposed software structure, the phase link, and the backend message format (Wesley, 2026b).
+
+Because those parts are already documented there, I do not repeat their full reasoning here. In this realisation document, I focus on how I added the sensor to the current four-way crossing, how I connected it in practice, how I used the current `millis()` based structure, and how the realised prototype behaved during testing.
+
+This also follows the same way of working that I used in Sprint 2, where I first defined the reasoning in analysis and design and then focused the realisation on building, testing, and observing the actual system behaviour (Wesley, 2026c; Wesley, 2026f).
