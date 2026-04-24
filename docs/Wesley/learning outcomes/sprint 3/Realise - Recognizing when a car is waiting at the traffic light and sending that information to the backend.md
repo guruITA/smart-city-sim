@@ -43,3 +43,27 @@ This means the realised prototype now has two linked parts:
 * one new digital sensor input for vehicle presence
 
 The sensor does not switch the lights directly. It only sends input to the controller so that the controller can interpret the signal in the context of the current traffic-light phase.
+
+## 5. Functional structure of the realised system
+
+The realised system now works in six functional steps.
+
+First, the **ESP32-S3** keeps running the existing traffic-light phase logic.
+
+Second, the **ESP32-S3** reads the **KY-021** sensor as a digital input.
+
+Third, the program checks the current traffic-light phase.
+
+Fourth, the program interprets the sensor signal using that phase context.
+
+Fifth, the program checks whether the interpreted state has changed.
+
+Sixth, the program creates a backend-ready message when a meaningful change is detected.
+
+This means the realised system now combines:
+
+```text
+traffic-light phase logic + sensor input + interpretation logic + backend-ready output
+```
+
+The separation between safe traffic-light control and the new input handling remains important here, because the existing crossing must keep working safely even when the sensor is active, inactive, unclear, or missing (Wesley, 2026a; Wesley, 2026b).
