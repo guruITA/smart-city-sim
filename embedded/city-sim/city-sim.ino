@@ -3,7 +3,7 @@
 #include "Streetlight.h"
 #include "TrainPredictionSignal.h"
 #include "EinkDisplay.h"
-// #include "SpeedCamera.h"
+#include "SpeedCamera.h"
 #include "SpeedCamera.h"
 #include "Parking.h"
 
@@ -23,17 +23,17 @@ StreetLight lamp(
   Config::Streetlight::INTERVAL_MS
 );
 
-// SpeedCamera speedCamera(Config::SpeedCamera::IR1_PIN, Config::SpeedCamera::IR2_PIN,
-//                         Config::SpeedCamera::OLED_SDA_PIN, Config::SpeedCamera::OLED_SCL_PIN,
-//                         Config::SpeedCamera::SCREEN_WIDTH, Config::SpeedCamera::SCREEN_HEIGHT,
-//                         Config::SpeedCamera::OLED_ADDRESS, Config::SpeedCamera::IR_ACTIVE_STATE,
-//                         Config::SpeedCamera::SENSOR_DISTANCE_M,
-//                         Config::SpeedCamera::SPEED_LIMIT_KMH, Config::SpeedCamera::PASS_TIMEOUT_US,
-//                         Config::SpeedCamera::MEASUREMENT_COOLDOWN_MS,
-//                         Config::SpeedCamera::RESULT_SCREEN_HOLD_MS,
-//                         Config::SpeedCamera::BOOT_SCREEN_HOLD_MS,
-//                         Config::SpeedCamera::UI_REFRESH_INTERVAL_MS,
-//                         Config::SpeedCamera::CAMERA_CAPTURE_URL);
+SpeedCamera speedCamera(Config::SpeedCamera::IR1_PIN, Config::SpeedCamera::IR2_PIN,
+                        Config::SpeedCamera::OLED_SDA_PIN, Config::SpeedCamera::OLED_SCL_PIN,
+                        Config::SpeedCamera::SCREEN_WIDTH, Config::SpeedCamera::SCREEN_HEIGHT,
+                        Config::SpeedCamera::OLED_ADDRESS, Config::SpeedCamera::IR_ACTIVE_STATE,
+                        Config::SpeedCamera::SENSOR_DISTANCE_M,
+                        Config::SpeedCamera::SPEED_LIMIT_KMH, Config::SpeedCamera::PASS_TIMEOUT_US,
+                        Config::SpeedCamera::MEASUREMENT_COOLDOWN_MS,
+                        Config::SpeedCamera::RESULT_SCREEN_HOLD_MS,
+                        Config::SpeedCamera::BOOT_SCREEN_HOLD_MS,
+                        Config::SpeedCamera::UI_REFRESH_INTERVAL_MS,
+                        Config::SpeedCamera::CAMERA_CAPTURE_URL);
 
 EinkDisplay eink(
   Config::EinkDisplay::CLK_PIN,
@@ -88,7 +88,7 @@ void setup() {
   lamp.begin();
   eink.begin();
   trainSignal.begin();
-  // speedCamera.begin();
+  speedCamera.begin();
   speedCamera.begin();
   parking.begin();
 }
@@ -96,7 +96,7 @@ void setup() {
 void loop() {
   lamp.update();
   trainSignal.update();
-  // speedCamera.update();
+  speedCamera.update();
   speedCamera.update();
   parking.update();
 }
