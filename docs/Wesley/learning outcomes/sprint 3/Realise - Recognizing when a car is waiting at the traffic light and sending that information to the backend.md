@@ -30,3 +30,16 @@ This included checking that:
 * the crossing still keeps its safe phase order and non-blocking timing
 
 These goals follow directly from the current analysis and design (Wesley, 2026a; Wesley, 2026b).
+
+## 4. Realised prototype setup
+
+I built the realised prototype on top of the existing four-way traffic-light setup. That means the current controller side, output-expansion layer, switching layer, and externally powered LED channels all remained in place from the earlier crossing implementation (Wesley, 2026c).
+
+The new part in this realisation was the KY-021 sensor input. I connected one KY-021 to the ESP32-S3 and used it as a prototype detector for one road direction. The sensor was positioned at the stop-line area for that chosen direction on the city tile. A small magnet was used on or in the model vehicle so that the KY-021 could change state when the vehicle was positioned above the detection point, as already defined in the design (Wesley, 2026b).
+
+This means the realised prototype now has two linked parts:
+
+* the existing four-way traffic-light controller
+* one new digital sensor input for vehicle presence
+
+The sensor does not switch the lights directly. It only sends input to the controller so that the controller can interpret the signal in the context of the current traffic-light phase.
