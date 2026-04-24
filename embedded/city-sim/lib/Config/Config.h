@@ -76,7 +76,23 @@ namespace Config {
     }
 
     namespace TrainPredictionSignal {
-        // will be added soon
+        constexpr int LED1_PIN = 37;
+        constexpr int LED2_PIN = 36;
+        constexpr int BUZZER_PIN = 42;
+        constexpr int SERVO_PIN = 18;
+
+        constexpr int BTN_PIN = 45;
+
+        constexpr int AB_DISTANCE = 200;
+        constexpr int BC_DISTANCE = 1000;
+
+        constexpr unsigned int SAFETY_MARGIN = 5000;
+
+        constexpr int BUZZER_FREQ = 1000;
+        constexpr int BUZZER_RESOLUTION = 8;
+
+        constexpr int BARRIER_OPEN_ANGLE = 0;
+        constexpr int BARRIER_CLOSED_ANGLE = 90;
     }
 }
 
