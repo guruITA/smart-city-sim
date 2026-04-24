@@ -121,6 +121,8 @@ bool Parking::updateDistanceMeasurement(ParkingSpot& spot) {
       _echoStartUsInterrupt = 0;
       _echoEndUsInterrupt = 0;
 
+      // https://docs.arduino.cc/language-reference/en/functions/external-interrupts/attachInterrupt/
+      // https://docs.arduino.cc/language-reference/en/functions/external-interrupts/digitalPinToInterrupt/
       attachInterrupt(digitalPinToInterrupt(_activeEchoPin), handleEchoChangeISR, CHANGE);
 
       digitalWrite(_trigPin, LOW);
@@ -139,6 +141,9 @@ bool Parking::updateDistanceMeasurement(ParkingSpot& spot) {
 
         spot.state = WAITING_FOR_ECHO_END;
       } else if (currentMicros - spot.triggerTimeUs >= _echoTimeoutMicroseconds) {
+
+        // https://docs.arduino.cc/language-reference/en/functions/external-interrupts/detachInterrupt/
+        // https://docs.arduino.cc/language-reference/en/functions/external-interrupts/digitalPinToInterrupt/
         detachInterrupt(digitalPinToInterrupt(_activeEchoPin));
         _activeEchoPin = -1;
 
