@@ -210,6 +210,9 @@ const char* Parking::getStateText(bool isOccupied) {
   return isOccupied ? "OCCUPIED" : "FREE";
 }
 
+/**
+ * Counts the number of available parking spots based on the distance measurements and occupied states of all parking spots.
+ */
 int Parking::countAvailableSpots() {
   const int8_t TOTAL_SPOTS = sizeof(_parkingSpots) / sizeof(_parkingSpots[0]);
   int availableSpots = 0;
