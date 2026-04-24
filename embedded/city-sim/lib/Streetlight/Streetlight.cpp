@@ -1,4 +1,4 @@
-#include "StreetLight.h"
+#include "Streetlight.h"
 
 StreetLight::StreetLight(int ldrPin, int relayPin, int threshold, int interval) {
   _ldrPin = ldrPin;
