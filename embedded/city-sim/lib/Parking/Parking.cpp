@@ -223,6 +223,10 @@ int Parking::countAvailableSpots() {
   return availableSpots;
 }
 
+/**
+ * Draws the status screen on the OLED display, showing the state of each parking spot and the total number of available spots.
+ * 
+ */
 void Parking::drawStatusScreen() {
   const int8_t TOTAL_SPOTS = sizeof(_parkingSpots) / sizeof(_parkingSpots[0]);
   int availableSpots = countAvailableSpots();
