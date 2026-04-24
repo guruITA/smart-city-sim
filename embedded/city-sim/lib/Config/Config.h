@@ -61,6 +61,15 @@ namespace Config {
         constexpr int BARRIER_OPEN_ANGLE = 0;
         constexpr int BARRIER_CLOSED_ANGLE = 90;
     }
+
+    namespace EinkDisplay {
+        constexpr int CLK_PIN  = 13;
+        constexpr int MOSI_PIN = 11;
+        constexpr int CS_PIN   = 10;
+        constexpr int DC_PIN   = 9;
+        constexpr int RST_PIN  = 8;
+        constexpr int BUSY_PIN = 7;
+    }
 }
 
 #endif

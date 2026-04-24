@@ -2,7 +2,8 @@
 #include "NetworkController.h"
 #include "Streetlight.h"
 #include "TrainPredictionSignal.h"
-#include "SpeedCamera.h"
+#include "EinkDisplay.h"
+// #include "SpeedCamera.h"
 
 #define builtin LED_BUILTIN
 
@@ -20,17 +21,26 @@ StreetLight lamp(
   Config::Streetlight::INTERVAL_MS
 );
 
-SpeedCamera speedCamera(Config::SpeedCamera::IR1_PIN, Config::SpeedCamera::IR2_PIN,
-                        Config::SpeedCamera::OLED_SDA_PIN, Config::SpeedCamera::OLED_SCL_PIN,
-                        Config::SpeedCamera::SCREEN_WIDTH, Config::SpeedCamera::SCREEN_HEIGHT,
-                        Config::SpeedCamera::OLED_ADDRESS, Config::SpeedCamera::IR_ACTIVE_STATE,
-                        Config::SpeedCamera::SENSOR_DISTANCE_M,
-                        Config::SpeedCamera::SPEED_LIMIT_KMH, Config::SpeedCamera::PASS_TIMEOUT_US,
-                        Config::SpeedCamera::MEASUREMENT_COOLDOWN_MS,
-                        Config::SpeedCamera::RESULT_SCREEN_HOLD_MS,
-                        Config::SpeedCamera::BOOT_SCREEN_HOLD_MS,
-                        Config::SpeedCamera::UI_REFRESH_INTERVAL_MS,
-                        Config::SpeedCamera::CAMERA_CAPTURE_URL);
+// SpeedCamera speedCamera(Config::SpeedCamera::IR1_PIN, Config::SpeedCamera::IR2_PIN,
+//                         Config::SpeedCamera::OLED_SDA_PIN, Config::SpeedCamera::OLED_SCL_PIN,
+//                         Config::SpeedCamera::SCREEN_WIDTH, Config::SpeedCamera::SCREEN_HEIGHT,
+//                         Config::SpeedCamera::OLED_ADDRESS, Config::SpeedCamera::IR_ACTIVE_STATE,
+//                         Config::SpeedCamera::SENSOR_DISTANCE_M,
+//                         Config::SpeedCamera::SPEED_LIMIT_KMH, Config::SpeedCamera::PASS_TIMEOUT_US,
+//                         Config::SpeedCamera::MEASUREMENT_COOLDOWN_MS,
+//                         Config::SpeedCamera::RESULT_SCREEN_HOLD_MS,
+//                         Config::SpeedCamera::BOOT_SCREEN_HOLD_MS,
+//                         Config::SpeedCamera::UI_REFRESH_INTERVAL_MS,
+//                         Config::SpeedCamera::CAMERA_CAPTURE_URL);
+
+EinkDisplay eink(
+  Config::EinkDisplay::CLK_PIN,
+  Config::EinkDisplay::MOSI_PIN,
+  Config::EinkDisplay::CS_PIN,
+  Config::EinkDisplay::DC_PIN,
+  Config::EinkDisplay::RST_PIN,
+  Config::EinkDisplay::BUSY_PIN
+);
 
 // Railroad crossing tile
 TrainPredictionSignal trainSignal(Config::TrainPredictionSignal::LED1_PIN, 
@@ -60,14 +70,17 @@ void setup() {
   }
 
   NetworkController::setApiBaseUrl(API_BASE_URL);
-
+  pinMode(7, INPUT);
+  Serial.print("[eink] BUSY pin state: ");
+  Serial.println(digitalRead(7));
   lamp.begin();
+  eink.begin();
   trainSignal.begin();
-  speedCamera.begin();
+  // speedCamera.begin();
 }
 
 void loop() {
   lamp.update();
   trainSignal.update();
-  speedCamera.update();
+  // speedCamera.update();
 }
