@@ -13,3 +13,20 @@ The analysis deliverable already explains the project background, the practical 
 Because those parts are already documented there, I do not repeat their full reasoning here. In this realisation document, I focus on how I added the sensor to the current four-way crossing, how I connected it in practice, how I used the current `millis()` based structure, and how the realised prototype behaved during testing.
 
 This also follows the same way of working that I used in Sprint 2, where I first defined the reasoning in analysis and design and then focused the realisation on building, testing, and observing the actual system behaviour (Wesley, 2026c; Wesley, 2026f).
+
+## 3. Goal of the Realisation
+
+The goal of this realisation was to build the designed waiting-car detection extension on top of the already existing four-way traffic-light crossing and verify that the system works safely and correctly in practice.
+
+This included checking that:
+
+* the KY-021 sensor can be read correctly by the ESP32-S3
+* the sensor can be integrated without disturbing the existing crossing behaviour
+* the current traffic-light phase can be used during interpretation
+* stable detection during red can be interpreted as waiting traffic
+* short detection during green is not incorrectly treated as waiting traffic
+* unclear or missing input does not create unsafe behaviour
+* the system can produce a backend-ready traffic state message
+* the crossing still keeps its safe phase order and non-blocking timing
+
+These goals follow directly from the current analysis and design (Wesley, 2026a; Wesley, 2026b).
