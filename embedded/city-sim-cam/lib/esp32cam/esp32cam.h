@@ -31,7 +31,7 @@ static constexpr unsigned long FLASH_PULSE_MS = 10;
 static constexpr unsigned long ERROR_BLINK_INTERVAL_MS = 100;
 static constexpr unsigned long CAPTURE_TIMEOUT_MS = 1000;
 
-void beginEsp32Cam();
-void updateEsp32Cam();
+void begin();
+void update();
 
 #endif
