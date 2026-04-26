@@ -27,3 +27,30 @@ The KY-021 was a good prototype choice because it let me focus on the most impor
 For this step, I did not yet need a complex sensor. I needed a sensor that was simple enough to wire, simple enough to read, and clear enough to test. The KY-021 gave me that.
 
 So as a **prototype learning solution**, it was suitable.
+
+## What worked well
+
+### 1. The solution was simple enough to understand and test
+
+The KY-021 works with a simple digital signal. That made it easier to connect to the ESP32-S3 and easier to reason about in software. For this learning goal, that simplicity was helpful, because I wanted to focus on the interpretation logic rather than on complicated sensor calibration.
+
+### 2. It fit well on top of my existing traffic-light prototype
+
+Because the first iteration already worked physically and logically, I could use that earlier prototype as the base and only add the new sensor flow. That made the step realistic and manageable instead of too large at once. The earlier implementation already proved that my hardware base and traffic-light sequence were stable enough to build on. 
+
+### 3. It helped me think in traffic states instead of raw inputs
+
+This was the strongest part of the solution. The real learning was not that the pin can become active. The real learning was that the same sensor trigger can mean different things depending on the traffic-light phase.
+
+Because of that, this learning goal pushed me to work with interpreted states such as:
+
+* no vehicle
+* waiting vehicle
+* passing vehicle
+* unclear input
+
+That is a more useful system design than only sending raw sensor values to the backend.
+
+### 4. It matched the broader smart-traffic direction of the project
+
+The wider project already says that smart behavior begins when the system uses sensor input as part of traffic-light decisions. This solution fits that direction, because it is the first step where the traffic light starts responding to something happening on the road instead of only following a timer. 
