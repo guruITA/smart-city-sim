@@ -54,3 +54,45 @@ That is a more useful system design than only sending raw sensor values to the b
 ### 4. It matched the broader smart-traffic direction of the project
 
 The wider project already says that smart behavior begins when the system uses sensor input as part of traffic-light decisions. This solution fits that direction, because it is the first step where the traffic light starts responding to something happening on the road instead of only following a timer. 
+
+## What did not work as strongly
+
+Even though the solution was suitable for this iteration, it also has limitations.
+
+### 1. It is only a simplified representation of a real road loop
+
+The KY-021 is useful as a prototype stand-in, but it is not the same as a real inductive loop in a road. It depends on a magnet and a reed-switch trigger, while a real traffic loop works in a very different physical way.
+
+That means the solution is good for learning and prototyping, but not realistic enough to claim that it fully represents real traffic detection.
+
+### 2. Sensor meaning still depends heavily on context
+
+The KY-021 alone does not know whether a car is waiting. It only knows whether the magnet is present. The actual meaning has to be created in software by combining:
+
+* sensor state
+* signal duration
+* traffic-light phase
+
+That means the hardware alone is not enough. The quality of the result depends strongly on the interpretation logic.
+
+### 3. It can still be sensitive to placement
+
+The meaning of the signal depends a lot on where the sensor is placed. If it is too early, too late, or not aligned well with the car position, it can produce a trigger that does not really represent a waiting car.
+
+So even though the sensor is simple, correct placement is still important.
+
+### 4. It does not yet solve more advanced traffic situations
+
+This solution is still limited to one simple question:
+
+**is there a waiting car here or not**
+
+It does not yet tell me:
+
+* how many cars are waiting
+* how long the queue is
+* how fast traffic is moving
+* whether traffic density is increasing
+* whether there are multiple vehicles in one lane
+
+So it is a useful first smart step, but not yet a complete smart-traffic solution.
