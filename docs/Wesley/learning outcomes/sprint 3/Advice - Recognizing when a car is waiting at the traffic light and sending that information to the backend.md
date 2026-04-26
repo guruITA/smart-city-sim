@@ -96,3 +96,72 @@ It does not yet tell me:
 * whether there are multiple vehicles in one lane
 
 So it is a useful first smart step, but not yet a complete smart-traffic solution.
+
+## Problems or limitations I found
+
+The main limitation I found is that a sensor trigger by itself is not enough to describe the traffic situation clearly.
+
+The hardest part was not detecting presence, but preventing wrong interpretation. The most important example is this:
+
+* during red, a stable trigger can mean a waiting car
+* during green, a short trigger can simply mean a passing car
+
+That means the project can easily give the wrong answer if the sensor signal is treated too simply.
+
+A second limitation is that the backend only becomes useful if it receives interpreted information. Sending only active or inactive would not be strong enough, because the backend would still need to guess what the signal means.
+
+## What I would advise for the next iteration
+
+### 1. Keep the interpreted-state approach
+
+This is something I would definitely keep.
+
+I would continue to send states like:
+
+* waiting
+* passing
+* no vehicle
+* unclear
+
+instead of only sending raw sensor values. That makes the backend clearer and makes the whole project more understandable.
+
+### 2. Improve the physical placement and proof
+
+In the next iteration, I would pay even more attention to the exact stop-line position of the sensor and to the physical proof of that position in Fritzing and in the real build.
+
+The earlier Fritzing work already showed me that good documentation improves clarity and traceability. For the next version, that will matter even more because the sensor position affects the meaning of the result. 
+
+### 3. Add stronger validation rules in software
+
+In a next iteration, I would improve the logic for deciding when a signal is stable enough and when it should be treated as unclear. That would reduce the risk of short, accidental, or badly timed triggers being treated as real waiting traffic.
+
+### 4. Make the backend output easier to inspect
+
+The backend part worked conceptually, but in a next iteration I would make the output even easier to review. For example, I would log:
+
+* phase
+* interpreted state
+* time of change
+* validity of the reading
+
+That would make debugging and later analysis easier.
+
+### 5. Consider a more realistic traffic sensor later
+
+For this learning goal, the KY-021 was a good prototype choice. But if I want to make the system more realistic later, I should eventually look at a sensor that better matches real road detection behavior. That would make the smart part of the traffic light closer to real-world traffic systems.
+
+## My final advice
+
+If I had to advise myself or another student doing the same kind of project, I would say this:
+
+Start with a simple sensor solution if the goal is to learn how the traffic light should **interpret** traffic input, not to perfectly copy real-world hardware immediately.
+
+The KY-021 is suitable for that purpose because it keeps the setup simple and testable. But do not mistake a simple trigger for a complete traffic answer. The real value comes from combining the signal with the traffic-light phase and turning it into a meaningful state for the backend.
+
+So my advice is:
+
+* use a simple sensor first
+* focus on interpretation logic
+* keep safety and fallback behavior central
+* document the hardware clearly
+* improve realism only in later iterations
