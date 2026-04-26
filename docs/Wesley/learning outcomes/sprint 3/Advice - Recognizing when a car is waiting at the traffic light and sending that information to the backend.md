@@ -165,3 +165,23 @@ So my advice is:
 * keep safety and fallback behavior central
 * document the hardware clearly
 * improve realism only in later iterations
+
+## Conclusion
+
+Looking back at this learning goal, I think my chosen solution was suitable for the stage of the project I am in now.
+
+The KY-021 was not the perfect real-world traffic sensor, but it was a good prototype choice because it allowed me to prove the most important step: my traffic-light project can move from fixed behavior to sensor-informed behavior.
+
+The strongest part of the solution was not the sensor itself, but the decision to interpret the signal in context and send that interpreted result to the backend.
+
+So my final conclusion is:
+
+**For this iteration, the KY-021 was a suitable prototype solution because it was simple enough to build and test, while still allowing me to learn the more important skill of interpreting traffic input correctly and using it safely in the system.**
+
+## References
+
+Wesley. *Smart Traffic Light - When Does a Traffic Light Become Smart.* Used as the broader project source for second-iteration vehicle-detection requirements, smart-traffic direction, acceptance criteria, and safe fallback behavior. 
+
+Wesley. *Traffic Light - first iteration - implementation.* Used as proof that the earlier ESP32-S3 traffic-light base was already working and suitable to extend with sensor-based behavior. 
+
+Wesley. *Traffic Light - first iterion - fritzing.* Used as reference for the value of clear hardware documentation and traceability in the project workflow. 
