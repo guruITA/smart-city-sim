@@ -70,12 +70,12 @@ To answer this question, the following subquestions were formulated:
 
 This document was created using the following methods:
 
-- building and testing the smart parking prototype in hardware;
-- programming the ESP32-S3 in VS Code using Arduino CLI;
-- implementing the parking system inside the existing library-like project structure;
-- creating a separate `Parking.h` and `Parking.cpp` component so the code fits the shared project setup;
-- replacing blocking ultrasonic measurement logic with non-blocking logic;
-- using interrupts to read the echo signal without stopping the rest of the program;
+- building and testing the smart parking prototype in hardware
+- programming the ESP32-S3 in VS Code using Arduino CLI
+- implementing the parking system inside the existing library-like project structure
+- creating a separate `Parking.h` and `Parking.cpp` component so the code fits the shared project setup
+- replacing blocking ultrasonic measurement logic with non-blocking logic
+- using interrupts to read the echo signal without stopping the rest of the program
 - validating the parking status on the OLED display during testing.
 
 These methods were chosen because the parking system had to work inside the existing shared Smart City project. The code could not be written as one loose `.ino` file, because it had to fit together with the streetlight, speed camera, and train signal components. The ultrasonic measurement also had to be non-blocking, because blocking logic such as `pulseIn()` would stop the main loop while waiting for an echo result.
@@ -114,8 +114,8 @@ The parking system is not written as one loose `.ino` file. It is implemented as
 
 This means the parking functionality can run next to the other components in the same project, such as:
 
-- streetlight;
-- speed camera;
+- streetlight.
+- speed camera.
 - train signal.
 
 The main file only starts and updates the component. The detailed parking logic stays inside `Parking.h` and `Parking.cpp`. This keeps the shared project cleaner and makes the parking system easier to maintain or extend later.
@@ -183,7 +183,7 @@ In my code, this is used here:
 
 This means the active echo pin is watched for both changes:
 
-- LOW to HIGH = echo started;
+- LOW to HIGH = echo started
 - HIGH to LOW = echo ended.
 
 Inside `handleEchoChange()`, the code reads the active echo pin. When the pin becomes HIGH, it stores the start time with `micros()`. When the pin becomes LOW, it stores the end time and marks the measurement as finished.
@@ -245,10 +245,10 @@ In my code, `_currentSensorIndex` decides which parking sensor is currently acti
 
 The flow is:
 
-1. measure current sensor;
-2. wait until the measurement is finished or timed out;
-3. update occupied/free status;
-4. increase `_currentSensorIndex`;
+1. measure current sensor
+2. wait until the measurement is finished or timed out
+3. update occupied/free status
+4. increase `_currentSensorIndex`
 5. return to sensor 1 after sensor 4.
 
 This fits the design choice from the previous document. It keeps the measurement flow controlled and reduces the chance that the echo signal from one ultrasonic sensor is mixed with another sensor.
@@ -289,9 +289,9 @@ Invalid measurements are stored as `-1.0`. When a measurement is invalid, the oc
 
 The OLED display shows:
 
-- parking spot 1 to 4;
-- `OCCUPIED` or `FREE`;
-- `NO DATA` when measurement fails;
+- parking spot 1 to 4
+- `OCCUPIED` or `FREE`
+- `NO DATA` when measurement fails
 - total number of free spaces.
 
 This output is shown during the live demonstration.
