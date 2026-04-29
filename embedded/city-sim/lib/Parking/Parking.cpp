@@ -254,41 +254,74 @@ int Parking::countAvailableSpots() {
 }
 
 /**
- * Draws the status screen on the OLED display, showing the state of each parking spot and the total number of available spots.
- * 
+ * @brief Draws the parking status screen on the OLED display.
+ *
+ * The screen shows the state of each parking spot and the total number
+ * of free parking spots.
  */
 void Parking::drawStatusScreen() {
+
+  // Calculate the total number of parking spots in the array.
   const int8_t TOTAL_SPOTS = sizeof(_parkingSpots) / sizeof(_parkingSpots[0]);
+
+  // Get the current number of free parking spots.
   int availableSpots = countAvailableSpots();
 
+  // Clear the old screen content.
   _display.clearDisplay();
+
+  // Set the text size to normal 
   _display.setTextSize(1);
+
+  // Set the text color to white.
   _display.setTextColor(SSD1306_WHITE);
+
+  // Set the text position to the top-left corner of the screen.
   _display.setCursor(0, 0);
+
+  // Show the screen title.
   _display.println("Parking");
+
+  // Move to the next empty line.
   _display.println();
 
+  // Show the status of each parking spot.
   for (int i = 0; i < TOTAL_SPOTS; i++) {
     _display.print("P");
     _display.print(i + 1);
     _display.print(": ");
 
+    // Show NO DATA when the distance measurement is invalid.
     if (_parkingSpots[i].distance < 0) {
       _display.println("NO DATA");
     } else {
+
+      // Show OCCUPIED or FREE when the measurement is valid.
       _display.println(getStateText(_parkingSpots[i].occupied));
     }
   }
 
+  // Draw a vertical line between the spot list and the free counter.
   _display.drawLine(78, 0, 78, 63, SSD1306_WHITE);
 
+  // Set the text size for the label.
   _display.setTextSize(1);
+
+  // Set the text position for the label.
   _display.setCursor(88, 4);
+
+  // Show the label for free parking spots.
   _display.println("Free");
 
+  // Set the text size for the number display.
   _display.setTextSize(3);
+
+  // Set the text position for the number.
   _display.setCursor(95, 24);
+
+  // Show the number of free parking spots.
   _display.print(availableSpots);
 
+  // Send everything to the OLED display.
   _display.display();
 }
