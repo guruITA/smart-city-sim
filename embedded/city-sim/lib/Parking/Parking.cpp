@@ -147,15 +147,27 @@ void IRAM_ATTR Parking::handleEchoChange() {
 }
 
 /**
- * Updates one sensor step by step without pulseIn().
- * Returns true when a full measurement is finished.
+ * @brief Updates the distance measurement for one parking spot.
+ *
+ * This function measures one sensor step by step. It returns true when
+ * the measurement is finished, and false when the measurement is still running.
+ *
+ * @param spot Parking spot that is being measured.
+ * @return true when the measurement is finished, otherwise false.
  */
 bool Parking::updateDistanceMeasurement(ParkingSpot& spot) {
+
+  // Get the current time in microseconds.
   unsigned long currentMicros = micros();
 
+  // Run the correct measurement step for this parking spot.
   switch (spot.state) {
+
     case IDLE:
+      // Select the echo pin of this parking spot.
       _activeEchoPin = spot.echoPin;
+
+      // Reset the echo flags and times before starting a new measurement.
       _echoRiseDetected = false;
       _echoMeasurementDone = false;
       _echoStartUsInterrupt = 0;
@@ -163,66 +175,113 @@ bool Parking::updateDistanceMeasurement(ParkingSpot& spot) {
 
       // https://docs.arduino.cc/language-reference/en/functions/external-interrupts/attachInterrupt/
       // https://docs.arduino.cc/language-reference/en/functions/external-interrupts/digitalPinToInterrupt/
+      // Watch the echo pin for both HIGH and LOW changes.
       attachInterrupt(digitalPinToInterrupt(_activeEchoPin), handleEchoChangeISR, CHANGE);
 
+      // Send a short trigger pulse to start the ultrasonic sensor.
       digitalWrite(_trigPin, LOW);
       delayMicroseconds(2);
       digitalWrite(_trigPin, HIGH);
       delayMicroseconds(10);
       digitalWrite(_trigPin, LOW);
 
+      // Store the time when the measurement started.
       spot.triggerTimeUs = micros();
+
+      // Move to the next step: wait for the echo signal to start.
       spot.state = WAITING_FOR_ECHO_START;
+
+      // The measurement has started, but is not finished yet.
       return false;
 
     case WAITING_FOR_ECHO_START:
+      // Check if the echo signal has started.
       if (_echoRiseDetected) {
+
+        // Store the echo start time for this parking spot.
         spot.echoStartUs = _echoStartUsInterrupt;
 
+        // Move to the next step: wait for the echo signal to end.
         spot.state = WAITING_FOR_ECHO_END;
+
       } else if (currentMicros - spot.triggerTimeUs >= _echoTimeoutMicroseconds) {
 
         // https://docs.arduino.cc/language-reference/en/functions/external-interrupts/detachInterrupt/
         // https://docs.arduino.cc/language-reference/en/functions/external-interrupts/digitalPinToInterrupt/
+        // Stop watching the echo pin because no echo started in time.
         detachInterrupt(digitalPinToInterrupt(_activeEchoPin));
+
+        // Clear the active echo pin.
         _activeEchoPin = -1;
 
+        // Mark the measurement as invalid.
         spot.distance = _invalidDistanceCm;
+
+        // Reset the state so this spot can be measured again later.
         spot.state = IDLE;
+
+        // The measurement is finished, but failed because of timeout.
         return true;
       }
+
+      // The measurement is still waiting for the echo signal to start.
       return false;
 
     case WAITING_FOR_ECHO_END:
+      // Check if the echo signal has ended.
       if (_echoMeasurementDone) {
-        unsigned long localEchoEndUs = 0;
 
-        localEchoEndUs = _echoEndUsInterrupt;
+        // Copy the echo end time from the interrupt value.
+        unsigned long localEchoEndUs = _echoEndUsInterrupt;
+
+        // Clear the measurement done flag.
         _echoMeasurementDone = false;
 
+        // Stop watching the echo pin.
         detachInterrupt(digitalPinToInterrupt(_activeEchoPin));
+
+        // Clear the active echo pin.
         _activeEchoPin = -1;
 
+        // Calculate the distance if the timing is valid.
         if (localEchoEndUs > spot.echoStartUs) {
           unsigned long duration = localEchoEndUs - spot.echoStartUs;
           spot.distance = (duration * _soundSpeed) / _echoTravelDivider;
         } else {
+
+          // Mark the measurement as invalid when the timing is wrong.
           spot.distance = _invalidDistanceCm;
         }
 
+        // Reset the state so this spot can be measured again later.
         spot.state = IDLE;
+
+        // The measurement is finished.
         return true;
+
       } else if (currentMicros - spot.echoStartUs >= _echoTimeoutMicroseconds) {
+
+        // Stop watching the echo pin because the echo did not end in time.
         detachInterrupt(digitalPinToInterrupt(_activeEchoPin));
+
+        // Clear the active echo pin.
         _activeEchoPin = -1;
 
+        // Mark the measurement as invalid.
         spot.distance = _invalidDistanceCm;
+
+        // Reset the state so this spot can be measured again later.
         spot.state = IDLE;
+
+        // The measurement is finished, but failed because of timeout.
         return true;
       }
+
+      // The measurement is still waiting for the echo signal to end.
       return false;
   }
 
+  // Fallback return. This should normally not be reached.
   return false;
 }
 
