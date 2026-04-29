@@ -226,13 +226,21 @@ const char* Parking::getStateText(bool isOccupied) {
 }
 
 /**
- * Counts the number of available parking spots based on the distance measurements and occupied states of all parking spots.
+ * @brief Counts how many parking spots are free.
+ *
+ * A parking spot is only counted when the distance value is valid
+ * and the spot is not occupied.
+ *
+ * @return Number of free parking spots.
  */
 int Parking::countAvailableSpots() {
   const int8_t TOTAL_SPOTS = sizeof(_parkingSpots) / sizeof(_parkingSpots[0]);
   int availableSpots = 0;
 
+  // Go through all parking spots one by one.
   for (int i = 0; i < TOTAL_SPOTS; i++) {
+
+    // Count the spot when the distance is valid and the spot is free.
     if (_parkingSpots[i].distance >= 0 && !_parkingSpots[i].occupied) {
       availableSpots++;
     }
