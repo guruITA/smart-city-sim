@@ -213,7 +213,15 @@ void Parking::updateOccupiedState(float distanceCm, bool& isOccupied) {
   }
 }
 
+/**
+ * @brief Returns the text for the current parking spot state.
+ *
+ * @param isOccupied Current occupied state of the parking spot.
+ * @return "OCCUPIED" if the spot is occupied, otherwise "FREE".
+ */
 const char* Parking::getStateText(bool isOccupied) {
+
+  // Return the correct text for the current parking spot state.
   return isOccupied ? "OCCUPIED" : "FREE";
 }
 
