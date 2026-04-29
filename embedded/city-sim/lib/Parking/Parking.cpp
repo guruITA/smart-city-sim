@@ -39,21 +39,38 @@ Parking::Parking(uint8_t trigPin, uint8_t echo1Pin, uint8_t echo2Pin, uint8_t ec
   _parkingSpots[3] = {int8_t(echo4Pin), _invalidDistanceCm, false, IDLE, 0, 0};
 }
 
+/**
+ * @brief Initializes the parking system hardware.
+ *
+ * Sets up serial communication, sensor pins, I2C communication,
+ * and the OLED display.
+ */
 void Parking::begin() {
+
+  // Calculate the total number of parking spots in the array.
   const int8_t TOTAL_SPOTS = sizeof(_parkingSpots) / sizeof(_parkingSpots[0]);
 
+  // Start serial communication.
   Serial.begin(115200);
 
+  // Store the current object instance.
   _instance = this;
 
+  // Set the trigger pin as output.
   pinMode(_trigPin, OUTPUT);
+
+  // Set the trigger pin to LOW at startup.
   digitalWrite(_trigPin, LOW);
 
+  // Set each echo pin as input.
   for (int i = 0; i < TOTAL_SPOTS; i++) {
     pinMode(_parkingSpots[i].echoPin, INPUT);
   }
 
+  // Start I2C communication for the OLED display.
   _parkingWire.begin(_oledSdaPin, _oledSclPin);
+
+  // Initialize the OLED display.
   _display.begin(SSD1306_SWITCHCAPVCC, _oledAddr);
 }
 
