@@ -53,6 +53,11 @@ private:
   volatile unsigned long _echoEndUsInterrupt;
   volatile int _activeEchoPin;
 
+  /**
+   * @brief Shared pointer to the active Parking object.
+   *
+   * Used by interrupt functions to access the current Parking instance.
+   */
   static Parking* _instance;
 
   static void IRAM_ATTR handleEchoChangeISR();
