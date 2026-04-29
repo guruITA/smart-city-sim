@@ -130,23 +130,35 @@ This chapter answers the following subquestion:
 
 ### 5.2 Selected components
 
-The following components are selected:
+The following components are selected for the smart parking prototype:
 
-- 1x ESP32-S3  
-- 4x HC-SR04 ultrasonic sensor  
-- 1x OLED display  
-- 1x Breadboard power module  
-- Jumper wires  
-- Breadboard
+- 1x ESP32-S3 microcontroller
+- 4x HC-SR04 ultrasonic sensor
+- 1x OLED display
+- 1x breadboard power module
+- 2x breadboards
+- jumper wires
 
-These components are low-cost, available, and suitable for fast prototyping.
+These components are selected because they match the hardware design from the analysis phase and are suitable for fast prototyping. The parts are also easy to order from common electronics suppliers, which makes the prototype easier to rebuild or repair.
 
 ### 5.3 BOM overview
 
-A Bill of Materials is created to support building and replacement of parts.
+A Bill of Materials is created to support building, ordering, and replacement of parts.
 
 ![Bill of materials smart parking](images/BOM.png)  
 *Bill of Materials of the smart parking prototype. Source: generated in Fritzing.*
+
+The table below shows where the main components can be ordered and what the estimated costs are.
+
+| Component                 | Amount | Supplier    | Link                                                                                                                                                                                             | Estimated price |
+| ------------------------- | -----: | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------: |
+| ESP32-S3 microcontroller  |     1x | AliExpress  | [ESP32-S3](https://nl.aliexpress.com/item/1005008796158734.html?spm=a2g0o.order_list.order_list_main.35.21ef79d2oVN3U3&gatewayAdapt=glo2nld)                                                     |           €6.59 |
+| HC-SR04 ultrasonic sensor |     4x | TinyTronics | [HC-SR04 ultrasonic sensor](https://www.tinytronics.nl/nl/sensoren/afstand/ultrasonische-sensor-hc-sr04)                                                                                         |      €[fill in] |
+| OLED display 128x64 I2C   |     1x | TinyTronics | [OLED display](https://www.tinytronics.nl/nl/displays/oled/2.42-inch-oled-display-128*64-pixels-wit-i2c)                                                                                         |          €14.00 |
+| Breadboard power module   |     1x | TinyTronics | [Breadboard power supply](https://www.tinytronics.nl/nl/power/spanningsconverters/spanningsregelaars/keyestudio-breadboard-voeding-5v-and-3.3v-usb-c)                                            |           €3.25 |
+| Breadboard 830 points     |     2x | TinyTronics | [Breadboard 830 points](https://www.tinytronics.nl/nl/gereedschap-en-montage/prototyping-toebehoren/breadboards/breadboard-830-points)                                                           |           €6.00 |
+| Jumper wires male-female  | 1x set | TinyTronics | [Male-female jumper wires](https://www.tinytronics.nl/nl/kabels-en-connectoren/kabels-en-adapters/prototyping-draden/dupont-compatible-en-jumper/dupont-jumper-draad-male-female-10cm-10-draden) |           €0.50 |
+| Jumper wires male-male    | 1x set | TinyTronics | [Male-male jumper wires](https://www.tinytronics.nl/nl/kabels-en-connectoren/kabels-en-adapters/prototyping-draden/dupont-compatible-en-jumper/dupont-jumper-draad-male-male-10cm-10-draden)     |           €0.50 |
 
 ### 5.4 Subconclusion
 
