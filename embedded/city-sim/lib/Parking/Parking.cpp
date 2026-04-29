@@ -198,13 +198,17 @@ bool Parking::updateDistanceMeasurement(ParkingSpot& spot) {
  */
 void Parking::updateOccupiedState(float distanceCm, bool& isOccupied) {
 
+  // Ignore invalid distance values.
   if (distanceCm < 0) {
     return;
   }
 
+  // Mark the spot as occupied when the measured distance is below the occupied threshold.
   if (!isOccupied && distanceCm < _parkedThresholdOnCm) {
     isOccupied = true;
-  } else if (isOccupied && distanceCm > _parkedThresholdOffCm) {
+  }
+  // Mark the spot as free when the measured distance is above the free threshold.
+  else if (isOccupied && distanceCm > _parkedThresholdOffCm) {
     isOccupied = false;
   }
 }
