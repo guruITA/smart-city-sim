@@ -234,7 +234,11 @@ const char* Parking::getStateText(bool isOccupied) {
  * @return Number of free parking spots.
  */
 int Parking::countAvailableSpots() {
+
+  // Calculate the total number of parking spots in the array.
   const int8_t TOTAL_SPOTS = sizeof(_parkingSpots) / sizeof(_parkingSpots[0]);
+
+  // Start the counter for free parking spots at zero.
   int availableSpots = 0;
 
   // Go through all parking spots one by one.
