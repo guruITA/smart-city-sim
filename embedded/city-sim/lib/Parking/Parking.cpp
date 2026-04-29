@@ -187,14 +187,17 @@ bool Parking::updateDistanceMeasurement(ParkingSpot& spot) {
 }
 
 /**
- * Updates the occupied state of a parking spot based on the distance measurement and predefined thresholds.
- * 
- * @param distanceCm The distance in centimeters measured by the sensor. Negative values indicate invalid measurements.
- * @param isOccupied A reference to the occupied state of the parking spot. This function will update this state based on the distance measurement and predefined thresholds.
- * 
- * @returns void. The function updates the occupied state of the parking spot based on the distance measurement and predefined thresholds. It does not return any value.
+ * @brief Updates whether a parking spot is occupied or free.
+ *
+ * Invalid distance values are ignored. A free spot becomes occupied when the
+ * distance is below PARKED_THRESHOLD_ON_CM. An occupied spot becomes free when
+ * the distance is above PARKED_THRESHOLD_OFF_CM.
+ *
+ * @param distanceCm Measured distance in centimeters. Negative values are invalid.
+ * @param isOccupied Current occupied state of the parking spot. Updated when needed.
  */
 void Parking::updateOccupiedState(float distanceCm, bool& isOccupied) {
+
   if (distanceCm < 0) {
     return;
   }
