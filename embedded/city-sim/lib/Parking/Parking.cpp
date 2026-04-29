@@ -75,28 +75,50 @@ void Parking::begin() {
   _display.begin(SSD1306_SWITCHCAPVCC, _oledAddr);
 }
 
+/**
+ * @brief Updates the parking system.
+ *
+ * Handles sensor measurements step by step and refreshes the display.
+ */
 void Parking::update() {
+
+  // Calculate the total number of parking spots in the array.
   const int8_t TOTAL_SPOTS = sizeof(_parkingSpots) / sizeof(_parkingSpots[0]);
+
+  // Get the current time in milliseconds.
   unsigned long currentMillis = millis();
 
+  // Check if it is time to update the sensor measurement.
   if (currentMillis - _lastSensorMeasureMs >= _sensorMeasureIntervalMs) {
+
+    // Run one measurement step for the current parking spot.
     bool measurementFinished = updateDistanceMeasurement(_parkingSpots[_currentSensorIndex]);
 
+    // When the measurement is finished, update the occupied state.
     if (measurementFinished) {
       updateOccupiedState(_parkingSpots[_currentSensorIndex].distance,
                           _parkingSpots[_currentSensorIndex].occupied);
 
+      // Move to the next parking spot.
       _currentSensorIndex++;
+
+      // Go back to the first spot when all spots are done.
       if (_currentSensorIndex >= TOTAL_SPOTS) {
         _currentSensorIndex = 0;
       }
     }
 
+    // Store the time of the last sensor update.
     _lastSensorMeasureMs = currentMillis;
   }
 
+  // Check if it is time to refresh the display.
   if (currentMillis - _lastUiRefreshMs >= _uiRefreshIntervalMs) {
+
+    // Draw the current parking status on the screen.
     drawStatusScreen();
+
+    // Store the time of the last display update.
     _lastUiRefreshMs = currentMillis;
   }
 }
