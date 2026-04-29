@@ -101,24 +101,46 @@ void Parking::update() {
   }
 }
 
+/**
+ * @brief Interrupt function that forwards the echo pin change to the Parking object.
+ */
 void IRAM_ATTR Parking::handleEchoChangeISR() {
+
+  // Only handle the interrupt when a Parking object is available.
   if (_instance != NULL) {
+
+    // Send the interrupt handling to the active Parking object.
     _instance->handleEchoChange();
   }
 }
 
+/**
+ * @brief Handles a change on the active echo pin.
+ *
+ * Stores the start and end time of the echo signal so the distance
+ * can be calculated later without blocking the program.
+ */
 void IRAM_ATTR Parking::handleEchoChange() {
+
+  // Stop when there is no active echo pin.
   if (_activeEchoPin < 0) {
     return;
   }
 
+  // Read the current state of the active echo pin.
   int pinState = digitalRead(_activeEchoPin);
+
+  // Get the current time in microseconds.
   unsigned long nowUs = micros();
 
+  // Store the start time when the echo signal goes HIGH.
   if (!_echoRiseDetected && pinState == HIGH) {
     _echoStartUsInterrupt = nowUs;
     _echoRiseDetected = true;
-  } else if (_echoRiseDetected && pinState == LOW) {
+  }
+
+  // Store the end time when the echo signal goes LOW.
+  else if (_echoRiseDetected && pinState == LOW) {
     _echoEndUsInterrupt = nowUs;
     _echoMeasurementDone = true;
   }
