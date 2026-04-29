@@ -1,6 +1,7 @@
 #include "Parking.h"
 
 // https://www.instructables.com/Non-blocking-Ultrasonic-Sensor-for-Arduino/
+// Start with no active Parking object.
 Parking* Parking::_instance = NULL;
 
 Parking::Parking(uint8_t trigPin, uint8_t echo1Pin, uint8_t echo2Pin, uint8_t echo3Pin, uint8_t echo4Pin,
@@ -53,7 +54,7 @@ void Parking::begin() {
   // Start serial communication.
   Serial.begin(115200);
 
-  // Store the current object instance.
+  // Store this Parking object so the interrupt functions can access it.
   _instance = this;
 
   // Set the trigger pin as output.
