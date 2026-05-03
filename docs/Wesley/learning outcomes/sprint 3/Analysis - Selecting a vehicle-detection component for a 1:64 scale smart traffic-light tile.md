@@ -94,3 +94,83 @@ This research is a desk-based component selection. The candidate components are 
 This means that some assumptions still need to be validated later. For example, the detection distance through the 3.6 mm tile, the required magnet strength, the magnet orientation, and the exact sensor mounting position cannot be fully proven without a physical test. Because of that, the selected component should be seen as the best component for the first prototype test, not yet as a fully validated final solution.
 
 This limitation is important because the chosen magnetic detection approach depends on practical factors such as the distance between the magnet and the sensor, the thickness and material of the road surface, and the position of the magnet inside or under the model car.
+
+## 2. Which Components Are Not Suitable and Why
+
+The teacher-provided component list contains many useful electronics modules, but most of them are not suitable for detecting a vehicle on a model traffic-light tile. A vehicle-detection component must detect the presence or movement of a model car. Components that only produce output, measure unrelated environmental values, or require manual operation are therefore not suitable. The complete component list is based on the teacher-provided DLO source for the Smart Cities sensor kit (Sensors, Sensors and More Sensors - Smart Cities - Semester 2, n.d.).
+
+| Component                                     |    Suitable? | Reason                                                                                                  |
+| --------------------------------------------- | -----------: | ------------------------------------------------------------------------------------------------------- |
+| KY-001 Temperature sensor module              |           No | Measures temperature, not vehicle presence.                                                             |
+| KY-002 Vibration switch module                |    Weak / No | Can detect vibration or shock, but a small 1:64 car may not create reliable vibration through the tile. |
+| KY-004 Key switch module                      |           No | Manual button input, not automatic vehicle detection.                                                   |
+| KY-005 Infrared emission sensor module        | No by itself | Only emits infrared light. It would need a receiver and alignment.                                      |
+| KY-006 Small passive buzzer module            |           No | Output component, not a sensor for vehicle presence.                                                    |
+| KY-008 Laser sensor module                    | No by itself | Laser emitter, not a complete detector. It would need a receiver and alignment.                         |
+| KY-009 3-color full-color LED SMD module      |           No | Output component.                                                                                       |
+| KY-011 2-color LED module                     |           No | Output component.                                                                                       |
+| KY-012 Active buzzer module                   |           No | Output component.                                                                                       |
+| KY-013 Temperature sensor module              |           No | Measures temperature.                                                                                   |
+| KY-015 Temperature and humidity sensor module |           No | Measures environment, not vehicle presence.                                                             |
+| KY-016 3-color LED module                     |           No | Output component.                                                                                       |
+| KY-017 Mercury open optical module            |           No | Tilt or position-related switch, not suitable for road vehicle detection.                               |
+| KY-018 Photo resistor module                  |    Weak / No | Can detect light changes, but a shadow is not reliable enough because room lighting can change.         |
+| KY-019 5V relay module                        |           No | Switching output module, not a sensor.                                                                  |
+| KY-020 Tilt switch module                     |           No | Detects tilt, not a car on a road.                                                                      |
+| KY-022 Infrared sensor receiver module        | No by itself | Receiver only. It would need an emitter and alignment.                                                  |
+| KY-023 XY-axis joystick module                |           No | Manual input component.                                                                                 |
+| KY-026 Flame sensor module                    |           No | Detects flame or infrared flame sources, not vehicles.                                                  |
+| KY-027 Magic light cup module                 |           No | Not suitable for vehicle presence detection.                                                            |
+| KY-028 Temperature sensor module              |           No | Measures temperature.                                                                                   |
+| KY-029 Yin Yi 2-color LED module 3MM          |           No | Output component.                                                                                       |
+| KY-031 Knock sensor module                    |    Weak / No | Detects knocks or vibration, not reliable vehicle presence.                                             |
+| KY-034 Automatic flashing colorful LED module |           No | Output component.                                                                                       |
+| KY-036 Metal touch sensor module              |           No | Detects touch, not a car through the tile.                                                              |
+| KY-037 Sensitive microphone sensor module     |           No | Detects sound, not reliable car presence.                                                               |
+| KY-038 Microphone sound sensor module         |           No | Detects sound, not reliable car presence.                                                               |
+| KY-039 Detect the heartbeat module            |           No | Biological sensor, unrelated to the project.                                                            |
+| KY-040 Rotary encoder module                  |           No | Rotation input component, not vehicle detection.                                                        |
+
+Some weak candidates could technically react when a car moves nearby, but they are not reliable enough for this project. For example, a photoresistor can react to a shadow, but light level is affected by the room, hand movement, and other shadows. A vibration or knock sensor can react to impact, but a small model car may not create consistent vibration through a thin tile. For a traffic-light input, the signal must be directly linked to the car being present, not to an indirect environmental effect.
+
+---
+
+## 3. Sub questions
+
+### 3.1 What must the sensor detect in this project?
+
+The sensor must detect whether a model car is present at the traffic light. This means the sensor must support a car that stands still at the stop line and a car that passes the detection point. In the existing smart-traffic-light requirements, vehicle detection is important because the system should use vehicle presence as input for traffic-light decisions (Wesley, 2026c). 
+
+For a standing car, the sensor output should remain active while the car is above or near the detection point. For a passing car, the output may only be active briefly. Because of that, the future software should be able to read the input repeatedly and store a short detection event if needed. This fits the existing decision to use non-blocking `millis()` timing, because the program can keep checking inputs while the traffic-light sequence continues (Wesley, 2026b). 
+
+External sensor sources also show that different candidate components detect in different ways. The KY-021 detects a magnetic field by closing a reed contact, while the KY-032 detects an obstacle through reflected infrared light (KY-021 Mini Reed Magnet - SensorKit, n.d.; KY-032 Obstacle Detector - SensorKit, n.d.). This matters because the project does not only need “a sensor”. It needs a sensor principle that fits a hidden scale-model road.
+
+#### Sub conclusion 3.1
+
+The sensor must provide a clear and repeatable signal for car presence. It should work for both a stationary car and a moving car, and the signal should be simple enough to use as the first smart input in the traffic-light system.
+
+---
+
+### 3.2 Which component types from the list can theoretically detect a vehicle?
+
+Only a small group of components from the teacher-provided list can theoretically detect a vehicle. These components use magnetic, infrared, optical, light, or vibration-based detection.
+
+| Component                          | Detection principle                         | Possible use for this project                                  |
+| ---------------------------------- | ------------------------------------------- | -------------------------------------------------------------- |
+| KY-003 Hall magnetic sensor        | Digital magnetic-field detection            | Could detect a magnet in or under a model car.                 |
+| KY-010 Optical broken module       | Light beam interruption                     | Could detect a car passing through an interrupter gap.         |
+| KY-018 Photo resistor module       | Light-level change                          | Could detect a shadow, but reliability is weak.                |
+| KY-021 Mini magnetic reed module   | Magnetic reed contact                       | Could detect a magnet in or under a model car.                 |
+| KY-024 Linear magnetic Hall sensor | Digital and analog magnetic-field detection | Could detect a magnet and possibly field strength.             |
+| KY-025 Reed module                 | Magnetic reed detection                     | Could detect a magnet, similar to KY-021.                      |
+| KY-032 Obstacle avoidance sensor   | Reflected infrared light                    | Could detect a visible object in front of the sensor.          |
+| KY-033 Hunt sensor module          | Surface contrast / reflection               | Could detect contrast, but is mainly meant for line following. |
+| KY-035 Hall magnetic sensor        | Analog magnetic-field detection             | Could detect magnetic field strength and polarity.             |
+
+The magnetic group is the strongest theoretical group. The KY-003 uses a Hall-effect switch that outputs a digital signal when a magnetic field is detected (KY-003 Hall Magnetic Field Sensor - SensorKit, n.d.). The KY-021 uses a reed switch that closes when a magnetic field is present (KY-021 Mini Reed Magnet - SensorKit, n.d.). The KY-024 has a digital output for magnetic-field detection and an analog output for the measured sensor value (KY-024  Linear, Magnetic Hall Sensor - SensorKit, n.d.). The KY-035 is an analog Hall sensor where the output voltage changes depending on the magnetic field and pole direction (KY-035 Bihor Magnetic Sensor - SensorKit, n.d.). 
+
+The infrared and optical group can also detect objects, but usually requires visible placement or alignment. The KY-032 uses reflected infrared light from an obstacle (KY-032 Obstacle Detector - SensorKit, n.d.). The KY-010 works as a light barrier where the signal changes when the beam is interrupted (KY-10 Light Barrier - SensorKit, n.d.). These can detect movement, but they are harder to hide cleanly under a road surface.
+
+#### Sub conclusion 3.2
+
+The most relevant candidate group is the magnetic sensor group. Infrared and optical sensors can detect objects, but magnetic sensors fit the hidden scale-model requirement better.
