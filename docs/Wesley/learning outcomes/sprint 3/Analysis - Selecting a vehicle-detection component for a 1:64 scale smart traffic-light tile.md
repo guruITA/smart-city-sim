@@ -34,3 +34,40 @@ The component must also fit the current ESP32-S3 setup. The existing project alr
 3. **Which components can realistically be hidden under the tile or integrated into the tile construction of a 300 × 300 × 3.6 mm scale-model tile?**
 4. **Which components are practical for detecting both a standing and passing model car?**
 5. **Which component fits best with the ESP32-S3 and the existing traffic-light setup?**
+
+### 1.4 Methodology
+
+This research uses a structured component-selection method. The goal is to make a reasoned choice before implementation. This is useful because the teacher-provided component list contains many modules that are not intended for vehicle detection.
+
+The method consists of five steps.
+
+#### Step 1: Define project requirements
+
+First, I define what the sensor must do in this project. The requirements are based on the physical tile, the 1:64 scale, the need for hidden placement, and the existing ESP32-S3 traffic-light system. The earlier project advice also states that the next step should add only one smart feature first, keep the current hardware structure, keep the `millis()` based state machine, and continue using staged tests (Wesley, 2026a). 
+
+#### Step 2: Screen the complete component list
+
+Second, I screen the full teacher-provided component list. I use the component list from the Smart Cities semester 2 DLO page as the starting point for the selection (Sensors, Sensors and More Sensors - Smart Cities - Semester 2, n.d.). Components that are clearly not vehicle-detection sensors are removed from the candidate list. For example, temperature sensors, buzzers, LED modules, joystick modules, and flame sensors do not directly detect a model car.
+
+#### Step 3: Research possible detection principles
+
+Third, I look at the working principle of the remaining candidate sensors. Magnetic sensors, reed switches, infrared obstacle sensors, optical interrupters, photoresistors, and vibration sensors are considered. For example, the KY-021 mini reed module detects a magnetic field by closing a reed contact, while the KY-032 obstacle sensor detects objects through reflected infrared light (KY-021 Mini Reed Magnet - SensorKit, n.d.; KY-032 Obstacle Detector - SensorKit, n.d.).
+
+#### Step 4: Compare the candidates
+
+Fourth, I compare the candidate components using criteria that matter for this project:
+
+| Criterion              | Meaning in this project                                                       |
+| ---------------------- | ----------------------------------------------------------------------------- |
+| Hidden integration | The sensor should preferably be hidden under the tile or integrated into the tile construction without being visible on the road surface. |
+| Standing detection     | The sensor should detect a car that waits at the traffic light.               |
+| Passing detection      | The sensor should detect a car that moves past the detection point.           |
+| Reliability            | The signal should clearly represent car presence.                             |
+| Scale suitability      | The sensor should work with a 1:64 model car and a 3.6 mm tile.               |
+| Simplicity             | The component should be understandable and testable for this sprint.          |
+| ESP32-S3 compatibility | The sensor should be readable by the ESP32-S3 without unnecessary complexity. |
+| Future usefulness      | The component should support later smart traffic-light behaviour.             |
+
+#### Step 5: Make the final selection in the conclusion
+
+Finally, I use the comparison and sub conclusions to answer the main research question. The selected component must fit the technical requirements, the scale-model context, and the requirement that the sensor should preferably be hidden under the tile or integrated into the tile construction.
