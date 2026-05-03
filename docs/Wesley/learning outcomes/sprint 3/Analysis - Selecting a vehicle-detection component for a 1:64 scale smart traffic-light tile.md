@@ -71,3 +71,26 @@ Fourth, I compare the candidate components using criteria that matter for this p
 #### Step 5: Make the final selection in the conclusion
 
 Finally, I use the comparison and sub conclusions to answer the main research question. The selected component must fit the technical requirements, the scale-model context, and the requirement that the sensor should preferably be hidden under the tile or integrated into the tile construction.
+
+### 1.5 Requirements for the selected component
+
+To make the component selection less subjective, I define the requirements before comparing the candidate components. These requirements are based on the physical scale-model context, the existing ESP32-S3 traffic-light setup, the teacher-provided sensor list, and the project goal of adding one smart vehicle-detection feature first (Sensors, Sensors and More Sensors - Smart Cities - Semester 2, n.d.; Wesley, 2026a; Wesley, 2026b; Wesley, 2026c).
+
+| ID | Requirement | Priority | Reason |
+|---|---|---|---|
+| R1 | The component must detect a model car at the stop line. | Must | The traffic light needs to know whether a car is waiting. |
+| R2 | The component must detect a car passing the detection point. | Must | The system should also notice a short passing event. |
+| R3 | The component should be hidden under the tile or integrated into the tile construction. | Should | A hidden sensor keeps the 1:64 scale model visually realistic, while avoiding unrealistic visible sensor placement on the road surface. |
+| R4 | The component must be readable by the ESP32-S3 without unsafe voltage levels. | Must | The ESP32-S3 uses 3.3 V logic and the GPIO input must not receive an unsafe voltage. |
+| R5 | The component must work through or near the 3.6 mm tile material. | Must | The sensor must still trigger when placed under the road surface. |
+| R6 | The component should require minimal calibration. | Should | This sprint focuses on the first smart feature, so the solution should remain understandable and testable. |
+| R7 | The component should support staged testing. | Should | The earlier project approach used staged tests successfully, so the sensor should also be testable separately first. |
+| R8 | The component should not disturb the existing traffic-light output architecture. | Must | The current ESP32-S3, MCP23017, and ULN2803 structure should remain usable. |
+
+### 1.6 Scope and limitations of this research
+
+This research is a desk-based component selection. The candidate components are not physically tested yet. The comparison is therefore based on the teacher-provided component list, external module documentation, earlier project documentation, and expected integration effort.
+
+This means that some assumptions still need to be validated later. For example, the detection distance through the 3.6 mm tile, the required magnet strength, the magnet orientation, and the exact sensor mounting position cannot be fully proven without a physical test. Because of that, the selected component should be seen as the best component for the first prototype test, not yet as a fully validated final solution.
+
+This limitation is important because the chosen magnetic detection approach depends on practical factors such as the distance between the magnet and the sensor, the thickness and material of the road surface, and the position of the magnet inside or under the model car.
