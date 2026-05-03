@@ -2,6 +2,8 @@
 #include "NetworkController.h"
 #include "Streetlight.h"
 #include "TrainPredictionSignal.h"
+#include "EinkDisplay.h"
+#include "SpeedCamera.h"
 #include "SpeedCamera.h"
 #include "Parking.h"
 
@@ -32,6 +34,15 @@ SpeedCamera speedCamera(Config::SpeedCamera::IR1_PIN, Config::SpeedCamera::IR2_P
                         Config::SpeedCamera::BOOT_SCREEN_HOLD_MS,
                         Config::SpeedCamera::UI_REFRESH_INTERVAL_MS,
                         Config::SpeedCamera::CAMERA_CAPTURE_URL);
+
+EinkDisplay eink(
+  Config::EinkDisplay::CLK_PIN,
+  Config::EinkDisplay::MOSI_PIN,
+  Config::EinkDisplay::CS_PIN,
+  Config::EinkDisplay::DC_PIN,
+  Config::EinkDisplay::RST_PIN,
+  Config::EinkDisplay::BUSY_PIN
+);
 
 Parking parking(Config::Parking::TRIG_PIN, Config::Parking::ECHO1_PIN, Config::Parking::ECHO2_PIN,
                 Config::Parking::ECHO3_PIN, Config::Parking::ECHO4_PIN,
@@ -71,9 +82,13 @@ void setup() {
   }
 
   NetworkController::setApiBaseUrl(API_BASE_URL);
-
+  pinMode(7, INPUT);
+  Serial.print("[eink] BUSY pin state: ");
+  Serial.println(digitalRead(7));
   lamp.begin();
+  eink.begin();
   trainSignal.begin();
+  speedCamera.begin();
   speedCamera.begin();
   parking.begin();
 }
@@ -81,6 +96,7 @@ void setup() {
 void loop() {
   lamp.update();
   trainSignal.update();
+  speedCamera.update();
   speedCamera.update();
   parking.update();
 }
