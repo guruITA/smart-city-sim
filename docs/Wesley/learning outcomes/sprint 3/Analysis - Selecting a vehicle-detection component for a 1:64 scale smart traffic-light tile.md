@@ -20,3 +20,17 @@ The selected component must support two situations:
 2. A car is passing over or past the detection point.
 
 The component must also fit the current ESP32-S3 setup. The existing project already uses a modular hardware structure, and the software has been improved by using `millis()` instead of `delay()` so that future sensors and communication can be added more safely (Wesley, 2026b). 
+
+### 1.2 Main research question
+
+**Which component from the teacher-provided component list is most suitable for detecting a car standing at or passing a traffic light in a 1:64 scale traffic-light tile, while preferably keeping the sensor hidden under the tile or integrated into the tile construction?**
+
+---
+
+### 1.3 Sub questions
+
+1. **What must the sensor detect in this project?**
+2. **Which component types from the teacher-provided list can theoretically detect a vehicle?**
+3. **Which components can realistically be hidden under the tile or integrated into the tile construction of a 300 × 300 × 3.6 mm scale-model tile?**
+4. **Which components are practical for detecting both a standing and passing model car?**
+5. **Which component fits best with the ESP32-S3 and the existing traffic-light setup?**
