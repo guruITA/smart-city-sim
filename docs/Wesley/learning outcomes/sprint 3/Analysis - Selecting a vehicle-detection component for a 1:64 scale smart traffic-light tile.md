@@ -174,3 +174,17 @@ The infrared and optical group can also detect objects, but usually requires vis
 #### Sub conclusion 3.2
 
 The most relevant candidate group is the magnetic sensor group. Infrared and optical sensors can detect objects, but magnetic sensors fit the hidden scale-model requirement better.
+
+### 3.3 Which components can realistically be hidden under the tile or integrated into the tile construction?
+
+The hidden-integration requirement is important because the project is a scale model. The road should look realistic, and the sensor should preferably not be visible. This does not automatically mean that a full sensor module can fit inside the 3.6 mm tile. Instead, the component should preferably be mounted under the tile or integrated into the tile construction in a way that keeps the road surface visually clean. This makes the physical sensing principle more important than only the electrical signal.
+
+Magnetic sensors are suitable for hidden placement because they do not need direct optical contact with the car. A small magnet can be placed inside or under the model car, and the sensor can be placed under the road surface. The KY-021 is especially simple because the reed switch closes when a magnetic field is detected (KY-021 Mini Reed Magnet - SensorKit, n.d.). However, the full KY-021 module should not automatically be assumed to fit inside the tile. The module dimensions are larger than the 3.6 mm tile thickness, so the realistic mounting approach is to place the module under the tile or position the sensing part as close as possible to the road surface while keeping the road visually clean (KY-021 Mini Reed Magnet - SensorKit, n.d.). ArduinoModules also describes the KY-021 as a digital reed-switch module that can operate at 3.3 V to 5 V, which fits common microcontroller projects (ArduinoModules, 2026).
+
+The KY-024 and KY-035 can also be hidden because they detect magnetic fields. However, they are less simple for a first implementation. The KY-024 has both analog and digital outputs, which means it may need threshold adjustment and calibration (KY-024  Linear, Magnetic Hall Sensor - SensorKit, n.d.). The KY-035 outputs an analog voltage related to magnetic field strength and pole direction, which is useful but requires analog interpretation in the software (KY-035 Bihor Magnetic Sensor - SensorKit, n.d.). 
+
+The KY-032 infrared obstacle sensor is harder to hide because it needs to send infrared light toward the object and receive the reflection. That means the emitter and receiver normally need a visible direction toward the car (KY-032 Obstacle Detector - SensorKit, n.d.). The KY-010 light barrier is also difficult to hide because the car must physically interrupt the light path (KY-10 Light Barrier - SensorKit, n.d.).
+
+#### Sub conclusion 3.3
+
+Magnetic detection is the most realistic hidden solution. Optical and infrared components can work for visible experiments, but they are less suitable when the road surface must stay clean and realistic.
