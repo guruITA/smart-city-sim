@@ -18,12 +18,12 @@ docker compose up --build -d
 # Wait for health check
 echo "Waiting for API to start..."
 for i in {1..30}; do
-    if curl -sf http://localhost:8000/health > /dev/null 2>&1; then
+    if curl -sf http://localhost:80/health > /dev/null 2>&1; then
         echo ""
         echo "=== API is live! ==="
-        echo "API:       http://$(hostname -I | awk '{print $1}'):8000"
-        echo "Dashboard: http://$(hostname -I | awk '{print $1}'):8000/dashboard"
-        echo "Docs:      http://$(hostname -I | awk '{print $1}'):8000/docs"
+        echo "API:       http://$(hostname -I | awk '{print $1}')/api/v1"
+        echo "Dashboard: http://$(hostname -I | awk '{print $1}')/"
+        echo "Docs:      http://$(hostname -I | awk '{print $1}')/docs"
         exit 0
     fi
     printf "."
