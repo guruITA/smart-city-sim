@@ -31,6 +31,8 @@
             --blue-dim: #0f1d3d;
             --purple: #a855f7;
             --purple-dim: #1f0f33;
+            --orange: #f97316;
+            --orange-dim: #331a06;
         }
 
         body {
@@ -157,6 +159,10 @@
 
         .tile-icon.railroad {
             background: var(--red-dim);
+        }
+
+        .tile-icon.speedcam {
+            background: var(--orange-dim);
         }
 
         .tile-info h2 {
@@ -375,6 +381,49 @@
             color: var(--red);
         }
 
+        .speed-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            overflow-y: auto;
+            max-height: 220px;
+        }
+
+        .speed-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            background: var(--surface);
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            font-size: 13px;
+        }
+
+        .speed-row.violation {
+            border-color: #4a1a1a;
+        }
+
+        .speed-val {
+            font-family: 'DM Mono', monospace;
+            font-weight: 700;
+            font-size: 15px;
+            min-width: 70px;
+        }
+
+        .speed-dir {
+            font-family: 'DM Mono', monospace;
+            font-size: 11px;
+            color: var(--muted);
+        }
+
+        .speed-time {
+            margin-left: auto;
+            font-size: 11px;
+            color: var(--muted);
+            font-family: 'DM Mono', monospace;
+        }
+
         .streetlight-grid,
         .traffic-grid,
         .railroad-info {
@@ -569,6 +618,39 @@
                     <div class="approach-line" id="approachLine"></div>
                 </div>
             </div>
+            </div>
+        </div>
+
+        <!-- SPEED CAMERA -->
+        <div class="tile-panel" id="speedCameraPanel">
+            <div class="tile-header">
+                <div class="tile-icon speedcam">V</div>
+                <div class="tile-info">
+                    <h2>Speed Camera</h2>
+                    <div class="owner">gurpreet / esp32 + ir sensors</div>
+                </div>
+            </div>
+            <div class="tile-stats">
+                <div class="mini-stat">
+                    <div class="val" id="scTotal" style="color:var(--orange)">-</div>
+                    <div class="lbl">Readings</div>
+                </div>
+                <div class="mini-stat">
+                    <div class="val" id="scViolations" style="color:var(--red)">-</div>
+                    <div class="lbl">Violations</div>
+                </div>
+                <div class="mini-stat">
+                    <div class="val" id="scAvg" style="color:var(--text)">-</div>
+                    <div class="lbl">Avg km/h</div>
+                </div>
+                <div class="mini-stat">
+                    <div class="val" id="scMax" style="color:var(--amber)">-</div>
+                    <div class="lbl">Max km/h</div>
+                </div>
+            </div>
+            <div class="section-label">Recent measurements</div>
+            <div class="speed-list" id="speedList">
+                <div class="no-data-msg">No speed camera data yet</div>
             </div>
         </div>
     </div>
@@ -787,6 +869,34 @@
             }).join("");
         }
 
+        async function loadSpeedCamera() {
+            try {
+                const [statsRes, readingsRes] = await Promise.all([
+                    fetch(API + "/api/v1/speedcamera/stats"),
+                    fetch(API + "/api/v1/speedcamera/?limit=10")
+                ]);
+                const stats = await statsRes.json();
+                const readings = await readingsRes.json();
+
+                document.getElementById("scTotal").textContent = stats.total_readings;
+                document.getElementById("scViolations").textContent = stats.total_violations;
+                document.getElementById("scAvg").textContent = stats.average_speed_kmh.toFixed(1);
+                document.getElementById("scMax").textContent = stats.max_speed_kmh.toFixed(1);
+
+                const list = document.getElementById("speedList");
+                if (readings.length > 0) {
+                    list.innerHTML = readings.map(r => `
+                        <div class="speed-row ${r.is_violation ? 'violation' : ''}">
+                            <span class="speed-val" style="color:${r.is_violation ? 'var(--red)' : 'var(--green)'}">${r.speed_kmh.toFixed(2)} km/h</span>
+                            <span class="speed-dir">${r.direction}</span>
+                            <span class="status-badge ${r.is_violation ? 'danger' : 'on'}">${r.is_violation ? 'violation' : 'ok'}</span>
+                            <span class="speed-time">${ago(r.created_at)}</span>
+                        </div>
+                    `).join("");
+                }
+            } catch (e) { }
+        }
+
         async function refresh() {
             const ok = await loadParking();
             conn(ok);
@@ -795,6 +905,7 @@
                 loadTile("trafficLight", "trafficGrid", renderTraffic);
                 loadTile("railroadCrossing", "railroadGrid", renderRailroad);
                 loadApproachingTrains();
+                loadSpeedCamera();
             }
         }
 
