@@ -4,13 +4,15 @@
 #include <Arduino.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
+#include <Wire.h>
 
 class SpeedCamera {
 public:
   SpeedCamera(int ir1Pin, int ir2Pin, int oledSdaPin, int oledSclPin, int screenWidth,
               int screenHeight, int oledAddr, int irActiveState, float sensorDistanceM,
               float speedLimitKmh, unsigned long passTimeoutUs, unsigned long measurementCooldownMs,
-              unsigned long resultScreenHoldMs, const String& camCaptureUrl);
+              unsigned long resultScreenHoldMs, unsigned long bootScreenHoldMs,
+              unsigned long uiRefreshIntervalMs, const String& camCaptureUrl);
 
   void begin();
   void update();
@@ -36,9 +38,15 @@ private:
   unsigned long _passTimeoutUs;
   unsigned long _measurementCooldownMs;
   unsigned long _resultScreenHoldMs;
+  unsigned long _bootScreenHoldMs;
+  unsigned long _uiRefreshIntervalMs;
+
+  unsigned long _bootScreenStartMs;
+  bool _bootScreenShowing;
 
   String _camCaptureUrl;
 
+  TwoWire _displayWire;
   Adafruit_SSD1306 _display;
   bool _displayReady;
 

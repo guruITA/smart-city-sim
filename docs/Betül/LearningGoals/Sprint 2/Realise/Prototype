@@ -44,3 +44,17 @@ To achieve this, I will:
 5. Validate Functionality
 - Ensure the system works reliably under repeated use.
 - Confirm that the system meets the intended design and behavior.
+
+# R — Result
+The result is a fully working prototype of the smart pedestrian crossing system.
+The LEDs respond correctly to button presses, the timing is stable, and both sides switch synchronously between red and green. The breadboard setup is functional, and the Arduino code runs without errors. The photos clearly show the working system and the correct wiring.
+
+# R — Reflection
+This sprint showed me how valuable a strong design phase is. Because I already had a clear pin mapping, logic flow, and Wokwi simulation, building the real prototype was much easier. I learned that small wiring mistakes can cause big issues, and testing each component separately saves a lot of time. I also gained confidence in writing Arduino code and debugging hardware. Seeing the system actually work made the design feel real and validated my approach.
+
+# T — Transfer
+In the next sprint, I will integrate this prototype into the physical tile and refine the 3D housing so it fits the LEDs properly. The skills I developed—pin mapping, breadboard structuring, debugging, and translating logic into code—will help me in future embedded systems projects. I will continue using the same structured workflow: design → simulate → build → test.
+
+**References**
+
+Circuit E Makes. (2020b, augustus 23). How To Use a Breadboard - Breadboard Basics [Video]. YouTube. https://www.youtube.com/watch?v=NREtn59WPho

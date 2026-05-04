@@ -56,3 +56,19 @@ To achieve the learning goal for Problem Solution Design, I will take the follow
 - Simulate the control logic on the ESP32.
 - Check that the system behaves as intended without physical errors.
 - Use feedback from the simulation to refine the design before building the physical prototype.
+
+# R — Result
+By following my design actions, I created a complete and functional blueprint for the smart pedestrian crossing subsystem. I developed a clear system concept, selected the required components, and created a Wokwi simulation that accurately represents the wiring and logic. I mapped all GPIO pins, designed the control logic for synchronized crossings, and documented how each component connects to the ESP32‑S3. I also printed a first version of the pedestrian signal housing to explore physical placement and scale. Although the model was too large, it helped me understand how the LEDs could fit inside and how the housing integrates with the tile.
+This full design package now serves as the foundation for building the physical prototype in the Realise phase.
+
+# R — Reflection
+This sprint helped me understand how to translate a problem into a technical design. Because I am new to embedded systems, breaking the system down into components, wiring, and logic made the project manageable. The Wokwi simulation was especially valuable because it allowed me to test ideas without making physical mistakes. I also learned the importance of documenting pin choices and logic flow, because this makes the next sprint much easier. The 3D print, even though I didn’t design it myself, showed me that physical testing is important for understanding scale and placement. Overall, I feel more confident in designing embedded systems and I understand how important it is to validate ideas early.
+
+# T — Transfer
+In the next sprint, I will use this design to build the real prototype on the breadboard and integrate it into the tile. The GPIO mapping, logic flow, and Wokwi simulation will guide my wiring and coding. I will also refine the 3D housing by scaling it down and adjusting the dimensions so it fits the LEDs properly. The structured design approach I used here—breaking the system into components, logic, wiring, and physical layout—is something I can reuse in future embedded projects. It helps me stay organized, avoid mistakes, and build prototypes more efficiently.
+
+**References**
+
+Wokwi - World’s most advanced ESP32 Simulator. (z.d.). https://wokwi.com/
+
+Lab, M. (2025, 2 december). How to use Push Button with ATMEGA32 AVR Microcontroller. Microcontrollers Lab. https://microcontrollerslab.com/use-push-button-atmega32-avr-microcontroller/#:~:text=In%20this%20tutorial%2C%20we%20will%20learn%20about%20the,use%20of%20%E2%80%9Cif%20and%20else%E2%80%9D%20statements%20in%20C.

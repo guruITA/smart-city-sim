@@ -115,3 +115,31 @@ To do this, I will:
 - Analyze how the system continues to function after being disconnected from the laptop
 
 This will help me ensure that the pedestrian crossing system can operate as a **standalone embedded system**, which is essential for real-world smart city applications.
+
+# R — Result
+Through my research and analysis, I now have a clear understanding of how a smart pedestrian crossing works and how I can translate this into an ESP32‑S3 subsystem for my T‑junction tile. I identified all required components (LEDs, resistors, push buttons, breadboard, ESP32‑S3) and learned how each one functions inside a circuit. I also understand how digital input works using HIGH/LOW logic and why pull‑down resistors are needed to keep the button input stable.
+
+I created a complete conceptual model of the system: how the button input triggers the crossing sequence, how both pedestrian sides must behave in sync, and how timing ensures safety. I also documented the breadboard behavior so I understand how to place components correctly during prototyping. Overall, I reached my learning goal: I can now design the logic and electronics for a dual‑sided pedestrian crossing.
+
+# R — Reflection
+I am satisfied with the depth of my research. I took the time to understand not only what components I needed, but also why they behave the way they do. Concepts like pull‑up vs pull‑down, floating inputs, LED polarity, and breadboard structure were new to me, but I managed to learn them step by step. This helped me build confidence in working with embedded systems.
+
+However, my research process could have been more structured. I used many different sources and made a lot of rough notes. Later, it became difficult to organise everything into a clean and readable document. I realised that collecting too much information at once can make the writing phase harder. Next time, I want to summarise earlier, keep my notes cleaner, and focus on fewer, more reliable sources. This will save time and make the documentation process smoother.
+
+# T — Transfer
+The knowledge I gained from this research will help me build the actual pedestrian crossing on my tile. I now understand how to wire components safely, how digital inputs work, and how to design clear system logic. In future projects, I will apply the same principles and also improve my workflow by keeping my notes more organised and limiting the number of sources I use. This will make my research and documentation process faster and clearer.
+
+**References**
+LED resistor. (z.d.). Electronics Tutorials. https://www.electronics-tutorials.ws/resistor/led-resistor.html#:~:text=Thus%20an%20LED%20needs%20a%20resistor%20to%20limit,source%20without%20using%20a%20current%20limiting%20series%20resistor.
+
+Lab, M. (2025, 2 december). How to use Push Button with ATMEGA32 AVR Microcontroller. Microcontrollers Lab. https://microcontrollerslab.com/use-push-button-atmega32-avr-microcontroller/#:~:text=In%20this%20tutorial%2C%20we%20will%20learn%20about%20the,use%20of%20%E2%80%9Cif%20and%20else%E2%80%9D%20statements%20in%20C.
+
+GPIO & RTC GPIO - ESP32-S3 -  — ESP-IDF Programming Guide v6.0 documentation. (z.d.). https://docs.espressif.com/projects/esp-idf/en/stable/esp32s3/api-reference/peripherals/gpio.html
+
+Ćehić, A., Fazlić, T., Mujković, N., & Faculty of Traffic and Communications, University of Sarajevo. (z.d.). Smart pedestrian crosswalk. In International Conference On Advances in Traffic And Communication Technologies (ATCT). https://www.atct.ba/conference-proceedings/2024/15-smart-pedestrian-crosswalk.pdf
+
+Cybercraftics. (2024, 16 oktober). How to Connect Buttons to Arduino | Pull-Down, Pull-Up, and INPUT_PULLUP! [Video]. YouTube. https://www.youtube.com/watch?v=0zvgtS90LEk
+
+Circuit E Makes. (2020, 23 augustus). How To Use a Breadboard - Breadboard Basics [Video]. YouTube. https://www.youtube.com/watch?v=NREtn59WPho
+
+HTM Workshop. (2024, 10 mei). Breadboard - explained in depth [Video]. YouTube. https://www.youtube.com/watch?v=xs8No_rg40U

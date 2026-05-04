@@ -1,9 +1,9 @@
 #include "esp32cam.h"
 
 void setup() {
-  beginEsp32Cam();
+  begin();
 }
 
 void loop() {
-  updateEsp32Cam();
+  update();
 }
