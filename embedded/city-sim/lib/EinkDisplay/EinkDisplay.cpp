@@ -1,7 +1,6 @@
 #include "EinkDisplay.h"
 #include <SPI.h>
 #include <GxEPD2_3C.h>
-#inclu
 using Display = GxEPD2_3C<GxEPD2_290_C90c, GxEPD2_290_C90c::HEIGHT>;
 
 static SPIClass _spi(HSPI);
