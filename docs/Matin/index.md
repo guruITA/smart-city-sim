@@ -1,5 +1,8 @@
 # Matin's documentation
 
+## Problem and learning goals
+- [Problem statement](./problemStatement.md) — human-centered problem: parking search traffic in Amsterdam
+
 ## Parking tile and shared backend
 
 This section contains all documentation for the **Parking** tile and the **shared backend API** that serves sensor data for the entire City Sim.
