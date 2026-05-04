@@ -89,14 +89,12 @@ void setup() {
   eink.begin();
   trainSignal.begin();
   speedCamera.begin();
-  speedCamera.begin();
   parking.begin();
 }
 
 void loop() {
   lamp.update();
   trainSignal.update();
-  speedCamera.update();
   speedCamera.update();
   parking.update();
 }
