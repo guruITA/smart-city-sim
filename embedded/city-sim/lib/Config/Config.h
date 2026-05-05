@@ -60,7 +60,7 @@ namespace Config {
 
         constexpr const char* CAMERA_CAPTURE_URL = "http://192.168.4.1/capture";
 
-        constexpr unsigned long CAMERA_WIFI_CONNECT_TIMEOUT_MS = 8000;
+        constexpr unsigned long CAMERA_WIFI_CONNECT_TIMEOUT_MS = 3000;
     }
 
     namespace Parking {
