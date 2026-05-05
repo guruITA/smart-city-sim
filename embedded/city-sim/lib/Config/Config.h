@@ -3,12 +3,20 @@
 
 #include <stdint.h>
 
-/** */
+/** @brief Configuration values for the application. */
 namespace Config {
 
-    /**
-     * @brief Configuration parameters for the Streetlight component.
-     */
+    /** @brief Configuration values for the network. */
+    namespace Network {
+
+        /** @brief WiFi network credentials. */
+        constexpr const char* WIFI_SSID = "";
+        constexpr const char* WIFI_PASSWORD = "";
+
+        /** @brief Base URL for the API endpoint. */
+        constexpr const char* API_BASE_URL = "";
+    }
+
     namespace Streetlight {
 
         /** @brief GPIO pin connected to the analog output of the LDR sensor. */
@@ -47,8 +55,13 @@ namespace Config {
         constexpr unsigned long BOOT_SCREEN_HOLD_MS = 1500;
         constexpr unsigned long UI_REFRESH_INTERVAL_MS = 150;
 
+        constexpr const char* CAMERA_WIFI_SSID = "ESP32CAM_CAPTURE";
+        constexpr const char* CAMERA_WIFI_PASSWORD = "12345678";
+
         constexpr const char* CAMERA_CAPTURE_URL = "http://192.168.4.1/capture";
-    }
+
+        constexpr unsigned long CAMERA_WIFI_CONNECT_TIMEOUT_MS = 8000;
+        }
 
     namespace Parking {
         constexpr uint8_t OLED_SDA_PIN = 8;
