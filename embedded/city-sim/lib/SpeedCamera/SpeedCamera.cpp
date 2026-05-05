@@ -27,7 +27,10 @@ SpeedCamera::SpeedCamera(int ir1Pin, int ir2Pin, int oledSdaPin, int oledSclPin,
       _lastIr2Active(false), _lastSpeedKmh(0.0f), _lastTooFast(false), _lastDirection("-"),
       _lastEventMs(0), _lastMeasurementDoneMs(0), _lastUiRefresh(0), _bootScreenStartMs(0),
       _bootScreenShowing(false), _ir1EdgeDetected(false), _ir2EdgeDetected(false),
-      _ir1EdgeTimeUs(0), _ir2EdgeTimeUs(0) {}
+      _ir1EdgeTimeUs(0), _ir2EdgeTimeUs(0), _cameraTriggerState(CAMERA_TRIGGER_IDLE),
+      _cameraTriggerStateStartedMs(0), _pendingBackendUpdate(false), _pendingBackendSpeedKmh(0.0f),
+      _pendingBackendTooFast(false), _pendingBackendDirection("-"),
+      _pendingBackendSpeedLimitKmh(0.0f) {}
 
 void SpeedCamera::begin() {
   pinMode(_ir1Pin, INPUT);
@@ -57,13 +60,13 @@ void SpeedCamera::begin() {
 }
 
 void IRAM_ATTR SpeedCamera::handleIr1ISR() {
-  if (_instance != nullptr) {
+  if (_instance != NULL) {
     _instance->handleIrEdge(1);
   }
 }
 
 void IRAM_ATTR SpeedCamera::handleIr2ISR() {
-  if (_instance != nullptr) {
+  if (_instance != NULL) {
     _instance->handleIrEdge(2);
   }
 }
@@ -83,6 +86,8 @@ void IRAM_ATTR SpeedCamera::handleIrEdge(int sensorNumber) {
 }
 
 void SpeedCamera::update() {
+  updateCameraTriggerOverWiFi();
+
   bool ir1 = sensorActive(_ir1Pin);
   bool ir2 = sensorActive(_ir2Pin);
 
@@ -120,9 +125,7 @@ void SpeedCamera::update() {
           _tStartUs = 0;
           _measureState = WAIT_FOR_CLEAR;
         }
-      }
-
-      else if (edge1 && !ir2) {
+      } else if (edge1 && !ir2) {
         _firstSensor = 1;
         _tStartUs = edge1TimeUs;
         _measureState = WAIT_FOR_SECOND_SENSOR;
@@ -290,67 +293,121 @@ void SpeedCamera::resetMeasurement() {
   _tStartUs = 0;
 }
 
-bool SpeedCamera::reconnectToBackendWiFi() {
-  Serial.println("Reconnecting to backend WiFi...");
-
-  WiFi.disconnect(true);
-  delay(300);
-
-  bool connected =
-      NetworkController::begin(Config::Network::WIFI_SSID, Config::Network::WIFI_PASSWORD);
-
-  NetworkController::setApiBaseUrl(Config::Network::API_BASE_URL);
-
-  if (connected) {
-    Serial.println("Reconnected to backend WiFi.");
-  } else {
-    Serial.println("Failed to reconnect to backend WiFi.");
-  }
-
-  return connected;
+bool SpeedCamera::cameraTriggerBusy() {
+  return _cameraTriggerState != CAMERA_TRIGGER_IDLE;
 }
 
-void SpeedCamera::triggerCameraOverWiFi() {
-  Serial.println("Switching from backend WiFi to ESP32-CAM WiFi...");
-
-  WiFi.disconnect(true);
-  delay(300);
-
-  WiFi.mode(WIFI_STA);
-  WiFi.begin(Config::SpeedCamera::CAMERA_WIFI_SSID, Config::SpeedCamera::CAMERA_WIFI_PASSWORD);
-
-  unsigned long startedMs = millis();
-
-  while (WiFi.status() != WL_CONNECTED &&
-         millis() - startedMs < Config::SpeedCamera::CAMERA_WIFI_CONNECT_TIMEOUT_MS) {
-    delay(250);
-    Serial.print(".");
-  }
-
-  Serial.println();
-
-  if (WiFi.status() != WL_CONNECTED) {
-    Serial.println("Could not connect to ESP32-CAM WiFi.");
-    reconnectToBackendWiFi();
+void SpeedCamera::startCameraTriggerOverWiFi() {
+  if (cameraTriggerBusy()) {
+    Serial.println("Camera trigger skipped: already running.");
     return;
   }
 
-  Serial.println("Connected to ESP32-CAM WiFi.");
+  Serial.println("Starting camera trigger first. Backend update will be sent after reconnect.");
+  _cameraTriggerState = CAMERA_DISCONNECT_BACKEND_WIFI;
+  _cameraTriggerStateStartedMs = millis();
+}
 
-  int httpCode = -1;
-  String response = NetworkController::fetch(_camCaptureUrl, httpCode);
-
-  Serial.print("Camera trigger HTTP code: ");
-  Serial.println(httpCode);
-
-  if (httpCode <= 0) {
-    Serial.println("Camera trigger failed.");
-  } else {
-    Serial.print("Camera response: ");
-    Serial.println(response);
+void SpeedCamera::sendPendingBackendUpdate() {
+  if (!_pendingBackendUpdate) {
+    return;
   }
 
-  reconnectToBackendWiFi();
+  SpeedCameraNetwork::sendMeasurement(_pendingBackendSpeedKmh, _pendingBackendDirection,
+                                      _pendingBackendTooFast, _pendingBackendSpeedLimitKmh);
+
+  _pendingBackendUpdate = false;
+}
+
+void SpeedCamera::updateCameraTriggerOverWiFi() {
+  switch (_cameraTriggerState) {
+
+  case CAMERA_TRIGGER_IDLE:
+    return;
+
+  case CAMERA_DISCONNECT_BACKEND_WIFI:
+    Serial.println("Disconnecting backend WiFi...");
+    WiFi.disconnect(false, false);
+
+    _cameraTriggerState = CAMERA_CONNECT_TO_CAMERA_WIFI;
+    _cameraTriggerStateStartedMs = millis();
+    break;
+
+  case CAMERA_CONNECT_TO_CAMERA_WIFI:
+    Serial.println("Connecting to ESP32-CAM WiFi...");
+    WiFi.mode(WIFI_STA);
+    WiFi.begin(Config::SpeedCamera::CAMERA_WIFI_SSID, Config::SpeedCamera::CAMERA_WIFI_PASSWORD);
+
+    _cameraTriggerState = CAMERA_WAIT_FOR_CAMERA_WIFI;
+    _cameraTriggerStateStartedMs = millis();
+    break;
+
+  case CAMERA_WAIT_FOR_CAMERA_WIFI:
+    if (WiFi.status() == WL_CONNECTED) {
+      Serial.println("Connected to ESP32-CAM WiFi.");
+      _cameraTriggerState = CAMERA_SEND_CAPTURE_REQUEST;
+      _cameraTriggerStateStartedMs = millis();
+    } else if (millis() - _cameraTriggerStateStartedMs >=
+               Config::SpeedCamera::CAMERA_WIFI_CONNECT_TIMEOUT_MS) {
+      Serial.println("Could not connect to ESP32-CAM WiFi.");
+      _cameraTriggerState = CAMERA_RECONNECT_BACKEND_WIFI;
+      _cameraTriggerStateStartedMs = millis();
+    }
+    break;
+
+  case CAMERA_SEND_CAPTURE_REQUEST: {
+    int httpCode = -1;
+    String response = NetworkController::fetch(_camCaptureUrl, httpCode);
+
+    Serial.print("Camera trigger HTTP code: ");
+    Serial.println(httpCode);
+
+    if (httpCode <= 0) {
+      Serial.println("Camera trigger failed.");
+    } else {
+      Serial.print("Camera response: ");
+      Serial.println(response);
+    }
+
+    _cameraTriggerState = CAMERA_DISCONNECT_CAMERA_WIFI;
+    _cameraTriggerStateStartedMs = millis();
+    break;
+  }
+
+  case CAMERA_DISCONNECT_CAMERA_WIFI:
+    Serial.println("Disconnecting ESP32-CAM WiFi...");
+    WiFi.disconnect(false, false);
+
+    _cameraTriggerState = CAMERA_RECONNECT_BACKEND_WIFI;
+    _cameraTriggerStateStartedMs = millis();
+    break;
+
+  case CAMERA_RECONNECT_BACKEND_WIFI:
+    Serial.println("Reconnecting to backend WiFi...");
+    WiFi.mode(WIFI_STA);
+    WiFi.begin(Config::Network::WIFI_SSID, Config::Network::WIFI_PASSWORD);
+
+    NetworkController::setApiBaseUrl(Config::Network::API_BASE_URL);
+
+    _cameraTriggerState = CAMERA_WAIT_FOR_BACKEND_WIFI;
+    _cameraTriggerStateStartedMs = millis();
+    break;
+
+  case CAMERA_WAIT_FOR_BACKEND_WIFI:
+    if (WiFi.status() == WL_CONNECTED) {
+      Serial.println("Reconnected to backend WiFi.");
+
+      sendPendingBackendUpdate();
+
+      _cameraTriggerState = CAMERA_TRIGGER_IDLE;
+    } else if (millis() - _cameraTriggerStateStartedMs >=
+               Config::SpeedCamera::CAMERA_WIFI_CONNECT_TIMEOUT_MS) {
+      Serial.println("Failed to reconnect to backend WiFi.");
+
+      _cameraTriggerState = CAMERA_TRIGGER_IDLE;
+    }
+    break;
+  }
 }
 
 void SpeedCamera::processMeasurement(int fromSensor, int toSensor, unsigned long dtUs) {
@@ -395,10 +452,16 @@ void SpeedCamera::processMeasurement(int fromSensor, int toSensor, unsigned long
 
   drawMeasurementScreen(realSpeedKmh, tooFast, _lastDirection, dtUs);
 
-  SpeedCameraNetwork::sendMeasurement(realSpeedKmh, _lastDirection, tooFast, _speedLimitKmh);
-
   if (tooFast) {
-    triggerCameraOverWiFi();
+    _pendingBackendUpdate = true;
+    _pendingBackendSpeedKmh = realSpeedKmh;
+    _pendingBackendTooFast = tooFast;
+    _pendingBackendDirection = _lastDirection;
+    _pendingBackendSpeedLimitKmh = _speedLimitKmh;
+
+    startCameraTriggerOverWiFi();
+  } else {
+    SpeedCameraNetwork::sendMeasurement(realSpeedKmh, _lastDirection, tooFast, _speedLimitKmh);
   }
 
   _measureState = WAIT_FOR_CLEAR;
