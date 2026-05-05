@@ -8,13 +8,6 @@
 
 #define builtin LED_BUILTIN
 
-//  WiFi details
-const char* WIFI_SSID = "";
-const char* WIFI_PASSWORD = "";
-
-// backend URL
-const String API_BASE_URL = "http://:8000";
-
 StreetLight lamp(
   Config::Streetlight::LDR_PIN,
   Config::Streetlight::RELAY_PIN,
@@ -74,7 +67,7 @@ void setup() {
   Serial.begin(115200);
   Serial.println("Setup start");
 
-  if (NetworkController::begin(WIFI_SSID, WIFI_PASSWORD)) {
+  if (NetworkController::begin(Config::Network::WIFI_SSID, Config::Network::WIFI_PASSWORD)) {
     Serial.println("WiFi connected, network fetch availability up");
   } else {
     Serial.println("WiFi not connected, some network features will be skipped");
