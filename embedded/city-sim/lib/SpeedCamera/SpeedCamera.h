@@ -72,6 +72,8 @@ private:
   void resetMeasurement();
   void triggerCameraOverWiFi();
   void processMeasurement(int fromSensor, int toSensor, unsigned long dtUs);
+
+  bool reconnectToBackendWiFi();
 };
 
 #endif
