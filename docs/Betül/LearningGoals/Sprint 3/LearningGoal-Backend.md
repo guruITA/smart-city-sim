@@ -1,4 +1,4 @@
-## **S — Situation**
+# **S — Situation**
 
 At the start of Sprint 3, our team is working on a backend system that processes incoming data from external components. The backend runs inside a Docker environment and is intended to be deployed on a Raspberry Pi.
 
