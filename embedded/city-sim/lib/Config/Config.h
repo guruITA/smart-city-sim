@@ -44,11 +44,11 @@ namespace Config {
         constexpr uint8_t OLED_ADDRESS = 0x3C;
 
         constexpr int IR_ACTIVE_STATE = LOW;
+        constexpr float SENSOR_DISTANCE_M = 0.05f;
+        constexpr float SCALE_FACTOR = 64.0f;
+        constexpr float SPEED_LIMIT_KMH = 50.0f;
+        constexpr unsigned long PASS_TIMEOUT_US = 4000000UL;
 
-        constexpr float SENSOR_DISTANCE_M = 0.10f;
-        constexpr float SPEED_LIMIT_KMH = 1.0f;
-
-        constexpr unsigned long PASS_TIMEOUT_US = 2000000UL;
         constexpr unsigned long MEASUREMENT_COOLDOWN_MS = 500;
         constexpr unsigned long RESULT_SCREEN_HOLD_MS = 2000;
 
@@ -61,7 +61,7 @@ namespace Config {
         constexpr const char* CAMERA_CAPTURE_URL = "http://192.168.4.1/capture";
 
         constexpr unsigned long CAMERA_WIFI_CONNECT_TIMEOUT_MS = 8000;
-        }
+    }
 
     namespace Parking {
         constexpr uint8_t OLED_SDA_PIN = 8;
