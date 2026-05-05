@@ -1,4 +1,4 @@
-# Design: Recognizing when a car is waiting at the traffic light and sending that information to the backend
+# Design - Recognizing when a car is waiting at the traffic light and sending that information to the backend
 
 ## Summary
 
@@ -345,6 +345,9 @@ This appendix contains the design proof for this deliverable. It links the writt
 
 **Figure A1. Fritzing schematic view of the design**
 
+![Figure A1](../../assets/Sprint%203/Design%20-%20Recognizing%20when%20a%20car%20is%20waiting%20at%20the%20traffic%20light%20and%20sending%20that%20information%20to%20the%20backend/Traffic%20lights%20with%20chips_v2_schem.png)
+
+
 Figure A1 shows the logical wiring of the design. In this schematic, the relationship between the main controller, the output-expansion layer, the switching layer, the sensor input, and the traffic-light outputs is made clear.
 
 The figure shows that:
@@ -361,6 +364,8 @@ This schematic is important because it proves that the new sensor input is added
 ### A.2 Fritzing breadboard view
 
 **Figure A2. Fritzing breadboard view of the design**
+
+![Figure A2](../../assets/Sprint%203/Design%20-%20Recognizing%20when%20a%20car%20is%20waiting%20at%20the%20traffic%20light%20and%20sending%20that%20information%20to%20the%20backend/Traffic%20lights%20with%20chips_v2_bb.jpg)
 
 Figure A2 shows the practical breadboard layout of the design. This figure translates the schematic into a physical arrangement that can be used during realisation.
 
@@ -380,6 +385,22 @@ This figure is useful because it makes the design easier to build in practice. I
 ### A.3 Bill of Materials — BoM
 
 **Figure A3. Fritzing Bill of Materials**
+
+| Amount | Part Type                                                 | Size single order | Price order | Price only parts used | URL                                                                                                                                                                                                                                                                                |
+| -----: | --------------------------------------------------------- | ----------------: | ----------: | --------------------: | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|      1 | Opencircuit 10KΩ Metaalfilm weerstand 1/4W - 100 stuks    |               100 |      € 2.45 |                € 0.02 | [https://opencircuit.nl/product/10k%CF%89-metaalfilm-weerstand-1-4w-100-stuks](https://opencircuit.nl/product/10k%CF%89-metaalfilm-weerstand-1-4w-100-stuks)                                                                                                                       |
+|     12 | Opencircuit 220Ω Metaalfilm weerstand 1/4W - 100 stuks    |               100 |      € 2.00 |                € 0.24 | [https://opencircuit.nl/product/220%CF%89-metaalfilm-weerstand-1-4w-100-stuks](https://opencircuit.nl/product/220%CF%89-metaalfilm-weerstand-1-4w-100-stuks)                                                                                                                       |
+|      2 | Opencircuit 4,7KΩ Metaalfilm weerstand 1/4W - 100 stuks   |               100 |      € 1.15 |                € 0.02 | [https://opencircuit.nl/product/4.7k%CF%89-metaalfilm-weerstand-1-4w-100-stuks](https://opencircuit.nl/product/4.7k%CF%89-metaalfilm-weerstand-1-4w-100-stuks)                                                                                                                     |
+|      1 | Keyestudio Breadboard Power Supply 5V and 3.3V – USB-C    |                 1 |      € 3.25 |                € 3.25 | [https://www.tinytronics.nl/en/power/voltage-converters/voltage-regulators/keyestudio-breadboard-power-supply-5v-and-3.3v-usb-c](https://www.tinytronics.nl/en/power/voltage-converters/voltage-regulators/keyestudio-breadboard-power-supply-5v-and-3.3v-usb-c)                   |
+|      4 | Opencircuit Groen 5mm diffuse LED - 10 stuks              |                10 |      € 0.80 |                € 0.32 | [https://opencircuit.nl/product/groen-5mm-diffuse-led-10-stuks](https://opencircuit.nl/product/groen-5mm-diffuse-led-10-stuks)                                                                                                                                                     |
+|      1 | KY-021 Magnet Switch Mini Magnet Reed Module Sensor       |                 1 |      € 3.79 |                € 3.79 | [https://www.az-delivery.de/en/products/reed-sensor-modul](https://www.az-delivery.de/en/products/reed-sensor-modul)                                                                                                                                                               |
+|      1 | MCP23017 - I2C port expander 23017 (16 extra I/O-ports)   |                 1 |      € 3.95 |                € 3.95 | [https://www.hackerstore.nl/Artikel/236](https://www.hackerstore.nl/Artikel/236)                                                                                                                                                                                                   |
+|      4 | Opencircuit Geel 5mm diffuse LED - 10 stuks               |                10 |      € 0.80 |                € 0.32 | [https://opencircuit.nl/product/geel-5mm-diffuse-led-10-stuks](https://opencircuit.nl/product/geel-5mm-diffuse-led-10-stuks)                                                                                                                                                       |
+|      4 | Opencircuit Rood 5mm diffuse LED - 10 stuks               |                10 |      € 1.25 |                € 0.50 | [https://opencircuit.nl/product/rood-5mm-diffuse-led-10-stuks](https://opencircuit.nl/product/rood-5mm-diffuse-led-10-stuks)                                                                                                                                                       |
+|      2 | ULN2803 - Driver-IC voor relais, LED's, motoren. Enz.     |                 1 |      € 0.60 |                € 1.20 | [https://www.hackerstore.nl/Artikel/960](https://www.hackerstore.nl/Artikel/960)                                                                                                                                                                                                   |
+|      1 | Espressif ESP32-S3-DevKitC-1-N8R8 - 8MB Flash - 8MB PSRAM |                 1 |     € 18.00 |               € 18.00 | [https://www.tinytronics.nl/nl/development-boards/microcontroller-boards/met-wi-fi/espressif-esp32-s3-devkitc-1-n8r8-8mb-flash-8mb-psram](https://www.tinytronics.nl/nl/development-boards/microcontroller-boards/met-wi-fi/espressif-esp32-s3-devkitc-1-n8r8-8mb-flash-8mb-psram) |
+|        | **Total price build**                                     |                   | **€ 38.04** |           **€ 31.62** |                                                                                                                                                                                                                                                                                    |
+
 
 Figure A3 shows the bill of materials generated from Fritzing. This overview supports the design by listing the main parts required to build the prototype as designed.
 
