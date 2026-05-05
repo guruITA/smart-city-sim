@@ -3,7 +3,9 @@
 #include <Wire.h>
 #include <WiFi.h>
 
+#include "Config.h"
 #include "NetworkController.h"
+#include "SpeedCameraNetwork.h"
 
 SpeedCamera::SpeedCamera(int ir1Pin, int ir2Pin, int oledSdaPin, int oledSclPin, int screenWidth,
                          int screenHeight, int oledAddr, int irActiveState, float sensorDistanceM,
@@ -42,8 +44,8 @@ void SpeedCamera::begin() {
   _lastIr1Active = sensorActive(_ir1Pin);
   _lastIr2Active = sensorActive(_ir2Pin);
 
-  Serial.println("Starting ESP32-S3.");
-  Serial.println("Waiting on IR-measurements...");
+  Serial.println("Starting ESP32-S3 SpeedCamera.");
+  Serial.println("Waiting on IR measurements...");
 }
 
 void SpeedCamera::update() {
@@ -128,11 +130,14 @@ void SpeedCamera::drawBootScreen() {
   _display.setTextSize(1);
   _display.setTextColor(SSD1306_WHITE);
   _display.setCursor(0, 0);
-  _display.println("Speed Camera S3 start...");
+
+  _display.println("Speed Camera S3");
+  _display.println("Starting...");
   _display.println("IR1 = GPIO6");
   _display.println("IR2 = GPIO12");
-  _display.println("OLED SDA/SCL = 17y/46");
-  _display.println("Camera via WiFi");
+  _display.println("OLED SDA/SCL = 17/46");
+  _display.println("Backend + Camera");
+
   _display.display();
 }
 
@@ -187,7 +192,7 @@ void SpeedCamera::drawMeasurementScreen(float speedKmh, bool tooFast, const Stri
   _display.setCursor(0, 0);
 
   _display.println("MEASUREMENT READY");
-  _display.println("------------");
+  _display.println("-----------------");
 
   _display.print("Direction: ");
   _display.println(direction);
@@ -219,11 +224,52 @@ void SpeedCamera::resetMeasurement() {
   _tStartUs = 0;
 }
 
+bool SpeedCamera::reconnectToBackendWiFi() {
+  Serial.println("Reconnecting to backend WiFi...");
+
+  WiFi.disconnect(true);
+  delay(300);
+
+  bool connected =
+      NetworkController::begin(Config::Network::WIFI_SSID, Config::Network::WIFI_PASSWORD);
+
+  NetworkController::setApiBaseUrl(Config::Network::API_BASE_URL);
+
+  if (connected) {
+    Serial.println("Reconnected to backend WiFi.");
+  } else {
+    Serial.println("Failed to reconnect to backend WiFi.");
+  }
+
+  return connected;
+}
+
 void SpeedCamera::triggerCameraOverWiFi() {
-  if (!NetworkController::connected()) {
-    Serial.println("Kan camera niet triggeren, geen wifi.");
+  Serial.println("Switching from backend WiFi to ESP32-CAM WiFi...");
+
+  WiFi.disconnect(true);
+  delay(300);
+
+  WiFi.mode(WIFI_STA);
+  WiFi.begin(Config::SpeedCamera::CAMERA_WIFI_SSID, Config::SpeedCamera::CAMERA_WIFI_PASSWORD);
+
+  unsigned long startedMs = millis();
+
+  while (WiFi.status() != WL_CONNECTED &&
+         millis() - startedMs < Config::SpeedCamera::CAMERA_WIFI_CONNECT_TIMEOUT_MS) {
+    delay(250);
+    Serial.print(".");
+  }
+
+  Serial.println();
+
+  if (WiFi.status() != WL_CONNECTED) {
+    Serial.println("Could not connect to ESP32-CAM WiFi.");
+    reconnectToBackendWiFi();
     return;
   }
+
+  Serial.println("Connected to ESP32-CAM WiFi.");
 
   int httpCode = -1;
   String response = NetworkController::fetch(_camCaptureUrl, httpCode);
@@ -232,12 +278,13 @@ void SpeedCamera::triggerCameraOverWiFi() {
   Serial.println(httpCode);
 
   if (httpCode <= 0) {
-    Serial.println("Camera trigger mislukt.");
-    return;
+    Serial.println("Camera trigger failed.");
+  } else {
+    Serial.print("Camera response: ");
+    Serial.println(response);
   }
 
-  Serial.print("Camera response: ");
-  Serial.println(response);
+  reconnectToBackendWiFi();
 }
 
 void SpeedCamera::processMeasurement(int fromSensor, int toSensor, unsigned long dtUs) {
@@ -271,6 +318,8 @@ void SpeedCamera::processMeasurement(int fromSensor, int toSensor, unsigned long
   Serial.println(tooFast ? "YES" : "NO");
 
   drawMeasurementScreen(speedKmh, tooFast, _lastDirection, dtUs);
+
+  SpeedCameraNetwork::sendMeasurement(speedKmh, _lastDirection, tooFast, _speedLimitKmh);
 
   if (tooFast) {
     triggerCameraOverWiFi();
