@@ -8,10 +8,13 @@ public:
     EinkDisplay(int clkPin, int mosiPin, int csPin, int dcPin, int rstPin, int busyPin);
     void begin();
     void showText(const String& text);
+    void startSyncTask();
     void update();
 
 private:
     int _clkPin, _mosiPin, _csPin, _dcPin, _rstPin, _busyPin;
+    String _currentText;
+    static void syncTaskLoop(void* param);
 };
 
 #endif
