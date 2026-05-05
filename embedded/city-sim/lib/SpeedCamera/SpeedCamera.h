@@ -21,7 +21,7 @@ public:
   String getLastDirection();
 
 private:
-  enum MeasureState { IDLE, WAIT_FOR_SECOND_SENSOR };
+  enum MeasureState { IDLE, WAIT_FOR_SECOND_SENSOR, WAIT_FOR_CLEAR };
 
   int _ir1Pin;
   int _ir2Pin;
@@ -63,6 +63,17 @@ private:
   unsigned long _lastEventMs;
   unsigned long _lastMeasurementDoneMs;
   unsigned long _lastUiRefresh;
+
+  volatile bool _ir1EdgeDetected;
+  volatile bool _ir2EdgeDetected;
+  volatile unsigned long _ir1EdgeTimeUs;
+  volatile unsigned long _ir2EdgeTimeUs;
+
+  static SpeedCamera* _instance;
+
+  static void IRAM_ATTR handleIr1ISR();
+  static void IRAM_ATTR handleIr2ISR();
+  void IRAM_ATTR handleIrEdge(int sensorNumber);
 
   bool sensorActive(int pin);
   void drawBootScreen();
