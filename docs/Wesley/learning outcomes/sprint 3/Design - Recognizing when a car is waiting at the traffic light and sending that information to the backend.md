@@ -9,28 +9,35 @@ The main design choice is that the sensor does not directly control the traffic 
 ## Table of Contents
 
 - [Introduction](#introduction)
-- [Design Goal](#design-goal)
-- [What Is Already Defined in the Analysis](#what-is-already-defined-in-the-analysis)
-- [Starting Point From the Current System](#starting-point-from-the-current-system)
-- [Selected Design Direction](#selected-design-direction)
-- [Why I Chose the KY-021](#why-i-chose-the-ky-021)
-- [Design of the Physical Sensor Concept](#design-of-the-physical-sensor-concept)
-- [Electrical Design](#electrical-design)
+- [Design goal](#design-goal)
+- [What is already defined in the analysis](#what-is-already-defined-in-the-analysis)
+- [Starting point from the current system](#starting-point-from-the-current-system)
+- [Selected design direction](#selected-design-direction)
+- [Why I chose the KY-021](#why-i-chose-the-ky-021)
+- [KY-021 Part Information](#ky-021-part-information)
+- [Design of the physical sensor concept](#design-of-the-physical-sensor-concept)
+- [Electrical design](#electrical-design)
   - [Controller-side connections](#controller-side-connections)
   - [Sensor wiring](#sensor-wiring)
-- [Design of the Software Link](#design-of-the-software-link)
-- [Design of the Traffic-Light Phase Link](#design-of-the-traffic-light-phase-link)
-- [Interpretation Logic Design](#interpretation-logic-design)
+- [Design of the software link](#design-of-the-software-link)
+- [Design of the traffic-light phase link](#design-of-the-traffic-light-phase-link)
+- [Interpretation logic design](#interpretation-logic-design)
   - [Proposed interpretation structure](#proposed-interpretation-structure)
   - [Proposed timing parameters](#proposed-timing-parameters)
-- [Backend Message Design](#backend-message-design)
-- [Software Structure Design](#software-structure-design)
-- [Safety in the Design](#safety-in-the-design)
-- [Relationship to Future Sprints](#relationship-to-future-sprints)
-- [Correct Design Result for This Step](#correct-design-result-for-this-step)
-- [Limits of This Design](#limits-of-this-design)
+- [Backend message design](#backend-message-design)
+- [Software structure design](#software-structure-design)
+- [Safety in the design](#safety-in-the-design)
+- [Relationship to future sprints](#relationship-to-future-sprints)
+- [Correct design result for this step](#correct-design-result-for-this-step)
+- [Limits of this design](#limits-of-this-design)
 - [Conclusion](#conclusion)
 - [References](#references)
+- [Appendix A — Proof of Design](#appendix-a--proof-of-design)
+  - [A.1 Fritzing schematic view](#a1-fritzing-schematic-view)
+  - [A.2 Fritzing breadboard view](#a2-fritzing-breadboard-view)
+  - [A.3 Bill of Materials — BoM](#a3-bill-of-materials--bom)
+  - [Appendix conclusion](#appendix-conclusion)
+
 
 ## Introduction
 
@@ -104,6 +111,30 @@ For this learning goal, I chose the **KY-021 Mini Magnetic Reed Switch Module** 
 I chose this because my project is built on a **1:64 scale city tile** that is **300 mm by 300 mm and 3.6 mm thick**. In this project, I need a detection method that fits the physical size of the tile and stays manageable as a prototype. A more realistic road-detection construction would make this step unnecessarily complex for the space I have available. Because of that, I use the KY-021 as a simplified replacement sensor that lets me test the logic for detecting and interpreting whether a car is waiting at the traffic light.
 
 This choice matches the analysis, where the KY-021 was already defined as a prototype stand-in for vehicle presence so I could focus first on the interpretation logic instead of making the hardware too complex too early (Wesley, 2026a). The analysis also already explains why this project step is deliberately limited in scope and why one simple sensor is enough for this sprint (Wesley, 2026a). 
+
+To make clear why this exact part fits the design, the next section describes the KY-021 module itself and links its relevant properties to the prototype requirements.
+
+## KY-021 Part Information
+
+The part I added to this design is the **KY-021 Mini Magnetic Reed Switch Module**. This module is a small magnetic switch module that can be used as a digital input sensor. The reed switch is normally open and closes when it is exposed to a magnetic field. When that happens, the module can send a digital signal to the microcontroller (ArduinoModules, 2026).
+
+The KY-021 fits this project because I do not need to measure distance or speed in this first smart step. I only need a simple way to detect whether the model vehicle is physically present at the stop-line area. By placing a small magnet on or inside the model vehicle, the reed switch can change state when the vehicle is positioned above the sensor. This makes the sensor suitable as a prototype stand-in for vehicle presence detection in my 1:64 scale traffic-light model.
+
+The module is also practical for this design because it works with **3.3V to 5V**, has a **digital output**, and can be used with microcontrollers such as Arduino, Raspberry Pi, and ESP32-based boards. The source describes the module as consisting of a reed switch, a **10kΩ resistor**, and **three male header pins**. This matches the simple wiring approach I need for this sprint, because the module can be connected with power, ground, and one signal wire (ArduinoModules, 2026).
+
+For my design, I use the KY-021 only as an input sensor. It does not directly control the traffic lights. The ESP32-S3 reads the digital signal, and the software then interprets that signal together with the current traffic-light phase. This keeps the traffic-light control logic separate from the sensor input and supports the main design goal of creating a backend-ready interpreted result instead of only using a raw sensor trigger.
+
+| KY-021 property | Relevance for this design |
+| --------------- | ------------------------- |
+| Normally open reed switch | The switch only closes when a magnet is close enough |
+| Magnetic activation | A magnet in or on the model vehicle can trigger detection |
+| Digital output | The ESP32-S3 can read the sensor as a simple input state |
+| 3.3V to 5V operating voltage | Suitable for connection to the ESP32-S3 3.3V logic side |
+| Three-pin module | Simple wiring with VCC, GND, and signal |
+| Small board size | Practical for hiding near the stop line in the city tile |
+
+Because of these properties, the KY-021 is a suitable prototype sensor for this sprint. It is simple enough to add without redesigning the existing crossing hardware, but still useful enough to test the main smart-traffic idea: detecting a waiting vehicle and sending a meaningful interpreted state to the backend.
+
 
 ## Design of the physical sensor concept
 
@@ -323,6 +354,8 @@ The detailed reasoning for why this step matters belongs to the analysis. The pu
 
 ## References
 
+ArduinoModules. (2026, April 24). Arduino Mini Magnetic Reed Switch Module KY-021 — Wiring & Code. ArduinoModulesInfo. https://arduinomodules.info/ky-021-mini-magnetic-reed-switch-module/
+
 Wesley. (2026a). *Analysis - Recognizing when a car is waiting at the traffic light and sending that information to the backend* https://gitlab.fdmci.hva.nl/studio/smart-cities/projecten/2025-2026-semester-2/city-sim-learning-group/city-the-embedded-alliance-city-sim-learning-group/-/blob/d8bf5f628df14829a640adcf2e5e1bee2b7e9700/docs/Wesley/learning%20outcomes/sprint%203/Analysis%20-%20Recognizing%20when%20a%20car%20is%20waiting%20at%20the%20traffic%20light%20and%20sending%20that%20information%20to%20the%20backend.md
 
 Wesley. (2026b). *Advice — Learning Goal 1 - Expanding the traffic-light system to multiple traffic lights* https://gitlab.fdmci.hva.nl/studio/smart-cities/projecten/2025-2026-semester-2/city-sim-learning-group/city-the-embedded-alliance-city-sim-learning-group/-/blob/8febfd00c6ceb887593016ed8d4fcd316f0c3ac8/docs/Wesley/learning%20goals/sprint%202/Sprint%202,%20Learning%20Goal%201%20-%20Expanding%20the%20traffic-light%20system%20to%20multiple%20traffic%20lights.md
@@ -336,6 +369,8 @@ Wesley. (2026e). *Smart Traffic Light - When Does a Traffic Light Become Smart?*
 Wesley. (2026f). *Sprint 2, Learning Goal 1 - Expanding the traffic-light system to multiple traffic lights* https://gitlab.fdmci.hva.nl/studio/smart-cities/projecten/2025-2026-semester-2/city-sim-learning-group/city-the-embedded-alliance-city-sim-learning-group/-/blob/8febfd00c6ceb887593016ed8d4fcd316f0c3ac8/docs/Wesley/learning%20goals/sprint%202/Sprint%202,%20Learning%20Goal%201%20-%20Expanding%20the%20traffic-light%20system%20to%20multiple%20traffic%20lights.md
 
 Wesley. (2026g). *Traffic Light - first iteration - implementation* https://gitlab.fdmci.hva.nl/studio/smart-cities/projecten/2025-2026-semester-2/city-sim-learning-group/city-the-embedded-alliance-city-sim-learning-group/-/blob/8febfd00c6ceb887593016ed8d4fcd316f0c3ac8/docs/Wesley/research/Traffic%20Light%20-%20first%20iteration%20-%20implementation.md
+
+
 
 ## Appendix A — Proof of Design
 
