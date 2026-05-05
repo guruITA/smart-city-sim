@@ -23,6 +23,17 @@ public:
 private:
   enum MeasureState { IDLE, WAIT_FOR_SECOND_SENSOR, WAIT_FOR_CLEAR };
 
+  enum CameraTriggerState {
+    CAMERA_TRIGGER_IDLE,
+    CAMERA_DISCONNECT_BACKEND_WIFI,
+    CAMERA_CONNECT_TO_CAMERA_WIFI,
+    CAMERA_WAIT_FOR_CAMERA_WIFI,
+    CAMERA_SEND_CAPTURE_REQUEST,
+    CAMERA_DISCONNECT_CAMERA_WIFI,
+    CAMERA_RECONNECT_BACKEND_WIFI,
+    CAMERA_WAIT_FOR_BACKEND_WIFI
+  };
+
   int _ir1Pin;
   int _ir2Pin;
   int _oledSdaPin;
@@ -71,6 +82,15 @@ private:
 
   static SpeedCamera* _instance;
 
+  CameraTriggerState _cameraTriggerState;
+  unsigned long _cameraTriggerStateStartedMs;
+
+  bool _pendingBackendUpdate;
+  float _pendingBackendSpeedKmh;
+  bool _pendingBackendTooFast;
+  String _pendingBackendDirection;
+  float _pendingBackendSpeedLimitKmh;
+
   static void IRAM_ATTR handleIr1ISR();
   static void IRAM_ATTR handleIr2ISR();
   void IRAM_ATTR handleIrEdge(int sensorNumber);
@@ -80,11 +100,14 @@ private:
   void drawStatusScreen(bool ir1, bool ir2);
   void drawMeasurementScreen(float speedKmh, bool tooFast, const String& direction,
                              unsigned long dtUs);
+
   void resetMeasurement();
-  void triggerCameraOverWiFi();
   void processMeasurement(int fromSensor, int toSensor, unsigned long dtUs);
 
-  bool reconnectToBackendWiFi();
+  bool cameraTriggerBusy();
+  void startCameraTriggerOverWiFi();
+  void updateCameraTriggerOverWiFi();
+  void sendPendingBackendUpdate();
 };
 
 #endif
