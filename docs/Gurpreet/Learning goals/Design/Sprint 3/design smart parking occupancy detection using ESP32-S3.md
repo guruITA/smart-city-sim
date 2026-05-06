@@ -145,14 +145,11 @@ These components are selected because they match the hardware design from the an
 
 A Bill of Materials is created to support building, ordering, and replacement of parts.
 
-![Bill of materials smart parking](images/BOM.png)  
-*Bill of Materials of the smart parking prototype. Source: generated in Fritzing.*
-
-The table below shows where the main components can be ordered and what the estimated costs are.
+The table shows where the main components can be ordered and what the estimated costs are.
 
 | Component                 | Amount | Supplier    | Link                                                                                                                                                                                             | Estimated price |
 | ------------------------- | -----: | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------: |
-| Espressif ESP32-S3-DevKitC-1-N16 - 16MB Flash  |     1x | TinyTronics  | [ESP32-S3](https://www.tinytronics.nl/en/espressif-esp32-s3-devkitc-1-n16-16mb-flash)                                                     |           €6.59 |
+| Espressif ESP32-S3-DevKitC-1-N16 - 16MB Flash  |     1x | TinyTronics  | [Espressif ESP32-S3-DevKitC-1-N16 - 16MB Flash](https://www.tinytronics.nl/en/espressif-esp32-s3-devkitc-1-n16-16mb-flash)                                                     |           €6.59 |
 | Ultrasone Sensor - HC-SR04 |     4x | TinyTronics | [HC-SR04 ultrasonic sensor](https://www.tinytronics.nl/nl/sensoren/afstand/ultrasonische-sensor-hc-sr04)                                                                                         |      €3 |
 | 1.3 inch OLED Display 128*64 pixels Wit - I2C |     1x | TinyTronics | [1.3 inch OLED Display 128*64 pixels Wit - I2C](https://www.tinytronics.nl/nl/displays/oled/1.3-inch-oled-display-128*64-pixels-wit-i2c)                                                                                         |          €14.00 |
 | Keyestudio Breadboard Voeding 5V en 3.3V - USB-C   |     1x | TinyTronics | [Keyestudio Breadboard Voeding 5V en 3.3V - USB-C](https://www.tinytronics.nl/nl/power/spanningsconverters/spanningsregelaars/keyestudio-breadboard-voeding-5v-and-3.3v-usb-c)                                            |           €3.25 |
