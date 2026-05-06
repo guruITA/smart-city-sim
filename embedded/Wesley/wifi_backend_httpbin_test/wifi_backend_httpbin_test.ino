@@ -131,3 +131,36 @@ void printWiFiStatus() {
   Serial.println("---------------------------------------------");
   Serial.println();
 }
+
+bool connectToWiFi() {
+  Serial.println("[STEP 1] Connecting to Wi-Fi...");
+  Serial.print("SSID: ");
+  Serial.println(WIFI_SSID);
+
+  WiFi.mode(WIFI_STA);
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+
+  unsigned long startAttempt = millis();
+
+  while (WiFi.status() != WL_CONNECTED && (millis() - startAttempt) < WIFI_CONNECT_TIMEOUT) {
+    Serial.print(".");
+    delay(500);
+  }
+
+  Serial.println();
+
+  if (WiFi.status() == WL_CONNECTED) {
+    Serial.println("[RESULT] Wi-Fi connection PASSED.");
+    printWiFiStatus();
+    return true;
+  }
+
+  Serial.println("[RESULT] Wi-Fi connection FAILED.");
+  Serial.println("Check:");
+  Serial.println("- Wi-Fi name and password");
+  Serial.println("- 2.4 GHz Wi-Fi availability");
+  Serial.println("- board is close enough to the router");
+  Serial.println("- phone hotspot is allowed to accept new devices");
+  printWiFiStatus();
+  return false;
+}
