@@ -1,6 +1,6 @@
-from backend.app.database import get_db
-from backend.app.models import Traffic
-from backend.app.schemas import TrafficCreate
+from database import get_db
+from models import Traffic
+from schemas import TrafficCreate
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
