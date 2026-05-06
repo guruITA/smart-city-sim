@@ -52,3 +52,26 @@ const char* BACKEND_URL = "http://httpbin.org/post";
 
 const unsigned long WIFI_CONNECT_TIMEOUT = 20000;
 const unsigned long POST_INTERVAL = 15000;
+
+// ============================================================
+// Simulated traffic states for backend-message testing
+// ============================================================
+
+struct SimulatedTrafficMessage {
+  const char* phase;
+  const char* interpretedState;
+  bool valid;
+};
+
+SimulatedTrafficMessage testMessages[] = {
+  { "ROAD12_GREEN",  "no_vehicle",      true  },
+  { "ROAD34_GREEN",  "waiting_vehicle", true  },
+  { "ROAD12_GREEN",  "passing_vehicle", true  },
+  { "ROAD12_YELLOW", "unclear_input",   false }
+};
+
+const int NUMBER_OF_TEST_MESSAGES = sizeof(testMessages) / sizeof(testMessages[0]);
+
+int currentMessageIndex = 0;
+unsigned long lastPostTime = 0;
+unsigned long messageCounter = 0;
