@@ -103,11 +103,11 @@ Amsterdam targets emission-free traffic in the city center by 2030. Reducing unn
 **Waar (Where)**
 Amsterdam inner city, specifically residential neighborhoods with high parking demand and limited supply. For this proof of concept: a miniature city tile with 3 parking spots monitored by ultrasonic sensors.
 
-#### Hoofdvraag (main research question)
+#### Main research question
 
 How can real-time parking occupancy data reduce unnecessary search traffic in urban residential areas?
 
-#### Deelvragen (sub-questions)
+#### Sub-questions
 
 1. How much urban traffic consists of cars searching for parking, and what is the environmental impact?
 2. What sensor data is needed to determine whether a parking spot is occupied in real time?
@@ -116,9 +116,9 @@ How can real-time parking occupancy data reduce unnecessary search traffic in ur
 
 #### Methodology
 
-For this sprint, I focused on deelvragen 2 and 3 through literature research and prototyping.
+For this sprint, I focused on sub-questions 2 and 3 through literature research and prototyping.
 
-**Deelvraag 2 — What sensor data is needed?**
+**Sub-question 2 — What sensor data is needed?**
 I researched how parking occupancy is detected in existing smart parking systems. The most common approaches are:
 - Ultrasonic sensors (distance measurement, detects object above/below threshold)
 - Magnetometer sensors (detects metal mass of a vehicle)
@@ -126,7 +126,7 @@ I researched how parking occupancy is detected in existing smart parking systems
 
 For our proof of concept, ultrasonic (HC-SR04) was selected because it is cheap, works with ESP32 GPIO, and gives a clear binary signal: distance < threshold means occupied. The threshold of 10 cm was determined through physical testing with a toy car on the miniature tile.
 
-**Deelvraag 3 — How should data be collected and served?**
+**Sub-question 3 — How should data be collected and served?**
 I analyzed the communication flow: ESP32 reads sensor → connects to WiFi → sends HTTP POST with JSON → backend validates and stores → dashboard reads via HTTP GET. This is the same pattern as a standard web application, with a microcontroller as the client instead of a browser.
 
 I analyzed each team member's sensor setup to determine whether a single API design could serve all tiles:
@@ -139,7 +139,7 @@ I analyzed each team member's sensor setup to determine whether a single API des
 
 #### Limitations
 
-- Deelvraag 1 relies on secondary sources (Shoup, 2017). I did not collect primary data on Amsterdam parking search traffic.
+- Sub-question 1 relies on secondary sources (Shoup, 2017). I did not collect primary data on Amsterdam parking search traffic.
 - The proof of concept uses 3 parking spots on a miniature model. Real-world deployment would require different sensor types and higher volumes.
 - The analysis of team members' code is a snapshot from Sprint 1. Their progress changes each sprint.
 

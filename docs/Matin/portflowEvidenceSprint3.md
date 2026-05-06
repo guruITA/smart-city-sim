@@ -59,14 +59,14 @@ This builds on the 6W problem analysis from Sprint 1 (see portflowEvidenceSprint
 
 Mats pointed out that my Sprint 1 analysis addresses the technical "how" but not the human "why does it matter to residents". In Sprint 3 I refined the questions:
 
-- Original deelvraag 1: "How much urban traffic consists of parking search?" → Still answered by Shoup (2017): up to 30% in busy areas.
+- Original sub-question 1: "How much urban traffic consists of parking search?" → Still answered by Shoup (2017): up to 30% in busy areas.
 - New question: "Who benefits from real-time parking data, and how would they access it?" → Residents who experience noise/pollution benefit indirectly. Drivers benefit directly. A dashboard is one access method but a phone notification would be more practical. For this PoC, the dashboard proves the concept.
 - New question: "Does adding more sensor types (speed camera, traffic light) to the same backend strengthen the case for a city-wide data platform?" → Yes. The speed camera shares infrastructure and proves the backend is not a single-purpose parking tool.
 
-**Deelvragen addressed this sprint**
+**Sub-questions addressed this sprint**
 
-- Deelvraag 3 (Sprint 1): "How should data be collected, stored, and served?" → Extended with the speed camera API. The answer is now: shared backend with tile-specific endpoints when data has structure (speed, direction, violation flag), generic endpoint when data is a simple value.
-- Deelvraag 4 (Sprint 1): "What infrastructure for reliable detection?" → Answered by the Pi deployment. Raspberry Pi on HvA network, Docker with restart policy, port 80, SSH for remote management.
+- Sub-question 3 (Sprint 1): "How should data be collected, stored, and served?" → Extended with the speed camera API. The answer is now: shared backend with tile-specific endpoints when data has structure (speed, direction, violation flag), generic endpoint when data is a simple value.
+- Sub-question 4 (Sprint 1): "What infrastructure for reliable detection?" → Answered by the Pi deployment. Raspberry Pi on HvA network, Docker with restart policy, port 80, SSH for remote management.
 
 **Cross-tile scalability analysis**
 
