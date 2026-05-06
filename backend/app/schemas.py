@@ -31,7 +31,6 @@ class ReadingResponse(BaseModel):
 class ParkingSpotResponse(BaseModel):
     spot_number: int
     is_occupied: bool
-    distance_cm: float
     updated_at: datetime
 
     model_config = {"from_attributes": True}
