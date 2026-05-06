@@ -1,181 +1,248 @@
 # Realise — Speed camera API implementation and production deployment
 
+| | |
+|---|---|
+| **Author** | Matin Khajehfard |
+| **Date** | May 2026 |
+| **Version** | 1.0 |
+| **Classification** | Internal |
+| **Client** | City Sim Learning Group — HvA Smart Cities |
+| **Company** | The Embedded Alliance |
+
+---
+
+## Table of Contents
+
+1. [Introduction](#introduction)
+2. [Chapter 1 — Speed camera API implementation](#chapter-1--speed-camera-api-implementation)
+3. [Chapter 2 — Port 80 production deployment](#chapter-2--port-80-production-deployment)
+4. [Chapter 3 — Problem statement and Portflow restructuring](#chapter-3--problem-statement-and-portflow-restructuring)
+5. [Conclusion](#conclusion)
+6. [Recommendation](#recommendation)
+7. [References](#references)
+8. [Appendix](#appendix)
+
+---
+
 ## Introduction
 
-This is the realise deliverable for Sprint 3 Learning Goal 1. It documents what I built, when I built it, and where the code lives. Sprint 3 had three major deliveries: the speed camera API, the port 80 production deployment, and the problem statement with Portflow restructuring.
+This document is the realise deliverable for Sprint 3, Learning Goal 1. It records what was built, when it was built, and which commits contain the work. Sprint 3 had three deliveries: the speed camera API, the port 80 production deployment, and the problem statement with Portflow restructuring.
 
-## Speed camera API (commit 3f6b3e5, April 23)
+### Target audience
 
-On April 23 I read Gurpreet's `speed_camera_s3.ino` and built the full speed camera backend in one session.
+This document is written for assessors who need to verify what was delivered and where the code lives, and for team members who need to understand the current state of the production system.
 
-### Files created or changed
+### Main question
 
-**backend/app/models.py** — Added `SpeedReading` model:
+What was built and deployed in Sprint 3, and what is the current state of the production system?
 
-```python
-class SpeedReading(Base):
-    __tablename__ = "speed_readings"
+### Sub-questions
 
-    id = Column(Integer, primary_key=True, index=True)
-    speed_kmh = Column(Float, nullable=False)
-    direction = Column(String(10), nullable=False, default="1->2")
-    is_violation = Column(Boolean, default=False)
-    speed_limit_kmh = Column(Float, default=1.0)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-```
+1. How was the speed camera API implemented, and what files were created or changed?
+2. How was the port 80 production deployment completed?
+3. What documentation and evidence was created to address the Portflow gap?
+
+---
+
+## Chapter 1 — Speed camera API implementation
+
+### Context
+
+On April 23, I read through Gurpreet's `speed_camera_s3.ino` and built the full speed camera backend in one session. Commit: `3f6b3e5`.
+
+### Method
+
+I studied the firmware output, created the SQLAlchemy model, wrote Pydantic schemas, built a FastAPI router with 5 endpoints, and added a dashboard panel. I tested with curl and the Swagger UI.
+
+### What was built
+
+**backend/app/models.py** — Added `SpeedReading` model with 5 columns (speed_kmh, direction, is_violation, speed_limit_kmh, created_at).
 
 **backend/app/schemas.py** — Added 3 Pydantic schemas:
 
-- `SpeedReadingCreate` — request body with `speed_kmh`, `direction`, `is_violation`, `speed_limit_kmh`
-- `SpeedReadingResponse` — response with all fields plus `id` and `created_at`
-- `SpeedCameraStatsResponse` — aggregated stats: `total_readings`, `total_violations`, `average_speed_kmh`, `max_speed_kmh`, `violation_rate_percent`
+- `SpeedReadingCreate` — request body for POST
+- `SpeedReadingResponse` — response with all fields plus id and created_at
+- `SpeedCameraStatsResponse` — aggregated stats
 
 **backend/app/routers/speed_camera.py** — New router with 5 endpoints:
 
-- `POST /` — Store a reading. Uses `db.add()` + `db.commit()`.
-- `GET /` — Recent readings with `?limit=50`. Uses `order_by(desc(created_at)).limit()`.
-- `GET /violations` — Filtered to `is_violation == True`.
-- `GET /latest` — Single most recent reading using `.first()`.
-- `GET /stats` — SQL aggregation:
+- `POST /` — store a reading
+- `GET /` — recent readings with `?limit=50`
+- `GET /violations` — filtered to violations only
+- `GET /latest` — single most recent reading
+- `GET /stats` — SQL aggregation (count, avg, max, violation rate)
 
-```python
-total = db.query(func.count(SpeedReading.id)).scalar()
-violations = db.query(func.count(SpeedReading.id)).filter(
-    SpeedReading.is_violation == True
-).scalar()
-avg_speed = db.query(func.avg(SpeedReading.speed_kmh)).scalar()
-max_speed = db.query(func.max(SpeedReading.speed_kmh)).scalar()
-```
+**backend/app/main.py** — Registered the speed camera router at `/api/v1/speedcamera`.
 
-**backend/app/main.py** — Added router registration:
-
-```python
-from routers import speed_camera
-app.include_router(speed_camera.router, prefix="/api/v1/speedcamera", tags=["Speed Camera"])
-```
-
-**backend/app/static/index.html** — Added 5th dashboard panel with:
-
-- Stats row showing total, violations, avg speed, max speed
-- Scrollable list of recent readings
-- Violation highlighting in red
-- Orange accent color (#f97316)
-- Independent 2-second refresh cycle
+**backend/app/static/index.html** — Added 5th dashboard panel with orange accent, stats row, scrollable list, and violation highlighting.
 
 ### Testing
 
-I tested with curl:
-
 ```bash
-# Store a reading
 curl -X POST http://localhost:8000/api/v1/speedcamera/ \
   -H "Content-Type: application/json" \
   -d '{"speed_kmh": 2.4, "direction": "1->2", "is_violation": true, "speed_limit_kmh": 1.0}'
 
-# Get stats
 curl http://localhost:8000/api/v1/speedcamera/stats
-
-# Get violations only
 curl http://localhost:8000/api/v1/speedcamera/violations
 ```
 
-All endpoints responded correctly. The Swagger docs at `/docs` show the speed camera endpoints with "Try it out" buttons.
+All endpoints responded correctly. Swagger docs show the endpoints with "Try it out" buttons.
 
 ### What I should have done differently
 
-I committed the speed camera API together with documentation updates in one commit (`3f6b3e5`). That should have been separate commits: one for the API code, one for the docs. It makes the git history harder to review. I noticed this too late.
+I committed the API code together with documentation updates in one commit (`3f6b3e5`). That should have been two separate commits. It makes git history harder to review.
 
-## Port 80 fix (commit 42d99bd, May 4)
+### Sub-conclusion
 
-This was carry-over from Sprint 2. The actual change took about 30 minutes. The delay was 6 weeks of procrastination.
+The speed camera API is fully implemented and tested. The backend now serves 5 router groups with 20+ endpoints. Gurpreet only needs to add one HTTP POST call in his firmware to connect.
 
-### Files changed
+---
 
-**backend/docker-compose.yml** — Changed port mapping:
+## Chapter 2 — Port 80 production deployment
 
-```yaml
-# Before
-ports:
-  - "8000:8000"
+### Context
 
-# After
-ports:
-  - "80:8000"
-```
+This was carry-over from Sprint 2. My Sprint 2 learning goal 3 was "expose on port 80". I scored it as "not achieved". The actual change took about 30 minutes on May 4. The delay was 6 weeks. Commit: `42d99bd`.
 
-The container still runs uvicorn on port 8000 internally. The host maps port 80 to it.
+### Method
 
-**backend/deploy.sh** — Updated health check and success message:
+I changed the Docker port mapping, updated the deploy script, moved the dashboard to the root URL, and deployed on the Pi via SSH.
 
-- Health check URL changed from `http://localhost:8000/health` to `http://localhost/health`
-- Success message prints `http://<ip>/` instead of `http://<ip>:8000/dashboard`
+### What was changed
 
-**backend/app/main.py** — Moved dashboard from `/dashboard` to `/`:
+**backend/docker-compose.yml** — Port mapping from `"8000:8000"` to `"80:8000"`. The container still runs on 8000 internally.
 
-The dashboard is now served at the root URL. Opening `http://145.92.8.137/` shows the City Sim Dashboard immediately.
+**backend/deploy.sh** — Health check URL changed to port 80. Success message updated.
 
-### Deployment
+**backend/app/main.py** — Dashboard moved from `/dashboard` to `/`. Opening `http://145.92.8.137/` shows the City Sim Dashboard immediately.
 
-Deployed on the Pi via SSH on May 4. Docker pulled the new images, rebuilt, and started on port 80. Verified by opening the dashboard in a browser from a different machine on the HvA network.
+### Deployment verification
 
-## Problem statement (commit dbb1bc8, May 4)
+Deployed via SSH on May 4. Opened `http://145.92.8.137/` from a different machine on HvA network. Dashboard loaded correctly. API docs available at `/docs`. Health check at `/health` returns 200.
 
-**docs/Matin/problemStatement.md** — New file. Frames the parking system inside the Amsterdam parking search traffic problem:
+### Sub-conclusion
 
-- 30% of inner-city traffic is drivers circling for parking (Shoup, 2017)
-- Amsterdam targets emission-free traffic by 2030
-- PoC scope: 3 miniature parking spots, not citywide deployment
-- Connection to all 4 learning outcomes
+The Pi is live at port 80. Docker containers auto-restart on reboot. SSH works for remote management. This closes the Sprint 2 carry-over. The change itself was trivial. The delay was a prioritization failure, not a technical one.
 
-This was the most important file of Sprint 3 from the assessor perspective. Without this file, Mats would have no reason to change the 1/4 score.
+---
 
-## Portflow restructuring (commits faf732d, 483abbb, f8fc796, May 5)
+## Chapter 3 — Problem statement and Portflow restructuring
 
-**docs/Matin/learningJournalSprint0.md** — Sprint 0 STARRT reflection about technology selection.
+### Context
 
-**docs/Matin/learningJournal/personalLearningGoalsAllSprints.md** — SMART learning goals for all 3 sprints. Honest about Sprint 2 failures.
+After Mats' 1/4 score in Sprint 2, I needed to create a problem statement and restructure all Portflow evidence. This is catch-up work that should have existed from Sprint 1.
 
-**docs/Matin/learningJournal/performanceAnalysisAllSprints.md** — Performance metrics per DLO criteria with real DLO data and screenshots.
+### Method
 
-**docs/Matin/portflowMasterSheet.md** — Single copy-paste reference document for all 12 Portflow evidence items with commit-hash permalinks.
+I researched parking search traffic statistics, wrote a problem statement, then rewrote all 12 Portflow evidence items with problem-centered descriptions. I also created learning journal documents.
 
-## What is running on the Pi right now
+### What was created
 
-As of May 6, 2026:
+**docs/Matin/problemStatement.md** (commit `dbb1bc8`, May 4)
+
+Frames the parking system in the Amsterdam parking search traffic problem. Key claim: up to 30% of inner-city traffic in busy areas is drivers circling for parking (Shoup, 2017). Amsterdam targets emission-free traffic by 2030. Scope limited to PoC with 3 miniature spots.
+
+**docs/Matin/learningJournalSprint0.md** (commit `faf732d`, May 5)
+
+Sprint 0 STARRT reflection about technology selection (FastAPI over Spring Boot).
+
+**docs/Matin/learningJournal/personalLearningGoalsAllSprints.md** (commit `483abbb`, May 5)
+
+SMART learning goals for all 3 sprints. Honest about Sprint 2 failures: "I did not write these learning goals at the start of the sprint."
+
+**docs/Matin/learningJournal/performanceAnalysisAllSprints.md** (commit `483abbb`, May 5)
+
+Performance metrics per DLO criteria with real data and screenshots. Includes correction: Sprint 2 MR reviews were 3, not 0.
+
+**docs/Matin/portflowMasterSheet.md** (commit `f8fc796`, May 5)
+
+Single copy-paste reference for all 12 Portflow evidence items with commit-hash permalinks.
+
+### Sub-conclusion
+
+All required documentation is committed and merged to main. The problem statement connects the technical work to a real city problem. The learning journal documents are honest about failures. This closes the evidence gap that caused the 1/4 score.
+
+---
+
+## Conclusion
+
+### Sub-conclusion 1 — Speed camera API
+
+Fully implemented with 5 endpoints, dedicated table, and dashboard panel. Commit `3f6b3e5`. Ready for Gurpreet to connect.
+
+### Sub-conclusion 2 — Port 80 deployment
+
+Pi live at `http://145.92.8.137/`. Docker auto-restart, SSH access, dashboard on root. Commit `42d99bd`. Sprint 2 carry-over closed.
+
+### Sub-conclusion 3 — Documentation
+
+Problem statement, learning journal, and Portflow restructuring all committed and merged. Commits `dbb1bc8`, `faf732d`, `483abbb`, `f8fc796`.
+
+### Answer to the main question
+
+Sprint 3 delivered: a speed camera API with 5 endpoints and a dashboard panel, a production deployment on port 80, and a complete documentation restructuring. The Pi now serves 5 router groups with 20+ endpoints. The system state:
 
 | Component | Status |
 |-----------|--------|
-| PostgreSQL 16 | Running in Docker, port 5432 internal |
-| FastAPI application | Running in Docker, port 8000 internal |
-| Host port mapping | 80 -> 8000 |
-| Dashboard | Served at root URL `/` |
-| Auto-restart | `restart: always` policy |
-| SSH access | Configured for remote management |
+| Database tables | 5 (sensor_readings, parking_spots, train, barrier, speed_readings) |
+| Router groups | 5 (readings, parking, railroad train, railroad barrier, speed camera) |
+| Dashboard panels | 5 |
+| Host port | 80 |
+| Auto-restart | Yes |
+| SSH access | Yes |
 
-**Database tables (5):**
+---
 
-- `sensor_readings` — generic history for all tiles
-- `parking_spots` — real-time parking state
-- `train` — train detection with sensor timestamps
-- `barrier` — barrier control with input mode
-- `speed_readings` — speed camera measurements
+## Recommendation
 
-**Router groups (5):**
+1. Use smaller commits in Sprint 4. One commit per feature, one per documentation update.
+2. Do not carry over small tasks. If something takes less than an hour and you are already touching the same files, just do it.
+3. Start time tracking in DLO. Three sprints without formal time logging is a pattern that needs to break.
+4. Deploy updates more frequently instead of batching everything at the end of the sprint.
 
-- `/api/v1/readings` — generic sensor endpoints
-- `/api/v1/parking` — parking-specific endpoints
-- `/api/v1/railroad/train` — train detection endpoints
-- `/api/v1/railroad/barrier` — barrier control endpoints
-- `/api/v1/speedcamera` — speed camera endpoints
+---
 
-**Dashboard panels (5):**
+## References
 
-- Parking (green/red occupancy)
-- Streetlight (amber light level)
-- Traffic Light (state display)
-- Railroad Crossing (train approach animation)
-- Speed Camera (orange, stats + violation list)
+- Shoup, D. (2017). *The High Cost of Free Parking*. Routledge.
+- FastAPI documentation. https://fastapi.tiangolo.com/
+- Docker Compose documentation. https://docs.docker.com/compose/
+- Gurpreet Singh. (2026). `speed_camera_s3.ino`. City Sim Learning Group repository.
 
-**Total endpoints: 20+**
+---
 
-All accessible at `http://145.92.8.137/`. API docs at `http://145.92.8.137/docs`.
+## Appendix
+
+### A. Commit log for Sprint 3
+
+| Commit | Date | Description |
+|--------|------|-------------|
+| `3f6b3e5` | Apr 23 | Speed camera API, models, schemas, dashboard panel |
+| `dbb1bc8` | May 4 | Problem statement |
+| `42d99bd` | May 4 | Port 80 fix, dashboard on root |
+| `faf732d` | May 5 | Sprint 0 STARRT reflection |
+| `483abbb` | May 5 | Learning goals + performance analysis |
+| `f8fc796` | May 5 | portflowMasterSheet.md |
+
+### B. Current API endpoint overview
+
+| Method | Path | Description |
+|--------|------|-------------|
+| POST | /api/v1/readings | Store generic sensor reading |
+| GET | /api/v1/readings | Get recent readings |
+| GET | /api/v1/readings/latest | Get latest reading |
+| POST | /api/v1/parking/update/{spot} | Update parking spot |
+| GET | /api/v1/parking/status | Get parking status |
+| GET | /api/v1/parking/spots | Get all spots |
+| GET | /api/v1/parking/spots/{n} | Get single spot |
+| POST | /api/v1/railroad/train | Register train approach |
+| PATCH | /api/v1/railroad/train/{id} | Update train with second sensor |
+| GET | /api/v1/railroad/train/latest | Get latest train |
+| POST | /api/v1/railroad/barrier | Set barrier state |
+| GET | /api/v1/railroad/barrier/latest | Get barrier state |
+| POST | /api/v1/speedcamera/ | Store speed reading |
+| GET | /api/v1/speedcamera/ | Get recent readings |
+| GET | /api/v1/speedcamera/violations | Get violations |
+| GET | /api/v1/speedcamera/latest | Get latest reading |
+| GET | /api/v1/speedcamera/stats | Get aggregated stats |
