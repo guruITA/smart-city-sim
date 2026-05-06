@@ -100,3 +100,17 @@ class BarrierCreate(BaseModel):
     input_mode: str = Field(..., example="manual", description="Type of input (manual or train)")
     is_closed: bool = Field(..., example=True, description="Barrier closing or opening")
     train_id: Optional[int] = Field(None, example=123, description="Associated train ID (if input_mode is train)")
+
+# --- Traffic Light ---
+
+class TrafficEventResponse(BaseModel):
+    id: int
+    sensor_id: str
+    direction: str
+    phase: str
+    interpreted_state: str
+    timestamp_ms: int
+    valid: bool
+    created_at: datetime
+
+    model_config = {"from_attributes": True}
