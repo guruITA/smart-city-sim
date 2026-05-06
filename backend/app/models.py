@@ -45,6 +45,22 @@ class Train(Base):
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
 
+class SpeedReading(Base):
+    """
+    Speed camera readings from Gurpreet's tile.
+    Stores each speed measurement with violation flag.
+    """
+
+    __tablename__ = "speed_readings"
+
+    id = Column(Integer, primary_key=True, index=True)
+    speed_kmh = Column(Float, nullable=False)  # measured speed in km/h
+    direction = Column(String(10), nullable=False, default="1->2")  # sensor trigger order
+    is_violation = Column(Boolean, default=False)  # exceeded speed limit
+    speed_limit_kmh = Column(Float, default=1.0)  # limit at time of measurement
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+
 class Barrier(Base):
     __tablename__ = "barrier"
     __table_args__ = (

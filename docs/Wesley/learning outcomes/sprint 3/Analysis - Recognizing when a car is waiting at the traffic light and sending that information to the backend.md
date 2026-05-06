@@ -1,5 +1,39 @@
 # Analysis - Recognizing when a car is waiting at the traffic light and sending that information to the backend
 
+## Summary
+
+This analysis shows that the main challenge in this sprint is not only detecting a vehicle, but correctly interpreting what that detection means in the context of the traffic light. The project has already moved beyond a single simple traffic light and now uses a coordinated four-way crossing with safe startup, fixed phase order, all-red transitions, no conflicting green states, and a non-blocking millis() based controller. Because that foundation is already working, the next step is to make the system respond to traffic input instead of only following a fixed cycle.
+
+For this learning goal, the system must determine whether a car is actually waiting at the traffic light and send that interpreted result to the backend. A simple raw sensor trigger is not enough, because the same signal could represent either a waiting vehicle or a passing vehicle. In this analysis, the relevant interpreted states are defined as no vehicle, waiting vehicle, passing vehicle, and unclear input. A stable active signal during red is treated as a waiting car, while a short signal during green is treated as passing traffic.
+
+The chosen prototype direction uses the KY-021 as a simplified sensor so the focus remains on the logic of interpretation rather than on complex hardware. The backend should receive a meaningful message that includes the sensor, the current phase, the interpreted state, the time of change, and whether the reading was accepted as valid. The most important requirement is that sensor logic must never break the safe timing and safe phase transitions of the traffic-light controller. A correct result for this sprint is therefore a prototype that can detect presence, classify it meaningfully, send that interpretation to the backend, and remain safe when input is missing, unstable, or unclear.
+
+## Table of Contents
+
+- [Introduction](#introduction)
+- [Current Situation](#current-situation)
+- [Problem Definition](#problem-definition)
+- [What the System Should Do in Practice](#what-the-system-should-do-in-practice)
+- [Interpretation Rules Used in This Analysis](#interpretation-rules-used-in-this-analysis)
+- [Why a Simple Sensor Trigger Is Not Enough](#why-a-simple-sensor-trigger-is-not-enough)
+- [Chosen Prototype Direction](#chosen-prototype-direction)
+- [What Information Must Be Sent to the Backend](#what-information-must-be-sent-to-the-backend)
+- [Important Risks](#important-risks)
+- [Current Limits](#current-limits)
+- [Acceptance Criteria for This Step](#acceptance-criteria-for-this-step)
+  - [AC1. The sensor detects vehicle presence at the stop line correctly](#ac1-the-sensor-detects-vehicle-presence-at-the-stop-line-correctly)
+  - [AC2. A stable detection during red is interpreted as a waiting car](#ac2-a-stable-detection-during-red-is-interpreted-as-a-waiting-car)
+  - [AC3. A short detection during green is interpreted as passing traffic and not as a waiting car](#ac3-a-short-detection-during-green-is-interpreted-as-passing-traffic-and-not-as-a-waiting-car)
+  - [AC4. The interpreted traffic state is sent correctly to the backend](#ac4-the-interpreted-traffic-state-is-sent-correctly-to-the-backend)
+  - [AC5. Invalid or unstable input does not create unsafe traffic-light behaviour](#ac5-invalid-or-unstable-input-does-not-create-unsafe-traffic-light-behaviour)
+  - [AC6. The system stays within the safe timing limits of the project](#ac6-the-system-stays-within-the-safe-timing-limits-of-the-project)
+- [What Counts as a Correct Result in This Step](#what-counts-as-a-correct-result-in-this-step)
+- [Conclusion](#conclusion)
+- [References](#references)
+
+
+
+
 ## Introduction
 
 At the start of this sprint, I was no longer at the stage of only one simple traffic light. Before this learning goal, I had already completed the first physical traffic-light prototype and then expanded that prototype in Sprint 2 into a coordinated four-way crossing with multiple traffic lights that work together safely and clearly. The first version already proved the basic traffic-light logic, safe startup in red, fixed state order, stable timing, and repeated cycling on real hardware (Wesley, 2026e).  

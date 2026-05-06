@@ -66,6 +66,36 @@ class BarrierResponse(BaseModel):
     created_at: datetime
 
 
+# --- Speed Camera ---
+
+class SpeedReadingCreate(BaseModel):
+    """Schema for POST /api/v1/speedcamera — sent by ESP32 speed camera."""
+
+    speed_kmh: float = Field(..., example=2.4, description="Measured speed in km/h")
+    direction: str = Field(default="1->2", example="1->2", description="Sensor trigger direction")
+    is_violation: bool = Field(default=False, example=True, description="Whether speed limit was exceeded")
+    speed_limit_kmh: float = Field(default=1.0, example=1.0, description="Speed limit at time of measurement")
+
+
+class SpeedReadingResponse(BaseModel):
+    id: int
+    speed_kmh: float
+    direction: str
+    is_violation: bool
+    speed_limit_kmh: float
+    created_at: datetime
+
+    model_config = {"from_attributes": True}
+
+
+class SpeedCameraStatsResponse(BaseModel):
+    total_readings: int
+    total_violations: int
+    average_speed_kmh: float
+    max_speed_kmh: float
+    violation_rate_percent: float
+
+
 class BarrierCreate(BaseModel):
     input_mode: str = Field(..., example="manual", description="Type of input (manual or train)")
     is_closed: bool = Field(..., example=True, description="Barrier closing or opening")
