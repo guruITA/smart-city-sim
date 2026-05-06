@@ -103,6 +103,14 @@ class BarrierCreate(BaseModel):
 
 # --- Traffic Light ---
 
+class TrafficCreate(BaseModel):
+    sensorId: str
+    direction: str
+    phase: str
+    interpretedState: str
+    timestampMs: int
+    valid: bool
+
 class TrafficEventResponse(BaseModel):
     id: int
     sensor_id: str
