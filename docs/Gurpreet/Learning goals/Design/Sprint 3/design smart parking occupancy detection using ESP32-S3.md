@@ -2,7 +2,7 @@
 
 - **Author:** Gurpreet Singh  
 - **Date:** 21-04-2026  
-- **Version:** 1.0  
+- **Version:** 2.0  
 - **Classification:** Internal  
 - **Client:** Mayor Mats Otten  
 - **Company:** The Embedded Alliance  
@@ -154,8 +154,9 @@ The table shows where the main components can be ordered and what the estimated 
 | 1.3 inch OLED Display 128*64 pixels Wit - I2C |     1x | TinyTronics | [1.3 inch OLED Display 128*64 pixels Wit - I2C](https://www.tinytronics.nl/nl/displays/oled/1.3-inch-oled-display-128*64-pixels-wit-i2c)                                                                                         |          €14.00 |
 | Keyestudio Breadboard Voeding 5V en 3.3V - USB-C   |     1x | TinyTronics | [Keyestudio Breadboard Voeding 5V en 3.3V - USB-C](https://www.tinytronics.nl/nl/power/spanningsconverters/spanningsregelaars/keyestudio-breadboard-voeding-5v-and-3.3v-usb-c)                                            |           €3.25 |
 | Breadboard 830 points     |     2x | TinyTronics | [Breadboard 830 points](https://www.tinytronics.nl/nl/gereedschap-en-montage/prototyping-toebehoren/breadboards/breadboard-830-points)                                                           |           €6.00 |
-| Jumper wires male-female  | 1x set | TinyTronics | [Male-female jumper wires](https://www.tinytronics.nl/nl/kabels-en-connectoren/kabels-en-adapters/prototyping-draden/dupont-compatible-en-jumper/dupont-jumper-draad-male-female-10cm-10-draden) |           €0.50 |
-| Jumper wires male-male    | 1x set | TinyTronics | [Male-male jumper wires](https://www.tinytronics.nl/nl/kabels-en-connectoren/kabels-en-adapters/prototyping-draden/dupont-compatible-en-jumper/dupont-jumper-draad-male-male-10cm-10-draden)     |           €0.50 |
+| DuPont Jumper wire Male-Female 10cm 10 wires  | 1x set | TinyTronics | [DuPont Jumper wire Male-Female 10cm 10 wires](https://www.tinytronics.nl/nl/kabels-en-connectoren/kabels-en-adapters/prototyping-draden/dupont-compatible-en-jumper/dupont-jumper-draad-male-female-10cm-10-draden) |           €0.50 |
+| DuPont Jumper draad Male-Male 10cm 10 draden    | 1x set | TinyTronics | [
+DuPont Jumper draad Male-Male 10cm 10 draden](https://www.tinytronics.nl/nl/kabels-en-connectoren/kabels-en-adapters/prototyping-draden/dupont-compatible-en-jumper/dupont-jumper-draad-male-male-10cm-10-draden)     |           €0.50 |
 
 ### 5.4 Subconclusion
 
