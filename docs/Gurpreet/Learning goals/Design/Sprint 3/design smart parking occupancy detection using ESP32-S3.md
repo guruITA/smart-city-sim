@@ -110,7 +110,7 @@ Example:
 - Echo Sensor 3 = GPIO16
 - Echo Sensor 4 = GPIO17
 - OLED SDA = GPIO8
-- OLED SCL → GPIO9
+- OLED SCL = GPIO9
 
 This structure keeps the wiring readable and easier to troubleshoot.
 
