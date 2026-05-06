@@ -39,6 +39,7 @@ app.include_router(parking.router, prefix="/api/v1/parking", tags=["parking"])
 app.include_router(railroad_crossing_train.router, prefix="/api/v1/railroadcrossing/train", tags=["railroad crossing - train"])
 app.include_router(railroad_crossing_barrier.router, prefix="/api/v1/railroadcrossing/barrier", tags=["railroad crossing - barrier"])
 app.include_router(eink_display.router, prefix="/api/v1", tags=["eink display"])
+app.include_router(speed_camera.router, prefix="/api/v1/speedcamera", tags=["speed camera"])
 
 
 # Serve dashboard HTML at root
