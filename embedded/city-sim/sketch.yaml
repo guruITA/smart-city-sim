@@ -19,7 +19,7 @@ profiles:
       - Adafruit BusIO (1.17.4)
       - GxEPD2 (1.6.9)
     programmer: ""
-    port: /dev/ttyUSB0
+    port: COM19
     port_config:
       baudrate: "115200"
       lineEnding: "\r\n"
