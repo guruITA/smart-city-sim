@@ -103,3 +103,31 @@ void printHeader() {
   Serial.println("============================================================");
   Serial.println();
 }
+
+void printWiFiStatus() {
+  Serial.println();
+  Serial.println("---------------- WIFI STATUS ----------------");
+  Serial.print("SSID: ");
+  Serial.println(WIFI_SSID);
+
+  Serial.print("WiFi.status(): ");
+  Serial.println(WiFi.status());
+
+  if (WiFi.status() == WL_CONNECTED) {
+    Serial.println("Connection result: CONNECTED");
+    Serial.print("Local IP: ");
+    Serial.println(WiFi.localIP());
+    Serial.print("Gateway IP: ");
+    Serial.println(WiFi.gatewayIP());
+    Serial.print("DNS IP: ");
+    Serial.println(WiFi.dnsIP());
+    Serial.print("Signal strength RSSI: ");
+    Serial.print(WiFi.RSSI());
+    Serial.println(" dBm");
+  } else {
+    Serial.println("Connection result: NOT CONNECTED");
+  }
+
+  Serial.println("---------------------------------------------");
+  Serial.println();
+}
