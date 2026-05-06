@@ -346,3 +346,9 @@ By using a backend-driven approach and polling mechanism, the system avoids hard
 The result is a reusable system that integrates smoothly into the smart city simulation and can be extended in future iterations.
 
 ---
+
+## 15. Previous work
+
+This design document is based on:
+
+- [Analysis Document](https://gitlab.fdmci.hva.nl/studio/smart-cities/projecten/2025-2026-semester-2/city-sim-learning-group/city-the-embedded-alliance-city-sim-learning-group/-/blob/d46fe2c84d66a400dbcb0a60cfd07e5d34edf603/docs/Thijmen/Sprint%203/Analysis.md)
