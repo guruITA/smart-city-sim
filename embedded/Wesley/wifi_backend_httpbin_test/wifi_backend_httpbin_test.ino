@@ -33,3 +33,15 @@
 #include <HTTPClient.h>
 #include "secrets.h"
 
+// ============================================================
+// Wi-Fi settings
+// ============================================================
+
+// Replace these with your Wi-Fi name and password.
+//const char* WIFI_SSID = "Galaxy S25+ D04F";
+//const char* WIFI_PASSWORD = "p9muu22rbytfe28";
+
+// Public echo endpoint used while you do not have your own backend yet.
+// Later, replace this with something like:
+// const char* BACKEND_URL = "https://your-backend-domain.com/api/traffic-state";
+const char* BACKEND_URL = "http://httpbin.org/post";
