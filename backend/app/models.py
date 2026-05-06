@@ -30,7 +30,6 @@ class ParkingSpot(Base):
     id = Column(Integer, primary_key=True, index=True)
     spot_number = Column(Integer, unique=True, nullable=False)  # 1, 2, 3, ...
     is_occupied = Column(Boolean, default=False)
-    distance_cm = Column(Float, default=0.0)  # last measured distance
     updated_at = Column(DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
 

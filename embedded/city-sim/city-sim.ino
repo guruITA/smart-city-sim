@@ -4,17 +4,16 @@
 #include "TrainPredictionSignal.h"
 #include "EinkDisplay.h"
 #include "SpeedCamera.h"
-#include "SpeedCamera.h"
 #include "Parking.h"
 
 #define builtin LED_BUILTIN
 
 //  WiFi details
-const char* WIFI_SSID = "ESP32CAM_CAPTURE";
-const char* WIFI_PASSWORD = "12345678";
+const char* WIFI_SSID = "";
+const char* WIFI_PASSWORD = "";
 
 // backend URL
-const String API_BASE_URL = "";
+const String API_BASE_URL = "http://:8000";
 
 StreetLight lamp(
   Config::Streetlight::LDR_PIN,
@@ -82,13 +81,10 @@ void setup() {
   }
 
   NetworkController::setApiBaseUrl(API_BASE_URL);
-  pinMode(7, INPUT);
-  Serial.print("[eink] BUSY pin state: ");
-  Serial.println(digitalRead(7));
   lamp.begin();
   eink.begin();
+  eink.startSyncTask();
   trainSignal.begin();
-  speedCamera.begin();
   speedCamera.begin();
   parking.begin();
 }
@@ -97,6 +93,5 @@ void loop() {
   lamp.update();
   trainSignal.update();
   speedCamera.update();
-  speedCamera.update();
   parking.update();
-}
+  }
