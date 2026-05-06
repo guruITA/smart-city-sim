@@ -45,3 +45,10 @@
 // Later, replace this with something like:
 // const char* BACKEND_URL = "https://your-backend-domain.com/api/traffic-state";
 const char* BACKEND_URL = "http://httpbin.org/post";
+
+// ============================================================
+// Test timing
+// ============================================================
+
+const unsigned long WIFI_CONNECT_TIMEOUT = 20000;
+const unsigned long POST_INTERVAL = 15000;
