@@ -75,3 +75,31 @@ const int NUMBER_OF_TEST_MESSAGES = sizeof(testMessages) / sizeof(testMessages[0
 int currentMessageIndex = 0;
 unsigned long lastPostTime = 0;
 unsigned long messageCounter = 0;
+
+// ============================================================
+// Helper functions
+// ============================================================
+
+void printHeader() {
+  Serial.println();
+  Serial.println("============================================================");
+  Serial.println("WIFI + INTERNET + BACKEND MESSAGE TEST START");
+  Serial.println("============================================================");
+  Serial.println("Goal:");
+  Serial.println("- Connect the ESP32-S3 to Wi-Fi.");
+  Serial.println("- Send a backend-ready JSON message to a public test endpoint.");
+  Serial.println("- Receive the server response and check whether the message came back.");
+  Serial.println();
+  Serial.println("Test backend:");
+  Serial.println(BACKEND_URL);
+  Serial.println();
+  Serial.println("Testing steps shown in Serial Monitor:");
+  Serial.println("1. Wi-Fi connection");
+  Serial.println("2. Local IP address");
+  Serial.println("3. JSON payload creation");
+  Serial.println("4. HTTP POST request");
+  Serial.println("5. HTTP response code");
+  Serial.println("6. Response body check");
+  Serial.println("============================================================");
+  Serial.println();
+}
