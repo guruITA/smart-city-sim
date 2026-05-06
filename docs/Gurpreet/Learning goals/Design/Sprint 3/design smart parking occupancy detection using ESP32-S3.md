@@ -147,15 +147,17 @@ A Bill of Materials is created to support building, ordering, and replacement of
 
 The table shows where the main components can be ordered and what the estimated costs are.
 
-| Component                 | Amount | Supplier    | Link                                                                                                                                                                                             | Estimated price |
-| ------------------------- | -----: | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------: |
-| Espressif ESP32-S3-DevKitC-1-N16 - 16MB Flash  |     1x | TinyTronics  | [Espressif ESP32-S3-DevKitC-1-N16 - 16MB Flash](https://www.tinytronics.nl/en/espressif-esp32-s3-devkitc-1-n16-16mb-flash)                                                     |           €6.59 |
-| Ultrasone Sensor - HC-SR04 |     4x | TinyTronics | [HC-SR04 ultrasonic sensor](https://www.tinytronics.nl/nl/sensoren/afstand/ultrasonische-sensor-hc-sr04)                                                                                         |      €3 |
-| 1.3 inch OLED Display 128*64 pixels White - I2C |     1x | TinyTronics | [1.3 inch OLED Display 128*64 pixels White - I2C](https://www.tinytronics.nl/nl/displays/oled/1.3-inch-oled-display-128*64-pixels-wit-i2c)                                                                                         |          €14.00 |
-| Keyestudio Breadboard Voeding 5V en 3.3V - USB-C   |     1x | TinyTronics | [Keyestudio Breadboard Voeding 5V en 3.3V - USB-C](https://www.tinytronics.nl/nl/power/spanningsconverters/spanningsregelaars/keyestudio-breadboard-voeding-5v-and-3.3v-usb-c)                                            |           €3.25 |
-| Breadboard 830 points     |     2x | TinyTronics | [Breadboard 830 points](https://www.tinytronics.nl/nl/gereedschap-en-montage/prototyping-toebehoren/breadboards/breadboard-830-points)                                                           |           €6.00 |
-| DuPont Jumper wire Male-Female 10cm 10 wires  | 1x set | TinyTronics | [DuPont Jumper wire Male-Female 10cm 10 wires](https://www.tinytronics.nl/nl/kabels-en-connectoren/kabels-en-adapters/prototyping-draden/dupont-compatible-en-jumper/dupont-jumper-draad-male-female-10cm-10-draden) |           €0.50 |
-| DuPont Jumper draad Male-Male 10cm 10 draden    | 1x set | TinyTronics | [DuPont Jumper draad Male-Male 10cm 10 draden](https://www.tinytronics.nl/nl/kabels-en-connectoren/kabels-en-adapters/prototyping-draden/dupont-compatible-en-jumper/dupont-jumper-draad-male-male-10cm-10-draden)     |           €0.50 |
+| Component | Specification / purpose | Amount | Supplier | Estimated unit price | Estimated total |
+|---|---|---:|---|---:|---:|
+| [Espressif ESP32-S3-DevKitC-1-N16 – 16MB Flash](https://www.tinytronics.nl/en/espressif-esp32-s3-devkitc-1-n16-16mb-flash) | Main microcontroller used to control the sensors, process parking logic and drive the OLED display. | 1x | TinyTronics | €6.59 | €6.59 |
+| [HC-SR04 Ultrasonic Distance Sensor](https://www.tinytronics.nl/nl/sensoren/afstand/ultrasonische-sensor-hc-sr04) | Distance sensor used to detect whether a parking spot is occupied. One sensor is used per parking space. | 4x | TinyTronics | €3.00 | €12.00 |
+| [1.3 inch OLED Display 128×64 pixels White – I2C](https://www.tinytronics.nl/nl/displays/oled/1.3-inch-oled-display-128*64-pixels-wit-i2c) | Display used to show the status of the parking spaces and the number of free spaces. | 1x | TinyTronics | €14.00 | €14.00 |
+| [Keyestudio Breadboard Power Supply 5V and 3.3V – USB-C](https://www.tinytronics.nl/nl/power/spanningsconverters/spanningsregelaars/keyestudio-breadboard-voeding-5v-and-3.3v-usb-c) | External breadboard power supply used to provide stable 5V and 3.3V during prototyping. | 1x | TinyTronics | €3.25 | €3.25 |
+| [Breadboard 830 points](https://www.tinytronics.nl/nl/gereedschap-en-montage/prototyping-toebehoren/breadboards/breadboard-830-points) | Used for building and testing the prototype circuit without soldering. | 2x | TinyTronics | €3.00 | €6.00 |
+| [DuPont Jumper Wire Male-Female 10cm – 10 wires](https://www.tinytronics.nl/nl/kabels-en-connectoren/kabels-en-adapters/prototyping-draden/dupont-compatible-en-jumper/dupont-jumper-draad-male-female-10cm-10-draden) | Jumper wires used to connect sensor modules and display pins to the ESP32-S3 and breadboard. | 1x set | TinyTronics | €0.50 | €0.50 |
+| [DuPont Jumper Wire Male-Male 10cm – 10 wires](https://www.tinytronics.nl/nl/kabels-en-connectoren/kabels-en-adapters/prototyping-draden/dupont-compatible-en-jumper/dupont-jumper-draad-male-male-10cm-10-draden) | Jumper wires used for connections between the ESP32-S3, breadboard and power rails. | 1x set | TinyTronics | €0.50 | €0.50 |
+
+**Estimated total cost:** **€42.84**
 
 ### 5.4 Subconclusion
 
