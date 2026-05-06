@@ -7,7 +7,7 @@ from contextlib import asynccontextmanager
 
 from database import engine
 from models import Base
-from routers import readings, parking, railroad_crossing_train, railroad_crossing_barrier, speed_camera
+from routers import readings, parking, railroad_crossing_train, railroad_crossing_barrier, eink_display, speed_camera
 
 
 @asynccontextmanager
@@ -38,7 +38,7 @@ app.include_router(readings.router, prefix="/api/v1", tags=["readings"])
 app.include_router(parking.router, prefix="/api/v1/parking", tags=["parking"])
 app.include_router(railroad_crossing_train.router, prefix="/api/v1/railroadcrossing/train", tags=["railroad crossing - train"])
 app.include_router(railroad_crossing_barrier.router, prefix="/api/v1/railroadcrossing/barrier", tags=["railroad crossing - barrier"])
-app.include_router(speed_camera.router, prefix="/api/v1/speedcamera", tags=["speed camera"])
+app.include_router(eink_display.router, prefix="/api/v1", tags=["eink display"])
 
 
 # Serve dashboard HTML at root
