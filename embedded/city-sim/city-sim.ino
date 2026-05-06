@@ -73,7 +73,7 @@ void setup() {
     Serial.println("WiFi not connected, some network features will be skipped");
   }
 
-  NetworkController::setApiBaseUrl(API_BASE_URL);
+  NetworkController::setApiBaseUrl(Config::Network::API_BASE_URL);
   lamp.begin();
   eink.begin();
   eink.startSyncTask();
