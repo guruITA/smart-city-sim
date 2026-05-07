@@ -74,3 +74,16 @@ class Barrier(Base):
     input_mode = Column(String, default="manual")
     train_id = Column(Integer, nullable=True)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+class Traffic(Base):
+    
+    __tablename__ = "traffic"
+
+    id = Column(Integer, primary_key=True, index=True)
+    sensor_id = Column(String, nullable=False)
+    direction = Column(String(10), nullable=False)
+    phase = Column(String(20), nullable=False)
+    interpreted_state = Column(String(20), nullable=False)
+    timestamp_ms = Column(Integer, nullable=False)
+    valid = Column(Boolean, nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
