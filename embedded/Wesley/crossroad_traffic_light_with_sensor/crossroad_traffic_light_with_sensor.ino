@@ -83,3 +83,25 @@ const uint8_t TL4_GREEN_A  = 1;
 // ============================================================
 // Timing values
 // ============================================================
+
+const unsigned long ALL_RED_TIME = 1000;
+const unsigned long GREEN_TIME   = 5000;
+const unsigned long YELLOW_TIME  = 2000;
+
+// ============================================================
+// Phase constants
+// ============================================================
+
+const uint8_t PHASE_ALL_RED_1     = 0;
+const uint8_t PHASE_ROAD12_GREEN  = 1;
+const uint8_t PHASE_ROAD12_YELLOW = 2;
+const uint8_t PHASE_ALL_RED_2     = 3;
+const uint8_t PHASE_ROAD34_GREEN  = 4;
+const uint8_t PHASE_ROAD34_YELLOW = 5;
+
+// ============================================================
+// State variables
+// ============================================================
+
+uint8_t currentPhase = PHASE_ALL_RED_1;
+unsigned long lastPhaseChange = 0;
