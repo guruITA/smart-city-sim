@@ -257,3 +257,326 @@ bool connectToWiFi() {
   printWiFiStatus();
   return false;
 }
+
+// ============================================================
+// Traffic-light output functions
+// ============================================================
+
+void allRed() {
+  uint8_t a = 0;
+  uint8_t b = 0;
+
+  b |= bitMask(TL1_RED_B);
+  b |= bitMask(TL2_RED_B);
+
+  a |= bitMask(TL3_RED_A);
+  a |= bitMask(TL4_RED_A);
+
+  mcpWriteBoth(a, b);
+}
+
+void road12Green_road34Red() {
+  uint8_t a = 0;
+  uint8_t b = 0;
+
+  b |= bitMask(TL1_GREEN_B);
+  b |= bitMask(TL2_GREEN_B);
+
+  a |= bitMask(TL3_RED_A);
+  a |= bitMask(TL4_RED_A);
+
+  mcpWriteBoth(a, b);
+}
+
+void road12Yellow_road34Red() {
+  uint8_t a = 0;
+  uint8_t b = 0;
+
+  b |= bitMask(TL1_YELLOW_B);
+  b |= bitMask(TL2_YELLOW_B);
+
+  a |= bitMask(TL3_RED_A);
+  a |= bitMask(TL4_RED_A);
+
+  mcpWriteBoth(a, b);
+}
+
+void road12Red_road34Green() {
+  uint8_t a = 0;
+  uint8_t b = 0;
+
+  b |= bitMask(TL1_RED_B);
+  b |= bitMask(TL2_RED_B);
+
+  a |= bitMask(TL3_GREEN_A);
+  a |= bitMask(TL4_GREEN_A);
+
+  mcpWriteBoth(a, b);
+}
+
+void road12Red_road34Yellow() {
+  uint8_t a = 0;
+  uint8_t b = 0;
+
+  b |= bitMask(TL1_RED_B);
+  b |= bitMask(TL2_RED_B);
+
+  a |= bitMask(TL3_YELLOW_A);
+  a |= bitMask(TL4_YELLOW_A);
+
+  mcpWriteBoth(a, b);
+}
+
+// ============================================================
+// Backend message functions
+// ============================================================
+
+const char* getBackendPhase(uint8_t phase) {
+  switch (phase) {
+    case PHASE_ALL_RED_1:
+    case PHASE_ALL_RED_2:
+      return "ALL_RED";
+
+    case PHASE_ROAD12_GREEN:
+      return "NS_GREEN";
+
+    case PHASE_ROAD12_YELLOW:
+      return "NS_YELLOW";
+
+    case PHASE_ROAD34_GREEN:
+      return "EW_GREEN";
+
+    case PHASE_ROAD34_YELLOW:
+      return "EW_YELLOW";
+
+    default:
+      return "UNKNOWN";
+  }
+}
+
+const char* getInterpretedState(uint8_t phase) {
+  if (!vehicleDetected()) {
+    return "no_vehicle";
+  }
+
+  switch (phase) {
+    case PHASE_ROAD12_GREEN:
+    case PHASE_ROAD12_YELLOW:
+      return "passing_vehicle";
+
+    case PHASE_ALL_RED_1:
+    case PHASE_ALL_RED_2:
+    case PHASE_ROAD34_GREEN:
+    case PHASE_ROAD34_YELLOW:
+    default:
+      return "waiting_vehicle";
+  }
+}
+
+String createBackendJsonMessage(uint8_t phase) {
+  String payload = "{";
+  payload += "\"sensorId\":\"north_1\",";
+  payload += "\"direction\":\"north\",";
+  payload += "\"phase\":\"";
+  payload += getBackendPhase(phase);
+  payload += "\",";
+  payload += "\"interpretedState\":\"";
+  payload += getInterpretedState(phase);
+  payload += "\",";
+  payload += "\"timestampMs\":";
+  payload += millis();
+  payload += ",";
+  payload += "\"valid\":true";
+  payload += "}";
+
+  return payload;
+}
+
+void sendBackendMessage(uint8_t phase) {
+  updateSensor(millis());
+
+  if (WiFi.status() != WL_CONNECTED) {
+    Serial.println("[BACKEND] Wi-Fi not connected. Trying reconnect...");
+
+    if (!connectToWiFi()) {
+      Serial.println("[BACKEND] POST skipped because Wi-Fi is unavailable.");
+      return;
+    }
+  }
+
+  String payload = createBackendJsonMessage(phase);
+
+  Serial.println();
+  Serial.println("[BACKEND] Sending JSON payload:");
+  Serial.println(payload);
+
+  HTTPClient http;
+  http.setTimeout(HTTP_TIMEOUT);
+
+  if (!http.begin(BACKEND_URL)) {
+    Serial.println("[BACKEND] HTTP begin failed.");
+    return;
+  }
+
+  http.addHeader("Content-Type", "application/json");
+  http.addHeader("Accept", "application/json");
+
+  unsigned long startRequest = millis();
+  int httpResponseCode = http.POST(payload);
+  unsigned long requestDuration = millis() - startRequest;
+
+  Serial.print("[BACKEND] HTTP response code: ");
+  Serial.println(httpResponseCode);
+  Serial.print("[BACKEND] Request duration ms: ");
+  Serial.println(requestDuration);
+
+  if (httpResponseCode >= 200 && httpResponseCode < 300) {
+    Serial.println("[BACKEND] POST successful.");
+  } else if (httpResponseCode > 0) {
+    Serial.println("[BACKEND] Backend returned an error response.");
+    String response = http.getString();
+    Serial.print("[BACKEND] Response body: ");
+    Serial.println(response);
+  } else {
+    Serial.print("[BACKEND] HTTP request failed: ");
+    Serial.println(http.errorToString(httpResponseCode));
+  }
+
+  http.end();
+}
+
+// ============================================================
+// State machine functions
+// ============================================================
+
+void applyPhase(uint8_t phase) {
+  switch (phase) {
+    case PHASE_ALL_RED_1:
+      allRed();
+      Serial.println("Phase: ALL_RED");
+      break;
+
+    case PHASE_ROAD12_GREEN:
+      road12Green_road34Red();
+      Serial.println("Phase: NS_GREEN");
+      break;
+
+    case PHASE_ROAD12_YELLOW:
+      road12Yellow_road34Red();
+      Serial.println("Phase: NS_YELLOW");
+      break;
+
+    case PHASE_ALL_RED_2:
+      allRed();
+      Serial.println("Phase: ALL_RED");
+      break;
+
+    case PHASE_ROAD34_GREEN:
+      road12Red_road34Green();
+      Serial.println("Phase: EW_GREEN");
+      break;
+
+    case PHASE_ROAD34_YELLOW:
+      road12Red_road34Yellow();
+      Serial.println("Phase: EW_YELLOW");
+      break;
+
+    default:
+      allRed();
+      Serial.println("Phase: UNKNOWN -> fallback ALL_RED");
+      break;
+  }
+
+  sendBackendMessage(phase);
+}
+
+unsigned long getPhaseDuration(uint8_t phase) {
+  switch (phase) {
+    case PHASE_ALL_RED_1:
+    case PHASE_ALL_RED_2:
+      return ALL_RED_TIME;
+
+    case PHASE_ROAD12_GREEN:
+    case PHASE_ROAD34_GREEN:
+      return GREEN_TIME;
+
+    case PHASE_ROAD12_YELLOW:
+    case PHASE_ROAD34_YELLOW:
+      return YELLOW_TIME;
+
+    default:
+      return ALL_RED_TIME;
+  }
+}
+
+uint8_t getNextPhase(uint8_t phase) {
+  switch (phase) {
+    case PHASE_ALL_RED_1:
+      return PHASE_ROAD12_GREEN;
+
+    case PHASE_ROAD12_GREEN:
+      return PHASE_ROAD12_YELLOW;
+
+    case PHASE_ROAD12_YELLOW:
+      return PHASE_ALL_RED_2;
+
+    case PHASE_ALL_RED_2:
+      return PHASE_ROAD34_GREEN;
+
+    case PHASE_ROAD34_GREEN:
+      return PHASE_ROAD34_YELLOW;
+
+    case PHASE_ROAD34_YELLOW:
+      return PHASE_ALL_RED_1;
+
+    default:
+      return PHASE_ALL_RED_1;
+  }
+}
+
+// ============================================================
+// Setup
+// ============================================================
+
+void setup() {
+  Serial.begin(115200);
+  delay(1000);
+
+  Serial.println();
+  Serial.println("============================================================");
+  Serial.println("SMART TRAFFIC LIGHT START");
+  Serial.println("============================================================");
+
+  initSensor();
+
+  Wire.begin(I2C_SDA_PIN, I2C_SCL_PIN);
+  mcpInit();
+
+  connectToWiFi();
+
+  lastPhaseChange = millis();
+  applyPhase(currentPhase);
+
+  Serial.println("Breadboard traffic light controller started");
+  Serial.println("Non-blocking timing with millis()");
+  Serial.println("Vehicle sensor is read from GPIO 6.");
+  Serial.println("Backend JSON is sent after every phase change.");
+  Serial.println("============================================================");
+}
+
+// ============================================================
+// Main loop
+// ============================================================
+
+void loop() {
+  unsigned long now = millis();
+
+  updateSensor(now);
+  printSensorStatus(now);
+
+  if (now - lastPhaseChange >= getPhaseDuration(currentPhase)) {
+    currentPhase = getNextPhase(currentPhase);
+    lastPhaseChange = now;
+    applyPhase(currentPhase);
+  }
+}
