@@ -16,3 +16,6 @@ diagram.json
 
 /*/Wesley/*/build/*
 /*/Wesley/*/build_wokwi/
+
+# secrets
+secrets.h
