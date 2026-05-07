@@ -8,7 +8,7 @@ router = APIRouter(
     tags=["traffic"],
     )
 
-@router.post("/update")
+@router.post("")
 def create_traffic_event(
     event: TrafficCreate,
     db: Session = Depends(get_db)
