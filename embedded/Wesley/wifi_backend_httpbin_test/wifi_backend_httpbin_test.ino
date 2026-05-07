@@ -164,3 +164,217 @@ bool connectToWiFi() {
   printWiFiStatus();
   return false;
 }
+
+String createBackendJsonMessage(const SimulatedTrafficMessage& message) {
+  messageCounter++;
+
+  String payload = "{";
+  payload += "\"sensorId\":\"north_1\",";
+  payload += "\"direction\":\"north\",";
+  payload += "\"phase\":\"";
+  payload += message.phase;
+  payload += "\",";
+  payload += "\"interpretedState\":\"";
+  payload += message.interpretedState;
+  payload += "\",";
+  payload += "\"timestampMs\":";
+  payload += millis();
+  payload += ",";
+  payload += "\"valid\":";
+  payload += message.valid ? "true" : "false";
+  payload += ",";
+  payload += "\"messageCounter\":";
+  payload += messageCounter;
+  payload += "}";
+
+  return payload;
+}
+
+void printPayloadCheck(const String& payload) {
+  Serial.println();
+  Serial.println("[STEP 2] Backend-ready JSON payload created:");
+  Serial.println(payload);
+
+  Serial.println();
+  Serial.println("[PAYLOAD FIELD CHECK]");
+  Serial.print("contains sensorId: ");
+  Serial.println(payload.indexOf("\"sensorId\"") >= 0 ? "yes" : "no");
+
+  Serial.print("contains direction: ");
+  Serial.println(payload.indexOf("\"direction\"") >= 0 ? "yes" : "no");
+
+  Serial.print("contains phase: ");
+  Serial.println(payload.indexOf("\"phase\"") >= 0 ? "yes" : "no");
+
+  Serial.print("contains interpretedState: ");
+  Serial.println(payload.indexOf("\"interpretedState\"") >= 0 ? "yes" : "no");
+
+  Serial.print("contains timestampMs: ");
+  Serial.println(payload.indexOf("\"timestampMs\"") >= 0 ? "yes" : "no");
+
+  Serial.print("contains valid: ");
+  Serial.println(payload.indexOf("\"valid\"") >= 0 ? "yes" : "no");
+  Serial.println();
+}
+
+void printShortResponsePreview(const String& response) {
+  const int MAX_PREVIEW_LENGTH = 1200;
+
+  Serial.println();
+  Serial.println("[SERVER RESPONSE PREVIEW]");
+  if (response.length() <= MAX_PREVIEW_LENGTH) {
+    Serial.println(response);
+  } else {
+    Serial.println(response.substring(0, MAX_PREVIEW_LENGTH));
+    Serial.println();
+    Serial.println("...response shortened in Serial Monitor...");
+  }
+  Serial.println();
+}
+
+bool responseContainsExpectedData(const String& response, const SimulatedTrafficMessage& message) {
+  bool containsSensor = response.indexOf("north_1") >= 0;
+  bool containsDirection = response.indexOf("north") >= 0;
+  bool containsPhase = response.indexOf(message.phase) >= 0;
+  bool containsState = response.indexOf(message.interpretedState) >= 0;
+
+  Serial.println("[STEP 5] Response content check:");
+  Serial.print("response contains sensorId north_1: ");
+  Serial.println(containsSensor ? "yes" : "no");
+
+  Serial.print("response contains direction north: ");
+  Serial.println(containsDirection ? "yes" : "no");
+
+  Serial.print("response contains phase: ");
+  Serial.println(containsPhase ? "yes" : "no");
+
+  Serial.print("response contains interpretedState: ");
+  Serial.println(containsState ? "yes" : "no");
+
+  return containsSensor && containsDirection && containsPhase && containsState;
+}
+
+void sendBackendMessageTest(const SimulatedTrafficMessage& message) {
+  Serial.println();
+  Serial.println("============================================================");
+  Serial.println("NEW BACKEND POST TEST");
+  Serial.println("============================================================");
+
+  if (WiFi.status() != WL_CONNECTED) {
+    Serial.println("[WARNING] Wi-Fi is not connected.");
+    Serial.println("Trying to reconnect before sending...");
+    if (!connectToWiFi()) {
+      Serial.println("[RESULT] Backend POST test FAILED because Wi-Fi is unavailable.");
+      return;
+    }
+  }
+
+  String payload = createBackendJsonMessage(message);
+  printPayloadCheck(payload);
+
+  Serial.println("[STEP 3] Starting HTTP POST request...");
+  Serial.print("POST URL: ");
+  Serial.println(BACKEND_URL);
+
+  HTTPClient http;
+
+  if (!http.begin(BACKEND_URL)) {
+    Serial.println("[RESULT] HTTP begin FAILED.");
+    Serial.println("Check the BACKEND_URL.");
+    return;
+  }
+
+  http.addHeader("Content-Type", "application/json");
+  http.addHeader("Accept", "application/json");
+
+  unsigned long startRequest = millis();
+  int httpResponseCode = http.POST(payload);
+  unsigned long requestDuration = millis() - startRequest;
+
+  Serial.println();
+  Serial.println("[STEP 4] HTTP POST finished.");
+  Serial.print("HTTP response code: ");
+  Serial.println(httpResponseCode);
+  Serial.print("Request duration ms: ");
+  Serial.println(requestDuration);
+
+  if (httpResponseCode > 0) {
+    String response = http.getString();
+
+    Serial.println("[RESULT] Server response was received.");
+    Serial.print("Response length: ");
+    Serial.println(response.length());
+
+    printShortResponsePreview(response);
+
+    bool contentOk = responseContainsExpectedData(response, message);
+
+    Serial.println();
+    Serial.println("[FINAL TEST RESULT]");
+    if (httpResponseCode == 200 && contentOk) {
+      Serial.println("PASSED");
+      Serial.println("The ESP32-S3 connected to the internet, sent the backend-ready message, and received the echoed response.");
+    } else if (httpResponseCode == 200) {
+      Serial.println("PARTLY PASSED");
+      Serial.println("The ESP32-S3 received HTTP 200, but the response did not contain all expected fields.");
+      Serial.println("Check the response preview above.");
+    } else {
+      Serial.println("PARTLY PASSED");
+      Serial.println("The ESP32-S3 received a response, but the HTTP status was not 200.");
+      Serial.println("Check the response code and response preview.");
+    }
+  } else {
+    Serial.println("[RESULT] HTTP request FAILED before a useful server response was received.");
+    Serial.print("HTTPClient error text: ");
+    Serial.println(http.errorToString(httpResponseCode));
+    Serial.println();
+    Serial.println("Check:");
+    Serial.println("- Wi-Fi connection");
+    Serial.println("- internet access");
+    Serial.println("- DNS access");
+    Serial.println("- whether the network blocks HTTP requests");
+    Serial.println("- whether the test endpoint is reachable");
+  }
+
+  http.end();
+
+  Serial.println("============================================================");
+  Serial.println();
+}
+
+// ============================================================
+// Setup
+// ============================================================
+
+void setup() {
+  Serial.begin(115200);
+  delay(1000);
+
+  printHeader();
+
+  if (!connectToWiFi()) {
+    Serial.println("The sketch will keep running and will retry before each POST test.");
+  }
+
+  lastPostTime = millis() - POST_INTERVAL;
+}
+
+// ============================================================
+// Main loop
+// ============================================================
+
+void loop() {
+  unsigned long now = millis();
+
+  if ((now - lastPostTime) >= POST_INTERVAL) {
+    lastPostTime = now;
+
+    SimulatedTrafficMessage message = testMessages[currentMessageIndex];
+    sendBackendMessageTest(message);
+
+    currentMessageIndex++;
+    if (currentMessageIndex >= NUMBER_OF_TEST_MESSAGES) {
+      currentMessageIndex = 0;
+    }
+  }
+}
