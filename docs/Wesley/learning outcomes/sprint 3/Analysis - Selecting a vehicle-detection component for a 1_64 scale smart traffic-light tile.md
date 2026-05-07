@@ -1,4 +1,4 @@
-# Analysis - Selecting a vehicle-detection component for a 1:64 scale smart traffic-light tile
+# Analysis - Selecting a vehicle-detection component for a 1_64 scale smart traffic-light tile
 
 ## Abstract
 
