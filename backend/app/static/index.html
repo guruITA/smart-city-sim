@@ -1136,6 +1136,17 @@
             } catch (e) { }
         }
 
+        async function loadTrafficDedicated() {
+            try {
+                const r = await fetch(API + "/api/v1/traffic/latest");
+                const d = await r.json();
+                const el = document.getElementById("trafficGrid");
+                if (d.length > 0) {
+                    el.innerHTML = renderTraffic(d);
+                }
+            } catch (e) { }
+        }
+
         function renderStreetlight(readings) {
             return readings.map(r => {
                 const isOn = r.value > 650;
@@ -1150,19 +1161,20 @@
 
         function renderTraffic(readings) {
             return readings.map(r => {
-                const phase = r.value;
-                const isRed = phase === 0 || phase === 3;
-                const isAmber = phase === 1;
-                const isGreen = phase === 2;
+                const phase = r.phase ? r.phase.toLowerCase() : "";
+                const state = r.interpreted_state ? r.interpreted_state.toLowerCase() : "";
+                const isRed = phase.includes("red");
+                const isAmber = phase.includes("amber") || phase.includes("yellow");
+                const isGreen = phase.includes("green");
                 return `<div class="light-item">
                     <div class="tl-stack">
                         <div class="tl-dot ${isRed ? 'red-on' : 'dim'}"></div>
                         <div class="tl-dot ${isAmber ? 'amber-on' : 'dim'}"></div>
                         <div class="tl-dot ${isGreen ? 'green-on' : 'dim'}"></div>
                     </div>
-                    <div class="light-label">Traffic light</div>
-                    <span class="status-badge ${isRed ? 'danger' : isGreen ? 'on' : 'active'}">${isRed ? 'red' : isAmber ? 'amber' : 'green'}</span>
-                    <div class="light-val">${ago(r.created_at)}</div>
+                    <div class="light-label">${r.sensor_id || 'sensor'} / ${r.direction || ''}</div>
+                    <span class="status-badge ${isRed ? 'danger' : isGreen ? 'on' : 'active'}">${state || phase}</span>
+                    <div class="light-val">${r.valid === false ? '<span style="color:var(--red)">invalid</span> / ' : ''}${ago(r.created_at)}</div>
                 </div>`;
             }).join("");
         }
@@ -1381,7 +1393,7 @@
             conn(ok);
             if (ok) {
                 loadTile("streetlight", "streetlightGrid", renderStreetlight);
-                loadTile("trafficLight", "trafficGrid", renderTraffic);
+                loadTrafficDedicated();
                 loadTile("railroadCrossing", "railroadGrid", renderRailroad);
                 loadApproachingTrains();
                 loadSpeedCamera();
