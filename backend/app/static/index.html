@@ -128,6 +128,10 @@
             flex-direction: column;
         }
 
+        #einkPanel {
+            grid-column: span 2;
+        }
+
         .tile-header {
             display: flex;
             align-items: center;
@@ -163,6 +167,10 @@
 
         .tile-icon.speedcam {
             background: var(--orange-dim);
+        }
+
+        .tile-icon.eink {
+            background: var(--purple-dim);
         }
 
         .tile-info h2 {
@@ -424,6 +432,224 @@
             font-family: 'DM Mono', monospace;
         }
 
+        .eink-layout {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 14px;
+            flex: 1;
+            min-height: 0;
+        }
+
+        .eink-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .form-field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .field-label {
+            font-size: 11px;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .eink-input,
+        .eink-select,
+        .eink-textarea {
+            width: 100%;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font: inherit;
+            padding: 10px 12px;
+        }
+
+        .eink-textarea {
+            min-height: 150px;
+            resize: vertical;
+            font-family: 'DM Mono', monospace;
+            line-height: 1.15;
+        }
+
+        .eink-input:focus,
+        .eink-select:focus,
+        .eink-textarea:focus {
+            outline: 1px solid var(--purple);
+            border-color: var(--purple);
+        }
+
+        .eink-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 4px;
+        }
+
+        .eink-import-box {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 12px;
+            border: 1px dashed var(--border);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .eink-import-row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .eink-import-textarea {
+            min-height: 92px;
+            resize: vertical;
+            font-family: 'DM Mono', monospace;
+            line-height: 1.15;
+        }
+
+        .eink-secondary-button {
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            padding: 9px 14px;
+            background: transparent;
+            color: var(--text);
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .eink-secondary-button:hover {
+            border-color: var(--purple);
+            color: var(--purple);
+        }
+
+        .eink-file-input {
+            display: none;
+        }
+
+        .eink-button {
+            border: 0;
+            border-radius: 999px;
+            padding: 10px 16px;
+            background: linear-gradient(135deg, var(--purple), var(--blue));
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .eink-button:hover {
+            filter: brightness(1.05);
+        }
+
+        .eink-status {
+            font-size: 12px;
+            color: var(--muted);
+            font-family: 'DM Mono', monospace;
+        }
+
+        .eink-preview {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            min-height: 100%;
+        }
+
+        .eink-preview-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .eink-preview-title {
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .eink-preview-meta {
+            font-size: 11px;
+            color: var(--muted);
+            font-family: 'DM Mono', monospace;
+        }
+
+        .eink-preview-canvas {
+            background: #f4f1e7;
+            border-radius: 10px;
+            border: 1px solid #d7d1c4;
+            padding: 14px;
+            min-height: 250px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            color: #111;
+        }
+
+        .eink-preview-text {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: -0.4px;
+            line-height: 1.1;
+            word-break: break-word;
+        }
+
+        .eink-preview-image {
+            display: grid;
+            gap: 1px;
+            align-self: flex-start;
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.55);
+            border-radius: 10px;
+        }
+
+        .eink-pixel {
+            width: 10px;
+            height: 10px;
+            background: transparent;
+            border-radius: 2px;
+        }
+
+        .eink-pixel.on-black {
+            background: #111;
+        }
+
+        .eink-pixel.on-red {
+            background: #b42318;
+        }
+
+        .eink-pixel.on-white {
+            background: #ffffff;
+            box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+        }
+
+        .eink-pixel.off {
+            background: rgba(17, 17, 17, 0.08);
+        }
+
+        .eink-preview-note {
+            font-size: 12px;
+            color: var(--muted);
+            line-height: 1.4;
+        }
+
         .streetlight-grid,
         .traffic-grid,
         .railroad-info {
@@ -517,6 +743,10 @@
         @media (max-width: 800px) {
             .main {
                 grid-template-columns: 1fr;
+            }
+
+            #einkPanel {
+                grid-column: auto;
             }
         }
     </style>
@@ -620,7 +850,6 @@
             </div>
             </div>
         </div>
-
         <!-- SPEED CAMERA -->
         <div class="tile-panel" id="speedCameraPanel">
             <div class="tile-header">
@@ -651,6 +880,88 @@
             <div class="section-label">Recent measurements</div>
             <div class="speed-list" id="speedList">
                 <div class="no-data-msg">No speed camera data yet</div>
+            </div>
+        </div>
+        <!-- E-INK DISPLAY -->
+        <div class="tile-panel" id="einkPanel">
+            <div class="tile-header">
+                <div class="tile-icon eink">E</div>
+                <div class="tile-info">
+                    <h2>E-ink Display</h2>
+                    <div class="owner">backend synced / 3-color panel</div>
+                </div>
+            </div>
+            <div class="eink-layout">
+                <div class="eink-form">
+                    <div class="form-field">
+                        <div class="field-label">Text</div>
+                        <input class="eink-input" id="einkText" type="text" maxlength="120" placeholder="Enter display text">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-field">
+                            <div class="field-label">Text color</div>
+                            <select class="eink-select" id="einkTextColor">
+                                <option value="black">Black</option>
+                                <option value="red">Red</option>
+                                <option value="white">White</option>
+                            </select>
+                        </div>
+                        <div class="form-field">
+                            <div class="field-label">Image color</div>
+                            <select class="eink-select" id="einkImageColor">
+                                <option value="black">Black</option>
+                                <option value="red">Red</option>
+                                <option value="white">White</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-field">
+                            <div class="field-label">Image width</div>
+                            <input class="eink-input" id="einkImageWidth" type="number" min="0" max="200" step="1">
+                        </div>
+                        <div class="form-field">
+                            <div class="field-label">Image height</div>
+                            <input class="eink-input" id="einkImageHeight" type="number" min="0" max="200" step="1">
+                        </div>
+                    </div>
+                    <div class="form-field">
+                        <div class="field-label">Image enabled</div>
+                        <label class="status-badge idle" style="justify-content:flex-start; width:fit-content; cursor:pointer;">
+                            <input id="einkImageEnabled" type="checkbox" style="margin-right:8px; accent-color:var(--purple);">
+                            Use bitmap image
+                        </label>
+                    </div>
+                    <div class="form-field">
+                        <div class="field-label">Image rows</div>
+                        <textarea class="eink-textarea" id="einkImageRows" spellcheck="false" placeholder="1010... one row per line"></textarea>
+                    </div>
+                    <div class="eink-import-box">
+                        <div class="field-label">Import helper</div>
+                        <textarea class="eink-textarea eink-import-textarea" id="einkImportText" spellcheck="false" placeholder="Paste rows like:\n10101\n11000\n11111"></textarea>
+                        <div class="eink-import-row">
+                            <button class="eink-secondary-button" id="einkImportRowsBtn" type="button">Use pasted bitmap</button>
+                            <button class="eink-secondary-button" id="einkUploadImageBtn" type="button">Upload image</button>
+                            <input class="eink-file-input" id="einkImageFile" type="file" accept="image/*">
+                        </div>
+                        <div class="eink-status">Pasted bitmaps are normalized into 0/1 rows. Uploaded images are sampled to the current width and height.</div>
+                    </div>
+                    <div class="eink-actions">
+                        <button class="eink-button" id="einkSaveBtn" type="button">Sync to e-ink</button>
+                        <span class="eink-status" id="einkStatus">Loading current state...</span>
+                    </div>
+                </div>
+                <div class="eink-preview">
+                    <div class="eink-preview-header">
+                        <div class="eink-preview-title">Live preview</div>
+                        <div class="eink-preview-meta" id="einkPreviewMeta">-</div>
+                    </div>
+                    <div class="eink-preview-canvas" id="einkPreviewCanvas">
+                        <div class="eink-preview-text" id="einkPreviewText">-</div>
+                        <div class="eink-preview-image" id="einkPreviewImage"></div>
+                    </div>
+                    <div class="eink-preview-note">The backend stores the selected text color and row-encoded bitmap. The ESP32 fetches that state and renders it on the 3-color e-ink panel.</div>
+                </div>
             </div>
         </div>
     </div>
@@ -684,7 +995,6 @@
                         <div class="spot-chip ${s.is_occupied ? 'occupied' : 'free'}">
                             <div class="spot-dot"></div>
                             Spot ${s.spot_number}
-                            <span class="spot-dist">${s.distance_cm.toFixed(1)}cm</span>
                         </div>
                     `).join("");
                 }
@@ -869,6 +1179,175 @@
             }).join("");
         }
 
+        let einkInitialised = false;
+
+        function getEinkImageRows() {
+            return document.getElementById("einkImageRows").value
+                .split(/\r?\n/)
+                .map(row => row.trim())
+                .filter(row => row.length > 0);
+        }
+
+        function renderEinkPreview() {
+            const text = document.getElementById("einkText").value.trim() || "-";
+            const textColor = document.getElementById("einkTextColor").value;
+            const imageEnabled = document.getElementById("einkImageEnabled").checked;
+            const imageColor = document.getElementById("einkImageColor").value;
+            const rows = getEinkImageRows();
+            const width = parseInt(document.getElementById("einkImageWidth").value || "0", 10) || 0;
+            const height = parseInt(document.getElementById("einkImageHeight").value || "0", 10) || 0;
+
+            const previewText = document.getElementById("einkPreviewText");
+            previewText.textContent = text;
+            previewText.style.color = textColor === "red" ? "#b42318" : textColor === "white" ? "#f8fafc" : "#111";
+
+            const previewImage = document.getElementById("einkPreviewImage");
+            const meta = document.getElementById("einkPreviewMeta");
+
+            meta.textContent = imageEnabled ? `${width}x${height}, ${imageColor}` : "text only";
+
+            if (!imageEnabled || rows.length === 0 || width <= 0 || height <= 0) {
+                previewImage.innerHTML = '<div class="eink-preview-note">No image enabled</div>';
+                previewImage.style.gridTemplateColumns = "none";
+                return;
+            }
+
+            previewImage.style.gridTemplateColumns = `repeat(${width}, 10px)`;
+            previewImage.innerHTML = rows.slice(0, height).map(row => {
+                const cells = row.padEnd(width, "0").slice(0, width).split("").map(pixel => {
+                    const state = pixel === "1" ? `on-${imageColor}` : "off";
+                    return `<div class="eink-pixel ${state}"></div>`;
+                }).join("");
+                return cells;
+            }).join("");
+        }
+
+        function normalizeBitmapRows(rawText) {
+            return rawText
+                .split(/\r?\n/)
+                .map(row => row.trim().replace(/[^01]/g, ""))
+                .filter(row => row.length > 0);
+        }
+
+        function setBitmapRows(rows) {
+            const normalized = rows.join("\n");
+            document.getElementById("einkImageRows").value = normalized;
+            document.getElementById("einkImportText").value = normalized;
+            const height = rows.length;
+            const width = rows.reduce((maxWidth, row) => Math.max(maxWidth, row.length), 0);
+            if (width > 0) {
+                document.getElementById("einkImageWidth").value = width;
+            }
+            if (height > 0) {
+                document.getElementById("einkImageHeight").value = height;
+            }
+            document.getElementById("einkImageEnabled").checked = rows.length > 0;
+            renderEinkPreview();
+        }
+
+        async function importImageFile(file) {
+            const width = parseInt(document.getElementById("einkImageWidth").value || "0", 10) || 0;
+            const height = parseInt(document.getElementById("einkImageHeight").value || "0", 10) || 0;
+            if (width <= 0 || height <= 0) {
+                document.getElementById("einkStatus").textContent = "Set image width and height before importing";
+                return;
+            }
+
+            const bitmap = await createImageBitmap(file);
+            const canvas = document.createElement("canvas");
+            canvas.width = width;
+            canvas.height = height;
+
+            const context = canvas.getContext("2d", { willReadFrequently: true });
+            context.imageSmoothingEnabled = false;
+            context.clearRect(0, 0, width, height);
+            context.drawImage(bitmap, 0, 0, width, height);
+
+            const pixels = context.getImageData(0, 0, width, height).data;
+            const rows = [];
+            for (let y = 0; y < height; y++) {
+                let row = "";
+                for (let x = 0; x < width; x++) {
+                    const offset = (y * width + x) * 4;
+                    const red = pixels[offset];
+                    const green = pixels[offset + 1];
+                    const blue = pixels[offset + 2];
+                    const alpha = pixels[offset + 3];
+                    const brightness = alpha === 0 ? 255 : Math.round((red + green + blue) / 3);
+                    row += brightness < 160 ? "1" : "0";
+                }
+                rows.push(row);
+            }
+
+            setBitmapRows(rows);
+            document.getElementById("einkStatus").textContent = `Imported ${file.name}`;
+        }
+
+        async function loadEinkDisplay() {
+            try {
+                const r = await fetch(API + "/api/v1/eink-display");
+                const d = await r.json();
+
+                if (!einkInitialised) {
+                    document.getElementById("einkText").value = d.text || "";
+                    document.getElementById("einkTextColor").value = d.text_color || "black";
+                    document.getElementById("einkImageEnabled").checked = !!d.image_enabled;
+                    document.getElementById("einkImageColor").value = d.image_color || "red";
+                    document.getElementById("einkImageWidth").value = d.image_width || 0;
+                    document.getElementById("einkImageHeight").value = d.image_height || 0;
+                    document.getElementById("einkImageRows").value = (d.image_rows || []).join("\n");
+                    document.getElementById("einkImportText").value = (d.image_rows || []).join("\n");
+                    einkInitialised = true;
+                }
+
+                renderEinkPreview();
+                document.getElementById("einkStatus").textContent = "Backend state loaded";
+                return true;
+            } catch (e) {
+                document.getElementById("einkStatus").textContent = "Failed to load backend state";
+                return false;
+            }
+        }
+
+        async function saveEinkDisplay() {
+            const payload = {
+                text: document.getElementById("einkText").value.trim(),
+                text_color: document.getElementById("einkTextColor").value,
+                image_enabled: document.getElementById("einkImageEnabled").checked,
+                image_color: document.getElementById("einkImageColor").value,
+                image_width: parseInt(document.getElementById("einkImageWidth").value || "0", 10) || 0,
+                image_height: parseInt(document.getElementById("einkImageHeight").value || "0", 10) || 0,
+                image_rows: getEinkImageRows(),
+            };
+
+            try {
+                const res = await fetch(API + "/api/v1/eink-display", {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload),
+                });
+
+                if (!res.ok) {
+                    const detail = await res.text();
+                    throw new Error(detail || "Update failed");
+                }
+
+                const updated = await res.json();
+                document.getElementById("einkStatus").textContent = "Synced to backend";
+                document.getElementById("einkText").value = updated.text;
+                document.getElementById("einkTextColor").value = updated.text_color;
+                document.getElementById("einkImageEnabled").checked = updated.image_enabled;
+                document.getElementById("einkImageColor").value = updated.image_color;
+                document.getElementById("einkImageWidth").value = updated.image_width;
+                document.getElementById("einkImageHeight").value = updated.image_height;
+                document.getElementById("einkImageRows").value = updated.image_rows.join("\n");
+                document.getElementById("einkImportText").value = updated.image_rows.join("\n");
+                renderEinkPreview();
+            } catch (e) {
+                document.getElementById("einkStatus").textContent = "Sync failed: " + e.message;
+            }
+        }
+
         async function loadSpeedCamera() {
             try {
                 const [statsRes, readingsRes] = await Promise.all([
@@ -906,8 +1385,48 @@
                 loadTile("railroadCrossing", "railroadGrid", renderRailroad);
                 loadApproachingTrains();
                 loadSpeedCamera();
+                if (!einkInitialised) {
+                    loadEinkDisplay();
+                } else {
+                    renderEinkPreview();
+                }
             }
         }
+
+        document.getElementById("einkSaveBtn").addEventListener("click", saveEinkDisplay);
+        document.getElementById("einkImportRowsBtn").addEventListener("click", () => {
+            const rows = normalizeBitmapRows(document.getElementById("einkImportText").value);
+            if (!rows.length) {
+                document.getElementById("einkStatus").textContent = "No bitmap rows found to import";
+                return;
+            }
+            setBitmapRows(rows);
+            document.getElementById("einkStatus").textContent = "Pasted bitmap imported";
+        });
+        document.getElementById("einkUploadImageBtn").addEventListener("click", () => {
+            document.getElementById("einkImageFile").click();
+        });
+        document.getElementById("einkImageFile").addEventListener("change", async event => {
+            const file = event.target.files && event.target.files[0];
+            if (file) {
+                try {
+                    await importImageFile(file);
+                } catch (error) {
+                    document.getElementById("einkStatus").textContent = "Import failed: " + error.message;
+                }
+            }
+            event.target.value = "";
+        });
+        ["einkText", "einkTextColor", "einkImageEnabled", "einkImageColor", "einkImageWidth", "einkImageHeight", "einkImageRows"].forEach(id => {
+            document.getElementById(id).addEventListener("input", renderEinkPreview);
+            document.getElementById(id).addEventListener("change", renderEinkPreview);
+        });
+        document.getElementById("einkImportText").addEventListener("input", () => {
+            const rows = normalizeBitmapRows(document.getElementById("einkImportText").value);
+            if (rows.length > 0) {
+                document.getElementById("einkStatus").textContent = `Bitmap rows ready (${rows.length} lines)`;
+            }
+        });
 
         refresh();
         setInterval(refresh, 2000);

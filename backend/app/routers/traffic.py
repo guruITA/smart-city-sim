@@ -5,11 +5,10 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 router = APIRouter(
-    prefix="/api/v1/traffic",
     tags=["traffic"],
     )
 
-@router.post("/update")
+@router.post("")
 def create_traffic_event(
     event: TrafficCreate,
     db: Session = Depends(get_db)
