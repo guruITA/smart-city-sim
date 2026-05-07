@@ -1,6 +1,6 @@
 from database import get_db
 from models import Traffic
-from schemas import TrafficCreate
+from schemas import TrafficCreate, TrafficEventResponse
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
@@ -44,3 +44,8 @@ def create_traffic_event(
             status_code=500,
             detail="Could not store traffic event"
         )
+
+@router.get("", response_model=list[TrafficEventResponse])
+def get_traffic_events(db: Session = Depends(get_db)):
+    events = db.query(Traffic).order_by(Traffic.id.desc()).all()
+    return events
