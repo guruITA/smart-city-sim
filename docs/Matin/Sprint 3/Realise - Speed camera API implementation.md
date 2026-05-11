@@ -1,4 +1,4 @@
-# Realise — Speed camera API implementation
+# Realise - Speed camera API implementation
 
 | | |
 |---|---|
@@ -6,7 +6,7 @@
 | **Date** | May 2026 |
 | **Version** | 1.0 |
 | **Classification** | Internal |
-| **Client** | City Sim Learning Group — HvA Smart Cities |
+| **Client** | City Sim Learning Group - HvA Smart Cities |
 | **Company** | The Embedded Alliance |
 
 ---
@@ -26,7 +26,7 @@ What was built, and does it work?
 
 ---
 
-## Chapter 1 — Implementation
+## Chapter 1 - Implementation
 
 ### Context
 
@@ -34,15 +34,15 @@ On April 23, I read Gurpreet's firmware and built the full speed camera backend 
 
 ### What was built
 
-**backend/app/models.py** — Added `SpeedReading` model with 5 columns (speed_kmh, direction, is_violation, speed_limit_kmh, created_at).
+**backend/app/models.py** - Added `SpeedReading` model with 5 columns (speed_kmh, direction, is_violation, speed_limit_kmh, created_at).
 
-**backend/app/schemas.py** — Added 3 Pydantic schemas: `SpeedReadingCreate` (request body), `SpeedReadingResponse` (full response), `SpeedCameraStatsResponse` (aggregated stats).
+**backend/app/schemas.py** - Added 3 Pydantic schemas: `SpeedReadingCreate` (request body), `SpeedReadingResponse` (full response), `SpeedCameraStatsResponse` (aggregated stats).
 
-**backend/app/routers/speed_camera.py** — New router with 5 endpoints: POST /, GET /, GET /violations, GET /latest, GET /stats.
+**backend/app/routers/speed_camera.py** - New router with 5 endpoints: POST /, GET /, GET /violations, GET /latest, GET /stats.
 
-**backend/app/main.py** — Registered the router at `/api/v1/speedcamera`.
+**backend/app/main.py** - Registered the router at `/api/v1/speedcamera`.
 
-**backend/app/static/index.html** — Added 5th dashboard panel with orange accent, stats row, scrollable list, violation highlighting.
+**backend/app/static/index.html** - Added 5th dashboard panel with orange accent, stats row, scrollable list, violation highlighting.
 
 ### Sub-conclusion
 
@@ -50,7 +50,7 @@ On April 23, I read Gurpreet's firmware and built the full speed camera backend 
 
 ---
 
-## Chapter 2 — Testing
+## Chapter 2 - Testing
 
 ### Method
 

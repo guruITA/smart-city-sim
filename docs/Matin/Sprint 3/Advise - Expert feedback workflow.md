@@ -1,4 +1,4 @@
-# Advise — Expert feedback workflow
+# Advise - Expert feedback workflow
 
 | | |
 |---|---|
@@ -6,7 +6,7 @@
 | **Date** | May 2026 |
 | **Version** | 1.0 |
 | **Classification** | Internal |
-| **Client** | City Sim Learning Group — HvA Smart Cities |
+| **Client** | City Sim Learning Group - HvA Smart Cities |
 | **Company** | The Embedded Alliance |
 
 ---
@@ -26,7 +26,7 @@ How should I collect and record feedback so assessors can see my progress?
 
 ---
 
-## Chapter 1 — What I was doing vs what assessors see
+## Chapter 1 - What I was doing vs what assessors see
 
 ### Context
 
@@ -49,7 +49,7 @@ If it is not in Portflow, it did not happen. Verbal feedback is invisible to ass
 
 ---
 
-## Chapter 2 — Concrete feedback plan
+## Chapter 2 - Concrete feedback plan
 
 ### Sprint 3 remaining weeks
 
