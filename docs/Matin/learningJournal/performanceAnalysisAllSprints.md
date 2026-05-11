@@ -200,118 +200,114 @@ The DLO data tells a clear story: week 8 was lost to Aimee, week 9 was a product
 
 ### Commits
 **DLO target:** 6 commits/day
-**DLO result:** [Screenshot to be added at end of week 13]
+**DLO result:** Week 11: Mon-Tue active, Thu green. Week 12: Wed-Thu active (speed camera built Apr 23). May Holiday: empty. Week 13: Mon-Thu green — most active week of the semester.
 
-![Sprint 3 - Commits per dag](screenshots/sprint3Commits.png) (pending)
-
-**Total so far:** 3 own commits merged to main + 1 pending push + 1 upcoming (this document)
+![Sprint 3 - Commits per dag](screenshots/sprint3Commits.png)
 
 Key commits:
 - `3f6b3e5` feat: implement speed camera API, database models, and comprehensive project documentation (Apr 23)
 - `dbb1bc8` docs: add human-centered problem statement for parking tile (May 4)
 - `42d99bd` fix(docker): expose api on port 80 with dashboard on root (May 4)
-- `faf732d` docs: add sprint 0 learning journal STARR reflection (May 5, pending push)
+- `faf732d` docs: add sprint 0 learning journal STARR reflection (May 5)
+- `483abbb` docs: learning goals + performance analysis (May 5)
+- Multiple commits week 13: Portflow restructuring, Sprint 3 deliverables, dashboard bug fixes, traffic light integration
 
-**Mid-sprint reflection:** Activity is concentrated in two clusters: week 12 (speed camera) and week 13 (problem statement + port 80 + documentation). Week 11 appears empty in the commit log. The burst pattern from Sprint 1 and 2 continues. However, each commit is a complete deliverable (feature, fix, or document), not fragmented work. I expect the DLO screenshot will show partly/green on April 23, May 4, and May 5, with gaps between.
+**Reflection:** The burst pattern continues but with more spread. Week 11 had light activity, week 12 concentrated on the speed camera, and week 13 was a sustained push across 4 days. That last week is the most consistent I have been all semester. The improvement is visible: Sprint 1 had 2 active days, Sprint 2 had 4-5, Sprint 3 has about 8.
 
-**Development plan:** In Sprint 4, commit at least every other day. Use smaller commits for incremental progress instead of waiting until a feature is complete.
+**Development plan:** In Sprint 4, commit at least every other day. Use smaller commits for incremental progress.
 
 ### Hours spent
 **DLO target:** 6 hours/day
-**DLO result:** [Screenshot to be added at end of week 13]
+**DLO result:** Week 11: Mon red, Wed green, Thu red. Week 12: Tue/Wed/Fri red, Thu green. May Holiday: Mon red only. Week 13: Mon-Wed green.
 
-![Sprint 3 - Hours worked](screenshots/sprint3HoursWorked.png) (pending)
+![Sprint 3 - Hours worked](screenshots/sprint3HoursWorked.png)
 
-**Estimated so far:** 18-22 hours total (still no formal time tracking implemented)
+**Reflection:** Mixed results. Some tracking happened (better than Sprint 1 which was empty), but most days are red — meaning I logged hours but below the 6h target. Week 13 Mon-Wed are green, matching the commit data: that was the most productive stretch. The May Holiday week is almost empty. Overall: hours are being tracked now (improvement), but still below target on most days.
 
-Breakdown estimate:
-- Speed camera API (model, schemas, router, dashboard panel): 6 hours
-- Problem statement research and writing: 3 hours
-- Portflow evidence restructuring (12 items, descriptions, permalinks): 5 hours
-- Port 80 fix and deploy script updates: 2 hours
-- Learning Journal documents (STARR, goals, performance analysis): 4 hours
-
-**Mid-sprint reflection:** I still have not implemented formal time tracking despite committing to it in Sprint 1 and Sprint 2 development plans. Three sprints of the same broken promise. The work is real (20+ hours estimated), but unverifiable. If the DLO screenshot shows empty again, that is entirely my fault for not logging.
-
-**Development plan:** For Sprint 4, this is non-negotiable. Use a spreadsheet with date, start time, end time, task. Fill it in during the session, not after. If I fail to track hours again in Sprint 4, it becomes a pattern I cannot explain away.
+**Development plan:** Sprint 4: log hours on every working day. Use a spreadsheet with start/end times if DLO is not convenient enough.
 
 ### Tasks completed
 **DLO target:** 4 tasks/week
-**DLO result:** [Screenshot to be added at end of week 13]
+**DLO result:** 0/4 across all 4 weeks. Zero tasks logged in DLO.
 
-![Sprint 3 - Tasks per week](screenshots/sprint3Tasks.png) (pending)
+![Sprint 3 - Tasks per week](screenshots/sprint3Tasks.png)
 
-**Completed so far:**
-- Speed camera API: 5 REST endpoints, SpeedReading model, 3 Pydantic schemas
-- Dashboard: 5th panel (speed camera) with violation highlighting and stats
-- Port 80: Docker port mapping fix, deploy.sh updated, dashboard moved to root URL
+Actual work delivered (not logged in DLO):
+- Speed camera API: 5 REST endpoints, SpeedReading model, 3 Pydantic schemas, dashboard panel
+- Traffic light integration: GET endpoints, dashboard panel updated for Wesley's dedicated API
+- Port 80: Docker port mapping, deploy.sh updated, dashboard moved to root URL
+- Dashboard bug fixes: distance_cm crash fix, traffic double prefix fix
 - Problem statement: human-centered framing of parking search traffic
 - Portflow cleanup: 12 evidence items reframed with descriptions and permalinks
-- Learning Journal: Sprint 0 STARR, SMART learning goals (all sprints), performance analysis (all sprints)
-- SSH access configured for remote Pi management
-- portflowMasterSheet.md: single copy-paste document for Portflow editing
+- Sprint 3 deliverable docs: 3 learning goals + 4 deliverable documents (Analysis, Design, Realise, Advise)
+- Learning Journal: Sprint 0 STARR, SMART learning goals, performance analysis
 
-**Still in progress:**
-- Expert feedback requests (Mats 1-on-1, Gerald validation)
-- Mayor Delivery preparation (this week)
-- Architecture SVG update
+**Reflection:** Same problem as Sprint 1: lots of work delivered, zero tasks logged. Three sprints in a row with 0/4 on task tracking. This is a pattern I keep promising to fix but have not fixed. The work is real but invisible in DLO.
 
-**Mid-sprint reflection:** Task count is higher than Sprint 1 or 2, but much of it is catch-up work (problem statement, learning goals, Portflow restructuring). The actual new feature work is the speed camera API and port 80 fix. Whether this shows in DLO depends on whether I logged tasks there. I suspect I did not.
-
-**Development plan:** In Sprint 4, log every task in DLO as I start it. Reduce scope to pure delivery work (no more catch-up).
+**Development plan:** Sprint 4: this is non-negotiable. Log tasks in DLO as I start them. If I fail again, I cannot explain it away.
 
 ### Merge Requests made
 **DLO target:** 2 MRs/week
-**DLO result:** [Screenshot to be added at end of week 13]
+**DLO result:** Week 11: 1/2. Week 12: 5/2. May Holiday: 0/2. Week 13: 9/2. Total: 15 MRs.
 
-![Sprint 3 - MRs made](screenshots/sprint3MergeRequestsMade.png) (pending)
+![Sprint 3 - MRs made](screenshots/sprint3MergeRequestsMade.png)
 
-**Total so far:** 1 MR (matin to main, merged as `3ecfe5e` on May 5)
+**Reflection:** Massive improvement. Sprint 1: 2 MRs total. Sprint 2: 3 MRs total. Sprint 3: 15 MRs total. Week 12 (5) was the speed camera and docs work. Week 13 (9) was the Portflow restructuring, dashboard fixes, and traffic integration — each pushed and merged separately. This matches my Sprint 2 development plan: "split work into at least 2 MRs." I exceeded that by a lot. The smaller, more frequent MR pattern worked.
 
-**Mid-sprint reflection:** One MR so far, same pattern as previous sprints. My development plan from Sprint 2 said "split into at least 2 MRs" but the sprint is not over yet. If I push and merge the learning journal documents as a second MR this week, I hit the self-set target for the first time.
-
-**Development plan:** In Sprint 4, make 2 MRs minimum. First MR early in the sprint (carry-over work), second MR mid-sprint (new features).
+**Development plan:** Maintain this in Sprint 4. Keep making small, focused MRs instead of batching.
 
 ### Merge Requests reviewed
 **DLO target:** 2 MRs reviewed/week
-**DLO result:** [Screenshot to be added at end of week 13]
+**DLO result:** Week 11: 0/2. Week 12: 0/2. May Holiday: 0/2. Week 13: 3/2. Total: 3 reviews.
 
-![Sprint 3 - MRs reviewed](screenshots/sprint3MergeRequestsReviewed.png) (pending)
+![Sprint 3 - MRs reviewed](screenshots/sprint3MergeRequestsReviewed.png)
 
-**Total so far:** 0
+**Reflection:** Same total as Sprint 2 (3 reviews), all concentrated in week 13. Weeks 11-12 and the holiday had zero reviews. The improvement happened late but it happened. Week 13 exceeded the weekly target (3/2). The reviews in week 13 were on Thijmen's eink display merge and Wesley's traffic light code — both directly relevant to the dashboard integration I was doing.
 
-**Mid-sprint reflection:** Back to zero after the Sprint 2 improvement (3 reviews). This is disappointing. The sprint is not over, and I can still review a teammate's MR this week before the Progress Review. But if I do not, this becomes a regression.
-
-**Development plan:** In Sprint 4, review 1 MR in the first week. Do not wait. This also generates peer feedback evidence for Portflow.
+**Development plan:** Sprint 4: review at least 1 MR in the first week. Do not wait until the last week.
 
 ### Documentation written
 **DLO target:** 450 words/day
-**DLO result:** [Screenshot to be added at end of week 13]
+**DLO result:** Week 11: Tue and Thu green. Week 12: Wed and Thu green. May Holiday: empty. Week 13: Mon-Wed green. Total: 7 green days.
 
-![Sprint 3 - Documentation](screenshots/sprint3Documentation.png) (pending)
+![Sprint 3 - Documentation](screenshots/sprint3Documentation.png)
 
-**New documents in Sprint 3:**
-- problemStatement.md (human-centered problem framing)
-- portflowEvidenceSprint3.md (sprint evidence with STARR)
-- learningJournalSprint0.md (Sprint 0 STARR reflection)
-- personalLearningGoalsAllSprints.md (SMART goals, 3 sprints)
+Documents written in Sprint 3:
+- problemStatement.md
+- portflowEvidenceSprint3.md (restructured)
+- portflowEvidenceSprint1.md (restructured)
+- learningJournalSprint0.md
+- personalLearningGoalsAllSprints.md
 - performanceAnalysisAllSprints.md (this document)
-- portflowMasterSheet.md (Portflow copy-paste reference)
+- portflowMasterSheet.md
+- Sprint 3 folder: 3 learning goal docs + 4 deliverable docs (Analysis, Design, Realise, Advise)
 
-**Updated documents:**
-- raspberry-pi-deployment.md (port 80, SSH access)
-- api-specification.md (speed camera endpoints)
-- database-schema.md (speed_readings table)
+Updated documents:
+- api-specification.md (speed camera + traffic endpoints)
+- database-schema.md (speed_readings + traffic tables)
 - index.md (links to new documents)
 
-**Mid-sprint reflection:** This is my most documentation-heavy sprint by far. Word count easily exceeds Sprint 1 and 2 combined. The DLO should show green on the days I wrote (April 23, May 4, May 5). Most documentation is catch-up work that should have existed earlier. The technical docs (API spec, schema) were updated alongside code, which is the correct pattern. The Portflow/Journal docs are one-time cleanup.
+**Reflection:** Most documentation-heavy sprint by far. 7 green days compared to Sprint 1 (3 days) and Sprint 2 (6 days). Much of it is catch-up work (problem statement, learning goals, Portflow restructuring). The Sprint 3 deliverable docs are the first time I wrote structured Analysis/Design/Realise/Advise documents per challenge. Documentation was consistent on active days.
 
-**Development plan:** In Sprint 4, documentation should be minimal and maintenance-only. The story is told. Focus on delivery proof (demo recording, final architecture diagram).
+**Development plan:** Sprint 4: documentation should be incremental. Write deliverable docs as I work, not after.
 
-### Sprint 3 overall assessment (mid-sprint)
+### Sprint 3 overall assessment
 
-Sprint 3 is a recovery sprint. The DLO data will likely show the same burst pattern (concentrated activity in weeks 12-13) but the output is qualitatively different from previous sprints. For the first time, all work is connected to a defined city problem. The problem statement exists. The learning goals are written. The evidence is reframed. Whether this translates to a better score from Mats depends on whether the story lands at the Mayor Delivery and whether I collect expert feedback before the Progress Review.
+Sprint 3 was a recovery sprint. The DLO data confirms both improvement and persistent gaps:
 
-Persistent gaps across all 3 sprints: no formal time tracking, burst work patterns instead of consistent daily activity, zero or low MR reviews. These are honest patterns I need to address in Sprint 4.
+**Improved:**
+- MRs made: 15 total (vs 2 in S1, 3 in S2) — biggest improvement of the semester
+- MRs reviewed: 3 in week 13, hitting the weekly target
+- Documentation: 7 green days, most consistent spread yet
+- Commits: week 13 had 4 consecutive active days — a first
+- Hours: some tracking happened (better than S1 which was blank)
 
-[End of sprint reflection - to be added before Progress Review week 13. At that point I will add the actual DLO screenshots and final numbers.]
+**Still broken:**
+- Tasks: 0/4 across all weeks, third sprint in a row
+- Hours: most days red, still below target
+- Burst pattern: May Holiday week was empty, bulk of work in week 13
+- Reviews concentrated in final week instead of throughout
+
+**What changed qualitatively:** For the first time, all work is connected to a defined city problem (parking search traffic). Problem statement exists. Learning goals are written. Evidence is structured per challenge with only relevant outcomes. Expert feedback was requested (Bernardo, Gerald). This addresses Mats' core feedback from Sprint 2.
+
+**Persistent gaps for Sprint 4:** Task tracking (must start logging in DLO), hour tracking (use spreadsheet if DLO fails), review distribution (week 1 not week 4).
