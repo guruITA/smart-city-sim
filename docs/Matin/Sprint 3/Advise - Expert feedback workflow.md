@@ -30,14 +30,14 @@ How should I collect and record feedback so assessors can see my progress?
 
 ### Context
 
-I get feedback in team meetings. Gerald gives suggestions. Thijmen reviews my code. But none of it ends up in Portflow.
+I get feedback in team meetings. Gerald gives suggestions. Raymond reviews my code. But none of it ends up in Portflow.
 
 ### Findings
 
 | What I was doing | What assessors see |
 |---|---|
 | Verbal feedback in meetings | Zero feedback comments |
-| Thijmen reviews my code informally | No recorded validations |
+| Raymond reviews my code informally | No recorded validations |
 | Gerald gives suggestions | No expert responses |
 | I process feedback and update code | No evidence of iteration |
 
@@ -55,7 +55,7 @@ If it is not in Portflow, it did not happen. Verbal feedback is invisible to ass
 
 | Week | Action | Who |
 |------|--------|-----|
-| Week 13 | Ask Thijmen to review speed camera router code | Thijmen |
+| Week 13 | Ask Bernardo to review Analysis | Bernardo |
 | Week 13 | Ask Gerald to validate problem statement framing | Gerald |
 | Week 13 | Ask Mats for 1-on-1 Progress Review prep | Mats |
 
