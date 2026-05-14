@@ -1,43 +1,25 @@
 #include "Parking.h"
 
-// https://www.instructables.com/Non-blocking-Ultrasonic-Sensor-for-Arduino/
-// Start with no active Parking object.
-Parking* Parking::_instance = NULL;
+Parking::Parking(uint8_t mcpAddress, uint8_t trig1Pin, uint8_t trig2Pin, uint8_t trig3Pin,
+                 uint8_t trig4Pin, uint8_t echo1Pin, uint8_t echo2Pin, uint8_t echo3Pin,
+                 uint8_t echo4Pin, uint8_t oledSdaPin, uint8_t oledSclPin, int screenWidth,
+                 int screenHeight, uint8_t oledAddr, float soundSpeed, float parkedThresholdOnCm,
+                 float parkedThresholdOffCm, float invalidDistanceCm, float echoTravelDivider,
+                 unsigned long echoTimeoutMicroseconds, unsigned long uiRefreshIntervalMs,
+                 unsigned long sensorMeasureIntervalMs)
+    : _mcpAddress(mcpAddress), _oledSdaPin(oledSdaPin), _oledSclPin(oledSclPin),
+      _screenWidth(screenWidth), _screenHeight(screenHeight), _oledAddr(oledAddr),
+      _soundSpeed(soundSpeed), _parkedThresholdOnCm(parkedThresholdOnCm),
+      _parkedThresholdOffCm(parkedThresholdOffCm), _invalidDistanceCm(invalidDistanceCm),
+      _echoTravelDivider(echoTravelDivider), _echoTimeoutMicroseconds(echoTimeoutMicroseconds),
+      _uiRefreshIntervalMs(uiRefreshIntervalMs), _sensorMeasureIntervalMs(sensorMeasureIntervalMs),
+      _lastUiRefreshMs(0), _lastSensorMeasureMs(0), _currentSensorIndex(0), _parkingWire(0),
+      _display(screenWidth, screenHeight, &_parkingWire, -1) {
 
-Parking::Parking(uint8_t trigPin, uint8_t echo1Pin, uint8_t echo2Pin, uint8_t echo3Pin, uint8_t echo4Pin,
-                 uint8_t oledSdaPin, uint8_t oledSclPin, int screenWidth, int screenHeight,
-                 uint8_t oledAddr, float soundSpeed, float parkedThresholdOnCm, float parkedThresholdOffCm,
-                 float invalidDistanceCm, float echoTravelDivider, unsigned long echoTimeoutMicroseconds,
-                 unsigned long uiRefreshIntervalMs, unsigned long sensorMeasureIntervalMs)
-    : _trigPin(trigPin),
-      _oledSdaPin(oledSdaPin),
-      _oledSclPin(oledSclPin),
-      _screenWidth(screenWidth),
-      _screenHeight(screenHeight),
-      _oledAddr(oledAddr),
-      _soundSpeed(soundSpeed),
-      _parkedThresholdOnCm(parkedThresholdOnCm),
-      _parkedThresholdOffCm(parkedThresholdOffCm),
-      _invalidDistanceCm(invalidDistanceCm),
-      _echoTravelDivider(echoTravelDivider),
-      _echoTimeoutMicroseconds(echoTimeoutMicroseconds),
-      _uiRefreshIntervalMs(uiRefreshIntervalMs),
-      _sensorMeasureIntervalMs(sensorMeasureIntervalMs),
-      _lastUiRefreshMs(0),
-      _lastSensorMeasureMs(0),
-      _currentSensorIndex(0),
-      _parkingWire(0),
-      _display(screenWidth, screenHeight, &_parkingWire, -1),
-      _echoRiseDetected(false),
-      _echoMeasurementDone(false),
-      _echoStartUsInterrupt(0),
-      _echoEndUsInterrupt(0),
-      _activeEchoPin(-1) {
-
-  _parkingSpots[0] = {int8_t(echo1Pin), _invalidDistanceCm, false, IDLE, 0, 0};
-  _parkingSpots[1] = {int8_t(echo2Pin), _invalidDistanceCm, false, IDLE, 0, 0};
-  _parkingSpots[2] = {int8_t(echo3Pin), _invalidDistanceCm, false, IDLE, 0, 0};
-  _parkingSpots[3] = {int8_t(echo4Pin), _invalidDistanceCm, false, IDLE, 0, 0};
+  _parkingSpots[0] = {trig1Pin, echo1Pin, _invalidDistanceCm, false, IDLE, 0, 0, 0, 0};
+  _parkingSpots[1] = {trig2Pin, echo2Pin, _invalidDistanceCm, false, IDLE, 0, 0, 0, 0};
+  _parkingSpots[2] = {trig3Pin, echo3Pin, _invalidDistanceCm, false, IDLE, 0, 0, 0, 0};
+  _parkingSpots[3] = {trig4Pin, echo4Pin, _invalidDistanceCm, false, IDLE, 0, 0, 0, 0};
 }
 
 /**
@@ -54,22 +36,29 @@ void Parking::begin() {
   // Start serial communication.
   Serial.begin(115200);
 
-  // Store this Parking object so the interrupt functions can access it.
-  _instance = this;
-
-  // Set the trigger pin as output.
-  pinMode(_trigPin, OUTPUT);
-
-  // Set the trigger pin to LOW at startup.
-  digitalWrite(_trigPin, LOW);
-
-  // Set each echo pin as input.
-  for (int i = 0; i < TOTAL_SPOTS; i++) {
-    pinMode(_parkingSpots[i].echoPin, INPUT);
-  }
-
   // Start I2C communication for the OLED display.
   _parkingWire.begin(_oledSdaPin, _oledSclPin);
+  _parkingWire.setClock(50000);
+
+  // Start MCP23017 communication.
+  if (!_mcp.begin_I2C(_mcpAddress, &_parkingWire)) {
+    Serial.println("MCP23017 not found");
+  } else {
+    Serial.println("MCP23017 started");
+  }
+
+  // Set each trigger and echo pin.
+  for (int i = 0; i < TOTAL_SPOTS; i++) {
+
+    // Set the trigger pin as output.
+    _mcp.pinMode(_parkingSpots[i].triggerPin, OUTPUT);
+
+    // Set the trigger pin to LOW at startup.
+    _mcp.digitalWrite(_parkingSpots[i].triggerPin, LOW);
+
+    // Set each echo pin as input.
+    _mcp.pinMode(_parkingSpots[i].echoPin, INPUT);
+  }
 
   // Initialize the OLED display.
   _display.begin(SSD1306_SWITCHCAPVCC, _oledAddr);
@@ -96,8 +85,7 @@ void Parking::update() {
 
     // When the measurement is finished, update the occupied state.
     if (measurementFinished) {
-      updateOccupiedState(_parkingSpots[_currentSensorIndex].distance,
-                          _parkingSpots[_currentSensorIndex].occupied);
+      updateOccupiedState(_parkingSpots[_currentSensorIndex]);
 
       // Move to the next parking spot.
       _currentSensorIndex++;
@@ -124,51 +112,6 @@ void Parking::update() {
 }
 
 /**
- * @brief Interrupt function that forwards the echo pin change to the Parking object.
- */
-void IRAM_ATTR Parking::handleEchoChangeISR() {
-
-  // Only handle the interrupt when a Parking object is available.
-  if (_instance != NULL) {
-
-    // Send the interrupt handling to the active Parking object.
-    _instance->handleEchoChange();
-  }
-}
-
-/**
- * @brief Handles a change on the active echo pin.
- *
- * Stores the start and end time of the echo signal so the distance
- * can be calculated later without blocking the program.
- */
-void IRAM_ATTR Parking::handleEchoChange() {
-
-  // Stop when there is no active echo pin.
-  if (_activeEchoPin < 0) {
-    return;
-  }
-
-  // Read the current state of the active echo pin.
-  int pinState = digitalRead(_activeEchoPin);
-
-  // Get the current time in microseconds.
-  unsigned long nowUs = micros();
-
-  // Store the start time when the echo signal goes HIGH.
-  if (!_echoRiseDetected && pinState == HIGH) {
-    _echoStartUsInterrupt = nowUs;
-    _echoRiseDetected = true;
-  }
-
-  // Store the end time when the echo signal goes LOW.
-  else if (_echoRiseDetected && pinState == LOW) {
-    _echoEndUsInterrupt = nowUs;
-    _echoMeasurementDone = true;
-  }
-}
-
-/**
  * @brief Updates the distance measurement for one parking spot.
  *
  * This function measures one sensor step by step. It returns true when
@@ -185,122 +128,85 @@ bool Parking::updateDistanceMeasurement(ParkingSpot& spot) {
   // Run the correct measurement step for this parking spot.
   switch (spot.state) {
 
-    case IDLE:
-      // Select the echo pin of this parking spot.
-      _activeEchoPin = spot.echoPin;
+  case IDLE:
+    // Send a short trigger pulse to start the ultrasonic sensor.
+    _mcp.digitalWrite(spot.triggerPin, LOW);
+    delayMicroseconds(2);
+    _mcp.digitalWrite(spot.triggerPin, HIGH);
+    delayMicroseconds(10);
+    _mcp.digitalWrite(spot.triggerPin, LOW);
 
-      // Reset the echo flags and times before starting a new measurement.
-      _echoRiseDetected = false;
-      _echoMeasurementDone = false;
-      _echoStartUsInterrupt = 0;
-      _echoEndUsInterrupt = 0;
+    // Store the time when the measurement started.
+    spot.triggerTimeUs = micros();
 
-      // https://docs.arduino.cc/language-reference/en/functions/external-interrupts/attachInterrupt/
-      // https://docs.arduino.cc/language-reference/en/functions/external-interrupts/digitalPinToInterrupt/
-      // Watch the echo pin for both HIGH and LOW changes.
-      attachInterrupt(digitalPinToInterrupt(_activeEchoPin), handleEchoChangeISR, CHANGE);
+    // Move to the next step: wait for the echo signal to start.
+    spot.state = WAITING_FOR_ECHO_START;
 
-      // Send a short trigger pulse to start the ultrasonic sensor.
-      digitalWrite(_trigPin, LOW);
-      delayMicroseconds(2);
-      digitalWrite(_trigPin, HIGH);
-      delayMicroseconds(10);
-      digitalWrite(_trigPin, LOW);
+    // The measurement has started, but is not finished yet.
+    return false;
 
-      // Store the time when the measurement started.
-      spot.triggerTimeUs = micros();
+  case WAITING_FOR_ECHO_START:
+    // Check if the echo signal has started.
+    if (_mcp.digitalRead(spot.echoPin) == HIGH) {
 
-      // Move to the next step: wait for the echo signal to start.
-      spot.state = WAITING_FOR_ECHO_START;
+      // Store the echo start time for this parking spot.
+      spot.echoStartUs = currentMicros;
 
-      // The measurement has started, but is not finished yet.
-      return false;
+      // Move to the next step: wait for the echo signal to end.
+      spot.state = WAITING_FOR_ECHO_END;
 
-    case WAITING_FOR_ECHO_START:
-      // Check if the echo signal has started.
-      if (_echoRiseDetected) {
+    } else if (currentMicros - spot.triggerTimeUs >= _echoTimeoutMicroseconds) {
 
-        // Store the echo start time for this parking spot.
-        spot.echoStartUs = _echoStartUsInterrupt;
+      // Mark the measurement as invalid.
+      spot.distance = _invalidDistanceCm;
 
-        // Move to the next step: wait for the echo signal to end.
-        spot.state = WAITING_FOR_ECHO_END;
+      // Reset the state so this spot can be measured again later.
+      spot.state = IDLE;
 
-      } else if (currentMicros - spot.triggerTimeUs >= _echoTimeoutMicroseconds) {
+      // The measurement is finished, but failed because of timeout.
+      return true;
+    }
 
-        // https://docs.arduino.cc/language-reference/en/functions/external-interrupts/detachInterrupt/
-        // https://docs.arduino.cc/language-reference/en/functions/external-interrupts/digitalPinToInterrupt/
-        // Stop watching the echo pin because no echo started in time.
-        detachInterrupt(digitalPinToInterrupt(_activeEchoPin));
+    // The measurement is still waiting for the echo signal to start.
+    return false;
 
-        // Clear the active echo pin.
-        _activeEchoPin = -1;
+  case WAITING_FOR_ECHO_END:
+    // Check if the echo signal has ended.
+    if (_mcp.digitalRead(spot.echoPin) == LOW) {
 
-        // Mark the measurement as invalid.
+      // Copy the echo end time.
+      unsigned long localEchoEndUs = currentMicros;
+
+      // Calculate the distance if the timing is valid.
+      if (localEchoEndUs > spot.echoStartUs) {
+        unsigned long duration = localEchoEndUs - spot.echoStartUs;
+        spot.distance = (duration * _soundSpeed) / _echoTravelDivider;
+      } else {
+
+        // Mark the measurement as invalid when the timing is wrong.
         spot.distance = _invalidDistanceCm;
-
-        // Reset the state so this spot can be measured again later.
-        spot.state = IDLE;
-
-        // The measurement is finished, but failed because of timeout.
-        return true;
       }
 
-      // The measurement is still waiting for the echo signal to start.
-      return false;
+      // Reset the state so this spot can be measured again later.
+      spot.state = IDLE;
 
-    case WAITING_FOR_ECHO_END:
-      // Check if the echo signal has ended.
-      if (_echoMeasurementDone) {
+      // The measurement is finished.
+      return true;
 
-        // Copy the echo end time from the interrupt value.
-        unsigned long localEchoEndUs = _echoEndUsInterrupt;
+    } else if (currentMicros - spot.echoStartUs >= _echoTimeoutMicroseconds) {
 
-        // Clear the measurement done flag.
-        _echoMeasurementDone = false;
+      // Mark the measurement as invalid.
+      spot.distance = _invalidDistanceCm;
 
-        // Stop watching the echo pin.
-        detachInterrupt(digitalPinToInterrupt(_activeEchoPin));
+      // Reset the state so this spot can be measured again later.
+      spot.state = IDLE;
 
-        // Clear the active echo pin.
-        _activeEchoPin = -1;
+      // The measurement is finished, but failed because of timeout.
+      return true;
+    }
 
-        // Calculate the distance if the timing is valid.
-        if (localEchoEndUs > spot.echoStartUs) {
-          unsigned long duration = localEchoEndUs - spot.echoStartUs;
-          spot.distance = (duration * _soundSpeed) / _echoTravelDivider;
-        } else {
-
-          // Mark the measurement as invalid when the timing is wrong.
-          spot.distance = _invalidDistanceCm;
-        }
-
-        // Reset the state so this spot can be measured again later.
-        spot.state = IDLE;
-
-        // The measurement is finished.
-        return true;
-
-      } else if (currentMicros - spot.echoStartUs >= _echoTimeoutMicroseconds) {
-
-        // Stop watching the echo pin because the echo did not end in time.
-        detachInterrupt(digitalPinToInterrupt(_activeEchoPin));
-
-        // Clear the active echo pin.
-        _activeEchoPin = -1;
-
-        // Mark the measurement as invalid.
-        spot.distance = _invalidDistanceCm;
-
-        // Reset the state so this spot can be measured again later.
-        spot.state = IDLE;
-
-        // The measurement is finished, but failed because of timeout.
-        return true;
-      }
-
-      // The measurement is still waiting for the echo signal to end.
-      return false;
+    // The measurement is still waiting for the echo signal to end.
+    return false;
   }
 
   // Fallback return. This should normally not be reached.
@@ -314,23 +220,43 @@ bool Parking::updateDistanceMeasurement(ParkingSpot& spot) {
  * distance is below PARKED_THRESHOLD_ON_CM. An occupied spot becomes free when
  * the distance is above PARKED_THRESHOLD_OFF_CM.
  *
- * @param distanceCm Measured distance in centimeters. Negative values are invalid.
- * @param isOccupied Current occupied state of the parking spot. Updated when needed.
+ * @param spot Parking spot that is being updated.
  */
-void Parking::updateOccupiedState(float distanceCm, bool& isOccupied) {
+void Parking::updateOccupiedState(ParkingSpot& spot) {
 
-  // Ignore invalid distance values.
-  if (distanceCm < 0) {
-    return;
+  const uint8_t REQUIRED_COUNT = 3;
+
+  // Mark the spot as probably occupied when the measurement is invalid.
+  if (spot.distance < 0) {
+    spot.occupiedCount++;
+    spot.freeCount = 0;
+  }
+  // Mark the spot as probably occupied when the measured distance is below the occupied threshold.
+  else if (spot.distance < _parkedThresholdOnCm) {
+    spot.occupiedCount++;
+    spot.freeCount = 0;
+  }
+  // Mark the spot as probably free when the measured distance is above the free threshold.
+  else if (spot.distance > _parkedThresholdOffCm) {
+    spot.freeCount++;
+    spot.occupiedCount = 0;
+  }
+  // Keep the current state when the distance is between both thresholds.
+  else {
+    spot.occupiedCount = 0;
+    spot.freeCount = 0;
   }
 
-  // Mark the spot as occupied when the measured distance is below the occupied threshold.
-  if (!isOccupied && distanceCm < _parkedThresholdOnCm) {
-    isOccupied = true;
+  // Only change to occupied after multiple matching measurements.
+  if (spot.occupiedCount >= REQUIRED_COUNT) {
+    spot.occupied = true;
+    spot.occupiedCount = REQUIRED_COUNT;
   }
-  // Mark the spot as free when the measured distance is above the free threshold.
-  else if (isOccupied && distanceCm > _parkedThresholdOffCm) {
-    isOccupied = false;
+
+  // Only change to free after multiple matching measurements.
+  if (spot.freeCount >= REQUIRED_COUNT) {
+    spot.occupied = false;
+    spot.freeCount = REQUIRED_COUNT;
   }
 }
 
@@ -365,8 +291,8 @@ int Parking::countAvailableSpots() {
   // Go through all parking spots one by one.
   for (int i = 0; i < TOTAL_SPOTS; i++) {
 
-    // Count the spot when the distance is valid and the spot is free.
-    if (_parkingSpots[i].distance >= 0 && !_parkingSpots[i].occupied) {
+    // Count the spot when the confirmed state is free.
+    if (!_parkingSpots[i].occupied) {
       availableSpots++;
     }
   }
@@ -391,7 +317,7 @@ void Parking::drawStatusScreen() {
   // Clear the old screen content.
   _display.clearDisplay();
 
-  // Set the text size to normal 
+  // Set the text size to normal
   _display.setTextSize(1);
 
   // Set the text color to white.
@@ -414,7 +340,7 @@ void Parking::drawStatusScreen() {
 
     // Show NO DATA when the distance measurement is invalid.
     if (_parkingSpots[i].distance < 0) {
-      _display.println("NO DATA");
+      _display.println(getStateText(_parkingSpots[i].occupied));
     } else {
 
       // Show OCCUPIED or FREE when the measurement is valid.
