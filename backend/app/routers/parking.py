@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from database import get_db
-from models import ParkingSpot, SensorReading
+from models import ParkingSpot
 from schemas import ParkingSpotResponse, ParkingStatusResponse
 
 router = APIRouter()
@@ -46,17 +46,7 @@ def update_spot(spot_number: int, distance_cm: float, db: Session = Depends(get_
         db.add(spot)
 
     # Update status based on distance
-    spot.distance_cm = distance_cm
     spot.is_occupied = distance_cm < OCCUPIED_THRESHOLD_CM
-
-    # Also log to generic readings table
-    reading = SensorReading(
-        tile="parking",
-        sensor_type="sonar",
-        value=distance_cm,
-        unit="cm",
-    )
-    db.add(reading)
 
     db.commit()
     db.refresh(spot)
