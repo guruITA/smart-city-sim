@@ -1,4 +1,4 @@
-# Sprint 4 — Learning Goal 1: [title]
+# Sprint 4 — Learning Goal 2: [title]
 
 ## Learning Question
 

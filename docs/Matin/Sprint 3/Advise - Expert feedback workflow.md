@@ -1,4 +1,4 @@
-# Advise — Expert feedback workflow
+# Advise - Expert feedback workflow
 
 | | |
 |---|---|
@@ -6,7 +6,7 @@
 | **Date** | May 2026 |
 | **Version** | 1.0 |
 | **Classification** | Internal |
-| **Client** | City Sim Learning Group — HvA Smart Cities |
+| **Client** | City Sim Learning Group - HvA Smart Cities |
 | **Company** | The Embedded Alliance |
 
 ---
@@ -26,18 +26,18 @@ How should I collect and record feedback so assessors can see my progress?
 
 ---
 
-## Chapter 1 — What I was doing vs what assessors see
+## Chapter 1 - What I was doing vs what assessors see
 
 ### Context
 
-I get feedback in team meetings. Gerald gives suggestions. Raymond reviews my code. But none of it ends up in Portflow.
+I get feedback in team meetings. Gerald gives suggestions. Thijmen reviews my code. But none of it ends up in Portflow.
 
 ### Findings
 
 | What I was doing | What assessors see |
 |---|---|
 | Verbal feedback in meetings | Zero feedback comments |
-| Raymond reviews my code informally | No recorded validations |
+| Thijmen reviews my code informally | No recorded validations |
 | Gerald gives suggestions | No expert responses |
 | I process feedback and update code | No evidence of iteration |
 
@@ -49,13 +49,13 @@ If it is not in Portflow, it did not happen. Verbal feedback is invisible to ass
 
 ---
 
-## Chapter 2 — Concrete feedback plan
+## Chapter 2 - Concrete feedback plan
 
 ### Sprint 3 remaining weeks
 
 | Week | Action | Who |
 |------|--------|-----|
-| Week 13 | Ask Bernardo to review Analysis | Bernardo |
+| Week 13 | Ask Thijmen to review speed camera router code | Thijmen |
 | Week 13 | Ask Gerald to validate problem statement framing | Gerald |
 | Week 13 | Ask Mats for 1-on-1 Progress Review prep | Mats |
 
