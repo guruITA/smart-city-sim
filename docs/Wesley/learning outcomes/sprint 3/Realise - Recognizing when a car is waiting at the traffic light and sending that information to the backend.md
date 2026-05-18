@@ -273,33 +273,100 @@ Wesley. (2026g). *Traffic Light - first iteration - implementation* [Project del
 
 ## Appendix A — Real-Life Realisation Photos
 
-### Figure A1 — Complete prototype overview
+### Figure A1 to A3 — Complete prototype overview
 
-Figure A1 shows the full realised prototype. In this overview, the existing four-way traffic-light crossing remains visible together with the newly added KY-021 detection input. This figure is important because it shows that the new feature is added on top of the already working crossing structure instead of replacing it.
+![Figure A1](../../assets/Sprint%203/Realise%20-%20Recognizing%20when%20a%20car%20is%20waiting%20at%20the%20traffic%20light%20and%20sending%20that%20information%20to%20the%20backend/top.jpg)
 
-### Figure A2 — KY-021 sensor placement at the stop line
+Figure A1
 
-Figure A2 shows the physical placement of the KY-021 sensor at the stop-line area of the chosen road direction. This figure is important because it proves how the simplified waiting-car detection was actually realised on the tile.
+![Figure A2](../../assets/Sprint%203/Realise%20-%20Recognizing%20when%20a%20car%20is%20waiting%20at%20the%20traffic%20light%20and%20sending%20that%20information%20to%20the%20backend/side.jpg)
 
-### Figure A3 — ESP32-S3 and controller side
+Figure A2
 
-Figure A3 shows the controller side of the realised system. It should make clear how the KY-021 is connected to GPIO 6, how the existing I2C lines remain connected to the MCP23017, and how the shared ground is kept across the system.
+![Figure A3](../../assets/Sprint%203/Realise%20-%20Recognizing%20when%20a%20car%20is%20waiting%20at%20the%20traffic%20light%20and%20sending%20that%20information%20to%20the%20backend/front.jpg)
 
-### Figure A4 — Serial monitor or backend message proof
+Figure A3
 
-Figure A4 shows the proof of the interpreted output. This can be a serial monitor view or another output capture that shows the created backend-ready messages for states such as waiting vehicle, passing vehicle, or no vehicle.
+
+Figure A1 to A3 shows the full realised prototype. In this overview, the existing four-way traffic-light crossing remains visible together with the newly added KY-021 detection input. This figure is important because it shows that the new feature is added on top of the already working crossing structure instead of replacing it.
+
+### Figure A4 — ESP32-S3 and controller side
+
+![Figure A4](../../assets/Sprint%203/Realise%20-%20Recognizing%20when%20a%20car%20is%20waiting%20at%20the%20traffic%20light%20and%20sending%20that%20information%20to%20the%20backend/KY-021.jpg)
+
+Figure A4
+
+Figure A4 shows the controller side of the realised system. It should make clear how the KY-021 is connected to GPIO 6, how the existing I2C lines remain connected to the MCP23017, and how the shared ground is kept across the system.
+
+### Figure A5 — Serial monitor or backend message proof
+
+![Figure A5](../../assets/Sprint%203/Realise%20-%20Recognizing%20when%20a%20car%20is%20waiting%20at%20the%20traffic%20light%20and%20sending%20that%20information%20to%20the%20backend/no%20car.png)
+
+Figure A5, no vehicle
+
+![Figure A6](../../assets/Sprint%203/Realise%20-%20Recognizing%20when%20a%20car%20is%20waiting%20at%20the%20traffic%20light%20and%20sending%20that%20information%20to%20the%20backend/car%20waiting.png)
+
+Figure A6, waiting vehicle
+
+![Figure A7](../../assets/Sprint%203/Realise%20-%20Recognizing%20when%20a%20car%20is%20waiting%20at%20the%20traffic%20light%20and%20sending%20that%20information%20to%20the%20backend/car%20passing.png)
+
+Figure A7, passing vehicle
+
+
+These figures show the proof of the interpreted output. This is a serial monitor view that shows the created backend-ready messages for states such as waiting vehicle, passing vehicle, or no vehicle.
 
 ## Appendix B — Final Realisation Code
 
 ```cpp
+#include <Arduino.h>
 #include <Wire.h>
+#include <WiFi.h>
+#include <HTTPClient.h>
+#include "secrets.h"
 
 /*
-  Existing crossing controller + KY-021 waiting-car detection
-  ESP32-S3 -> MCP23017 -> 2x ULN2803 -> 4 traffic lights
-  KY-021 -> GPIO 6
-  Non-blocking version using millis()
+  Smart traffic-light controller
+
+  Hardware:
+  - ESP32-S3
+  - MCP23017 I2C output expander
+  - 2x ULN2803 driver IC
+  - KY-021 vehicle sensor on GPIO 6
+
+  Backend message format:
+  {
+    "sensorId": "north_1",
+    "direction": "north",
+    "phase": "EW_GREEN",
+    "interpretedState": "waiting_vehicle",
+    "timestampMs": 123456,
+    "valid": true
+  }
 */
+
+// ============================================================
+// Wi-Fi and backend settings
+// ============================================================
+
+const char* API_BASE_URL = "http://145.92.8.137:80";
+
+// Replace this path when the real traffic-light endpoint is available.
+const char* TRAFFIC_ENDPOINT_PATH = "/api/v1/traffic";
+// /api/v1/traffic
+
+const unsigned long WIFI_CONNECT_TIMEOUT = 20000;
+const unsigned long HTTP_TIMEOUT = 5000;
+
+// ============================================================
+// Vehicle sensor settings
+// ============================================================
+
+const int VEHICLE_SENSOR_PIN = 6;
+
+// KY-021 reed-switch modules commonly work as active LOW with INPUT_PULLUP.
+const int SENSOR_ACTIVE_LEVEL = LOW;
+const unsigned long SENSOR_DEBOUNCE_TIME = 50;
+const unsigned long SENSOR_STATUS_PRINT_INTERVAL = 4000;
 
 // ============================================================
 // I2C settings
@@ -309,12 +376,6 @@ const int I2C_SDA_PIN = 5;
 const int I2C_SCL_PIN = 4;
 
 const uint8_t MCP_ADDR = 0x20;
-
-// ============================================================
-// KY-021 sensor input
-// ============================================================
-
-const int SENSOR_PIN = 6;
 
 // ============================================================
 // MCP23017 registers
@@ -329,7 +390,6 @@ const uint8_t GPIOB  = 0x13;
 // Output mapping
 // ============================================================
 
-// Port B
 const uint8_t TL1_RED_B    = 0;
 const uint8_t TL1_YELLOW_B = 1;
 const uint8_t TL1_GREEN_B  = 2;
@@ -337,7 +397,6 @@ const uint8_t TL2_RED_B    = 3;
 const uint8_t TL2_YELLOW_B = 4;
 const uint8_t TL2_GREEN_B  = 5;
 
-// Port A
 const uint8_t TL3_YELLOW_A = 6;
 const uint8_t TL3_RED_A    = 5;
 const uint8_t TL3_GREEN_A  = 4;
@@ -353,11 +412,6 @@ const unsigned long ALL_RED_TIME = 1000;
 const unsigned long GREEN_TIME   = 5000;
 const unsigned long YELLOW_TIME  = 2000;
 
-// Sensor interpretation timing
-const unsigned long DEBOUNCE_TIME         = 50;
-const unsigned long WAITING_THRESHOLD     = 500;
-const unsigned long SENSOR_CLEAR_TIMEOUT  = 200;
-
 // ============================================================
 // Phase constants
 // ============================================================
@@ -370,61 +424,249 @@ const uint8_t PHASE_ROAD34_GREEN  = 4;
 const uint8_t PHASE_ROAD34_YELLOW = 5;
 
 // ============================================================
-// Interpreted states
-// ============================================================
-
-enum InterpretedState {
-  NO_VEHICLE,
-  WAITING_VEHICLE,
-  PASSING_VEHICLE,
-  UNCLEAR_INPUT
-};
-
-// ============================================================
 // State variables
 // ============================================================
 
 uint8_t currentPhase = PHASE_ALL_RED_1;
 unsigned long lastPhaseChange = 0;
 
-bool rawSensorState = false;
-bool stableSensorState = false;
-bool lastRawSensorState = false;
-unsigned long lastSensorChange = 0;
-unsigned long sensorActiveSince = 0;
-unsigned long sensorInactiveSince = 0;
+// ============================================================
+// Sensor state variables
+// ============================================================
 
-InterpretedState currentInterpretedState = NO_VEHICLE;
-InterpretedState lastSentState = NO_VEHICLE;
+int rawSensorLevel = HIGH;
+bool rawSensorActive = false;
+bool lastRawSensorActive = false;
+bool stableSensorActive = false;
+
+unsigned long lastRawSensorChangeTime = 0;
+unsigned long lastSensorStatusPrint = 0;
 
 // ============================================================
-// Helper functions
+// MCP23017 functions
 // ============================================================
 
 uint8_t bitMask(uint8_t bit) {
   return (1 << bit);
 }
 
-void mcpWriteRegister(uint8_t reg, uint8_t value) {
+bool mcpWriteRegister(uint8_t reg, uint8_t value) {
   Wire.beginTransmission(MCP_ADDR);
   Wire.write(reg);
   Wire.write(value);
-  Wire.endTransmission();
+
+  uint8_t result = Wire.endTransmission();
+
+  if (result != 0) {
+    Serial.print("[MCP] I2C write failed. Register 0x");
+    Serial.print(reg, HEX);
+    Serial.print(" Error code: ");
+    Serial.println(result);
+    return false;
+  }
+
+  return true;
+}
+
+void mcpConfigureOutputs() {
+  mcpWriteRegister(IODIRA, 0x00);
+  mcpWriteRegister(IODIRB, 0x00);
 }
 
 void mcpWriteBoth(uint8_t portAValue, uint8_t portBValue) {
+  // Defensive reconfiguration:
+  // If the MCP23017 reset and went back to input mode,
+  // this restores both ports as outputs before changing LEDs.
+  mcpConfigureOutputs();
+
   mcpWriteRegister(GPIOA, portAValue);
   mcpWriteRegister(GPIOB, portBValue);
 }
 
 void mcpInit() {
-  mcpWriteRegister(IODIRA, 0x00);
-  mcpWriteRegister(IODIRB, 0x00);
-  mcpWriteBoth(0x00, 0x00);
+  mcpConfigureOutputs();
+
+  // Start with all outputs off.
+  mcpWriteRegister(GPIOA, 0x00);
+  mcpWriteRegister(GPIOB, 0x00);
 }
 
 // ============================================================
-// Phase output functions
+// Sensor functions
+// ============================================================
+
+void initSensor() {
+  pinMode(VEHICLE_SENSOR_PIN, INPUT_PULLUP);
+
+  rawSensorLevel = digitalRead(VEHICLE_SENSOR_PIN);
+  rawSensorActive = (rawSensorLevel == SENSOR_ACTIVE_LEVEL);
+  lastRawSensorActive = rawSensorActive;
+  stableSensorActive = rawSensorActive;
+  lastRawSensorChangeTime = millis();
+}
+
+void updateSensor(unsigned long now) {
+  rawSensorLevel = digitalRead(VEHICLE_SENSOR_PIN);
+  rawSensorActive = (rawSensorLevel == SENSOR_ACTIVE_LEVEL);
+
+  if (rawSensorActive != lastRawSensorActive) {
+    lastRawSensorChangeTime = now;
+    lastRawSensorActive = rawSensorActive;
+  }
+
+  if ((now - lastRawSensorChangeTime) >= SENSOR_DEBOUNCE_TIME) {
+    if (stableSensorActive != rawSensorActive) {
+      stableSensorActive = rawSensorActive;
+
+      Serial.print("[SENSOR] Stable state changed: ");
+      Serial.println(stableSensorActive ? "vehicle detected" : "no vehicle");
+    }
+  }
+}
+
+bool vehicleDetected() {
+  return stableSensorActive;
+}
+
+void printSensorStatus(unsigned long now) {
+  if ((now - lastSensorStatusPrint) < SENSOR_STATUS_PRINT_INTERVAL) {
+    return;
+  }
+
+  lastSensorStatusPrint = now;
+
+  Serial.print("[SENSOR] GPIO ");
+  Serial.print(VEHICLE_SENSOR_PIN);
+  Serial.print(" raw level: ");
+  Serial.print(rawSensorLevel == HIGH ? "HIGH" : "LOW");
+  Serial.print(" | stable state: ");
+  Serial.println(stableSensorActive ? "vehicle detected" : "no vehicle");
+}
+
+// ============================================================
+// Backend URL functions
+// ============================================================
+
+String getTrafficBackendUrl() {
+  return String(API_BASE_URL) + TRAFFIC_ENDPOINT_PATH;
+}
+
+String getHealthCheckUrl() {
+  return String(API_BASE_URL) + "/health";
+}
+
+// ============================================================
+// Wi-Fi functions
+// ============================================================
+
+void printWiFiStatus() {
+  Serial.println();
+  Serial.println("---------------- WIFI STATUS ----------------");
+  Serial.print("SSID: ");
+  Serial.println(WIFI_SSID);
+
+  Serial.print("WiFi.status(): ");
+  Serial.println(WiFi.status());
+
+  if (WiFi.status() == WL_CONNECTED) {
+    Serial.println("Connection result: CONNECTED");
+    Serial.print("Local IP: ");
+    Serial.println(WiFi.localIP());
+    Serial.print("Gateway IP: ");
+    Serial.println(WiFi.gatewayIP());
+    Serial.print("DNS IP: ");
+    Serial.println(WiFi.dnsIP());
+    Serial.print("Signal strength RSSI: ");
+    Serial.print(WiFi.RSSI());
+    Serial.println(" dBm");
+  } else {
+    Serial.println("Connection result: NOT CONNECTED");
+  }
+
+  Serial.println("---------------------------------------------");
+  Serial.println();
+}
+
+bool connectToWiFi() {
+  Serial.println();
+  Serial.println("[WIFI] Connecting to Wi-Fi...");
+  Serial.print("SSID: ");
+  Serial.println(WIFI_SSID);
+
+  WiFi.mode(WIFI_STA);
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+
+  unsigned long startAttempt = millis();
+
+  while (WiFi.status() != WL_CONNECTED &&
+         millis() - startAttempt < WIFI_CONNECT_TIMEOUT) {
+    Serial.print(".");
+    delay(500);
+  }
+
+  Serial.println();
+
+  if (WiFi.status() == WL_CONNECTED) {
+    Serial.println("[WIFI] Connection PASSED.");
+    printWiFiStatus();
+    return true;
+  }
+
+  Serial.println("[WIFI] Connection FAILED.");
+  printWiFiStatus();
+  return false;
+}
+
+// ============================================================
+// Backend health check
+// ============================================================
+
+bool checkBackendHealth() {
+  if (WiFi.status() != WL_CONNECTED) {
+    Serial.println("[BACKEND] Health check skipped because Wi-Fi is unavailable.");
+    return false;
+  }
+
+  String healthUrl = getHealthCheckUrl();
+
+  Serial.print("[BACKEND] Health check URL: ");
+  Serial.println(healthUrl);
+
+  HTTPClient http;
+  http.setTimeout(HTTP_TIMEOUT);
+
+  if (!http.begin(healthUrl)) {
+    Serial.println("[BACKEND] Health check begin failed.");
+    return false;
+  }
+
+  int httpResponseCode = http.GET();
+
+  Serial.print("[BACKEND] Health check response code: ");
+  Serial.println(httpResponseCode);
+
+  if (httpResponseCode > 0) {
+    String response = http.getString();
+    Serial.print("[BACKEND] Health check response body: ");
+    Serial.println(response);
+  } else {
+    Serial.print("[BACKEND] Health check failed: ");
+    Serial.println(http.errorToString(httpResponseCode));
+  }
+
+  http.end();
+
+  if (httpResponseCode >= 200 && httpResponseCode < 300) {
+    Serial.println("[BACKEND] Raspberry Pi API is reachable.");
+    return true;
+  }
+
+  Serial.println("[BACKEND] Raspberry Pi API did not return a successful health response.");
+  return false;
+}
+
+// ============================================================
+// Traffic-light output functions
 // ============================================================
 
 void allRed() {
@@ -493,35 +735,169 @@ void road12Red_road34Yellow() {
 }
 
 // ============================================================
-// Phase control
+// Backend message functions
+// ============================================================
+
+const char* getBackendPhase(uint8_t phase) {
+  switch (phase) {
+    case PHASE_ALL_RED_1:
+    case PHASE_ALL_RED_2:
+      return "ALL_RED";
+
+    case PHASE_ROAD12_GREEN:
+      return "NS_GREEN";
+
+    case PHASE_ROAD12_YELLOW:
+      return "NS_YELLOW";
+
+    case PHASE_ROAD34_GREEN:
+      return "EW_GREEN";
+
+    case PHASE_ROAD34_YELLOW:
+      return "EW_YELLOW";
+
+    default:
+      return "UNKNOWN";
+  }
+}
+
+const char* getInterpretedState(uint8_t phase) {
+  if (!vehicleDetected()) {
+    return "no_vehicle";
+  }
+
+  switch (phase) {
+    case PHASE_ROAD12_GREEN:
+    case PHASE_ROAD12_YELLOW:
+      return "passing_vehicle";
+
+    case PHASE_ALL_RED_1:
+    case PHASE_ALL_RED_2:
+    case PHASE_ROAD34_GREEN:
+    case PHASE_ROAD34_YELLOW:
+    default:
+      return "waiting_vehicle";
+  }
+}
+
+String createBackendJsonMessage(uint8_t phase) {
+  String payload = "{";
+  payload += "\"sensorId\":\"north_1\",";
+  payload += "\"direction\":\"north\",";
+  payload += "\"phase\":\"";
+  payload += getBackendPhase(phase);
+  payload += "\",";
+  payload += "\"interpretedState\":\"";
+  payload += getInterpretedState(phase);
+  payload += "\",";
+  payload += "\"timestampMs\":";
+  payload += millis();
+  payload += ",";
+  payload += "\"valid\":true";
+  payload += "}";
+
+  return payload;
+}
+
+void sendBackendMessage(uint8_t phase) {
+  updateSensor(millis());
+
+  if (WiFi.status() != WL_CONNECTED) {
+    Serial.println("[BACKEND] Wi-Fi not connected. Trying reconnect...");
+
+    if (!connectToWiFi()) {
+      Serial.println("[BACKEND] POST skipped because Wi-Fi is unavailable.");
+      return;
+    }
+  }
+
+  String backendUrl = getTrafficBackendUrl();
+  String payload = createBackendJsonMessage(phase);
+
+  Serial.println();
+  Serial.print("[BACKEND] POST URL: ");
+  Serial.println(backendUrl);
+  Serial.println("[BACKEND] Sending JSON payload:");
+  Serial.println(payload);
+
+  HTTPClient http;
+  http.setTimeout(HTTP_TIMEOUT);
+
+  if (!http.begin(backendUrl)) {
+    Serial.println("[BACKEND] HTTP begin failed.");
+    return;
+  }
+
+  http.addHeader("Content-Type", "application/json");
+  http.addHeader("Accept", "application/json");
+
+  unsigned long startRequest = millis();
+  int httpResponseCode = http.POST(payload);
+  unsigned long requestDuration = millis() - startRequest;
+
+  Serial.print("[BACKEND] HTTP response code: ");
+  Serial.println(httpResponseCode);
+  Serial.print("[BACKEND] Request duration ms: ");
+  Serial.println(requestDuration);
+
+  if (httpResponseCode >= 200 && httpResponseCode < 300) {
+    Serial.println("[BACKEND] POST successful.");
+  } else if (httpResponseCode > 0) {
+    Serial.println("[BACKEND] Backend returned an error response.");
+    String response = http.getString();
+    Serial.print("[BACKEND] Response body: ");
+    Serial.println(response);
+  } else {
+    Serial.print("[BACKEND] HTTP request failed: ");
+    Serial.println(http.errorToString(httpResponseCode));
+  }
+
+  http.end();
+}
+
+// ============================================================
+// State machine functions
 // ============================================================
 
 void applyPhase(uint8_t phase) {
   switch (phase) {
     case PHASE_ALL_RED_1:
       allRed();
+      Serial.println("Phase: ALL_RED");
       break;
 
     case PHASE_ROAD12_GREEN:
       road12Green_road34Red();
+      Serial.println("Phase: NS_GREEN");
       break;
 
     case PHASE_ROAD12_YELLOW:
       road12Yellow_road34Red();
+      Serial.println("Phase: NS_YELLOW");
       break;
 
     case PHASE_ALL_RED_2:
       allRed();
+      Serial.println("Phase: ALL_RED");
       break;
 
     case PHASE_ROAD34_GREEN:
       road12Red_road34Green();
+      Serial.println("Phase: EW_GREEN");
       break;
 
     case PHASE_ROAD34_YELLOW:
       road12Red_road34Yellow();
+      Serial.println("Phase: EW_YELLOW");
+      break;
+
+    default:
+      allRed();
+      Serial.println("Phase: UNKNOWN -> fallback ALL_RED");
       break;
   }
+
+  sendBackendMessage(phase);
 }
 
 unsigned long getPhaseDuration(uint8_t phase) {
@@ -545,137 +921,26 @@ unsigned long getPhaseDuration(uint8_t phase) {
 
 uint8_t getNextPhase(uint8_t phase) {
   switch (phase) {
-    case PHASE_ALL_RED_1:     return PHASE_ROAD12_GREEN;
-    case PHASE_ROAD12_GREEN:  return PHASE_ROAD12_YELLOW;
-    case PHASE_ROAD12_YELLOW: return PHASE_ALL_RED_2;
-    case PHASE_ALL_RED_2:     return PHASE_ROAD34_GREEN;
-    case PHASE_ROAD34_GREEN:  return PHASE_ROAD34_YELLOW;
-    case PHASE_ROAD34_YELLOW: return PHASE_ALL_RED_1;
-    default:                  return PHASE_ALL_RED_1;
-  }
-}
+    case PHASE_ALL_RED_1:
+      return PHASE_ROAD12_GREEN;
 
-void updateTrafficPhase() {
-  unsigned long now = millis();
+    case PHASE_ROAD12_GREEN:
+      return PHASE_ROAD12_YELLOW;
 
-  if (now - lastPhaseChange >= getPhaseDuration(currentPhase)) {
-    currentPhase = getNextPhase(currentPhase);
-    applyPhase(currentPhase);
-    lastPhaseChange = now;
-  }
-}
+    case PHASE_ROAD12_YELLOW:
+      return PHASE_ALL_RED_2;
 
-// ============================================================
-// Sensor handling
-// ============================================================
+    case PHASE_ALL_RED_2:
+      return PHASE_ROAD34_GREEN;
 
-void readSensor() {
-  unsigned long now = millis();
-  rawSensorState = digitalRead(SENSOR_PIN) == LOW; // adjust if needed
+    case PHASE_ROAD34_GREEN:
+      return PHASE_ROAD34_YELLOW;
 
-  if (rawSensorState != lastRawSensorState) {
-    lastSensorChange = now;
-    lastRawSensorState = rawSensorState;
-  }
+    case PHASE_ROAD34_YELLOW:
+      return PHASE_ALL_RED_1;
 
-  if ((now - lastSensorChange) >= DEBOUNCE_TIME) {
-    if (stableSensorState != rawSensorState) {
-      stableSensorState = rawSensorState;
-
-      if (stableSensorState) {
-        sensorActiveSince = now;
-      } else {
-        sensorInactiveSince = now;
-      }
-    }
-  }
-}
-
-bool phaseIsRedForTestedDirection() {
-  return currentPhase == PHASE_ALL_RED_1 || currentPhase == PHASE_ALL_RED_2 ||
-         currentPhase == PHASE_ROAD34_GREEN || currentPhase == PHASE_ROAD34_YELLOW;
-}
-
-bool phaseIsGreenForTestedDirection() {
-  return currentPhase == PHASE_ROAD12_GREEN;
-}
-
-bool phaseIsYellowOrTransitionForTestedDirection() {
-  return currentPhase == PHASE_ROAD12_YELLOW ||
-         currentPhase == PHASE_ALL_RED_1 ||
-         currentPhase == PHASE_ALL_RED_2;
-}
-
-void interpretSensorWithCurrentPhase() {
-  unsigned long now = millis();
-
-  if (!stableSensorState) {
-    if ((now - sensorInactiveSince) >= SENSOR_CLEAR_TIMEOUT) {
-      currentInterpretedState = NO_VEHICLE;
-    }
-    return;
-  }
-
-  unsigned long activeDuration = now - sensorActiveSince;
-
-  if (phaseIsRedForTestedDirection()) {
-    if (activeDuration >= WAITING_THRESHOLD) {
-      currentInterpretedState = WAITING_VEHICLE;
-    }
-  } else if (phaseIsGreenForTestedDirection()) {
-    if (activeDuration < WAITING_THRESHOLD) {
-      currentInterpretedState = PASSING_VEHICLE;
-    }
-  } else if (phaseIsYellowOrTransitionForTestedDirection()) {
-    currentInterpretedState = UNCLEAR_INPUT;
-  } else {
-    currentInterpretedState = UNCLEAR_INPUT;
-  }
-}
-
-// ============================================================
-// Backend-ready output
-// ============================================================
-
-const char* phaseName(uint8_t phase) {
-  switch (phase) {
-    case PHASE_ALL_RED_1:     return "ALL_RED_1";
-    case PHASE_ROAD12_GREEN:  return "ROAD12_GREEN";
-    case PHASE_ROAD12_YELLOW: return "ROAD12_YELLOW";
-    case PHASE_ALL_RED_2:     return "ALL_RED_2";
-    case PHASE_ROAD34_GREEN:  return "ROAD34_GREEN";
-    case PHASE_ROAD34_YELLOW: return "ROAD34_YELLOW";
-    default:                  return "UNKNOWN";
-  }
-}
-
-const char* stateName(InterpretedState state) {
-  switch (state) {
-    case NO_VEHICLE:      return "no_vehicle";
-    case WAITING_VEHICLE: return "waiting_vehicle";
-    case PASSING_VEHICLE: return "passing_vehicle";
-    case UNCLEAR_INPUT:   return "unclear_input";
-    default:              return "unknown";
-  }
-}
-
-bool stateIsValid(InterpretedState state) {
-  return state != UNCLEAR_INPUT;
-}
-
-void sendBackendMessageIfNeeded() {
-  if (currentInterpretedState != lastSentState) {
-    Serial.print("{\"sensorId\":\"north_1\",\"direction\":\"north\",\"phase\":\"");
-    Serial.print(phaseName(currentPhase));
-    Serial.print("\",\"interpretedState\":\"");
-    Serial.print(stateName(currentInterpretedState));
-    Serial.print("\",\"timestampMs\":");
-    Serial.print(millis());
-    Serial.print(",\"valid\":");
-    Serial.print(stateIsValid(currentInterpretedState) ? "true" : "false");
-    Serial.println("}");
-
-    lastSentState = currentInterpretedState;
+    default:
+      return PHASE_ALL_RED_1;
   }
 }
 
@@ -685,14 +950,34 @@ void sendBackendMessageIfNeeded() {
 
 void setup() {
   Serial.begin(115200);
+  delay(1000);
 
-  pinMode(SENSOR_PIN, INPUT_PULLUP);
+  Serial.println();
+  Serial.println("============================================================");
+  Serial.println("SMART TRAFFIC LIGHT START");
+  Serial.println("============================================================");
+
+  initSensor();
 
   Wire.begin(I2C_SDA_PIN, I2C_SCL_PIN);
   mcpInit();
 
-  applyPhase(currentPhase);
+  if (connectToWiFi()) {
+    checkBackendHealth();
+  }
+
   lastPhaseChange = millis();
+  applyPhase(currentPhase);
+
+  Serial.println("Breadboard traffic light controller started");
+  Serial.println("Non-blocking timing with millis()");
+  Serial.println("Vehicle sensor is read from GPIO 6.");
+  Serial.println("Backend JSON is sent after every phase change.");
+  Serial.print("API base URL: ");
+  Serial.println(API_BASE_URL);
+  Serial.print("Traffic endpoint path: ");
+  Serial.println(TRAFFIC_ENDPOINT_PATH);
+  Serial.println("============================================================");
 }
 
 // ============================================================
@@ -700,9 +985,15 @@ void setup() {
 // ============================================================
 
 void loop() {
-  updateTrafficPhase();
-  readSensor();
-  interpretSensorWithCurrentPhase();
-  sendBackendMessageIfNeeded();
+  unsigned long now = millis();
+
+  updateSensor(now);
+  printSensorStatus(now);
+
+  if (now - lastPhaseChange >= getPhaseDuration(currentPhase)) {
+    currentPhase = getNextPhase(currentPhase);
+    lastPhaseChange = now;
+    applyPhase(currentPhase);
+  }
 }
 ```
