@@ -1,4 +1,4 @@
-# Design — Speed camera data model and endpoints
+# Design - Speed camera data model and endpoints
 
 | | |
 |---|---|
@@ -6,7 +6,7 @@
 | **Date** | May 2026 |
 | **Version** | 1.0 |
 | **Classification** | Internal |
-| **Client** | City Sim Learning Group — HvA Smart Cities |
+| **Client** | City Sim Learning Group - HvA Smart Cities |
 | **Company** | The Embedded Alliance |
 
 ---
@@ -26,11 +26,11 @@ What data model and endpoints fit Gurpreet's firmware output?
 
 ---
 
-## Chapter 1 — Data model
+## Chapter 1 - Data model
 
 ### Context
 
-Gurpreet's `speed_camera_s3.ino` outputs 4 fields per measurement: `speed_kmh`, `direction`, `is_violation`, `speed_limit_kmh`. The generic `sensor_readings` table stores `{tile, sensor_type, value, unit}` — one float value per row.
+Gurpreet's `speed_camera_s3.ino` outputs 4 fields per measurement: `speed_kmh`, `direction`, `is_violation`, `speed_limit_kmh`. The generic `sensor_readings` table stores `{tile, sensor_type, value, unit}` - one float value per row.
 
 ### Method
 
@@ -59,7 +59,7 @@ Dedicated table. One row per measurement with all 4 fields. Backend stays statel
 
 ---
 
-## Chapter 2 — Endpoints
+## Chapter 2 - Endpoints
 
 ### Context
 

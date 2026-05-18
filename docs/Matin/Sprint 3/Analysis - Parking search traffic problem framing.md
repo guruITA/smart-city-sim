@@ -1,4 +1,4 @@
-# Analysis — Parking search traffic problem framing
+# Analysis - Parking search traffic problem framing
 
 | | |
 |---|---|
@@ -6,7 +6,7 @@
 | **Date** | May 2026 |
 | **Version** | 1.0 |
 | **Classification** | Internal |
-| **Client** | City Sim Learning Group — HvA Smart Cities |
+| **Client** | City Sim Learning Group - HvA Smart Cities |
 | **Company** | The Embedded Alliance |
 
 ---
@@ -26,7 +26,7 @@ What city problem does my parking tile address, and why was this missing from my
 
 ---
 
-## Chapter 1 — The parking search traffic problem
+## Chapter 1 - The parking search traffic problem
 
 ### Context
 
@@ -52,7 +52,7 @@ The problem is real and documented in literature. My tile addresses it at proof-
 
 ---
 
-## Chapter 2 — What was wrong with my Sprint 1-2 framing
+## Chapter 2 - What was wrong with my Sprint 1-2 framing
 
 ### Context
 

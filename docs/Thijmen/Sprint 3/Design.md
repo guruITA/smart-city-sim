@@ -2,20 +2,21 @@
 
 ## Table of Contents
 
-1. [Introduction](#1-introduction)  
-2. [System Overview](#2-system-overview)  
-3. [Architecture Design](#3-architecture-design)  
-4. [Hardware Design](#4-hardware-design)  
-5. [Software Design](#5-software-design)  
-6. [Data Flow](#6-data-flow)  
-7. [API Design](#7-api-design)  
-8. [Display Rendering Strategy](#8-display-rendering-strategy)  
-9. [Update Mechanism](#9-update-mechanism)  
-10. [Error Handling](#10-error-handling)  
-11. [Reusability & Scalability](#11-reusability--scalability)  
-12. [Bill of Materials (BOM)](#12-bill-of-materials-bom)  
-13. [Circuit Design (Fritzing)](#13-circuit-design-fritzing)  
-14. [Conclusion](#14-conclusion)  
+1. [Introduction](#1-introduction)
+2. [System Overview](#2-system-overview)
+3. [Architecture Design](#3-architecture-design)
+4. [Bill of Materials (BOM)](#4-bill-of-materials-bom)
+5. [Hardware Design](#5-hardware-design)
+6. [Circuit Design (Fritzing)](#6-circuit-design-fritzing)
+7. [Software Design](#7-software-design)
+8. [Data Flow](#8-data-flow)
+9. [API Usage](#9-api-usage)
+10. [Display Rendering Strategy](#10-display-rendering-strategy)
+11. [Update Mechanism](#11-update-mechanism)
+12. [Error Handling](#12-error-handling)
+13. [Reusability & Scalability](#13-reusability--scalability)
+14. [Conclusion](#14-conclusion)
+15. [Previous Work](#15-previous-work)
 
 ---
 
@@ -31,9 +32,9 @@ The purpose of this design is to enable each tile to display dynamic information
 
 Each tile consists of:
 
-* An ESP32 microcontroller
-* A 2.9-inch e-ink display
-* A Wi-Fi connection
+* ESP32 microcontroller
+* 2.9-inch e-ink display
+* Wi-Fi connection
 
 The ESP32 retrieves text data from a backend API every 10 seconds and updates the display only when the content has changed.
 
@@ -54,9 +55,8 @@ The system follows a client-server architecture.
 
 #### Backend (Server):
 
-* Stores display content
-* Exposes API endpoints
-* Returns text data
+* Provides display data through API endpoints
+* Stores and manages the text shown on displays
 
 ### Architecture Flow
 
@@ -68,263 +68,29 @@ The system follows a client-server architecture.
 
 ---
 
-## 4. Hardware Design
+## 4. Bill of Materials (BOM)
+
+| Component     | Quantity | Specification                              | Purchase Reference                                                                                                                    |
+| ------------- | -------- | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------- |
+| ESP32 Board   | 1        | Espressif ESP32-S3-DevKitC-1-N32R16V       | [TinyTronics]([AZ-Delivery](https://www.az-delivery.de/nl/products/2-9-zoll-epaper-display) )                                         |
+| E-ink Display | 1        | MH-ET Live 2.9" (296x128, black/white/red) | [AZ-Delivery](https://www.az-delivery.de/nl/products/2-9-zoll-epaper-display)                                                         |
+| Jumper Wires  | 9        | Male-to-female jumper wires                | [AZ-Delivery](https://www.az-delivery.de/nl/products/40-stk-jumper-wire-female-to-male-20-zentimeter?_pos=1&_psq=jumper&_ss=e&_v=1.0) |
+
+---
+
+## 5. Hardware Design
 
 ### Components
 
-* ESP32
+* ESP32-S3 Development Board
 * MH-ET Live 2.9" e-ink display (296x128, black/white/red)
 * Jumper wires
-* Power supply (USB or battery)
 
 ### Communication Protocol
 
-The display communicates via SPI:
+The display communicates with the ESP32 using SPI.
 
-* VCC → 3.3V
-* GND → GND
-* DIN → MOSI
-* CLK → SCK
-* CS → GPIO
-* DC → GPIO
-* RST → GPIO
-* BUSY → GPIO
-
----
-
-## 5. Software Design
-
-The software is modular:
-
-### 5.1 Wi-Fi Module
-
-* Connects to network
-* Handles reconnection
-
-### 5.2 API Client
-
-* Sends HTTP GET request every 10 seconds
-* Retrieves plain text
-
-### 5.3 Data Manager
-
-* Stores previous text
-* Compares new vs old
-
-### 5.4 Display Controller
-
-* Renders text on e-ink display
-* Handles refresh logic
-
----
-
-## 6. Data Flow
-
-1. ESP32 sends request:
-
-```
-GET /eink-display/text
-```
-
-2. Backend responds:
-
-```json
-The Embedded alliance
-```
-
-3. ESP32:
-
-* Reads text
-* Compares with previous value
-* Updates display if changed
-
----
-
-## 7. API Design
-
-The backend is implemented using FastAPI.
-
-### 7.1 Data Models
-
-#### Request Model
-
-```json
-{
-  "text": "string (1–120 characters)"
-}
-```
-
-#### Response Model
-
-```json
-{
-  "text": "string"
-}
-```
-
----
-
-### 7.2 Endpoints
-
-#### Get Display Text (JSON)
-
-```
-GET /eink-display
-```
-
-Response:
-
-```json
-{
-  "text": "The Embedded alliance"
-}
-```
-
----
-
-#### Get Display Text (Plain Text)
-
-```
-GET /eink-display/text
-```
-
-Response:
-
-```
-The Embedded alliance
-```
-
-This endpoint is used by the ESP32 for efficiency.
-
----
-
-#### Update Display Text
-
-```
-PUT /eink-display
-```
-
-Request:
-
-```json
-{
-  "text": "New city name"
-}
-```
-
-Response:
-
-```json
-{
-  "text": "New city name"
-}
-```
-
----
-
-### 7.3 State Management
-
-The backend stores the current text in memory:
-
-```python
-_display_state = {"text": "The Embedded alliance"}
-```
-
----
-
-## 8. Display Rendering Strategy
-
-Due to e-ink limitations:
-
-* Only update when content changes
-* Use simple text layout
-* Avoid frequent refreshes
-
-### Layout
-
-```bash
-+----------------------+
-|                      |
-|   City Name          |
-|                      |
-|                      |
-+----------------------+
-```
-
----
-
-## 9. Update Mechanism
-
-The ESP32 polls the backend every 10 seconds.
-
-### Logic
-
-```cpp
-if (newText != oldText):
-    updateDisplay()
-```
-
-### Benefits
-
-* Reduces unnecessary refreshes
-* Minimizes ghosting
-* Saves power
-
----
-
-## 10. Error Handling
-
-### Network Errors
-
-* Retry connection
-* Attempt reconnect to Wi-Fi
-
-### Invalid Data
-
-* Ignore response
-* Keep previous display
-
-### Display Errors
-
-* Reinitialize display
-* Reset SPI communication
-
----
-
-## 11. Reusability & Scalability
-
-The system is designed to be reusable:
-
-* No hardcoded display content
-* Same firmware for all devices
-* Backend controls content
-
-### Scalability Options
-
-* Add device identification (MAC address)
-* Store data in PostgreSQL
-* Extend API for multiple tiles
-
----
-
-## 12. Bill of Materials (BOM)
-
-| Component          | Quantity |
-| ------------------ | -------- |
-| ESP32              | 1        |
-| 2.9" E-ink Display | 1        |
-| Jumper Wires       | 9        |
-| Power Supply       | 1        |
-
----
-
-## 13. Circuit Design (Fritzing)
-
-A Fritzing diagram is included to visualize the wiring between the ESP32 and the e-ink display.
-
-![Fritzing diagram E-ink screen](./assets/E-ink-screen-fritzing.png)
-
-Key connections:
+#### Pin Connections
 
 * VCC -> 3.3V
 * GND -> GND
@@ -337,18 +103,189 @@ Key connections:
 
 ---
 
+## 6. Circuit Design (Fritzing)
+
+A Fritzing diagram is included to visualize the wiring between the ESP32 and the e-ink display.
+
+![Fritzing diagram e-ink display](./assets/E-ink-screen-fritzing.png)
+
+---
+
+## 7. Software Design
+
+The software is modular.
+
+### 7.1 Wi-Fi Module
+
+* Connects to Wi-Fi
+* Handles reconnection attempts
+
+### 7.2 API Client
+
+* Sends HTTP GET request every 10 seconds
+* Retrieves plain text from backend
+
+### 7.3 Data Manager
+
+* Stores previous text
+* Compares old and new values
+
+### 7.4 Display Controller
+
+* Renders text on the e-ink display
+* Handles display refresh logic
+
+---
+
+## 8. Data Flow
+
+1. ESP32 sends request:
+
+```http
+GET /eink-display/text
+```
+
+2. Backend responds:
+
+```text
+The Embedded Alliance
+```
+
+3. ESP32:
+
+* Reads text
+* Compares with previous value
+* Updates display if changed
+
+---
+
+## 9. API Usage
+
+The ESP32 uses the following backend endpoints.
+
+### Get Display Text
+
+```http
+GET /eink-display/text
+```
+
+Response:
+
+```text
+The Embedded Alliance
+```
+
+This endpoint is used by the ESP32 because plain text responses are lightweight and efficient.
+
+---
+
+### Update Display Text
+
+```http
+PUT /eink-display
+```
+
+Request:
+
+```json
+{
+  "text": "New city name"
+}
+```
+
+This endpoint allows the backend system to update the text shown on the display.
+
+---
+
+## 10. Display Rendering Strategy
+
+Due to e-ink limitations:
+
+* Only update when content changes
+* Use simple text layout
+* Avoid unnecessary refreshes
+
+### Layout
+
+```bash
++----------------------+
+|                      |
+|     City Name        |
+|                      |
+|                      |
++----------------------+
+```
+
+---
+
+## 11. Update Mechanism
+
+The ESP32 polls the backend every 10 seconds.
+
+### Logic
+
+```cpp
+if (newText != oldText)
+{
+    updateDisplay();
+}
+```
+
+### Benefits
+
+* Reduces unnecessary refreshes
+* Minimizes ghosting
+* Saves power
+
+---
+
+## 12. Error Handling
+
+### Network Errors
+
+* Retry HTTP request
+* Attempt Wi-Fi reconnection
+
+### Invalid Data
+
+* Ignore invalid response
+* Keep previous display content
+
+### Display Errors
+
+* Reinitialize display
+* Reset SPI communication
+
+---
+
+## 13. Reusability & Scalability
+
+The system is designed to be reusable.
+
+* No hardcoded display content
+* Same firmware can run on multiple devices
+* Backend controls all displayed text
+
+### Scalability Options
+
+* Add unique device identification
+* Connect backend to PostgreSQL database
+* Support multiple tiles simultaneously
+
+---
+
 ## 14. Conclusion
 
 This design provides a practical and scalable solution for displaying dynamic text on an e-ink display using an ESP32.
 
-By using a backend-driven approach and polling mechanism, the system avoids hardcoded data and allows easy updates. The design accounts for the limitations of e-ink displays and ensures efficient performance by minimizing unnecessary refreshes.
+By using a backend-driven approach and a polling mechanism, the system avoids hardcoded data and allows easy updates without modifying the firmware. The design also accounts for the limitations of e-ink displays by minimizing unnecessary refreshes.
 
 The result is a reusable system that integrates smoothly into the smart city simulation and can be extended in future iterations.
 
 ---
 
-## 15. Previous work
+## 15. Previous Work
 
 This design document is based on:
 
-- [Analysis Document](https://gitlab.fdmci.hva.nl/studio/smart-cities/projecten/2025-2026-semester-2/city-sim-learning-group/city-the-embedded-alliance-city-sim-learning-group/-/blob/d46fe2c84d66a400dbcb0a60cfd07e5d34edf603/docs/Thijmen/Sprint%203/Analysis.md)
+* [Analysis Document](https://gitlab.fdmci.hva.nl/studio/smart-cities/projecten/2025-2026-semester-2/city-sim-learning-group/city-the-embedded-alliance-city-sim-learning-group/-/blob/d46fe2c84d66a400dbcb0a60cfd07e5d34edf603/docs/Thijmen/Sprint%203/Analysis.md?utm_source=chatgpt.com)

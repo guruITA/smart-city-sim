@@ -1,4 +1,4 @@
-# Realise — Port 80 deployment
+# Realise - Port 80 deployment
 
 | | |
 |---|---|
@@ -6,7 +6,7 @@
 | **Date** | May 2026 |
 | **Version** | 1.0 |
 | **Classification** | Internal |
-| **Client** | City Sim Learning Group — HvA Smart Cities |
+| **Client** | City Sim Learning Group - HvA Smart Cities |
 | **Company** | The Embedded Alliance |
 
 ---
@@ -21,15 +21,15 @@ What was changed to make the backend accessible on port 80?
 
 ---
 
-## Chapter 1 — What was changed
+## Chapter 1 - What was changed
 
 ### Files
 
-**backend/docker-compose.yml** — Port mapping from `"8000:8000"` to `"80:8000"`. The container still runs on 8000 internally. The host maps port 80 to the container.
+**backend/docker-compose.yml** - Port mapping from `"8000:8000"` to `"80:8000"`. The container still runs on 8000 internally. The host maps port 80 to the container.
 
-**backend/deploy.sh** — Health check URL updated from `localhost:8000` to `localhost:80`. Success message updated.
+**backend/deploy.sh** - Health check URL updated from `localhost:8000` to `localhost:80`. Success message updated.
 
-**backend/app/main.py** — Dashboard moved from `/dashboard` to `/`. Opening `http://145.92.8.137/` now shows the dashboard directly.
+**backend/app/main.py** - Dashboard moved from `/dashboard` to `/`. Opening `http://145.92.8.137/` now shows the dashboard directly.
 
 ### Deployment
 
@@ -37,9 +37,9 @@ Deployed via SSH on May 4. Ran `git pull origin main && docker compose up --buil
 
 ### Verification
 
-- `http://145.92.8.137/` — dashboard loads
-- `http://145.92.8.137/docs` — Swagger UI works
-- `http://145.92.8.137/health` — returns 200
+- `http://145.92.8.137/` - dashboard loads
+- `http://145.92.8.137/docs` - Swagger UI works
+- `http://145.92.8.137/health` - returns 200
 - Docker containers restart automatically with `restart: always`
 
 ---
