@@ -29,11 +29,11 @@ The most important realisation choice was that the sensor does not directly cont
 - [11. Conclusion](#11-conclusion)
 - [References](#references)
 - [Appendix A — Real-Life Realisation Photos](#appendix-a--real-life-realisation-photos)
-  - [Figure A1 — Complete prototype overview](#figure-a1--complete-prototype-overview)
-  - [Figure A2 — KY-021 sensor placement at the stop line](#figure-a2--ky-021-sensor-placement-at-the-stop-line)
-  - [Figure A3 — ESP32-S3 and controller side](#figure-a3--esp32-s3-and-controller-side)
-  - [Figure A4 — Serial monitor or backend message proof](#figure-a4--serial-monitor-or-backend-message-proof)
+  - [Figure A1 to A3 — Complete prototype overview](#figure-a1-to-a3--complete-prototype-overview)
+  - [Figure A4 — ESP32-S3 and controller side](#figure-a4--esp32-s3-and-controller-side)
+  - [Figure A5 — Serial monitor or backend message proof](#figure-a5--serial-monitor-or-backend-message-proof)
 - [Appendix B — Final Realisation Code](#appendix-b--final-realisation-code)
+
 
 
 
