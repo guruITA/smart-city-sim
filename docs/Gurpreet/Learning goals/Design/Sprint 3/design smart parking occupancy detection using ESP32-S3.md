@@ -2,7 +2,7 @@
 
 - **Author:** Gurpreet Singh  
 - **Date:** 21-04-2026  
-- **Version:** 1.0  
+- **Version:** 2.0  
 - **Classification:** Internal  
 - **Client:** Mayor Mats Otten  
 - **Company:** The Embedded Alliance  
@@ -110,7 +110,7 @@ Example:
 - Echo Sensor 3 = GPIO16
 - Echo Sensor 4 = GPIO17
 - OLED SDA = GPIO8
-- OLED SCL → GPIO9
+- OLED SCL = GPIO9
 
 This structure keeps the wiring readable and easier to troubleshoot.
 
@@ -130,23 +130,34 @@ This chapter answers the following subquestion:
 
 ### 5.2 Selected components
 
-The following components are selected:
+The following components are selected for the smart parking prototype:
 
-- 1x ESP32-S3  
-- 4x HC-SR04 ultrasonic sensor  
-- 1x OLED display  
-- 1x Breadboard power module  
-- Jumper wires  
-- Breadboard
+- 1x ESP32-S3 microcontroller
+- 4x HC-SR04 ultrasonic sensor
+- 1x OLED display
+- 1x breadboard power module
+- 2x breadboards
+- jumper wires
 
-These components are low-cost, available, and suitable for fast prototyping.
+These components are selected because they match the hardware design from the analysis phase and are suitable for fast prototyping. The parts are also easy to order from common electronics suppliers, which makes the prototype easier to rebuild or repair.
 
 ### 5.3 BOM overview
 
-A Bill of Materials is created to support building and replacement of parts.
+A Bill of Materials is created to support building, ordering, and replacement of parts.
 
-![Bill of materials smart parking](images/BOM.png)  
-*Bill of Materials of the smart parking prototype. Source: generated in Fritzing.*
+The table shows where the main components can be ordered and what the estimated costs are.
+
+| Component | Specification / purpose | Amount | Supplier | Estimated unit price | Estimated total |
+|---|---|---:|---|---:|---:|
+| [Espressif ESP32-S3-DevKitC-1-N16 – 16MB Flash](https://www.tinytronics.nl/en/espressif-esp32-s3-devkitc-1-n16-16mb-flash) | Main microcontroller used to control the sensors, process parking logic and drive the OLED display. | 1x | TinyTronics | €6.59 | €6.59 |
+| [HC-SR04 Ultrasonic Distance Sensor](https://www.tinytronics.nl/nl/sensoren/afstand/ultrasonische-sensor-hc-sr04) | Distance sensor used to detect whether a parking spot is occupied. One sensor is used per parking space. | 4x | TinyTronics | €3.00 | €12.00 |
+| [1.3 inch OLED Display 128×64 pixels White – I2C](https://www.tinytronics.nl/nl/displays/oled/1.3-inch-oled-display-128*64-pixels-wit-i2c) | Display used to show the status of the parking spaces and the number of free spaces. | 1x | TinyTronics | €14.00 | €14.00 |
+| [Keyestudio Breadboard Power Supply 5V and 3.3V – USB-C](https://www.tinytronics.nl/nl/power/spanningsconverters/spanningsregelaars/keyestudio-breadboard-voeding-5v-and-3.3v-usb-c) | External breadboard power supply used to provide stable 5V and 3.3V during prototyping. | 1x | TinyTronics | €3.25 | €3.25 |
+| [Breadboard 830 points](https://www.tinytronics.nl/nl/gereedschap-en-montage/prototyping-toebehoren/breadboards/breadboard-830-points) | Used for building and testing the prototype circuit without soldering. | 2x | TinyTronics | €3.00 | €6.00 |
+| [DuPont Jumper Wire Male-Female 10cm – 10 wires](https://www.tinytronics.nl/nl/kabels-en-connectoren/kabels-en-adapters/prototyping-draden/dupont-compatible-en-jumper/dupont-jumper-draad-male-female-10cm-10-draden) | Jumper wires used to connect sensor modules and display pins to the ESP32-S3 and breadboard. | 1x set | TinyTronics | €0.50 | €0.50 |
+| [DuPont Jumper Wire Male-Male 10cm – 10 wires](https://www.tinytronics.nl/nl/kabels-en-connectoren/kabels-en-adapters/prototyping-draden/dupont-compatible-en-jumper/dupont-jumper-draad-male-male-10cm-10-draden) | Jumper wires used for connections between the ESP32-S3, breadboard and power rails. | 1x set | TinyTronics | €0.50 | €0.50 |
+
+**Estimated total cost:** **€42.84**
 
 ### 5.4 Subconclusion
 
