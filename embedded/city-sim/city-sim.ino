@@ -8,13 +8,6 @@
 
 #define builtin LED_BUILTIN
 
-//  WiFi details
-const char* WIFI_SSID = "";
-const char* WIFI_PASSWORD = "";
-
-// backend URL
-const String API_BASE_URL = "http://:8000";
-
 StreetLight lamp(
   Config::Streetlight::LDR_PIN,
   Config::Streetlight::RELAY_PIN,
@@ -43,14 +36,16 @@ EinkDisplay eink(
   Config::EinkDisplay::BUSY_PIN
 );
 
-Parking parking(Config::Parking::TRIG_PIN, Config::Parking::ECHO1_PIN, Config::Parking::ECHO2_PIN,
-                Config::Parking::ECHO3_PIN, Config::Parking::ECHO4_PIN,
-                Config::Parking::OLED_SDA_PIN, Config::Parking::OLED_SCL_PIN,
-                Config::Parking::SCREEN_WIDTH, Config::Parking::SCREEN_HEIGHT,
-                Config::Parking::OLED_ADDRESS, Config::Parking::SOUND_SPEED,
-                Config::Parking::PARKED_THRESHOLD_ON_CM, Config::Parking::PARKED_THRESHOLD_OFF_CM,
-                Config::Parking::INVALID_DISTANCE_CM, Config::Parking::ECHO_TRAVEL_DIVIDER,
-                Config::Parking::ECHO_TIMEOUT_MICROSECONDS, Config::Parking::UI_REFRESH_INTERVAL_MS,
+Parking parking(Config::Parking::MCP23017_ADDRESS, Config::Parking::TRIG1_PIN,
+                Config::Parking::TRIG2_PIN, Config::Parking::TRIG3_PIN, Config::Parking::TRIG4_PIN,
+                Config::Parking::ECHO1_PIN, Config::Parking::ECHO2_PIN, Config::Parking::ECHO3_PIN,
+                Config::Parking::ECHO4_PIN, Config::Parking::OLED_SDA_PIN,
+                Config::Parking::OLED_SCL_PIN, Config::Parking::SCREEN_WIDTH,
+                Config::Parking::SCREEN_HEIGHT, Config::Parking::OLED_ADDRESS,
+                Config::Parking::SOUND_SPEED, Config::Parking::PARKED_THRESHOLD_ON_CM,
+                Config::Parking::PARKED_THRESHOLD_OFF_CM, Config::Parking::INVALID_DISTANCE_CM,
+                Config::Parking::ECHO_TRAVEL_DIVIDER, Config::Parking::ECHO_TIMEOUT_MICROSECONDS,
+                Config::Parking::UI_REFRESH_INTERVAL_MS,
                 Config::Parking::SENSOR_MEASURE_INTERVAL_MS);
 
 // Railroad crossing tile
@@ -74,13 +69,13 @@ void setup() {
   Serial.begin(115200);
   Serial.println("Setup start");
 
-  if (NetworkController::begin(WIFI_SSID, WIFI_PASSWORD)) {
+  if (NetworkController::begin(Config::Network::WIFI_SSID, Config::Network::WIFI_PASSWORD)) {
     Serial.println("WiFi connected, network fetch availability up");
   } else {
     Serial.println("WiFi not connected, some network features will be skipped");
   }
 
-  NetworkController::setApiBaseUrl(API_BASE_URL);
+  NetworkController::setApiBaseUrl(Config::Network::API_BASE_URL);
   lamp.begin();
   eink.begin();
   eink.startSyncTask();
@@ -94,4 +89,4 @@ void loop() {
   trainSignal.update();
   speedCamera.update();
   parking.update();
-  }
+}

@@ -49,14 +49,15 @@ static bool initCamera() {
   config.xclk_freq_hz = 20000000;
   config.pixel_format = PIXFORMAT_JPEG;
 
-  config.frame_size = FRAMESIZE_QVGA;
-  config.jpeg_quality = 10;
-  config.fb_location = CAMERA_FB_IN_PSRAM;
-
   if (psramFound()) {
+    config.frame_size = FRAMESIZE_UXGA; // 1600x1200
+    config.jpeg_quality = 8; // lager = beter, 8 is stabieler dan 6
+    config.fb_location = CAMERA_FB_IN_PSRAM;
     config.fb_count = 2;
     config.grab_mode = CAMERA_GRAB_LATEST;
   } else {
+    config.frame_size = FRAMESIZE_SVGA; // 800x600 zonder PSRAM
+    config.jpeg_quality = 10;
     config.fb_location = CAMERA_FB_IN_DRAM;
     config.fb_count = 1;
     config.grab_mode = CAMERA_GRAB_WHEN_EMPTY;
@@ -68,11 +69,18 @@ static bool initCamera() {
 
   sensor_t* s = esp_camera_sensor_get();
   if (s) {
-    s->set_hmirror(s, 0);
-    s->set_vflip(s, 1);
-    s->set_brightness(s, 0);
-    s->set_contrast(s, 1);
-    s->set_saturation(s, 0);
+    s->set_hmirror(s, 1);
+    s->set_vflip(s, 0);
+
+    s->set_brightness(s, 1);
+    s->set_contrast(s, 2);
+    s->set_saturation(s, 1);
+
+    s->set_whitebal(s, 1);
+    s->set_awb_gain(s, 1);
+    s->set_exposure_ctrl(s, 1);
+    s->set_gain_ctrl(s, 1);
+    s->set_gainceiling(s, GAINCEILING_4X);
   }
 
   return true;
@@ -118,7 +126,6 @@ static void updatePhotoCapture() {
 
   case CAPTURE_FLASH_ON:
     if (millis() - captureStateStartedMs >= FLASH_PULSE_MS) {
-      digitalWrite(FLASH_LED_PIN, LOW);
       captureState = CAPTURE_STORE_NEW_FRAME;
       captureStateStartedMs = millis();
     }
@@ -126,6 +133,8 @@ static void updatePhotoCapture() {
 
   case CAPTURE_STORE_NEW_FRAME: {
     camera_fb_t* fb = esp_camera_fb_get();
+
+    digitalWrite(FLASH_LED_PIN, LOW);
 
     if (!fb) {
       captureState = CAPTURE_IDLE;
@@ -179,11 +188,6 @@ static void handleRoot() {
   html += "<br><br>";
   html += "<img id='foto' src='/photo?t=" + String(millis()) +
           "' style='max-width:100%;height:auto;border:1px solid #ccc;'>";
-  html += "<script>";
-  html += "setInterval(function(){";
-  html += "document.getElementById('foto').src='/photo?t=' + Date.now();";
-  html += "}, 500);";
-  html += "</script>";
   html += "</body></html>";
 
   server.send(200, "text/html", html);
