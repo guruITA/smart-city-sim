@@ -31,7 +31,8 @@
 const char* API_BASE_URL = "http://145.92.8.137:80";
 
 // Replace this path when the real traffic-light endpoint is available.
-const char* TRAFFIC_ENDPOINT_PATH = "/api/v1/traffic/update";
+const char* TRAFFIC_ENDPOINT_PATH = "/api/v1/traffic";
+// /api/v1/traffic
 
 const unsigned long WIFI_CONNECT_TIMEOUT = 20000;
 const unsigned long HTTP_TIMEOUT = 5000;
@@ -129,22 +130,45 @@ uint8_t bitMask(uint8_t bit) {
   return (1 << bit);
 }
 
-void mcpWriteRegister(uint8_t reg, uint8_t value) {
+bool mcpWriteRegister(uint8_t reg, uint8_t value) {
   Wire.beginTransmission(MCP_ADDR);
   Wire.write(reg);
   Wire.write(value);
-  Wire.endTransmission();
+
+  uint8_t result = Wire.endTransmission();
+
+  if (result != 0) {
+    Serial.print("[MCP] I2C write failed. Register 0x");
+    Serial.print(reg, HEX);
+    Serial.print(" Error code: ");
+    Serial.println(result);
+    return false;
+  }
+
+  return true;
+}
+
+void mcpConfigureOutputs() {
+  mcpWriteRegister(IODIRA, 0x00);
+  mcpWriteRegister(IODIRB, 0x00);
 }
 
 void mcpWriteBoth(uint8_t portAValue, uint8_t portBValue) {
+  // Defensive reconfiguration:
+  // If the MCP23017 reset and went back to input mode,
+  // this restores both ports as outputs before changing LEDs.
+  mcpConfigureOutputs();
+
   mcpWriteRegister(GPIOA, portAValue);
   mcpWriteRegister(GPIOB, portBValue);
 }
 
 void mcpInit() {
-  mcpWriteRegister(IODIRA, 0x00);
-  mcpWriteRegister(IODIRB, 0x00);
-  mcpWriteBoth(0x00, 0x00);
+  mcpConfigureOutputs();
+
+  // Start with all outputs off.
+  mcpWriteRegister(GPIOA, 0x00);
+  mcpWriteRegister(GPIOB, 0x00);
 }
 
 // ============================================================
