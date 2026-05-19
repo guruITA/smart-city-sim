@@ -27,6 +27,7 @@ private:
     unsigned long echoStartUs; // Time when the echo signal started.
     uint8_t occupiedCount; // Counts how many times the spot looks occupied.
     uint8_t freeCount; // Counts how many times the spot looks free.
+    bool backendSynced; // Shows whether this spot was already sent to the backend once.
   };
 
   // I2C address of the MCP23017.
