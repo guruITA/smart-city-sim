@@ -70,6 +70,8 @@ namespace Config {
 
         /** @brief GPIO pin used as SCL for the parking OLED display. */
         constexpr uint8_t OLED_SCL_PIN = 9;
+
+        /** @brief I2C address of the MCP23017 I/O expander. */
         constexpr uint8_t MCP23017_ADDRESS = 0x20;
 
         constexpr uint8_t TRIG1_PIN = 7;
