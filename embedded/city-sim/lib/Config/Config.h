@@ -86,9 +86,17 @@ namespace Config {
         /** @brief MCP23017 pin connected to the trigger pin of ultrasonic sensor 4. */
         constexpr uint8_t TRIG4_PIN = 4;
 
+
+        /** @brief MCP23017 pin connected to the echo pin of ultrasonic sensor 1. */
         constexpr uint8_t ECHO1_PIN = 8;
+
+        /** @brief MCP23017 pin connected to the echo pin of ultrasonic sensor 2. */
         constexpr uint8_t ECHO2_PIN = 9;
+
+        /** @brief MCP23017 pin connected to the echo pin of ultrasonic sensor 3. */
         constexpr uint8_t ECHO3_PIN = 10;
+
+        /** @brief MCP23017 pin connected to the echo pin of ultrasonic sensor 4. */
         constexpr uint8_t ECHO4_PIN = 11;
 
         constexpr int SCREEN_WIDTH = 128;
