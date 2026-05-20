@@ -1,5 +1,31 @@
 # Advice - Recognizing when a car is waiting at the traffic light and sending that information to the backend
 
+## Table of Contents
+- [Introduction](#introduction)
+- [Starting point](#starting-point)
+- [Was my chosen solution suitable](#was-my-chosen-solution-suitable)
+- [What worked well](#what-worked-well)
+  - [1. The solution was simple enough to understand and test](#1-the-solution-was-simple-enough-to-understand-and-test)
+  - [2. It fit well on top of my existing traffic-light prototype](#2-it-fit-well-on-top-of-my-existing-traffic-light-prototype)
+  - [3. It helped me think in traffic states instead of raw inputs](#3-it-helped-me-think-in-traffic-states-instead-of-raw-inputs)
+  - [4. It matched the broader smart-traffic direction of the project](#4-it-matched-the-broader-smart-traffic-direction-of-the-project)
+- [What did not work as strongly](#what-did-not-work-as-strongly)
+  - [1. It is only a simplified representation of a real road loop](#1-it-is-only-a-simplified-representation-of-a-real-road-loop)
+  - [2. Sensor meaning still depends heavily on context](#2-sensor-meaning-still-depends-heavily-on-context)
+  - [3. It can still be sensitive to placement](#3-it-can-still-be-sensitive-to-placement)
+  - [4. It does not yet solve more advanced traffic situations](#4-it-does-not-yet-solve-more-advanced-traffic-situations)
+- [Problems or limitations I found](#problems-or-limitations-i-found)
+- [What I would advise for the next iteration](#what-i-would-advise-for-the-next-iteration)
+  - [1. Keep the interpreted-state approach](#1-keep-the-interpreted-state-approach)
+  - [2. Improve the physical placement and proof](#2-improve-the-physical-placement-and-proof)
+  - [3. Add stronger validation rules in software](#3-add-stronger-validation-rules-in-software)
+  - [4. Make the backend output easier to inspect](#4-make-the-backend-output-easier-to-inspect)
+  - [5. Consider a more realistic traffic sensor later](#5-consider-a-more-realistic-traffic-sensor-later)
+- [My final advice](#my-final-advice)
+- [Conclusion](#conclusion)
+- [References](#references)
+
+
 ## Introduction
 
 In this advice document, I evaluate whether my chosen solution was suitable for recognizing when a car is waiting at the traffic light and sending that information to the backend.
@@ -185,3 +211,5 @@ Wesley. *Smart Traffic Light - When Does a Traffic Light Become Smart.* Used as 
 Wesley. *Traffic Light - first iteration - implementation.* Used as proof that the earlier ESP32-S3 traffic-light base was already working and suitable to extend with sensor-based behavior. 
 
 Wesley. *Traffic Light - first iterion - fritzing.* Used as reference for the value of clear hardware documentation and traceability in the project workflow. 
+
+
