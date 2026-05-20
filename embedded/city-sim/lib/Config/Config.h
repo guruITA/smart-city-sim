@@ -107,6 +107,7 @@ namespace Config {
         /** @brief I2C address of the OLED display. */
         constexpr uint8_t OLED_ADDRESS = 0x3C;
 
+        /** @brief Speed of sound used to calculate distance in centimeters per microsecond. */
         constexpr float SOUND_SPEED = 0.0343f;
         constexpr float PARKED_THRESHOLD_ON_CM = 10.0f;
         constexpr float PARKED_THRESHOLD_OFF_CM = 15.0f;
