@@ -40,3 +40,38 @@ The solution must meet these conditions:
 The problem is not only cosmetic. Hiding the breadboard would make the tile look cleaner, but it would not solve the real embedded-hardware issue. The real issue is that a temporary prototype must become a more permanent physical implementation.
 
 SparkFun explains that solderless breadboards are useful for temporary circuits and prototyping because they allow circuits to be built without soldering (SparkFun Electronics, n.d.-a). That matches how I used the breadboard in the previous sprint. However, the same temporary character is also why the breadboard should not remain the final physical form for a tile-mounted traffic-light system.
+
+
+## Why the breadboard setup is not suitable as the final physical form
+
+The breadboard setup is suitable for testing, but not for the final physical form of this project. On a breadboard, components and wires are placed in temporary contact points. This is practical while I still need to experiment, but it also means that the circuit depends on many removable connections.
+
+SparkFun describes solderless breadboards as useful for temporary circuits and prototyping, and the source explains that they allow circuit building without soldering (SparkFun Electronics, n.d.-a). That is exactly why the breadboard was useful earlier: I could test the ESP32-S3, MCP23017, ULN2803 chips, LED channels, and timing logic before making the build permanent.
+
+For the city tile, the situation is different. The project now needs to be mounted, moved, connected to traffic-light models, and demonstrated. In that situation, the temporary nature of the breadboard becomes a disadvantage. A wire that works during one test can be pulled loose during movement or mounting. A breadboard layout with many jumper wires can also become difficult to inspect when something stops working.
+
+The breadboard also makes the wiring harder to manage as the project grows. The current system contains logic wiring, I2C wiring, driver wiring, external LED power, shared ground, and outgoing LED wires. When all of that stays on a breadboard with jumper wires, it becomes easier to lose track of which wire belongs to which traffic-light channel.
+
+For this reason, the breadboard should be treated as the proven prototype, not as the final physical implementation.
+
+---
+
+## What professionalising means in this learning goal
+
+In this learning goal, professionalising does not mean making a commercial product. It means improving the project from a temporary prototype into a more permanent and controlled embedded build.
+
+For this project, professionalising means:
+
+- moving the circuit from breadboard to perfboard;
+- soldering the important electrical connections;
+- making power and ground routes clear;
+- using fixed connections instead of loose jumper wires;
+- using connectors or clearly grouped wires for the traffic-light models;
+- protecting and organising outgoing wires;
+- keeping the channel mapping traceable;
+- making the circuit testable after soldering;
+- mounting the electronics in or under the tile in a stable way.
+
+This is different from only hiding wires. Hidden wiring is part of the final result, but it is not the main learning. The main learning is how to make the electronics more permanent, traceable, and maintainable.
+
+Adafruit describes Perma-Proto boards as non-solderless versions of breadboards, using a sturdy printed circuit board with a layout that is nearly identical to a breadboard (Adafruit, 2016). I do not have to use that exact product, but the idea supports the chosen direction: move from temporary breadboard wiring to a soldered prototype board while keeping the layout understandable.
