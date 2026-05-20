@@ -109,9 +109,17 @@ namespace Config {
 
         /** @brief Speed of sound used to calculate distance in centimeters per microsecond. */
         constexpr float SOUND_SPEED = 0.0343f;
+
+        /** @brief Distance threshold where a parking spot becomes occupied. */
         constexpr float PARKED_THRESHOLD_ON_CM = 10.0f;
+
+        /** @brief Distance threshold where a parking spot becomes free again. */
         constexpr float PARKED_THRESHOLD_OFF_CM = 15.0f;
+
+        /** @brief Value used when the measured distance is invalid. */
         constexpr float INVALID_DISTANCE_CM = -1.0f;
+
+        /** @brief Divider used because the ultrasonic signal travels to the object and back. */
         constexpr float ECHO_TRAVEL_DIVIDER = 2.0f;
 
         constexpr unsigned long ECHO_TIMEOUT_MICROSECONDS = 30000UL;
