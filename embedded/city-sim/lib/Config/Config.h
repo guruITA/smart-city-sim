@@ -86,7 +86,6 @@ namespace Config {
         /** @brief MCP23017 pin connected to the trigger pin of ultrasonic sensor 4. */
         constexpr uint8_t TRIG4_PIN = 4;
 
-
         /** @brief MCP23017 pin connected to the echo pin of ultrasonic sensor 1. */
         constexpr uint8_t ECHO1_PIN = 8;
 
@@ -99,8 +98,13 @@ namespace Config {
         /** @brief MCP23017 pin connected to the echo pin of ultrasonic sensor 4. */
         constexpr uint8_t ECHO4_PIN = 11;
 
+        /** @brief Width of the OLED display in pixels. */
         constexpr int SCREEN_WIDTH = 128;
+
+        /** @brief Height of the OLED display in pixels. */
         constexpr int SCREEN_HEIGHT = 64;
+
+        /** @brief I2C address of the OLED display. */
         constexpr uint8_t OLED_ADDRESS = 0x3C;
 
         constexpr float SOUND_SPEED = 0.0343f;
