@@ -1,4 +1,5 @@
 #include "Parking.h"
+#include "ParkingNetwork.h"
 
 Parking::Parking(uint8_t mcpAddress, uint8_t trig1Pin, uint8_t trig2Pin, uint8_t trig3Pin,
                  uint8_t trig4Pin, uint8_t echo1Pin, uint8_t echo2Pin, uint8_t echo3Pin,
@@ -16,10 +17,10 @@ Parking::Parking(uint8_t mcpAddress, uint8_t trig1Pin, uint8_t trig2Pin, uint8_t
       _lastUiRefreshMs(0), _lastSensorMeasureMs(0), _currentSensorIndex(0), _parkingWire(0),
       _display(screenWidth, screenHeight, &_parkingWire, -1) {
 
-  _parkingSpots[0] = {trig1Pin, echo1Pin, _invalidDistanceCm, false, IDLE, 0, 0, 0, 0};
-  _parkingSpots[1] = {trig2Pin, echo2Pin, _invalidDistanceCm, false, IDLE, 0, 0, 0, 0};
-  _parkingSpots[2] = {trig3Pin, echo3Pin, _invalidDistanceCm, false, IDLE, 0, 0, 0, 0};
-  _parkingSpots[3] = {trig4Pin, echo4Pin, _invalidDistanceCm, false, IDLE, 0, 0, 0, 0};
+  _parkingSpots[0] = {trig1Pin, echo1Pin, _invalidDistanceCm, false, IDLE, 0, 0, 0, 0, false};
+  _parkingSpots[1] = {trig2Pin, echo2Pin, _invalidDistanceCm, false, IDLE, 0, 0, 0, 0, false};
+  _parkingSpots[2] = {trig3Pin, echo3Pin, _invalidDistanceCm, false, IDLE, 0, 0, 0, 0, false};
+  _parkingSpots[3] = {trig4Pin, echo4Pin, _invalidDistanceCm, false, IDLE, 0, 0, 0, 0, false};
 }
 
 /**
@@ -85,7 +86,30 @@ void Parking::update() {
 
     // When the measurement is finished, update the occupied state.
     if (measurementFinished) {
-      updateOccupiedState(_parkingSpots[_currentSensorIndex]);
+
+      ParkingSpot& currentSpot = _parkingSpots[_currentSensorIndex];
+
+      // Store the old state before updating the spot.
+      bool previousOccupied = currentSpot.occupied;
+
+      // Update the confirmed occupied or free state.
+      updateOccupiedState(currentSpot);
+
+      // Check if the state changed after the measurement.
+      bool stateChanged = previousOccupied != currentSpot.occupied;
+
+      // Send the first known state once, and after that only when the state changes.
+      if (stateChanged || !currentSpot.backendSynced) {
+
+        // Parking spots in the backend start at 1 instead of 0.
+        uint8_t spotNumber = _currentSensorIndex + 1;
+
+        // Send the occupied/free state to the backend.
+        ParkingNetwork::sendSpotUpdate(spotNumber, currentSpot.occupied);
+
+        // Mark this spot as synced with the backend.
+        currentSpot.backendSynced = true;
+      }
 
       // Move to the next parking spot.
       _currentSensorIndex++;
