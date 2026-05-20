@@ -29,3 +29,38 @@ To achieve this learning goal, the first step is to analyse the current Raspberr
 After the analysis, a new deployment design will be created. This design will describe how Docker containers can be used to separate backend services and how HTTPS/SSL can be added to secure the API. The design will include diagrams or explanations of the container structure, data flow and deployment setup.
 
 The implementation will focus on applying the designed improvements where possible within the sprint. This may include updating the Docker Compose configuration, adding or improving container separation, configuring HTTPS/SSL, testing the deployed backend and documenting the results. If full implementation of every reliability feature is not possible, the remaining improvements will be included as recommendations.
+
+## Deliverables
+
+**Analysis document**
+
+- Explain how the backend is currently deployed on the Raspberry Pi
+- Explain how Docker is used in the current setup
+- Identify security risks, such as using HTTP instead of HTTPS
+- Identify reliability risks, such as backend/container/Raspberry Pi failure
+- Define requirements for improving the backend with Docker containers and HTTPS/SSL
+
+**Design document**
+
+- Design an improved Docker-based backend structure
+- Explain the role of each container, such as backend, database and reverse proxy
+- Design how HTTPS/SSL can secure API communication
+- Explain how the improved setup connects to the Raspberry Pi environment
+- Include reliability choices such as persistent volumes, restart policies and health checks
+
+**Realise document**
+
+- Implement or configure multiple Docker containers where possible
+- Implement or configure HTTPS/SSL where possible
+- Test the improved backend deployment on the Raspberry Pi
+- Provide evidence of testing with Swagger, Postman, curl or browser requests
+- Show that the backend remains reachable and functional after the deployment changes
+
+**Advise document**
+
+- Evaluate the improved backend deployment
+- Evaluate the Docker and HTTPS/SSL solution
+- Explain how the changes improve security and reliability
+- Describe limitations and unfinished parts
+- Advise backup/fallback options if the Raspberry Pi crashes
+- Suggest future improvements such as database backups, monitoring, cloud fallback or Kubernetes
