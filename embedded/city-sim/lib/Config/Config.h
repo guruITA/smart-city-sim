@@ -68,6 +68,7 @@ namespace Config {
          /** @brief GPIO pin used as SDA for the parking OLED display. */
         constexpr uint8_t OLED_SDA_PIN = 8;
 
+        /** @brief GPIO pin used as SCL for the parking OLED display. */
         constexpr uint8_t OLED_SCL_PIN = 9;
         constexpr uint8_t MCP23017_ADDRESS = 0x20;
 
