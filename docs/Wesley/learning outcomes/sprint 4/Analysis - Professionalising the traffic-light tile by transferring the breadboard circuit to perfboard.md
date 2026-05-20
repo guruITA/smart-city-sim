@@ -75,3 +75,67 @@ For this project, professionalising means:
 This is different from only hiding wires. Hidden wiring is part of the final result, but it is not the main learning. The main learning is how to make the electronics more permanent, traceable, and maintainable.
 
 Adafruit describes Perma-Proto boards as non-solderless versions of breadboards, using a sturdy printed circuit board with a layout that is nearly identical to a breadboard (Adafruit, 2016). I do not have to use that exact product, but the idea supports the chosen direction: move from temporary breadboard wiring to a soldered prototype board while keeping the layout understandable.
+
+
+## Requirements for the professionalised circuit
+
+The professionalised perfboard version must satisfy both functional and physical requirements.
+
+| ID | Requirement | Priority | Reason |
+|---|---|---|---|
+| R1 | The perfboard circuit must keep the existing traffic-light behaviour. | Must | The project already works on the breadboard, so the transfer may not break the safe sequence. |
+| R2 | The ESP32-S3, MCP23017, ULN2803, external LED power, and shared ground structure must remain the basis. | Must | The current architecture already solves the output and power-switching problem. |
+| R3 | The circuit must have clear power and ground routing. | Must | Power and ground mistakes can make the full system unstable or difficult to debug. |
+| R4 | The traffic-light output channels must be traceable from code to MCP23017 pin to driver input to LED wire. | Must | Debugging becomes difficult if the physical and software mappings no longer match. |
+| R5 | The outgoing wires to the traffic-light models must be grouped and secured. | Must | The tile will contain separate traffic-light models, so the outgoing wiring must not pull loose easily. |
+| R6 | The circuit must be testable in stages after soldering. | Must | A soldered circuit is harder to change, so testing must be possible before final mounting. |
+| R7 | The perfboard must be mountable in or under the city tile. | Should | The circuit should support the physical tile integration. |
+| R8 | The layout should leave space for later sensor or backend-related wiring. | Should | The project is still being extended with smart features. |
+| R9 | The soldering and wiring should be inspectable. | Should | Visual inspection helps find possible solder bridges, weak-looking joints, and wrong connections. |
+| R10 | The setup should remain understandable as a learning project. | Should | A clean but understandable layout is better than a compact layout that becomes impossible to debug. |
+
+These requirements make the learning goal stronger because they focus on embedded-system quality instead of only appearance.
+
+---
+
+## Possible approaches
+
+### Option 1 - keep the breadboard and hide it in the tile
+
+The simplest option would be to keep the current breadboard and hide it inside or under the city tile. This would make the visible tile cleaner, but it would not solve the main technical problem.
+
+The advantage of this option is that it is fast. The current circuit already works, so hiding the existing board would require less rebuilding. It would also reduce the risk of making soldering mistakes during transfer.
+
+The disadvantage is that the electronics would still be temporary. Breadboards are suitable for temporary circuits and prototyping because they do not require soldering (SparkFun Electronics, n.d.-a). Hiding the breadboard would make the project look more finished, but the electrical connections would still depend on removable jumper wires and breadboard contacts.
+
+**Assessment:** This option is not strong enough for this learning goal. It improves appearance, but it does not professionalise the electronics enough.
+
+---
+
+### Option 2 - transfer the circuit to perfboard
+
+The second option is to transfer the circuit to perfboard. With perfboard, I can solder the components and wires into a fixed layout. This makes the circuit more permanent than a solderless breadboard while still being practical for a learning project.
+
+The advantage of perfboard is that I can keep the same circuit architecture while improving the physical build. I can place the MCP23017, ULN2803 chips, resistors, power routes, ground routes, and outgoing wire groups in a planned layout. I can also use the existing breadboard circuit as a reference and transfer it step by step.
+
+This option fits the current project stage. A perfboard version is more permanent than the breadboard, but it does not require the full process of designing, ordering, and validating a custom PCB. Adafruit’s Perma-Proto concept is a useful example of this type of transition, because it keeps a breadboard-like layout while making the connections solderable and more permanent (Adafruit, 2016).
+
+The disadvantage is that soldering introduces new risks. A wrong solder bridge, weak solder joint, reversed connection, or badly routed wire can create faults that are harder to fix than on a breadboard. That means the transfer must be designed and tested carefully.
+
+**Assessment:** This is the best option for this learning goal. It directly addresses the feedback because the learning becomes about professionalising the electronics instead of only hiding the prototype.
+
+---
+
+### Option 3 - design a custom PCB
+
+The third option is to design a custom PCB for the traffic-light controller. This could create a cleaner final electronics solution. A PCB could have fixed traces, connectors, mounting holes, labels, and a compact layout.
+
+The advantage is that a PCB would be the most polished option. It could make the project easier to reproduce and could reduce wiring mistakes after the design is validated.
+
+The disadvantage is that this is probably too large for this learning goal. A custom PCB adds extra work: schematic capture, PCB layout, design-rule checking, manufacturing, delivery time, and possible revision if mistakes are found. It would also make debugging harder if the first PCB version contains an error.
+
+For this project stage, I still need a build that I can realise and test quickly. Perfboard gives me a better balance between permanence and flexibility.
+
+**Assessment:** A custom PCB is a good future improvement, but not the best first professionalisation step.
+
+---
