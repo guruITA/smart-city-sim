@@ -122,8 +122,13 @@ namespace Config {
         /** @brief Divider used because the ultrasonic signal travels to the object and back. */
         constexpr float ECHO_TRAVEL_DIVIDER = 2.0f;
 
+        /** @brief Maximum time to wait for an echo signal before the measurement is invalid. */
         constexpr unsigned long ECHO_TIMEOUT_MICROSECONDS = 30000UL;
+
+        /** @brief Interval for refreshing the parking OLED display. */
         constexpr unsigned long UI_REFRESH_INTERVAL_MS = 250UL;
+
+        /** @brief Interval for updating the parking sensor measurement steps. */
         constexpr unsigned long SENSOR_MEASURE_INTERVAL_MS = 2UL;
     }
 
