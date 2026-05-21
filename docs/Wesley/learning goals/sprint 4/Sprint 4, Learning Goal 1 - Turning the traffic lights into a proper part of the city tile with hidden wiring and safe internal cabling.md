@@ -1,4 +1,4 @@
-# Sprint 3, Learning Goal 2 - Turning the traffic lights into a proper part of the city tile with hidden wiring and safe internal cabling
+# Sprint 4, Learning Goal 1 - Turning the traffic lights into a proper part of the city tile with hidden wiring and safe internal cabling
 
 ## Learning Question
 
