@@ -4,10 +4,10 @@
 |---|---|
 | Title | Analysis Report — Secure and Reliable Embedded-Backend Communication in Smart City Systems |
 | Author | Betül Aydin |
-| Date | [DD Month YYYY] |
+| Date | 21 May 2026 |
 | Version | 1.0 |
 | Classification | Internal |
-| Client | City Sim Learning Group / The Embedded Alliance |
+| Mayor | Mats |
 | Company | Amsterdam University of Applied Sciences |
 | Learning outcome | Analysis |
 | Sprint | Sprint 4 |
@@ -28,44 +28,22 @@
 
 ## 1. Introduction
 
-[Introduce the purpose of this analysis report.]
-
-[Explain that this report investigates the real-world problem of secure and reliable communication between embedded devices and backend systems.]
-
-[Explain that smart city systems often use embedded devices such as sensors, traffic lights, parking sensors and streetlights to send data to backend systems.]
-
-[Explain that this communication must be secure and reliable because the backend may store data, monitor systems, support decisions or control parts of the city.]
-
-[Briefly mention that the City Sim project will be used as a practical case context later in the report.]
-
 ## 2. Research Question and Sub-Questions
 
 ## Main Question
 
-How can embedded-backend communication in smart city systems be made secure and reliable?
+**How can embedded-backend communication in smart city systems be made secure and reliable?**
 
 ## Sub-Questions
 
-1. What is the real-world problem behind embedded-backend communication in smart city systems?
-2. What security risks exist when embedded devices communicate with backend systems?
-3. What reliability risks exist when embedded devices depend on backend systems?
-4. What technical requirements are needed for secure and reliable embedded-backend communication?
-5. How can these findings be applied to the City Sim backend deployment?
+1. **What is the real-world problem behind embedded-backend communication in smart city systems?**
+2. **What security risks can occur when embedded devices communicate with backend systems?**
+3. **What reliability risks can occur when embedded devices depend on backend systems?**
+4. **What requirements are needed to make embedded-backend communication secure and reliable?**
 
 ## 3. Real-World Problem Context
 
 [Focus on the general real-world problem here, not yet too much on City Sim.]
-
-Possible content:
-
-- Smart cities use many small embedded devices.
-- These devices collect data from the physical world.
-- Examples: traffic lights, parking sensors, street lighting, air quality sensors, waste bins, public transport displays.
-- These devices often send data to a backend through HTTP, MQTT or another protocol.
-- The backend stores, processes and sometimes sends commands back.
-- If communication fails, the system may lose data or become unreliable.
-- If communication is not secure, attackers may read, change or fake data.
-- This can affect trust, safety and decision-making.
 
 ## 4. Embedded-Backend Communication in Smart City Systems
 
