@@ -502,8 +502,8 @@ SparkFun Electronics. (n.d.-c). *Working with wire*. SparkFun Learn. Retrieved M
 
 Texas Instruments. (2004). *ULN2803A Darlington transistor arrays* (Rev. C) [Data sheet]. https://cdn.sparkfun.com/assets/f/0/6/6/5/uln2803a.pdf
 
-Wesley. (2026a). *Realisation - Breadboard realisation of the four-way traffic-light setup* [Realisation deliverable].
+Wesley. (2026a). *Realisation - Breadboard realisation of the four-way traffic-light setup* [Realisation deliverable]. https://gitlab.fdmci.hva.nl/studio/smart-cities/projecten/2025-2026-semester-2/city-sim-learning-group/city-the-embedded-alliance-city-sim-learning-group/-/blob/b5f926b9d9d3c148d7a5338833cf6bd165b40239/docs/Wesley/learning%20outcomes/sprint%202/Realisation%20-%20Breadboard%20Realisation%20of%20the%20Four-Way%20Traffic-Light%20Setup.md
 
-Wesley. (2026b). *Advice — Learning goal 1 - Expanding the traffic-light system to multiple traffic lights* [Advice deliverable].
+Wesley. (2026b). *Advice — Learning goal 1 - Expanding the traffic-light system to multiple traffic lights* [Advice deliverable]. https://gitlab.fdmci.hva.nl/studio/smart-cities/projecten/2025-2026-semester-2/city-sim-learning-group/city-the-embedded-alliance-city-sim-learning-group/-/blob/b5f926b9d9d3c148d7a5338833cf6bd165b40239/docs/Wesley/learning%20outcomes/sprint%202/Advice%20%E2%80%94%20Learning%20Goal%201%20-%20Expanding%20the%20traffic-light%20system%20to%20multiple%20traffic%20lights.md
 
-Wesley. (2026c). *Realise - Recognizing when a car is waiting at the traffic light and sending that information to the backend* [Realisation deliverable].
+Wesley. (2026c). *Realise - Recognizing when a car is waiting at the traffic light and sending that information to the backend* [Realisation deliverable]. https://gitlab.fdmci.hva.nl/studio/smart-cities/projecten/2025-2026-semester-2/city-sim-learning-group/city-the-embedded-alliance-city-sim-learning-group/-/blob/b5f926b9d9d3c148d7a5338833cf6bd165b40239/docs/Wesley/learning%20outcomes/sprint%203/Realise%20-%20Recognizing%20when%20a%20car%20is%20waiting%20at%20the%20traffic%20light%20and%20sending%20that%20information%20to%20the%20backend.md
