@@ -3,6 +3,9 @@
 
 #include <Arduino.h>
 
+/**
+ * @brief Class that handles backend communication for the parking system.
+ */
 class ParkingNetwork {
 public:
   static bool sendSpotUpdate(uint8_t spotNumber, bool isOccupied);
