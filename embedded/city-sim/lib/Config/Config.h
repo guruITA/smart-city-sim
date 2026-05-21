@@ -17,6 +17,7 @@ namespace Config {
         constexpr const char* API_BASE_URL = "";
     }
 
+    /** @brief Configuration values for the street light. */
     namespace Streetlight {
 
         /** @brief GPIO pin connected to the analog output of the LDR sensor. */
@@ -63,6 +64,7 @@ namespace Config {
         constexpr unsigned long CAMERA_WIFI_CONNECT_TIMEOUT_MS = 3000;
     }
 
+    /** @brief Configuration values for the parking system. */
     namespace Parking {
 
          /** @brief GPIO pin used as SDA for the parking OLED display. */
