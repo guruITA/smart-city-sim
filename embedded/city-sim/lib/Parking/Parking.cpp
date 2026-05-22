@@ -362,8 +362,10 @@ void Parking::drawStatusScreen() {
     _display.print(i + 1);
     _display.print(": ");
 
-    // Show NO DATA when the distance measurement is invalid.
+    // Show the last confirmed state when the distance measurement is invalid.
     if (_parkingSpots[i].distance < 0) {
+
+      // Show the confirmed occupied or free state.
       _display.println(getStateText(_parkingSpots[i].occupied));
     } else {
 
