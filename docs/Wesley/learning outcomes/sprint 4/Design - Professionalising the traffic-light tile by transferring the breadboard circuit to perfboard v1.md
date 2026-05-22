@@ -7,3 +7,18 @@ At the start of this design phase, I already have a working four-way traffic-lig
 The analysis for this learning goal showed that the main problem is no longer the traffic-light logic itself. The main problem is the physical implementation. A breadboard is useful during prototyping, but it is not the right final form for a circuit that must be mounted in or under a city tile, moved, demonstrated, inspected, and connected to 3D printed traffic-light models.
 
 This design deliverable therefore focuses on the physical and electrical design of the permanent perfboard version. I keep the working traffic-light architecture and design how it should be documented, soldered, labelled, connected, routed, protected, and mounted.
+
+## 1.2 Main design question and sub-questions
+
+The main design question for this deliverable is:
+
+**How can I design a permanent perfboard version of my working four-way traffic-light breadboard circuit so that the circuit remains safe, clear, testable, and suitable for mounting in or under the city tile?**
+
+To keep the scope clear, I answer this main question with four sub-questions. These sub-questions are included here in the introduction instead of being placed in a separate chapter:
+
+1. **How should the perfboard transfer be documented in a Fritzing physical design so the component placement, wiring, connectors, and labels remain clear and buildable?**
+2. **How should the electrical circuit be defined in a professional KiCad schematic so the power, ground, I2C, driver, and LED connections are unambiguous?**
+3. **How should the finished perfboard circuit be mounted and routed in or under the city tile so the wiring is protected and the circuit remains testable?**
+4. **Which components, labels, part numbers, quantities, and prices are needed in the Bill of Materials?**
+
+Each sub-question is answered in its own chapter. Each chapter starts with a short introduction and ends with a sub-conclusion.
