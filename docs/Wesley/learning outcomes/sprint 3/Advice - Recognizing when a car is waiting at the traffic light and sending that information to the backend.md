@@ -1,6 +1,7 @@
 # Advice - Recognizing when a car is waiting at the traffic light and sending that information to the backend
 
 ## Table of Contents
+
 - [Introduction](#introduction)
 - [Starting point](#starting-point)
 - [Was my chosen solution suitable](#was-my-chosen-solution-suitable)
