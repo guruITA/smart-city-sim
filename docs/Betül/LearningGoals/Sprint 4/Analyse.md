@@ -54,6 +54,10 @@ Connected devices are often targets for hackers because they expand the attack s
 - Integrity (Accuracy): Through Man-in-the-Middle (MitM) attacks, a hacker can change data packets. This leads to the backend receiving fake or wrong sensor data. 
 - Availability (Service): Systems are vulnerable to network attacks or software crashes that can stop the device from working.
 
+Reliability and the Single Point of Failure
+Besides hackers, basic systems often fail because of how they are designed. In many prototype setups, the backend acts as a single point of failure. This means that if the main backend service or the hardware (like a Raspberry Pi) crashes, the entire smart city system stops working.
+These failures can be caused by simple hardware errors or mistakes in the software code.
+
 ## 4. Embedded-Backend Communication in Smart City Systems
 
 [Explain how embedded-backend communication normally works.]
