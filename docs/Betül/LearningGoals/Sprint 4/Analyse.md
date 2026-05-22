@@ -47,7 +47,7 @@ TODO: write as last
 
 The growth of the Internet of Things (IoT) has placed small computing devices, known as embedded systems, at the heart of modern cities. These devices manage important tasks like monitoring traffic and environment sensors. However, as these systems move from simple prototypes to real-world use, they face a "dependability gap". This means they are not yet safe, reliable, or secure enough for professional city services.
 
-Security Risks and the CIA Triad
+Security Risks and the CIA Triad  
 Connected devices are often targets for hackers because they expand the attack surface of a network. These risks are usually measured using the CIA triad (Confidentiality, Integrity, and Availability):
 
 - Confidentiality (Privacy): Many devices use unencrypted communication. This allows hackers to "eavesdrop" and steal private data. 
