@@ -22,3 +22,35 @@ To keep the scope clear, I answer this main question with four sub-questions. Th
 4. **Which components, labels, part numbers, quantities, and prices are needed in the Bill of Materials?**
 
 Each sub-question is answered in its own chapter. Each chapter starts with a short introduction and ends with a sub-conclusion.
+
+## 1.3 Scope
+
+This design is limited to the transfer from the working breadboard circuit to a permanent perfboard circuit. It does not redesign the traffic-light sequence, does not replace the MCP23017 and ULN2803 architecture, and does not turn the project into a custom PCB yet.
+
+The design includes:
+
+* Fritzing physical build design;
+* KiCad schematic design;
+* component labels;
+* net labels;
+* power and ground routing;
+* I2C routing;
+* ULN2803 low-side switching;
+* traffic-light connectors;
+* wire grouping;
+* tile mounting;
+* wire routing under the tile;
+* strain relief;
+* test access;
+* Bill of Materials.
+
+The design does not include:
+
+* a new traffic algorithm;
+* a custom manufactured PCB;
+* pedestrian phases;
+* emergency vehicle priority;
+* backend control changes;
+* a full enclosure design.
+
+---
