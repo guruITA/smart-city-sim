@@ -61,6 +61,10 @@ These failures can be caused by simple hardware errors or mistakes in the softwa
 The Hardware Constraint Challenge          
 Fixing these problems is difficult because of the limitations of embedded hardware. Devices like the ESP32 or Raspberry Pi have limited power and memory. Because of these limits, it is hard to run heavy security software or complex monitoring tools without making the device too slow.
 
+The main problem is that standard communication between devices and backends is often too fragile for real-world city operations. A system that does not protect its data or separate its services is not yet suitable for professional use. To reach a professional standard, the architecture must be improved to ensure that data is accurate and services keep running even if a crash occurs.
+
+TODO: add the references with APA-style!!
+
 ## 4. Embedded-Backend Communication in Smart City Systems
 
 [Explain how embedded-backend communication normally works.]
