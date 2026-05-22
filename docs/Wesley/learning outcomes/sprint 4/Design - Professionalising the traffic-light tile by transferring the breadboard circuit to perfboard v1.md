@@ -54,3 +54,18 @@ The design does not include:
 * a full enclosure design.
 
 ---
+
+## 2. Methodology
+
+## 2.1 Design method
+
+I use a step-by-step design method. First, I freeze the current working breadboard architecture, because the perfboard version must behave the same as the working version. After that, I translate the circuit into four design outputs:
+
+| Design output                       | Purpose                                                                                                 |
+| ----------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| Fritzing physical design            | Shows the physical build view: component placement, wires, connectors, and labels.                      |
+| KiCad schematic                     | Defines the electrical circuit professionally with symbols, net labels, power symbols, and title block. |
+| Tile mounting and wire-routing plan | Defines where the finished board sits in or under the tile and how the outgoing wires are protected.    |
+| Bill of Materials                   | Lists all parts with labels, quantities, prices, manufacturer information, and part numbers.            |
+
+This method keeps the design structured. The Fritzing view helps with physical construction. The KiCad schematic helps with electrical correctness. The tile-integration plan helps with mounting and cable protection. The BoM helps with traceability and ordering.
