@@ -76,6 +76,7 @@ namespace Config {
         /** @brief I2C address of the MCP23017 I/O expander. */
         constexpr uint8_t MCP23017_ADDRESS = 0x20;
 
+        /** @brief MCP23017 pin connected to the trigger pin of ultrasonic sensor 1. */
         constexpr uint8_t TRIG1_PIN = 7;
 
         /** @brief MCP23017 pin connected to the trigger pin of ultrasonic sensor 2. */
