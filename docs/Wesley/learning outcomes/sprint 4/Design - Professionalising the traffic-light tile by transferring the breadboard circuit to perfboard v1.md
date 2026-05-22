@@ -69,3 +69,19 @@ I use a step-by-step design method. First, I freeze the current working breadboa
 | Bill of Materials                   | Lists all parts with labels, quantities, prices, manufacturer information, and part numbers.            |
 
 This method keeps the design structured. The Fritzing view helps with physical construction. The KiCad schematic helps with electrical correctness. The tile-integration plan helps with mounting and cable protection. The BoM helps with traceability and ordering.
+
+## 2.2 Design assumptions
+
+The design uses the following assumptions:
+
+| Assumption                                                       | Design consequence                                                                      |
+| ---------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| The current breadboard traffic-light system already works.       | The design preserves the same architecture and output mapping.                          |
+| The ESP32-S3 remains accessible.                                 | The USB connection must stay reachable for programming and serial monitor checks.       |
+| The ESP32-S3 should not directly power all traffic-light LEDs.   | LED power is supplied externally and switched through the ULN2803 chips.                |
+| The MCP23017 and ULN2803 chips should be replaceable if damaged. | DIP sockets are used for the ICs where possible.                                        |
+| The traffic-light models are placed away from the perfboard.     | The outgoing LED wires are grouped into labelled connectors.                            |
+| The LEDs use external LED power.                                 | The perfboard has a separate LED power rail and shared ground.                          |
+| The ULN2803 chips are sink drivers.                              | The LED branches are wired so the ULN2803 pulls the LED return side to ground.          |
+| The design must remain testable after soldering.                 | Test points are added for 3.3V, LED power, GND, SDA, SCL, and selected output channels. |
+| The tile may be moved during demonstration.                      | Outgoing wires need strain relief and should not pull directly on solder joints.        |
