@@ -28,6 +28,8 @@
 
 ## 1. Introduction
 
+TODO: write as last 
+
 ## 2. Research Question and Sub-Questions
 
 ## Main Question
@@ -43,7 +45,7 @@
 
 ## 3. Real-World Problem Context
 
-[Focus on the general real-world problem here, not yet too much on City Sim.]
+The growth of the Internet of Things (IoT) has placed small computing devices, known as embedded systems, at the heart of modern cities. These devices manage important tasks like monitoring traffic and environment sensors. However, as these systems move from simple prototypes to real-world use, they face a "dependability gap". This means they are not yet safe, reliable, or secure enough for professional city services.
 
 ## 4. Embedded-Backend Communication in Smart City Systems
 
