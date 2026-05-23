@@ -67,25 +67,15 @@ TODO: add the references with APA-style!!
 
 ## 4. Embedded-Backend Communication in Smart City Systems
 
-[Explain how embedded-backend communication normally works.]
+In a Smart City ecosystem, the communication between embedded devices and the backend is the foundational "connective tissue" that supports important urban functions. This architecture must balance the resource constraints of embedded hardware with the need for secure transport and backend reliability.
 
-Possible structure:
+**The Communication Flow: A Layered Architecture**
 
-Embedded device  
-→ network connection  
-→ API endpoint / message broker  
-→ backend service  
-→ database  
-→ dashboard / monitoring / control system  
-
-Possible things to explain:
-
-- Embedded devices send JSON or sensor values.
-- Backend validates incoming data.
-- Backend stores data in a database.
-- Backend may provide the data to dashboards.
-- Backend may later send commands back to devices.
-- Communication can be one-way or two-way.
+Professional smart city systems often follow a layered design to manage the flow of data from the physical environment to the user interface:
+- **Embedded Device:** A microcontroller (such as an ESP32) collects data from sensors—monitoring variables like traffic flow or air quality. Due to resource constraints, data is often formatted as lightweight JSON or binary payloads.
+- **Secure Transport (HTTPS/TLS):** Data is transmitted over a network (Wi-Fi, Ethernet, or cellular). To ensure data integrity and confidentiality, HTTPS/TLS is used to encrypt data in transit. While TLS secures the communication channel, database security and device authentication are managed as separate layers.
+- **API Endpoint / Message Broker:** This serves as the formal entry point. While the TLS layer secures the connection, the backend validates the incoming data and can apply additional authentication mechanisms if required, such as API keys or tokens.
+- **Backend Service & Database:** A service (e.g., FastAPI) processes the data and stores it in a database (e.g., PostgreSQL) for historical analysis.
 
 ## 5. Security Risks in Embedded-Backend Communication
 
