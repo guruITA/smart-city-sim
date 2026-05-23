@@ -83,6 +83,18 @@ The choice of protocol dictates the system's responsiveness and efficiency.
 - **HTTP/HTTPS (Request-Response):** This is the standard for web APIs and is effective for sending data to web APIs or configuration updates. However, because it is client-initiated, it is less suitable for direct server-initiated commands, as the server cannot spontaneously send data to the device without the device "polling" first.
 - **MQTT (Publish/Subscribe):** Designed specifically for the IoT, MQTT is highly efficient due to its low overhead. It is better suited for two-way, event-driven communication because a broker can push messages to devices over a persistent connection. Reliability depends on the configured Quality of Service (QoS) level and network stability.
 
+**Backend Reliability and Containerization**
+
+For a smart city system, the backend must remain available so that incoming sensor data can still be received, processed and stored. A container-based deployment tool such as Docker Compose can support backend reliability by separating services and making them easier to manage.
+
+**Service Isolation and Maintenance:** Components such as the API, database, reverse proxy or message broker can run in separate containers. This makes it easier to isolate, restart and maintain individual services.
+
+**Restart Policies and Health Checks:** Docker Compose can use restart policies and health checks to help services recover after crashes or reboots and to detect whether a container is still functioning correctly.
+
+**Persistent Data Management:** Persistent volumes reduce the risk of data loss during container restarts or recreations. However, stronger data protection also requires regular database backups and proper storage management.
+
+Together, HTTPS/TLS and containerization support secure and reliable embedded-backend communication. HTTPS/TLS protects data in transit, while Docker Compose supports service separation, recovery behaviour and persistent data storage.
+
 ## 5. Security Risks in Embedded-Backend Communication
 
 ### 5.1 Unencrypted Communication
