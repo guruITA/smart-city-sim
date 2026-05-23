@@ -77,6 +77,12 @@ Professional smart city systems often follow a layered design to manage the flow
 - **API Endpoint / Message Broker:** This serves as the formal entry point. While the TLS layer secures the connection, the backend validates the incoming data and can apply additional authentication mechanisms if required, such as API keys or tokens.
 - **Backend Service & Database:** A service (e.g., FastAPI) processes the data and stores it in a database (e.g., PostgreSQL) for historical analysis.
 
+**Protocol Comparison: HTTP/HTTPS vs. MQTT**
+
+The choice of protocol dictates the system's responsiveness and efficiency.
+- **HTTP/HTTPS (Request-Response):** This is the standard for web APIs and is effective for sending data to web APIs or configuration updates. However, because it is client-initiated, it is less suitable for direct server-initiated commands, as the server cannot spontaneously send data to the device without the device "polling" first.
+- **MQTT (Publish/Subscribe):** Designed specifically for the IoT, MQTT is highly efficient due to its low overhead. It is better suited for two-way, event-driven communication because a broker can push messages to devices over a persistent connection. Reliability depends on the configured Quality of Service (QoS) level and network stability.
+
 ## 5. Security Risks in Embedded-Backend Communication
 
 ### 5.1 Unencrypted Communication
