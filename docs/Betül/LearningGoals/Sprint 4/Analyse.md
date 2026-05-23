@@ -97,59 +97,38 @@ Together, HTTPS/TLS and containerization support secure and reliable embedded-ba
 
 ## 5. Security Risks in Embedded-Backend Communication
 
+The interaction between embedded hardware and backend services introduces specific attack vectors that can compromise the functionality of a Smart City system. Because these systems often manage operational or sensitive data, addressing security risks is essential to maintain the integrity of urban monitoring and future control functions (Mktg & Mktg, 2023).
+
 ### 5.1 Unencrypted Communication
-
-[Explain the risk of HTTP/plain communication.]
-
-Possible content:
-
-- HTTP does not encrypt data.
-- Data can potentially be read or modified in transit.
-- HTTPS/TLS helps protect confidentiality and integrity.
-- Even sensor data can be sensitive when combined over time.
+Using unencrypted protocols, such as standard HTTP or plain MQTT, creates significant vulnerabilities regarding data confidentiality and integrity.  
+- **Plain Text Transmission:** Standard HTTP transmits data without encryption, allowing unauthorized actors on the network path to read the information.  
+- **Eavesdropping and MitM:** Without transport-level security, systems are vulnerable to Man-in-the-Middle (MitM) attacks, where an attacker intercepts or modifies traffic in transit (Sowa, 2025).  
+- **Data Aggregation Risks:** While individual sensor values may seem minor, the accumulation of such data over time can reveal sensitive operational patterns about city infrastructure.  
+- **Protection via TLS:** Implementing HTTPS/TLS is a common method for encrypting data in transit, significantly reducing the risk of tampering during transmission (Bosch, z.d.).
 
 ### 5.2 Fake or Manipulated Data
-
-[Explain that a backend may receive fake requests.]
-
-Possible content:
-
-- If endpoints are open, other devices/users may send fake data.
-- Fake data can pollute the database.
-- Fake sensor data can lead to wrong decisions.
-- Input validation is needed.
+Backend services that do not properly validate incoming data are susceptible to data pollution and logic errors.
+- **Unauthorized Requests:** If API endpoints are left open and unprotected, malicious actors can send fake sensor readings or status updates (Mktg & Mktg, 2023b).
+- **Database Pollution:** Injected fake data can corrupt historical records, making long-term analysis and monitoring unreliable.
+- **Improper Input Validation:** The backend must be able to handle malformed payloads, invalid data types, or unexpected values. Without robust validation (e.g., via FastAPI/Pydantic schemas), these inputs could lead to application errors or incorrect automated decisions (Sowa, 2025b).
 
 ### 5.3 Weak Authentication or No Authentication
-
-[Explain the risk of not knowing which device sent data.]
-
-Possible content:
-
-- Backend should know which device is allowed to send data.
-- Without authentication, any device may pretend to be a sensor.
-- Later improvements could include API keys, tokens or device certificates.
+A common risk in IoT systems is the inability of the backend to verify the identity of a connecting device.
+- **Identity Verification:** The backend needs a mechanism to distinguish between a legitimate sensor (like an ESP32) and an unauthorized device (Apriorit, 2025).
+- **Device Spoofing:** Without authentication, any device can "pretend" to be a sensor and push data to a specific endpoint, potentially triggering unauthorized actions in future control scenarios (Emq, 2024).
+- **Implementation Options:** While advanced systems may use X.509 digital certificates, prototype implementations often utilize API keys or unique tokens to authorize device access (Bosch, z.d.).
 
 ### 5.4 Exposed Backend Services
-
-[Explain risk of exposing too much.]
-
-Possible content:
-
-- Database should not be directly reachable from outside.
-- API docs may reveal available endpoints.
-- Only necessary ports should be exposed.
-- Internal services should stay inside the Docker network.
+Providing external or unnecessary network access to internal backend components significantly increases the system's attack surface.
+- **Network Isolation:** Services should utilize container-based networking to ensure that internal communication, such as the link between the API and the database is isolated from unauthorized network segments (HiveMQ Team, 2026).
+- **Access Control:** Internal services and databases should generally not be directly reachable from outside the server environment.
+- **Endpoint Visibility:** Publicly available API documentation or exposed debug ports can reveal the internal structure of the system, making it easier for attackers to find entry points (Sowa, 2025c).
 
 ### 5.5 Secrets and Configuration
-
-[Explain risk of hardcoded passwords.]
-
-Possible content:
-
-- Passwords and tokens should not be in source code.
-- Use environment variables.
-- Use `.env.example` for structure, but not real secrets.
-- `.env` should not be committed.
+The management of sensitive credentials, such as database passwords and API tokens, is a frequent point of failure.
+- **Hardcoded Credentials:** Embedding fixed passwords or keys directly into the firmware or source code is a major security flaw, as these can be extracted via static analysis or physical access (Mktg & Mktg, 2023c).
+- **Environment Variables:** A common best practice is managing secrets through environment variables rather than storing them in version control (Apriorit, 2025).
+- **Configuration Security:** Utilizing templates (e.g., .env.example) allows for a consistent structure across development environments without exposing actual secrets in shared repositories.
 
 ## 6. Reliability Risks in Embedded-Backend Communication
 
