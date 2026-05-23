@@ -214,6 +214,17 @@ Patidar, R. (2026a, mei 1). How Embedded Software is Powering the Future of Smar
 
 Craggs, I. (2026, 19 februari). MQTT vs. HTTP for IoT. MQTT Vs. HTTP for IoT. https://www.hivemq.com/blog/mqtt-vs-http-protocols-in-iot-iiot/
 
+Mktg, S., & Mktg, S. (2023c, december 1). The OWASP IoT top 10 vulnerabilities and how to mitigate them. SISA. https://www.sisainfosec.com/blogs/the-owasp-iot-top-10-vulnerabilities-and-how-to-mitigate-them/
+
+
+Sowa, A. (2025c, juli 14). Cybersecurity for Embedded Systems. Somco Software. https://somcosoftware.com/en/blog/cybersecurity-for-embedded-systems#:~:text=A%20single%20security%20flaw%20can%20open%20the%20door,data%E2%80%94functions%20where%20compromise%20could%20lead%20to%20real-world%20harm.
+
+HiveMQ Team. (2026, 19 februari). Securing MQTT Systems - MQTT Security Fundamentals. Securing MQTT Systems - MQTT Security Fundamentals. https://www.hivemq.com/blog/mqtt-security-fundamentals-securing-mqtt-systems/
+
+Emq. (2024, 12 november). Exploring MQTT-SN: A Comprehensive guide. www.emqx.com. https://www.emqx.com/en/blog/connecting-mqtt-sn-devices-using-emqx
+
+Apriorit. (2025, 31 maart). 10 Best Practices to Ensure Embedded System Security. https://www.apriorit.com/dev-blog/690-embedded-systems-attacks
+
 Use this format:
 
 Author/Organisation. (Year). Title. Website or publisher. URL
