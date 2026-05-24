@@ -130,61 +130,10 @@ The management of sensitive credentials, such as database passwords and API toke
 - **Environment Variables:** A common best practice is managing secrets through environment variables rather than storing them in version control (Apriorit, 2025).
 - **Configuration Security:** Utilizing templates (e.g., .env.example) allows for a consistent structure across development environments without exposing actual secrets in shared repositories.
 
-## 6. Reliability Risks in Embedded-Backend Communication
+**6. Reliability Risks in Embedded-Backend Communication**
 
-### 6.1 Backend Service Failure
+Reliability, often referred to as **dependability**, is the system's ability to maintain its service delivery even when internal faults occur. In a Smart City context, a **failure** happens when the system's actual behavior diverges from its expected operation. Identifying these risks is essential for creating a resilient design that ensures important urban functions remain operational despite hardware or software issues.
 
-[Explain what happens if the backend is down.]
-
-Possible content:
-
-- Embedded devices cannot send data.
-- Data may be lost.
-- Dashboards may stop updating.
-- Commands cannot be sent back to devices.
-
-### 6.2 Database Failure
-
-[Explain what happens if the database is unavailable.]
-
-Possible content:
-
-- Backend may receive requests but fail to store them.
-- Historical data can be lost.
-- Application may crash if database dependency is not handled.
-
-### 6.3 Data Loss
-
-[Explain why persistent storage matters.]
-
-Possible content:
-
-- Containers are temporary.
-- Database data should be stored in persistent volumes.
-- Backups are needed for recovery.
-- Without persistence, data can disappear after rebuilds or failures.
-
-### 6.4 Network Instability
-
-[Explain embedded devices may disconnect.]
-
-Possible content:
-
-- WiFi can be unstable.
-- Devices may send repeated or delayed data.
-- Backend should handle missing, duplicate or late messages.
-
-### 6.5 Single Point of Failure
-
-[Explain if everything depends on one server.]
-
-Possible content:
-
-- If one Raspberry Pi/server fails, the whole system may stop.
-- A recovery plan is needed.
-- Future improvements could include backups, monitoring or fallback deployment.
-
----
 
 ## 7. Requirements for Secure and Reliable Embedded-Backend Communication
 
