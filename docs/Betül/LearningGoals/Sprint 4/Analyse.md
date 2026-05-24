@@ -158,6 +158,14 @@ Data loss is a high-impact risk when the system lacks a robust strategy for **pe
 - **Persistent Storage Mapping:** To ensure reliability, database files must be mapped to **persistent storage** on the host machine, ensuring information remains available across these lifecycle events.
 - **The Role of Backups:** While persistent storage protects data during service updates, regular **backups** are still required to recover the system in the event of major hardware failures.
 
+**6.4 Network Instability**
+
+Smart City sensors often rely on wireless connections that are susceptible to environmental influences and interference.
+
+- **Transient Faults:** Signal issues can cause temporary disruptions, resulting in delayed or missing data packets.
+- **Duplicate Data:** When a device re-executes a transmission to compensate for a weak signal, it can lead to the backend receiving duplicate or out-of-order messages.
+- **Backend Resilience:** The backend must be designed to handle these network-induced inconsistencies without crashing or creating duplicate records in the database.
+
 
 ## 7. Requirements for Secure and Reliable Embedded-Backend Communication
 
