@@ -150,6 +150,14 @@ A backend may remain online but become unable to communicate with its database, 
 - **Gaps in Historical Data:** The backend may still receive incoming requests, but the inability to store them leads to gaps in the records used for **monitoring and analysis**.
 - **Application Instability:** If the software does not properly handle database connection errors through robust exception handling, a database failure can cause the entire backend service to crash.
 
+**6.3 Data Loss and Lack of Persistence**
+
+Data loss is a high-impact risk when the system lacks a robust strategy for **persistent storage**.
+
+- **Ephemeral Container Storage:** Containers are temporary by nature; while data might survive a simple restart, it is typically **lost when a container is removed, recreated, or rebuilt** unless explicitly managed.
+- **Persistent Storage Mapping:** To ensure reliability, database files must be mapped to **persistent storage** on the host machine, ensuring information remains available across these lifecycle events.
+- **The Role of Backups:** While persistent storage protects data during service updates, regular **backups** are still required to recover the system in the event of major hardware failures.
+
 
 ## 7. Requirements for Secure and Reliable Embedded-Backend Communication
 
