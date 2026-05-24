@@ -166,6 +166,14 @@ Smart City sensors often rely on wireless connections that are susceptible to en
 - **Duplicate Data:** When a device re-executes a transmission to compensate for a weak signal, it can lead to the backend receiving duplicate or out-of-order messages.
 - **Backend Resilience:** The backend must be designed to handle these network-induced inconsistencies without crashing or creating duplicate records in the database.
 
+**6.5 Single Point of Failure**
+
+Relying on a single physical host (like one Raspberry Pi or server) to run the entire backend infrastructure creates a **Single Point of Failure**.
+
+- **Hardware Vulnerability:** The entire system is vulnerable to common hardware issues such as **power loss, storage failure (e.g., SD-card corruption), or general hardware malfunctions**.
+- **Lack of Redundancy:** Without a standby system or a clear recovery plan, a single hardware fault **can result in service downtime** for the city’s monitoring infrastructure.
+- **Portability as Mitigation:** Utilizing **Docker Compose** helps mitigate this risk by making the infrastructure portable, allowing for faster redeployment on alternative hardware. However, this is only effective if the **necessary data, configuration files, and documentation** are also readily available.
+
 
 ## 7. Requirements for Secure and Reliable Embedded-Backend Communication
 
