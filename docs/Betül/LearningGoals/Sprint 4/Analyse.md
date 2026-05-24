@@ -134,6 +134,14 @@ The management of sensitive credentials, such as database passwords and API toke
 
 Reliability, often referred to as **dependability**, is the system's ability to maintain its service delivery even when internal faults occur. In a Smart City context, a **failure** happens when the system's actual behavior diverges from its expected operation. Identifying these risks is essential for creating a resilient design that ensures important urban functions remain operational despite hardware or software issues.
 
+**6.1 Backend Service Failure**
+
+If the backend service (such as a FastAPI application) crashes or becomes unresponsive, the **link** between the city's sensors and the management logic **is interrupted**.
+
+- **Interruption of Data Reception:** While embedded devices might still collect data locally, they lose their target endpoint and can no longer transmit information to the backend.
+- **Impact on Future Control Functions:** The backend becomes unable to send commands back to the devices, which is a significant risk for **future control functions** that require real-time adjustment based on sensor input.
+- **Frozen Monitoring:** Dashboards stop updating, leaving operators with outdated information that does not reflect the current state of the city.
+
 
 ## 7. Requirements for Secure and Reliable Embedded-Backend Communication
 
