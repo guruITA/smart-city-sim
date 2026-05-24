@@ -142,6 +142,14 @@ If the backend service (such as a FastAPI application) crashes or becomes unresp
 - **Impact on Future Control Functions:** The backend becomes unable to send commands back to the devices, which is a significant risk for **future control functions** that require real-time adjustment based on sensor input.
 - **Frozen Monitoring:** Dashboards stop updating, leaving operators with outdated information that does not reflect the current state of the city.
 
+**6.2 Database Failure**
+
+A backend may remain online but become unable to communicate with its database, often due to configuration errors or resource exhaustion.
+
+- **Loss of Latest System State:** The database often serves as the **"stable memory"** that stores the latest fault-free state of the system. If the database fails, the system loses its current operational context or "checkpoint". Without this saved state, a subsequent restart of the backend would mean the system has no record of the city's most recent status (e.g., the current state of traffic controllers).
+- **Gaps in Historical Data:** The backend may still receive incoming requests, but the inability to store them leads to gaps in the records used for **monitoring and analysis**.
+- **Application Instability:** If the software does not properly handle database connection errors through robust exception handling, a database failure can cause the entire backend service to crash.
+
 
 ## 7. Requirements for Secure and Reliable Embedded-Backend Communication
 
