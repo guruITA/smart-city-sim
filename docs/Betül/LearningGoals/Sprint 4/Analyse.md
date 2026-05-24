@@ -130,11 +130,11 @@ The management of sensitive credentials, such as database passwords and API toke
 - **Environment Variables:** A common best practice is managing secrets through environment variables rather than storing them in version control (Apriorit, 2025).
 - **Configuration Security:** Utilizing templates (e.g., .env.example) allows for a consistent structure across development environments without exposing actual secrets in shared repositories.
 
-**6. Reliability Risks in Embedded-Backend Communication**
+## 6. Reliability Risks in Embedded-Backend Communication
 
 Reliability, often referred to as **dependability**, is the system's ability to maintain its service delivery even when internal faults occur. In a Smart City context, a **failure** happens when the system's actual behavior diverges from its expected operation (Solouki et al., 2024). Identifying these risks is essential for creating a resilient design that ensures important urban functions remain operational despite hardware or software issues (Admin, 2025).
 
-**6.1 Backend Service Failure**
+### 6.1 Backend Service Failure
 
 If the backend service (such as a FastAPI application) crashes or becomes unresponsive, the **link** between the city's sensors and the management logic **is interrupted**.
 
@@ -142,7 +142,7 @@ If the backend service (such as a FastAPI application) crashes or becomes unresp
 - **Impact on Future Control Functions:** The backend becomes unable to send commands back to the devices, which is a significant risk for **future control functions** that require real-time adjustment based on sensor input (Admin, 2025).
 - **Frozen Monitoring:** Dashboards stop updating, leaving operators with outdated information that does not reflect the current state of the city.
 
-**6.2 Database Failure**
+### 6.2 Database Failure
 
 A backend may remain online but become unable to communicate with its database, often due to configuration errors or resource exhaustion.
 
@@ -150,7 +150,7 @@ A backend may remain online but become unable to communicate with its database, 
 - **Gaps in Historical Data:** The backend may still receive incoming requests, but the inability to store them leads to gaps in the records used for **monitoring and analysis**.
 - **Application Instability:** If the software does not properly handle database connection errors through robust exception handling, a database failure can cause the entire backend service to crash (Admin, 2025).
 
-**6.3 Data Loss and Lack of Persistence**
+### 6.3 Data Loss and Lack of Persistence
 
 Data loss is a high-impact risk when the system lacks a robust strategy for **persistent storage**.
 
@@ -158,7 +158,7 @@ Data loss is a high-impact risk when the system lacks a robust strategy for **pe
 - **Persistent Storage Mapping:** To ensure reliability, database files must be mapped to **persistent storage** on the host machine, ensuring information remains available across these lifecycle events (Solouki et al., 2024).
 - **The Role of Backups:** While persistent storage protects data during service updates, regular **backups** are still required to recover the system in the event of major hardware failures.
 
-**6.4 Network Instability**
+### 6.4 Network Instability
 
 Smart City sensors often rely on wireless connections that are susceptible to environmental influences and interference.
 
@@ -166,7 +166,7 @@ Smart City sensors often rely on wireless connections that are susceptible to en
 - **Duplicate Data:** When a device re-executes a transmission to compensate for a weak signal, it can lead to the backend receiving duplicate or out-of-order messages (Solouki et al., 2024).
 - **Backend Resilience:** The backend must be designed to handle these network-induced inconsistencies without crashing or creating duplicate records in the database.
 
-**6.5 Single Point of Failure**
+### 6.5 Single Point of Failure
 
 Relying on a single physical host (like one Raspberry Pi or server) to run the entire backend infrastructure creates a **Single Point of Failure**.
 
@@ -217,6 +217,8 @@ Apriorit. (2025, 31 maart). 10 Best Practices to Ensure Embedded System Security
 Solouki, M. A., Angizi, S., & Violante, M. (2024). Dependability in Embedded Systems: A Survey of Fault Tolerance Methods and Software-Based Mitigation Techniques. https://arxiv.org/html/2404.10509v1#S3
 
 Admin. (2025, 4 augustus). How to Design Fail-Safe Systems for Critical Embedded Applications - Inspiro. Inspiro. https://www.inspiro.nl/en/how-to-design-fail-safe-systems-for-critical-embedded-applications/
+
+W, S. (2026, 25 april). Risk Management in Embedded Projects & Approaches and Best Practices. https://www.linkedin.com/pulse/risk-management-embedded-projects-approaches-best-practices-veber-dce4c/
 
 Use this format:
 
