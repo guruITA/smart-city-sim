@@ -94,6 +94,17 @@ class SpeedCameraStatsResponse(BaseModel):
     max_speed_kmh: float
     violation_rate_percent: float
 
+class CameraRegisterRequest(BaseModel):
+    camera_id: str
+    ip_address: str
+
+
+class CameraInfoResponse(BaseModel):
+    camera_id: str
+    ip_address: str
+    capture_url: str
+    updated_at: datetime
+
 
 class BarrierCreate(BaseModel):
     input_mode: str = Field(..., example="manual", description="Type of input (manual or train)")
