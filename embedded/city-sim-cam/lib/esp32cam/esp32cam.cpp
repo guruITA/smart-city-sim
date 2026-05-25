@@ -3,6 +3,7 @@
 #include "esp_camera.h"
 #include <WebServer.h>
 #include <WiFi.h>
+#include <HTTPClient.h>
 
 static WebServer server(80);
 static camera_fb_t* lastFrame = nullptr;
@@ -84,6 +85,55 @@ static bool initCamera() {
   }
 
   return true;
+}
+
+static bool connectToWiFi() {
+  WiFi.mode(WIFI_STA);
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+
+  unsigned long startedMs = millis();
+
+  while (WiFi.status() != WL_CONNECTED) {
+    if (millis() - startedMs >= WIFI_CONNECT_TIMEOUT_MS) {
+      return false;
+    }
+
+    delay(250);
+  }
+
+  return true;
+}
+
+static bool registerCameraIp() {
+  if (WiFi.status() != WL_CONNECTED) {
+    return false;
+  }
+
+  HTTPClient http;
+  http.begin(BACKEND_CAMERA_REGISTER_URL);
+  http.addHeader("Content-Type", "application/json");
+
+  String ip = WiFi.localIP().toString();
+
+  String body = "{";
+  body += "\"camera_id\":\"";
+  body += CAMERA_ID;
+  body += "\",";
+  body += "\"ip_address\":\"";
+  body += ip;
+  body += "\"";
+  body += "}";
+
+  int httpCode = http.POST(body);
+
+  Serial.print("Register camera IP HTTP code: ");
+  Serial.println(httpCode);
+  Serial.print("Camera IP: ");
+  Serial.println(ip);
+
+  http.end();
+
+  return httpCode >= 200 && httpCode < 300;
 }
 
 static bool isCaptureBusy() {
@@ -182,6 +232,11 @@ static void handleRoot() {
   html += "<meta name='viewport' content='width=device-width, initial-scale=1'>";
   html += "<title>ESP32-CAM Capture Test</title></head><body>";
   html += "<h2>ESP32-CAM Capture Test</h2>";
+
+  html += "<p>Camera IP: ";
+  html += WiFi.localIP().toString();
+  html += "</p>";
+
   html += "<button onclick=\"fetch('/capture').then(() => { ";
   html += "document.getElementById('foto').src='/photo?t=' + Date.now();";
   html += "});\">Maak foto</button>";
@@ -228,14 +283,19 @@ static void handleCapture() {
   server.send(200, "text/plain", "OK");
 }
 
-static void beginWebServer() {
-  WiFi.mode(WIFI_AP);
-  bool apStarted = WiFi.softAP(AP_SSID, AP_PASS);
+static bool beginWebServer() {
+  if (!connectToWiFi()) {
+    return false;
+  }
+
+  registerCameraIp();
 
   server.on("/", HTTP_GET, handleRoot);
   server.on("/photo", HTTP_GET, handlePhoto);
   server.on("/capture", HTTP_GET, handleCapture);
   server.begin();
+
+  return true;
 }
 
 static void updateErrorBlink() {
@@ -274,7 +334,13 @@ void begin() {
     return;
   }
 
-  beginWebServer();
+  if (!beginWebServer()) {
+    controllerState = CONTROLLER_CAMERA_ERROR;
+    blinkState = BLINK_ON;
+    blinkStateStartedMs = millis();
+    digitalWrite(FLASH_LED_PIN, HIGH);
+    return;
+  }
 
   capturePhotoBlockingUntilDone();
 
