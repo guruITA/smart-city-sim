@@ -303,8 +303,8 @@ void SpeedCamera::startCameraTriggerOverWiFi() {
     return;
   }
 
-  Serial.println("Starting camera trigger first. Backend update will be sent after reconnect.");
-  _cameraTriggerState = CAMERA_DISCONNECT_BACKEND_WIFI;
+  Serial.println("Starting camera trigger through backend registered camera URL.");
+  _cameraTriggerState = CAMERA_SEND_CAPTURE_REQUEST;
   _cameraTriggerStateStartedMs = millis();
 }
 
@@ -325,88 +325,31 @@ void SpeedCamera::updateCameraTriggerOverWiFi() {
   case CAMERA_TRIGGER_IDLE:
     return;
 
-  case CAMERA_DISCONNECT_BACKEND_WIFI:
-    Serial.println("Disconnecting backend WiFi...");
-    WiFi.disconnect(false, false);
-
-    _cameraTriggerState = CAMERA_CONNECT_TO_CAMERA_WIFI;
-    _cameraTriggerStateStartedMs = millis();
-    break;
-
-  case CAMERA_CONNECT_TO_CAMERA_WIFI:
-    Serial.println("Connecting to ESP32-CAM WiFi...");
-    WiFi.mode(WIFI_STA);
-    WiFi.begin(Config::SpeedCamera::CAMERA_WIFI_SSID, Config::SpeedCamera::CAMERA_WIFI_PASSWORD);
-
-    _cameraTriggerState = CAMERA_WAIT_FOR_CAMERA_WIFI;
-    _cameraTriggerStateStartedMs = millis();
-    break;
-
-  case CAMERA_WAIT_FOR_CAMERA_WIFI:
-    if (WiFi.status() == WL_CONNECTED) {
-      Serial.println("Connected to ESP32-CAM WiFi.");
-      _cameraTriggerState = CAMERA_SEND_CAPTURE_REQUEST;
-      _cameraTriggerStateStartedMs = millis();
-    } else if (millis() - _cameraTriggerStateStartedMs >=
-               Config::SpeedCamera::CAMERA_WIFI_CONNECT_TIMEOUT_MS) {
-      Serial.println("Could not connect to ESP32-CAM WiFi.");
-      _cameraTriggerState = CAMERA_RECONNECT_BACKEND_WIFI;
-      _cameraTriggerStateStartedMs = millis();
-    }
-    break;
-
   case CAMERA_SEND_CAPTURE_REQUEST: {
-    int httpCode = -1;
-    String response = NetworkController::fetch(_camCaptureUrl, httpCode);
+    String captureUrl;
 
-    Serial.print("Camera trigger HTTP code: ");
-    Serial.println(httpCode);
+    if (SpeedCameraNetwork::getCameraCaptureUrl(captureUrl)) {
+      int httpCode = -1;
+      String response = NetworkController::fetch(captureUrl, httpCode);
 
-    if (httpCode <= 0) {
-      Serial.println("Camera trigger failed.");
+      Serial.print("Camera trigger HTTP code: ");
+      Serial.println(httpCode);
+
+      if (httpCode <= 0) {
+        Serial.println("Camera trigger failed.");
+      } else {
+        Serial.print("Camera response: ");
+        Serial.println(response);
+      }
     } else {
-      Serial.print("Camera response: ");
-      Serial.println(response);
+      Serial.println("Could not get camera capture URL from backend.");
     }
 
-    _cameraTriggerState = CAMERA_DISCONNECT_CAMERA_WIFI;
-    _cameraTriggerStateStartedMs = millis();
+    sendPendingBackendUpdate();
+
+    _cameraTriggerState = CAMERA_TRIGGER_IDLE;
     break;
   }
-
-  case CAMERA_DISCONNECT_CAMERA_WIFI:
-    Serial.println("Disconnecting ESP32-CAM WiFi...");
-    WiFi.disconnect(false, false);
-
-    _cameraTriggerState = CAMERA_RECONNECT_BACKEND_WIFI;
-    _cameraTriggerStateStartedMs = millis();
-    break;
-
-  case CAMERA_RECONNECT_BACKEND_WIFI:
-    Serial.println("Reconnecting to backend WiFi...");
-    WiFi.mode(WIFI_STA);
-    WiFi.begin(Config::Network::WIFI_SSID, Config::Network::WIFI_PASSWORD);
-
-    NetworkController::setApiBaseUrl(Config::Network::API_BASE_URL);
-
-    _cameraTriggerState = CAMERA_WAIT_FOR_BACKEND_WIFI;
-    _cameraTriggerStateStartedMs = millis();
-    break;
-
-  case CAMERA_WAIT_FOR_BACKEND_WIFI:
-    if (WiFi.status() == WL_CONNECTED) {
-      Serial.println("Reconnected to backend WiFi.");
-
-      sendPendingBackendUpdate();
-
-      _cameraTriggerState = CAMERA_TRIGGER_IDLE;
-    } else if (millis() - _cameraTriggerStateStartedMs >=
-               Config::SpeedCamera::CAMERA_WIFI_CONNECT_TIMEOUT_MS) {
-      Serial.println("Failed to reconnect to backend WiFi.");
-
-      _cameraTriggerState = CAMERA_TRIGGER_IDLE;
-    }
-    break;
   }
 }
 
