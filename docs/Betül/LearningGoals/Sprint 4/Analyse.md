@@ -234,11 +234,29 @@ Advanced measures such as network resilience handling, deployment portability, h
 
 ## 8. Relevance to the City Sim Project
 
-[Only here you connect it to your own project.]
+The City Sim project is a small-scale version of the real-world problem described in this analysis. In the project, embedded devices such as ESP32 tiles communicate with a central backend. The backend receives sensor data, stores it and makes it available for monitoring or future control logic.
+
+The current backend is already deployed on a Raspberry Pi and uses a backend service and database. This creates a realistic context for applying the analysis findings. Even though City Sim is a prototype, it still benefits from professional design choices such as secure communication, service separation, persistent storage and recovery planning.
+
+The analysis is relevant to City Sim for several reasons:
+
+- **Secure communication:** If the backend is accessed over plain HTTP, communication is not encrypted. HTTPS/TLS would improve the confidentiality and integrity of data in transit.
+- **Backend reliability:** If the backend service crashes, embedded devices may no longer be able to send data. Restart policies and health checks can reduce this risk.
+- **Database reliability:** If the database fails or data is not stored persistently, sensor history and system state may be lost.
+- **Deployment structure:** Docker Compose can help define services, networks and volumes in a reproducible way, making the backend easier to maintain and redeploy.
+- **Recovery planning:** If the Raspberry Pi fails, the team needs clear deployment documentation and backup/recovery steps.
+
+This means that the Design phase should apply the requirements to the City Sim backend context. The design should focus on a realistic Docker-based backend structure with an API container, database container and optional reverse proxy for HTTPS/TLS. It should also explain which improvements are feasible during the sprint and which improvements should remain as future recommendations.
 
 ## 9. Conclusion
 
-[Answer the main question.]
+This analysis answered the main question: **How can embedded-backend communication in smart city systems be made secure and reliable?**
+
+Embedded-backend communication can be made more secure by protecting data in transit, validating incoming data, managing secrets safely and limiting unnecessary network exposure. HTTPS/TLS helps reduce the risk of eavesdropping and Man-in-the-Middle attacks, while input validation and secret management help prevent unreliable data and credential leaks.
+
+Reliability can be improved by focusing on service availability, persistent storage, recovery behaviour and deployment documentation. Risks such as backend failure, database failure, data loss, network instability and single-server dependency show that a working prototype still needs clear reliability measures.
+
+The most important requirements for a realistic prototype are input validation, secret management, persistent storage and basic deployment documentation. These form the foundation for the Design phase, where the requirements can be applied to the City Sim backend using Docker containers, persistent volumes and an HTTPS/TLS approach where feasible.
 
 ## 10. References
 
