@@ -1,12 +1,22 @@
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
 from sqlalchemy import func as sql_func
+from datetime import datetime
 
 from database import get_db
 from models import SpeedReading
-from schemas import SpeedReadingCreate, SpeedReadingResponse, SpeedCameraStatsResponse
+from schemas import (
+    SpeedReadingCreate,
+    SpeedReadingResponse,
+    SpeedCameraStatsResponse,
+    CameraRegisterRequest,
+    CameraInfoResponse,
+)
 
 router = APIRouter()
+
+
+latest_camera: CameraInfoResponse | None = None
 
 
 @router.post("/", response_model=SpeedReadingResponse, status_code=201)
@@ -86,3 +96,24 @@ def get_speed_stats(db: Session = Depends(get_db)):
         max_speed_kmh=round(max_speed, 2),
         violation_rate_percent=round((violations / total * 100) if total > 0 else 0, 1),
     )
+
+
+@router.post("/camera/register", response_model=CameraInfoResponse)
+def register_camera(data: CameraRegisterRequest):
+    """Register the current IP address of the ESP32-CAM."""
+    global latest_camera
+
+    latest_camera = CameraInfoResponse(
+        camera_id=data.camera_id,
+        ip_address=data.ip_address,
+        capture_url=f"http://{data.ip_address}/capture",
+        updated_at=datetime.utcnow(),
+    )
+
+    return latest_camera
+
+
+@router.get("/camera/latest", response_model=CameraInfoResponse | None)
+def get_latest_camera():
+    """Get the latest registered ESP32-CAM IP address."""
+    return latest_camera
