@@ -246,8 +246,6 @@ The most important requirements for a realistic prototype are input validation, 
 
 ## 10. References
 
-[Add APA-style references here.]
-
 Patidar, R. (2026, 1 mei). How Embedded Software is Powering the Future of Smart Devices. EvinceDev Blog. https://evincedev.com/blog/embedded-software-development-guide/
 
 Abdelzaher, T., Hu, Y., Kara, D., Kimura, T., Misra, A., Ramani, V., Tardieu, O., Wang, T., Wigness, M., & Youssef, A. (2025). The bottlenecks of AI: challenges for embedded and real-time research in a data-centric age. Real-Time Systems, 61(2), 185–236. https://doi.org/10.1007/s11241-025-09452-w
