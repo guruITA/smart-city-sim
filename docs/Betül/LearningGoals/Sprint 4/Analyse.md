@@ -177,7 +177,28 @@ Relying on a single physical host (like one Raspberry Pi or server) to run the e
 
 ## 7. Requirements for Secure and Reliable Embedded-Backend Communication
 
-[Create requirements based on your analysis.]
+The following requirements translate the security and reliability risks from the analysis into practical design goals. The MoSCoW method is used to keep the scope realistic for the current prototype phase.
+
+### 7.1 Must Have Requirements
+
+**R1: Input Validation**
+
+The backend must validate incoming data payloads, for example with Pydantic schemas, to prevent malformed, invalid or unexpected data from being processed.
+
+**R2: Secret Management**
+
+Credentials such as database passwords and API tokens must be managed through environment variables instead of being hardcoded in firmware or source code.
+
+**R3: Persistent Storage**
+
+Database files must be stored in persistent volumes so that data remains available when containers are removed, recreated or rebuilt.
+
+**R4: Basic Deployment Documentation**
+
+The backend deployment steps, environment configuration and basic recovery steps must be documented so the system can be maintained or redeployed by the team.
+
+
+
 
 ## 8. Relevance to the City Sim Project
 
