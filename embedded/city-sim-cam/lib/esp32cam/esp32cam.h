@@ -23,9 +23,15 @@
 
 #define FLASH_LED_PIN 4
 
-static constexpr const char* AP_SSID = "ESP32CAM_CAPTURE";
-static constexpr const char* AP_PASS = "12345678";
+static constexpr const char* WIFI_SSID = "G";
+static constexpr const char* WIFI_PASSWORD = "Guru2002";
 
+static constexpr const char* BACKEND_CAMERA_REGISTER_URL =
+    "http://10.255.103.19/api/v1/speedcamera/camera/register";
+
+static constexpr const char* CAMERA_ID = "esp32cam-1";
+
+static constexpr unsigned long WIFI_CONNECT_TIMEOUT_MS = 15000;
 static constexpr unsigned long PRE_FLASH_WAIT_MS = 5;
 static constexpr unsigned long FLASH_PULSE_MS = 10;
 static constexpr unsigned long ERROR_BLINK_INTERVAL_MS = 100;
