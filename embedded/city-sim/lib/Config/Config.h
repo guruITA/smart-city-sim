@@ -10,11 +10,11 @@ namespace Config {
     namespace Network {
 
         /** @brief WiFi network credentials. */
-        constexpr const char* WIFI_SSID = "";
-        constexpr const char* WIFI_PASSWORD = "";
+        constexpr const char* WIFI_SSID = "G";
+        constexpr const char* WIFI_PASSWORD = "Guru2002";
 
         /** @brief Base URL for the API endpoint. */
-        constexpr const char* API_BASE_URL = "";
+        constexpr const char* API_BASE_URL = "http://10.255.103.19";
     }
 
     /** @brief Configuration values for the street light. */
