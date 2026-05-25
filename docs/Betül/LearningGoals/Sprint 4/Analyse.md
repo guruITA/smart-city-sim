@@ -51,25 +51,23 @@ The findings from this analysis will be used as the foundation for the Design ph
 
 ## 3. Real-World Problem Context
 
-The growth of the Internet of Things (IoT) has placed small computing devices, known as embedded systems, at the heart of modern cities. These devices manage important tasks like monitoring traffic and environment sensors. However, as these systems move from simple prototypes to real-world use, they face a "dependability gap". This means they are not yet safe, reliable, or secure enough for professional city services.
+The growth of the Internet of Things (IoT) has placed small computing devices, known as embedded systems, at the heart of modern cities. These devices manage important tasks like monitoring traffic and environment sensors (Zhou et al., 2023). However, as these systems move from simple prototypes to real-world use, they face a "dependability gap". This means they are not yet safe, reliable, or secure enough for professional city services (Solouki et al., 2024).
 
-Security Risks and the CIA Triad  
-Connected devices are often targets for hackers because they expand the attack surface of a network. These risks are usually measured using the CIA triad (Confidentiality, Integrity, and Availability):
+### Security Risks and the CIA Triad  
+Connected devices are often targets for hackers because they expand the attack surface of a network. These risks are usually measured using the CIA triad (Confidentiality, Integrity, and Availability) (Securing Connected Embedded Systems From Cyber Threats | HCLTech, z.d.):
 
 - Confidentiality (Privacy): Many devices use unencrypted communication. This allows hackers to "eavesdrop" and steal private data. 
-- Integrity (Accuracy): Through Man-in-the-Middle (MitM) attacks, a hacker can change data packets. This leads to the backend receiving fake or wrong sensor data. 
+- Integrity (Accuracy): Through Man-in-the-Middle (MitM) attacks, a hacker can change data packets. This leads to the backend receiving fake or wrong sensor data (Sowa, 2025d). 
 - Availability (Service): Systems are vulnerable to network attacks or software crashes that can stop the device from working.
 
-Reliability and the Single Point of Failure  
+### Reliability and the Single Point of Failure  
 Besides hackers, basic systems often fail because of how they are designed. In many prototype setups, the backend acts as a single point of failure. This means that if the main backend service or the hardware (like a Raspberry Pi) crashes, the entire smart city system stops working.
-These failures can be caused by simple hardware errors or mistakes in the software code. 
+These failures can be caused by simple hardware errors or mistakes in the software code (Admin, 2025b). 
 
-The Hardware Constraint Challenge          
+### The Hardware Constraint Challenge          
 Fixing these problems is difficult because of the limitations of embedded hardware. Devices like the ESP32 or Raspberry Pi have limited power and memory. Because of these limits, it is hard to run heavy security software or complex monitoring tools without making the device too slow.
 
-The main problem is that standard communication between devices and backends is often too fragile for real-world city operations. A system that does not protect its data or separate its services is not yet suitable for professional use. To reach a professional standard, the architecture must be improved to ensure that data is accurate and services keep running even if a crash occurs.
-
-(TODO: add the references with APA-style!!)
+The main problem is that standard communication between devices and backends is often too fragile for real-world city operations. A system that does not protect its data or separate its services is not yet suitable for professional use. To reach a professional standard, the architecture must be improved to ensure that data is accurate and services keep running even if a crash occurs (Apriorit, 2025).
 
 ## 4. Embedded-Backend Communication in Smart City Systems
 
@@ -290,6 +288,8 @@ Solouki, M. A., Angizi, S., & Violante, M. (2024). Dependability in Embedded Sys
 Admin. (2025, 4 augustus). How to Design Fail-Safe Systems for Critical Embedded Applications - Inspiro. Inspiro. https://www.inspiro.nl/en/how-to-design-fail-safe-systems-for-critical-embedded-applications/
 
 W, S. (2026, 25 april). Risk Management in Embedded Projects & Approaches and Best Practices. https://www.linkedin.com/pulse/risk-management-embedded-projects-approaches-best-practices-veber-dce4c/
+
+Zhou, X., Wang, P., Zhou, L., Xun, P., & Lu, K. (2023). A Survey of the Security Analysis of Embedded Devices. Sensors, 23(22), 9221. https://doi.org/10.3390/s23229221 
 
 Use this format:
 
