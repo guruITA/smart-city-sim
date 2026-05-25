@@ -197,7 +197,23 @@ Database files must be stored in persistent volumes so that data remains availab
 
 The backend deployment steps, environment configuration and basic recovery steps must be documented so the system can be maintained or redeployed by the team.
 
+### 7.2 Should Have Requirements
 
+**R5: Transport Encryption**
+
+Communication between embedded devices and the backend should use HTTPS/TLS where possible to protect data in transit from interception or modification.
+
+**R6: Automated Service Recovery**
+
+The backend should use restart policies and health checks to detect failures and recover services where possible.
+
+**R7: Network Isolation**
+
+Internal services, such as the database, should stay inside a private network. Only necessary API endpoints should be exposed, preferably through a reverse proxy.
+
+**R8: Backup and Recovery Strategy**
+
+A backup and recovery process should be described to support recovery from hardware failure, storage corruption or data loss.
 
 
 ## 8. Relevance to the City Sim Project
