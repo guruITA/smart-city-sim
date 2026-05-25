@@ -1,4 +1,4 @@
-# Analyse Template
+# Analyse
 
 | Document information | |
 |---|---|
