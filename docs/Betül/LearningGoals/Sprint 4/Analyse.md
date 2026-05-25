@@ -28,7 +28,13 @@
 
 ## 1. Introduction
 
-TODO: write as last 
+This analysis report investigates how embedded-backend communication in smart city systems can be made more secure and reliable. In smart city environments, embedded devices such as sensors, traffic lights, streetlights and parking systems collect data from the physical environment and send this data to backend systems. These backend systems can then validate, store, process and present the data for monitoring, analysis or future control decisions.
+
+The reason for this analysis is that a basic prototype is not enough for a professional smart city environment. A prototype may work functionally, but it can still be vulnerable if communication is unencrypted, services are not separated, data is not stored persistently or recovery steps are unclear. Therefore, this report focuses on the real-world problem of secure and reliable embedded-backend communication.
+
+The analysis first explains the real-world problem context and the general communication flow between embedded devices and backend systems. It then analyses security risks, such as unencrypted communication, fake data, weak authentication, exposed backend services and unsafe secret management. After that, it analyses reliability risks, such as backend service failure, database failure, data loss, network instability and single points of failure. Based on these risks, the report defines requirements for a secure and reliable embedded-backend architecture.
+
+The findings from this analysis will be used as the foundation for the Design phase, where the requirements can be applied to the City Sim backend context using Docker containers and HTTPS/TLS.
 
 ## 2. Research Question and Sub-Questions
 
@@ -63,13 +69,13 @@ Fixing these problems is difficult because of the limitations of embedded hardwa
 
 The main problem is that standard communication between devices and backends is often too fragile for real-world city operations. A system that does not protect its data or separate its services is not yet suitable for professional use. To reach a professional standard, the architecture must be improved to ensure that data is accurate and services keep running even if a crash occurs.
 
-TODO: add the references with APA-style!!
+(TODO: add the references with APA-style!!)
 
 ## 4. Embedded-Backend Communication in Smart City Systems
 
 In a Smart City ecosystem, the communication between embedded devices and the backend is the foundational "connective tissue" that supports important urban functions. This architecture must balance the resource constraints of embedded hardware with the need for secure transport and backend reliability (Patidar, 2026).
 
-**The Communication Flow: A Layered Architecture**
+### The Communication Flow: A Layered Architecture
 
 Professional smart city systems often follow a layered design to manage the flow of data from the physical environment to the user interface:
 - **Embedded Device:** A microcontroller (such as an ESP32) collects data from sensors—monitoring variables like traffic flow or air quality. Due to resource constraints, data is often formatted as lightweight JSON or binary payloads.
@@ -77,13 +83,13 @@ Professional smart city systems often follow a layered design to manage the flow
 - **API Endpoint / Message Broker:** This serves as the formal entry point. While the TLS layer secures the connection, the backend validates the incoming data and can apply additional authentication mechanisms if required, such as API keys or tokens(Mieruński, 2026).
 - **Backend Service & Database:** A service (e.g., FastAPI) processes the data and stores it in a database (e.g., PostgreSQL) for historical analysis.
 
-**Protocol Comparison: HTTP/HTTPS vs. MQTT**
+### Protocol Comparison: HTTP/HTTPS vs. MQTT
 
 The choice of protocol dictates the system's responsiveness and efficiency.
 - **HTTP/HTTPS (Request-Response):** This is the standard for web APIs and is effective for sending data to web APIs or configuration updates. However, because it is client-initiated, it is less suitable for direct server-initiated commands, as the server cannot spontaneously send data to the device without the device "polling" first (Power by akacia, 阿卡希亞(股)公司, www.akacia.com.tw, 2026).
 - **MQTT (Publish/Subscribe):** Designed specifically for the IoT, MQTT is highly efficient due to its low overhead. It is better suited for two-way, event-driven communication because a broker can push messages to devices over a persistent connection. Reliability depends on the configured Quality of Service (QoS) level and network stability (Vikram, 2026b).
 
-**Backend Reliability and Containerization**
+### Backend Reliability and Containerization
 
 For a smart city system, the backend must remain available so that incoming sensor data can still be received, processed and stored. A container-based deployment tool such as Docker Compose can support backend reliability by separating services and making them easier to manage.
 
@@ -223,7 +229,8 @@ The backend could use API keys or tokens to verify connecting devices and reduce
 
 **R10: Future Advanced Improvements**
 
-Advanced measures such as network resilience handling, deployment portability, hardware-backed security, signed firmware updates, monitoring tools or cloud fallback could be considered in future iterations, but they are outside the current prototype scope.
+Advanced measures such as network resilience handling, deployment portability, hardware-backed security, signed firmware updates, monitoring tools or cloud fallback could be considered in future iterations, but they are outside the current prototype scope. 
+(TODO: IS THIS PROFESSIONAL IF NOT CHANGE!!)
 
 ## 8. Relevance to the City Sim Project
 
