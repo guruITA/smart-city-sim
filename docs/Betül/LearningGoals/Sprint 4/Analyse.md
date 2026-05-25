@@ -215,6 +215,15 @@ Internal services, such as the database, should stay inside a private network. O
 
 A backup and recovery process should be described to support recovery from hardware failure, storage corruption or data loss.
 
+### 7.3 Could Have Requirements
+
+**R9: Device Authentication**
+
+The backend could use API keys or tokens to verify connecting devices and reduce the risk of unauthorized spoofing.
+
+**R10: Future Advanced Improvements**
+
+Advanced measures such as network resilience handling, deployment portability, hardware-backed security, signed firmware updates, monitoring tools or cloud fallback could be considered in future iterations, but they are outside the current prototype scope.
 
 ## 8. Relevance to the City Sim Project
 
