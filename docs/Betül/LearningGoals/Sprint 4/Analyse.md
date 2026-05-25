@@ -24,7 +24,6 @@
 8. Relevance to the City Sim Project  
 9. Conclusion  
 10. References  
-11. Appendix  
 
 ## 1. Introduction
 
@@ -228,23 +227,14 @@ The backend could use API keys or tokens to verify connecting devices and reduce
 **R10: Future Advanced Improvements**
 
 Advanced measures such as network resilience handling, deployment portability, hardware-backed security, signed firmware updates, monitoring tools or cloud fallback could be considered in future iterations, but they are outside the current prototype scope. 
-(TODO: IS THIS PROFESSIONAL IF NOT CHANGE!!)
 
 ## 8. Relevance to the City Sim Project
 
-The City Sim project is a small-scale version of the real-world problem described in this analysis. In the project, embedded devices such as ESP32 tiles communicate with a central backend. The backend receives sensor data, stores it and makes it available for monitoring or future control logic.
+The City Sim project is a small-scale version of the real-world problem described in this analysis. In the project, embedded devices communicate with a central backend that receives, stores and processes sensor data. Even though the system is a prototype, it still benefits from professional design choices such as secure communication, service separation, persistent storage and recovery planning.
 
-The current backend is already deployed on a Raspberry Pi and uses a backend service and database. This creates a realistic context for applying the analysis findings. Even though City Sim is a prototype, it still benefits from professional design choices such as secure communication, service separation, persistent storage and recovery planning.
+The analysis is relevant to City Sim because the backend is deployed on a Raspberry Pi and uses Docker-based backend services. This creates a realistic context for applying the requirements from Chapter 7. For example, HTTPS/TLS can improve communication security, persistent volumes can reduce the risk of data loss, and restart policies or health checks can improve service recovery.
 
-The analysis is relevant to City Sim for several reasons:
-
-- **Secure communication:** If the backend is accessed over plain HTTP, communication is not encrypted. HTTPS/TLS would improve the confidentiality and integrity of data in transit.
-- **Backend reliability:** If the backend service crashes, embedded devices may no longer be able to send data. Restart policies and health checks can reduce this risk.
-- **Database reliability:** If the database fails or data is not stored persistently, sensor history and system state may be lost.
-- **Deployment structure:** Docker Compose can help define services, networks and volumes in a reproducible way, making the backend easier to maintain and redeploy.
-- **Recovery planning:** If the Raspberry Pi fails, the team needs clear deployment documentation and backup/recovery steps.
-
-This means that the Design phase should apply the requirements to the City Sim backend context. The design should focus on a realistic Docker-based backend structure with an API container, database container and optional reverse proxy for HTTPS/TLS. It should also explain which improvements are feasible during the sprint and which improvements should remain as future recommendations.
+The Design phase should therefore apply these requirements to the City Sim backend context. The design should focus on a realistic Docker-based structure with separated services, persistent storage and an HTTPS/TLS approach where feasible within the sprint scope.
 
 ## 9. Conclusion
 
@@ -268,12 +258,9 @@ Power by akacia, 阿卡希亞(股)公司, www.akacia.com.tw. (2026, 10 februari)
 
 Vikram. (2026b, februari 24). MQTT vs. HTTP: Choosing the Right Protocol for Your IoT Project. MQTTfy. https://mqttfy.com/resources/mqtt-vs-http-for-iot
 
-Patidar, R. (2026a, mei 1). How Embedded Software is Powering the Future of Smart Devices. EvinceDev Blog. https://evincedev.com/blog/embedded-software-development-guide/
-
 Craggs, I. (2026, 19 februari). MQTT vs. HTTP for IoT. MQTT Vs. HTTP for IoT. https://www.hivemq.com/blog/mqtt-vs-http-protocols-in-iot-iiot/
 
 Mktg, S., & Mktg, S. (2023c, december 1). The OWASP IoT top 10 vulnerabilities and how to mitigate them. SISA. https://www.sisainfosec.com/blogs/the-owasp-iot-top-10-vulnerabilities-and-how-to-mitigate-them/
-
 
 Sowa, A. (2025c, juli 14). Cybersecurity for Embedded Systems. Somco Software. https://somcosoftware.com/en/blog/cybersecurity-for-embedded-systems#:~:text=A%20single%20security%20flaw%20can%20open%20the%20door,data%E2%80%94functions%20where%20compromise%20could%20lead%20to%20real-world%20harm.
 
@@ -290,25 +277,3 @@ Admin. (2025, 4 augustus). How to Design Fail-Safe Systems for Critical Embedded
 W, S. (2026, 25 april). Risk Management in Embedded Projects & Approaches and Best Practices. https://www.linkedin.com/pulse/risk-management-embedded-projects-approaches-best-practices-veber-dce4c/
 
 Zhou, X., Wang, P., Zhou, L., Xun, P., & Lu, K. (2023). A Survey of the Security Analysis of Embedded Devices. Sensors, 23(22), 9221. https://doi.org/10.3390/s23229221 
-
-Use this format:
-
-Author/Organisation. (Year). Title. Website or publisher. URL
-
-## 11. Appendix
-
-### Appendix A — Notes
-
-[Add notes from your own project here.]
-
-### Appendix B — Evidence
-
-[Add screenshots or command outputs later if needed.]
-
-Possible evidence:
-
-- Current backend access
-- Docker Compose structure
-- Health endpoint
-- Swagger docs
-- Current HTTP access
