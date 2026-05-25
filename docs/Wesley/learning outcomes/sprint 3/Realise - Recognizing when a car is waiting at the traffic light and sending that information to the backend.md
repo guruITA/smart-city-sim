@@ -257,19 +257,34 @@ At this stage, the realisation covers the first working prototype of waiting-car
 
 ## References
 
-Wesley. (2026a). *Analysis - Recognizing when a car is waiting at the traffic light and sending that information to the backend* [Analysis deliverable].
+Wesley. (2026a). *Analysis - Recognizing when a car is waiting at the traffic light and sending that information to the backend* [Analysis deliverable]. https://gitlab.fdmci.hva.nl/studio/smart-cities/projecten/2025-2026-semester-2/city-sim-learning-group/city-the-embedded-alliance-city-sim-learning-group/-/blob/c718540b8fae7ddd4f0a44cd362841b4bc214b23/docs/Wesley/learning%20outcomes/sprint%203/Analysis%20-%20Recognizing%20when%20a%20car%20is%20waiting%20at%20the%20traffic%20light%20and%20sending%20that%20information%20to%20the%20backend.md
 
-Wesley. (2026b). *Design - Recognizing when a car is waiting at the traffic light and sending that information to the backend* [Design deliverable].
 
-Wesley. (2026c). *Realisation - Breadboard Realisation of the Four-Way Traffic-Light Setup* [Realisation deliverable].
 
-Wesley. (2026d). *Advice — Learning Goal 1 - Expanding the traffic-light system to multiple traffic lights* [Advice deliverable].
+Wesley. (2026b). *Design - Recognizing when a car is waiting at the traffic light and sending that information to the backend* [Design deliverable]. https://gitlab.fdmci.hva.nl/studio/smart-cities/projecten/2025-2026-semester-2/city-sim-learning-group/city-the-embedded-alliance-city-sim-learning-group/-/blob/c718540b8fae7ddd4f0a44cd362841b4bc214b23/docs/Wesley/learning%20outcomes/sprint%203/Design%20-%20Recognizing%20when%20a%20car%20is%20waiting%20at%20the%20traffic%20light%20and%20sending%20that%20information%20to%20the%20backend.md
 
-Wesley. (2026e). *Smart Traffic Light - When Does a Traffic Light Become Smart?* [Project document].
 
-Wesley. (2026f). *Sprint 2, Learning Goal 1 - Expanding the traffic-light system to multiple traffic lights* [Learning goal document].
 
-Wesley. (2026g). *Traffic Light - first iteration - implementation* [Project deliverable].
+Wesley. (2026c). *Realisation - Breadboard Realisation of the Four-Way Traffic-Light Setup* [Realisation deliverable]. https://gitlab.fdmci.hva.nl/studio/smart-cities/projecten/2025-2026-semester-2/city-sim-learning-group/city-the-embedded-alliance-city-sim-learning-group/-/blob/c718540b8fae7ddd4f0a44cd362841b4bc214b23/docs/Wesley/learning%20outcomes/sprint%202/Realisation%20-%20Breadboard%20Realisation%20of%20the%20Four-Way%20Traffic-Light%20Setup.md
+
+
+
+Wesley. (2026d). *Advice — Learning Goal 1 - Expanding the traffic-light system to multiple traffic lights* [Advice deliverable]. https://gitlab.fdmci.hva.nl/studio/smart-cities/projecten/2025-2026-semester-2/city-sim-learning-group/city-the-embedded-alliance-city-sim-learning-group/-/blob/c718540b8fae7ddd4f0a44cd362841b4bc214b23/docs/Wesley/learning%20outcomes/sprint%202/Advice%20%E2%80%94%20Learning%20Goal%201%20-%20Expanding%20the%20traffic-light%20system%20to%20multiple%20traffic%20lights.md
+
+
+
+Wesley. (2026e). *Smart Traffic Light - When Does a Traffic Light Become Smart?* [Project document]. https://gitlab.fdmci.hva.nl/studio/smart-cities/projecten/2025-2026-semester-2/city-sim-learning-group/city-the-embedded-alliance-city-sim-learning-group/-/blob/c718540b8fae7ddd4f0a44cd362841b4bc214b23/docs/Wesley/research/Smart%20Traffic%20Light%20-%20When%20Does%20a%20Traffic%20Light%20Become%20Smart.md
+
+
+
+Wesley. (2026f). *Sprint 2, Learning Goal 1 - Expanding the traffic-light system to multiple traffic lights* [Learning goal document]. https://gitlab.fdmci.hva.nl/studio/smart-cities/projecten/2025-2026-semester-2/city-sim-learning-group/city-the-embedded-alliance-city-sim-learning-group/-/blob/c718540b8fae7ddd4f0a44cd362841b4bc214b23/docs/Wesley/learning%20goals/sprint%202/Sprint%202,%20Learning%20Goal%201%20-%20Expanding%20the%20traffic-light%20system%20to%20multiple%20traffic%20lights%20v2.md
+
+
+
+Wesley. (2026g). *Traffic Light - first iteration - implementation* [Project deliverable]. https://gitlab.fdmci.hva.nl/studio/smart-cities/projecten/2025-2026-semester-2/city-sim-learning-group/city-the-embedded-alliance-city-sim-learning-group/-/blob/c718540b8fae7ddd4f0a44cd362841b4bc214b23/docs/Wesley/research/Traffic%20Light%20-%20first%20iteration%20-%20implementation.md
+
+
+
 
 ## Appendix A — Real-Life Realisation Photos
 
