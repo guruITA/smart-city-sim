@@ -27,13 +27,11 @@
 
 ## 1. Introduction
 
-This analysis report investigates how embedded-backend communication in smart city systems can be made more secure and reliable. In smart city environments, embedded devices such as sensors, traffic lights, streetlights and parking systems collect data from the physical environment and send this data to backend systems. These backend systems can then validate, store, process and present the data for monitoring, analysis or future control decisions.
+This analysis report investigates how embedded-backend communication in smart city systems can be made more secure and reliable. In smart city environments, embedded devices such as sensors, traffic lights, streetlights and parking systems collect data from the physical environment and send this data to backend systems. These backend systems can validate, store and process the data for monitoring, analysis or future control decisions.
 
-The reason for this analysis is that a basic prototype is not enough for a professional smart city environment. A prototype may work functionally, but it can still be vulnerable if communication is unencrypted, services are not separated, data is not stored persistently or recovery steps are unclear. Therefore, this report focuses on the real-world problem of secure and reliable embedded-backend communication.
+The reason for this analysis is that a basic working prototype is not automatically suitable for a more professional smart city environment. A prototype may function correctly, but it can still be vulnerable if communication is unencrypted, backend services are not separated, data is not stored persistently or recovery steps are unclear.
 
-The analysis first explains the real-world problem context and the general communication flow between embedded devices and backend systems. It then analyses security risks, such as unencrypted communication, fake data, weak authentication, exposed backend services and unsafe secret management. After that, it analyses reliability risks, such as backend service failure, database failure, data loss, network instability and single points of failure. Based on these risks, the report defines requirements for a secure and reliable embedded-backend architecture.
-
-The findings from this analysis will be used as the foundation for the Design phase, where the requirements can be applied to the City Sim backend context using Docker containers and HTTPS/TLS.
+This report first explains the real-world problem behind embedded-backend communication. It then analyses security risks, reliability risks and the requirements needed to make the communication more secure and dependable. The findings provide the foundation for the Design phase, where the requirements can be applied to the City Sim backend context using Docker containers and HTTPS/TLS.
 
 ## 2. Research Question and Sub-Questions
 
