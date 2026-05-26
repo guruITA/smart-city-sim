@@ -169,3 +169,28 @@ The Fritzing design follows these rules:
 | Power specifications are placed near the power connector.         | The external LED supply must not be confused with 3.3V logic.       |
 | LED connectors are labelled by traffic-light position and colour. | The wiring must be traceable during building and testing.           |
 | Exact board holes or connector pins are visible.                  | The drawing must be useful during soldering and inspection.         |
+
+## 3.5 Fritzing component labels
+
+The following labels are used in the Fritzing design:
+
+| Label   | Component                         | Meaning                                                  |
+| ------- | --------------------------------- | -------------------------------------------------------- |
+| U0      | ESP32-S3 development board        | Main controller                                          |
+| U1      | MCP23017-E/SP                     | I2C I/O expander                                         |
+| U2      | ULN2803A / ULN2803C #1            | Driver for traffic-light channels 1–8                    |
+| U3      | ULN2803A / ULN2803C #2            | Driver for traffic-light channels 9–12 and spare outputs |
+| J1      | Traffic Light 1 connector         | Outgoing wires to traffic light 1                        |
+| J2      | Traffic Light 2 connector         | Outgoing wires to traffic light 2                        |
+| J3      | Traffic Light 3 connector         | Outgoing wires to traffic light 3                        |
+| J4      | Traffic Light 4 connector         | Outgoing wires to traffic light 4                        |
+| J5      | External LED power input          | Regulated external LED power input                       |
+| J6      | ESP32-S3 connection header        | 3.3V, GND, SDA, SCL                                      |
+| J7      | Optional sensor/service connector | Reserved for later tile input wiring                     |
+| R1–R12  | LED current-limiting resistors    | One resistor per lamp channel                            |
+| R13–R14 | I2C pull-up resistors             | SDA and SCL pull-ups                                     |
+| R15     | MCP23017 RESET pull-up            | Keeps MCP23017 out of reset                              |
+| C1      | 100 nF capacitor                  | MCP23017 decoupling                                      |
+| C2      | 100 µF capacitor                  | LED power input buffer                                   |
+| TP1–TP7 | Test points                       | 3.3V, LED power, GND, SDA, SCL, and output test points   |
+
