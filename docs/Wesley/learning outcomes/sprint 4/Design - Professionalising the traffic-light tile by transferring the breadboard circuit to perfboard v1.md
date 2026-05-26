@@ -85,3 +85,31 @@ The design uses the following assumptions:
 | The ULN2803 chips are sink drivers.                              | The LED branches are wired so the ULN2803 pulls the LED return side to ground.          |
 | The design must remain testable after soldering.                 | Test points are added for 3.3V, LED power, GND, SDA, SCL, and selected output channels. |
 | The tile may be moved during demonstration.                      | Outgoing wires need strain relief and should not pull directly on solder joints.        |
+
+## 2.3 Design file structure
+
+The design files are organised as follows:
+
+```text
+docs/Wesley/learning outcomes/sprint 4/
+├── Design - Professionalising the traffic-light tile by transferring the breadboard circuit to perfboard.md
+├── assets/
+│   └── sprint-4-perfboard-design/
+│       ├── fritzing-perfboard-physical-view.png
+│       ├── kicad-schematic-export.pdf
+│       ├── kicad-schematic-export.png
+│       ├── tile-mounting-and-wire-routing-plan.png
+│       ├── bill-of-materials.csv
+│       └── bill-of-materials.png
+└── design-files/
+    ├── traffic-light-perfboard.fzz
+    ├── traffic-light-perfboard.kicad_pro
+    ├── traffic-light-perfboard.kicad_sch
+    └── traffic-light-perfboard.kicad_pcb
+```
+
+The Fritzing file is used only for the physical wiring and build view. The professional schematic is made in KiCad, not in Fritzing. The tile mounting image is a separate drawing and should not repeat the same top-down perfboard component layout.
+
+---
+
+
