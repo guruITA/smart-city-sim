@@ -44,8 +44,15 @@ How should the City Sim backend be designed with Docker containers and HTTPS/TLS
 3. Which reliability measures should be included in the backend design?
 
 ## 3. Design Requirements
-
-[Use the requirements from your Analysis, but shorter.]
+| **ID** | **Requirement** | **Priority** | **How the design responds** |
+| --- | --- | --- | --- |
+| **R1** | **Input validation** | Must | Use FastAPI/Pydantic schemas for incoming payloads to prevent **malformed or invalid data**. |
+| **R2** | **Secret management** | Must | Use environment variables and keep real **`.env`** files out of Git. |
+| **R3** | **Persistent storage** | Must | Store PostgreSQL data in a **Docker volume** to reduce data loss risks during container restarts. |
+| **R4** | **Basic documentation** | Must | Document steps for starting, stopping, checking logs, and basic recovery. |
+| **R5** | **Transport encryption** | Should | Add **HTTPS/TLS** through a reverse proxy where feasible to protect data in transit. |
+| **R6** | **Service recovery** | Should | Use **restart policies** and health checks to **recover automatically where possible**. |
+| **R7** | **Network isolation** | Should | Keep the database internal to the Docker network, exposing only the reverse proxy. |
 
 ## 4. Current Backend Situation
 
