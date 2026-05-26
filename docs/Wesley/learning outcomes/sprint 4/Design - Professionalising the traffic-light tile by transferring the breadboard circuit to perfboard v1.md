@@ -154,3 +154,18 @@ For this design deliverable, the Fritzing physical layout is documented with:
 
 Fritzing 1.0.7 is used as the documented software version because Fritzing lists version 1.0.7 as a release from 15 April 2026 (Fritzing, 2026). ([Fritzing][1])
 
+## 3.4 Fritzing design rules
+
+The Fritzing design follows these rules:
+
+| Rule                                                              | Reason                                                              |
+| ----------------------------------------------------------------- | ------------------------------------------------------------------- |
+| Wires are drawn straight where possible.                          | Straight wiring makes the design easier to follow.                  |
+| Diagonal wires are avoided.                                       | Diagonal wires make it harder to see exact connection points.       |
+| Wires may cross, but connection dots must stay visible.           | A crossing wire must not be confused with an electrical connection. |
+| Components do not overlap.                                        | Every component must remain identifiable.                           |
+| Labels do not cover components.                                   | The design must still be readable when printed or exported.         |
+| Every component has a short code label.                           | The same label is reused in KiCad and the BoM.                      |
+| Power specifications are placed near the power connector.         | The external LED supply must not be confused with 3.3V logic.       |
+| LED connectors are labelled by traffic-light position and colour. | The wiring must be traceable during building and testing.           |
+| Exact board holes or connector pins are visible.                  | The drawing must be useful during soldering and inspection.         |
