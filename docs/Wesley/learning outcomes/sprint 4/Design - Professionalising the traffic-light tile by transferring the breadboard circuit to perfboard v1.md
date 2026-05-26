@@ -217,3 +217,18 @@ The two ULN2803 chips are placed to the right of the MCP23017. This keeps the si
 The traffic-light connectors are placed on the board edge. This prevents outgoing wires from crossing the whole board and makes strain relief easier. Each traffic-light connector is labelled with its traffic-light number and pin function.
 
 The external LED power connector is placed near the LED output side, not near the ESP32-S3 3.3V logic header. This physical separation reduces the chance of confusing 3.3V logic power with external LED power.
+
+## 3.7 Design choices shown in the Fritzing view
+
+The Fritzing design makes the following design choices visible:
+
+| Design choice                                                 | Reason                                                                          |
+| ------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| The ESP32-S3 is not used as the direct LED power source.      | The ESP32-S3 should control logic, while LED current comes from external power. |
+| The MCP23017 is central in the layout.                        | It is the bridge between the controller and the output drivers.                 |
+| ULN2803 chips are placed between MCP23017 and LED connectors. | This matches the signal path and makes debugging easier.                        |
+| Traffic-light wires leave from one board edge.                | This keeps the tile wiring grouped and easier to secure.                        |
+| Power input is labelled near the connector.                   | This prevents wrong voltage connection during testing.                          |
+| One resistor is used per LED channel.                         | Each lamp branch remains independently current-limited.                         |
+| Test points are placed on important nets.                     | The circuit can be checked after soldering and after mounting.                  |
+
