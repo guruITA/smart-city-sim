@@ -113,3 +113,44 @@ The Fritzing file is used only for the physical wiring and build view. The profe
 ---
 
 
+## 3. Fritzing physical design
+
+## 3.1 Chapter introduction
+
+This chapter answers the first sub-question:
+
+**How should the perfboard transfer be documented in a Fritzing physical design so the component placement, wiring, connectors, and labels remain clear and buildable?**
+
+The Fritzing design is used as a physical construction view. It is not used as the professional schematic. The purpose is to show how the circuit is physically arranged on the perfboard, where the components are placed, how the wires are routed on the board, and how the labels match the BoM and schematic.
+
+## 3.2 Purpose of the Fritzing physical design
+
+The Fritzing design is useful because it communicates the physical build in a visual way. For this project, that matters because the circuit contains multiple ICs, two power areas, many LED channels, and outgoing wires to four traffic-light models.
+
+The Fritzing design must make clear:
+
+* where the ESP32-S3 connection is placed;
+* where the MCP23017 is placed;
+* where both ULN2803 chips are placed;
+* where the 3.3V logic route is located;
+* where the external LED power route is located;
+* where the shared ground route is located;
+* where the traffic-light connectors leave the board;
+* which connector belongs to which traffic light;
+* which wires are SDA and SCL;
+* which wires are LED power and switched LED returns.
+
+## 3.3 Fritzing software version and file location
+
+For this design deliverable, the Fritzing physical layout is documented with:
+
+| Item                           | Value                                                  |
+| ------------------------------ | ------------------------------------------------------ |
+| Software                       | Fritzing                                               |
+| Version used for documentation | Fritzing 1.0.7                                         |
+| File name                      | `traffic-light-perfboard.fzz`                          |
+| Exported image                 | `fritzing-perfboard-physical-view.png`                 |
+| Storage location               | `docs/Wesley/learning outcomes/sprint 4/design-files/` |
+
+Fritzing 1.0.7 is used as the documented software version because Fritzing lists version 1.0.7 as a release from 15 April 2026 (Fritzing, 2026). ([Fritzing][1])
+
