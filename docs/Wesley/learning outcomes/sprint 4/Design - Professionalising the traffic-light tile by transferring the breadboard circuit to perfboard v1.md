@@ -194,3 +194,26 @@ The following labels are used in the Fritzing design:
 | C2      | 100 µF capacitor                  | LED power input buffer                                   |
 | TP1–TP7 | Test points                       | 3.3V, LED power, GND, SDA, SCL, and output test points   |
 
+## 3.6 Fritzing physical build view
+
+Before showing the Fritzing image, it is important to define what the diagram represents. The diagram is not a schematic and not a tile-mounting drawing. It is the physical build view for the perfboard transfer. It shows how the components and board-level wires are arranged so the breadboard circuit can be transferred in a controlled way.
+
+![Figure 1. Fritzing physical perfboard design with labelled components and outgoing traffic-light connectors](assets/sprint-4-perfboard-design/fritzing-perfboard-physical-view.png)
+
+*Figure 1. Fritzing physical view of the perfboard transfer design. The diagram shows the ESP32-S3 connection, MCP23017, two ULN2803 chips, external LED power input, shared ground, test points, and labelled outgoing traffic-light connectors. This image is exported from `traffic-light-perfboard.fzz`.*
+
+The Fritzing design shows the circuit in the same functional order as the working breadboard version:
+
+```text
+ESP32-S3 connection side -> MCP23017 -> ULN2803 driver stage -> traffic-light connectors
+```
+
+The ESP32-S3 connection is placed on the left side of the perfboard. This keeps the USB side accessible and makes it clear that the ESP32-S3 is the controller, not the LED power source.
+
+The MCP23017 is placed near the ESP32-S3 connection because it needs the I2C lines, 3.3V logic power, and ground. The SDA and SCL wires are kept short and parallel where practical. The I2C pull-up resistors are placed close to the MCP23017 side of the bus.
+
+The two ULN2803 chips are placed to the right of the MCP23017. This keeps the signal direction readable: the MCP23017 outputs go to the ULN2803 inputs, and the ULN2803 outputs go to the LED connector area.
+
+The traffic-light connectors are placed on the board edge. This prevents outgoing wires from crossing the whole board and makes strain relief easier. Each traffic-light connector is labelled with its traffic-light number and pin function.
+
+The external LED power connector is placed near the LED output side, not near the ESP32-S3 3.3V logic header. This physical separation reduces the chance of confusing 3.3V logic power with external LED power.
