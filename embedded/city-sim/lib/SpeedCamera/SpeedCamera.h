@@ -55,6 +55,14 @@ private:
   unsigned long _lastMeasurementDoneMs;
   unsigned long _lastUiRefresh;
 
+  bool _okMeasurementWaitingForSpeed;
+  float _okMeasurementSpeedKmh;
+  unsigned long _okMeasurementStartMs;
+
+  bool _tooFastMeasurementWaitingForSpeed;
+  float _tooFastMeasurementSpeedKmh;
+  unsigned long _tooFastMeasurementStartMs;
+
   volatile bool _ir1EdgeDetected;
   volatile bool _ir2EdgeDetected;
   volatile unsigned long _ir1EdgeTimeUs;
