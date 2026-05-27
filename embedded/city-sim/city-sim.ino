@@ -24,8 +24,7 @@ SpeedCamera speedCamera(Config::SpeedCamera::IR1_PIN, Config::SpeedCamera::IR2_P
                         Config::SpeedCamera::MEASUREMENT_COOLDOWN_MS,
                         Config::SpeedCamera::RESULT_SCREEN_HOLD_MS,
                         Config::SpeedCamera::BOOT_SCREEN_HOLD_MS,
-                        Config::SpeedCamera::UI_REFRESH_INTERVAL_MS,
-                        Config::SpeedCamera::CAMERA_CAPTURE_URL);
+                        Config::SpeedCamera::UI_REFRESH_INTERVAL_MS);
 
 EinkDisplay eink(
   Config::EinkDisplay::CLK_PIN,
