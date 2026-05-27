@@ -109,12 +109,18 @@ void SpeedCamera::update() {
     _display.clearDisplay();
     _display.setTextColor(SSD1306_WHITE);
 
+    _display.setTextSize(1);
+    _display.setCursor(38, 0);
+    _display.println("GOOD JOB!");
+
+    _display.drawLine(0, 12, 127, 12, SSD1306_WHITE);
+
     _display.setTextSize(2);
-    _display.setCursor(20, 22);
+    _display.setCursor(20, 26);
     _display.print(_okMeasurementSpeedKmh, 1);
 
     _display.setTextSize(1);
-    _display.setCursor(88, 30);
+    _display.setCursor(88, 34);
     _display.println("km/u");
 
     _display.display();
@@ -129,7 +135,7 @@ void SpeedCamera::update() {
     _display.setTextColor(SSD1306_WHITE);
 
     _display.setTextSize(1);
-    _display.setCursor(0, 0);
+    _display.setCursor(38, 0);
     _display.println("TOO FAST!");
     _display.drawLine(0, 12, 127, 12, SSD1306_WHITE);
 
@@ -140,11 +146,6 @@ void SpeedCamera::update() {
     _display.setTextSize(1);
     _display.setCursor(88, 30);
     _display.println("km/u");
-
-    _display.setCursor(0, 52);
-    _display.print("Allowed: ");
-    _display.print(_speedLimitKmh, 0);
-    _display.println(" km/u");
 
     _display.display();
 
@@ -244,7 +245,7 @@ void SpeedCamera::drawStatusScreen(bool ir1, bool ir2) {
   _display.setTextColor(SSD1306_WHITE);
 
   _display.setTextSize(1);
-  _display.setCursor(0, 0);
+  _display.setCursor(28, 0);
   _display.println("Allowed speed");
 
   _display.drawLine(0, 12, 127, 12, SSD1306_WHITE);
