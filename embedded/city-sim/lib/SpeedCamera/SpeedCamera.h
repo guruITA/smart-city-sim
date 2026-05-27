@@ -12,7 +12,7 @@ public:
               int screenHeight, int oledAddr, int irActiveState, float sensorDistanceM,
               float speedLimitKmh, unsigned long passTimeoutUs, unsigned long measurementCooldownMs,
               unsigned long resultScreenHoldMs, unsigned long bootScreenHoldMs,
-              unsigned long uiRefreshIntervalMs, const String& camCaptureUrl);
+              unsigned long uiRefreshIntervalMs);
 
   void begin();
   void update();
@@ -43,8 +43,6 @@ private:
   unsigned long _bootScreenStartMs;
   bool _bootScreenShowing;
 
-  String _camCaptureUrl;
-
   TwoWire _displayWire;
   Adafruit_SSD1306 _display;
   bool _displayReady;
@@ -52,9 +50,6 @@ private:
   MeasureState _measureState;
   int _firstSensor;
   unsigned long _tStartUs;
-
-  bool _lastIr1Active;
-  bool _lastIr2Active;
 
   float _lastSpeedKmh;
   bool _lastTooFast;
@@ -71,7 +66,6 @@ private:
   static SpeedCamera* _instance;
 
   CameraTriggerState _cameraTriggerState;
-  unsigned long _cameraTriggerStateStartedMs;
 
   bool _pendingBackendUpdate;
   float _pendingBackendSpeedKmh;
