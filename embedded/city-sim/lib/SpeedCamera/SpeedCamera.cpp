@@ -1,7 +1,6 @@
 #include "SpeedCamera.h"
 
 #include <Wire.h>
-#include <WiFi.h>
 
 #include "Config.h"
 #include "NetworkController.h"
@@ -13,23 +12,19 @@ SpeedCamera::SpeedCamera(int ir1Pin, int ir2Pin, int oledSdaPin, int oledSclPin,
                          int screenHeight, int oledAddr, int irActiveState, float sensorDistanceM,
                          float speedLimitKmh, unsigned long passTimeoutUs,
                          unsigned long measurementCooldownMs, unsigned long resultScreenHoldMs,
-                         unsigned long bootScreenHoldMs, unsigned long uiRefreshIntervalMs
-                         )
+                         unsigned long bootScreenHoldMs, unsigned long uiRefreshIntervalMs)
     : _ir1Pin(ir1Pin), _ir2Pin(ir2Pin), _oledSdaPin(oledSdaPin), _oledSclPin(oledSclPin),
-      _screenWidth(screenWidth), _screenHeight(screenHeight), _oledAddr(oledAddr),
-      _irActiveState(irActiveState), _sensorDistanceM(sensorDistanceM),
+      _oledAddr(oledAddr), _irActiveState(irActiveState), _sensorDistanceM(sensorDistanceM),
       _speedLimitKmh(speedLimitKmh), _passTimeoutUs(passTimeoutUs),
       _measurementCooldownMs(measurementCooldownMs), _resultScreenHoldMs(resultScreenHoldMs),
-      _bootScreenHoldMs(bootScreenHoldMs), _uiRefreshIntervalMs(uiRefreshIntervalMs), _displayWire(1),
-      _display(screenWidth, screenHeight, &_displayWire, -1), _displayReady(false),
-      _measureState(IDLE), _firstSensor(0), _tStartUs(0), _lastSpeedKmh(0.0f),
-      _lastTooFast(false), _lastDirection("-"),
+      _bootScreenHoldMs(bootScreenHoldMs), _uiRefreshIntervalMs(uiRefreshIntervalMs),
+      _displayWire(1), _display(screenWidth, screenHeight, &_displayWire, -1), _displayReady(false),
+      _measureState(IDLE), _firstSensor(0), _tStartUs(0), _lastSpeedKmh(0.0f), _lastDirection("-"),
       _lastEventMs(0), _lastMeasurementDoneMs(0), _lastUiRefresh(0), _bootScreenStartMs(0),
       _bootScreenShowing(false), _ir1EdgeDetected(false), _ir2EdgeDetected(false),
       _ir1EdgeTimeUs(0), _ir2EdgeTimeUs(0), _cameraTriggerState(CAMERA_TRIGGER_IDLE),
-      _pendingBackendUpdate(false), _pendingBackendSpeedKmh(0.0f),
-      _pendingBackendTooFast(false), _pendingBackendDirection("-"),
-      _pendingBackendSpeedLimitKmh(0.0f) {}
+      _pendingBackendUpdate(false), _pendingBackendSpeedKmh(0.0f), _pendingBackendTooFast(false),
+      _pendingBackendDirection("-"), _pendingBackendSpeedLimitKmh(0.0f) {}
 
 void SpeedCamera::begin() {
   pinMode(_ir1Pin, INPUT);
@@ -351,7 +346,6 @@ void SpeedCamera::processMeasurement(int fromSensor, int toSensor, unsigned long
   bool tooFast = realSpeedKmh > _speedLimitKmh;
 
   _lastSpeedKmh = realSpeedKmh;
-  _lastTooFast = tooFast;
   _lastDirection = (fromSensor == 1 && toSensor == 2) ? "1->2" : "2->1";
   _lastEventMs = millis();
   _lastMeasurementDoneMs = millis();
