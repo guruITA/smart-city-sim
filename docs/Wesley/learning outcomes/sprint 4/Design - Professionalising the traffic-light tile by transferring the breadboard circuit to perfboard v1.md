@@ -298,3 +298,23 @@ The title block is placed in the bottom-right corner. It includes the author, ve
 ![Figure 2. KiCad schematic export of the traffic-light perfboard circuit](assets/sprint-4-perfboard-design/kicad-schematic-export.png)
 
 *Figure 2. KiCad schematic of the perfboard circuit. The schematic uses power symbols, ground symbols, net labels, component labels, and a bottom-right title block with the author, version number, and file name. This image is exported from `traffic-light-perfboard.kicad_sch`.*
+
+## 4.5 Power and ground symbols
+
+The schematic uses proper KiCad power symbols instead of only drawing coloured wires. This is important because the schematic software must understand which nets are connected.
+
+The design uses these power symbols and power nets:
+
+| Net label    | Meaning                             |
+| ------------ | ----------------------------------- |
+| `+3V3_LOGIC` | 3.3V logic supply from the ESP32-S3 |
+| `+5V_LED`    | External regulated LED power supply |
+| `GND`        | Shared ground reference             |
+| `SDA`        | I2C data line                       |
+| `SCL`        | I2C clock line                      |
+
+The design has one shared ground reference. This ground connects the ESP32-S3, MCP23017, both ULN2803 chips, and the negative side of the external LED power supply.
+
+The schematic keeps `+3V3_LOGIC` and `+5V_LED` separate. They only share `GND`.
+
+
