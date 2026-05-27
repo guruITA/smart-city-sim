@@ -366,3 +366,27 @@ The LED-side switched return nets are labelled separately from the logic-side co
 | `TL4_YEL_K` | Switched return for traffic light 4 yellow |
 | `TL4_GRN_K` | Switched return for traffic light 4 green  |
 
+## 4.7 ESP32-S3 to MCP23017 schematic design
+
+The ESP32-S3 is shown as connector `J6`, because the full development board is not redesigned as a custom circuit. The schematic only shows the pins that are used by this perfboard circuit.
+
+| ESP32-S3 function | Connector label | Net          |
+| ----------------- | --------------- | ------------ |
+| 3.3V              | J6 pin 1        | `+3V3_LOGIC` |
+| GND               | J6 pin 2        | `GND`        |
+| GPIO5             | J6 pin 3        | `SDA`        |
+| GPIO4             | J6 pin 4        | `SCL`        |
+
+The realised breadboard setup uses GPIO5 for SDA and GPIO4 for SCL. This design keeps that mapping so the perfboard version follows the tested version instead of creating a new wiring standard.
+
+The I2C lines use pull-up resistors:
+
+| Label |  Value | Connection            |
+| ----- | -----: | --------------------- |
+| R13   | 5.1 kΩ | `SDA` to `+3V3_LOGIC` |
+| R14   | 5.1 kΩ | `SCL` to `+3V3_LOGIC` |
+
+The pull-ups are connected to 3.3V because the ESP32-S3 uses 3.3V logic.
+
+
+
