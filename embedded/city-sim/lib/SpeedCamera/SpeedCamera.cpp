@@ -174,18 +174,6 @@ void SpeedCamera::update() {
   _lastIr2Active = ir2;
 }
 
-bool SpeedCamera::isTooFast() {
-  return _lastTooFast;
-}
-
-float SpeedCamera::getLastSpeedKmh() {
-  return _lastSpeedKmh;
-}
-
-String SpeedCamera::getLastDirection() {
-  return _lastDirection;
-}
-
 bool SpeedCamera::sensorActive(int pin) {
   return digitalRead(pin) == _irActiveState;
 }
