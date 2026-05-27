@@ -232,3 +232,8 @@ The Fritzing design makes the following design choices visible:
 | One resistor is used per LED channel.                         | Each lamp branch remains independently current-limited.                         |
 | Test points are placed on important nets.                     | The circuit can be checked after soldering and after mounting.                  |
 
+## 5.8 Sub-conclusion
+
+The Fritzing physical design is used as a construction document. It does not replace the electrical schematic and it does not describe the final tile mounting. Its value is that it shows how the circuit is physically built on perfboard with clear labels, straight wiring, visible connectors, and the same component codes used in the KiCad schematic and BoM.
+
+---
