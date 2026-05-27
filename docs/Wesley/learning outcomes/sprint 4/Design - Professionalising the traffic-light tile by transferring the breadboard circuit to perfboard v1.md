@@ -278,3 +278,23 @@ KiCad’s Schematic Editor is used for schematic drawing, symbol management, foo
 | Exported schematic PDF         | `kicad-schematic-export.pdf`                           |
 | Exported schematic image       | `kicad-schematic-export.png`                           |
 | Storage location               | `docs/Wesley/learning outcomes/sprint 4/design-files/` |
+
+## 4.4 Schematic page setup
+
+The KiCad schematic uses the following page setup:
+
+| Field     | Value                                            |
+| --------- | ------------------------------------------------ |
+| Page size | A4 landscape                                     |
+| Margin    | Approximately 2 cm free space around the drawing |
+| Title     | Traffic-light perfboard transfer schematic       |
+| Author    | Wesley                                           |
+| Version   | 1.0                                              |
+| File name | `traffic-light-perfboard.kicad_sch`              |
+| Date      | 22 May 2026                                      |
+
+The title block is placed in the bottom-right corner. It includes the author, version number, and file name so the schematic can be identified when exported or printed.
+
+![Figure 2. KiCad schematic export of the traffic-light perfboard circuit](assets/sprint-4-perfboard-design/kicad-schematic-export.png)
+
+*Figure 2. KiCad schematic of the perfboard circuit. The schematic uses power symbols, ground symbols, net labels, component labels, and a bottom-right title block with the author, version number, and file name. This image is exported from `traffic-light-perfboard.kicad_sch`.*
