@@ -486,3 +486,6 @@ Each traffic-light model uses one 4-pin connector:
 
 This connector design assumes that the traffic-light model uses a shared positive LED supply and three switched return wires. The current-limiting resistors are placed on the perfboard in the return path before the ULN2803 outputs. A resistor can be placed in series on either side of an LED branch, so this keeps the number of wires per traffic light low while still keeping one resistor per LED channel.
 
+## 4.12 Sub-conclusion
+
+The KiCad schematic defines the electrical design more professionally than a Fritzing schematic. It uses real power symbols, clear net labels, a title block, visible component labels, and a complete mapping from ESP32-S3 to MCP23017 to ULN2803 to traffic-light connectors. The schematic also makes the important electrical choices explicit: SDA and SCL are pulled up to 3.3V, the MCP23017 address pins are tied to ground, the ULN2803 chips are used as low-side sink drivers, and the LED power rail is separated from the 3.3V logic rail.
