@@ -424,3 +424,32 @@ The I2C pins are not left open:
 
 This is important because SDA and SCL are the communication lines between the ESP32-S3 and the MCP23017.
 
+## 4.9 MCP23017 to ULN2803 schematic design
+
+The schematic keeps the final realised output mapping from the working breadboard version. That means the design follows the version that has already been tested.
+
+| Traffic light | Colour | MCP23017 output | Control net    | ULN chip | ULN input |
+| ------------- | ------ | --------------- | -------------- | -------- | --------- |
+| TL1           | Red    | GPB0            | `TL1_RED_CTRL` | U2       | IN1       |
+| TL1           | Yellow | GPB1            | `TL1_YEL_CTRL` | U2       | IN2       |
+| TL1           | Green  | GPB2            | `TL1_GRN_CTRL` | U2       | IN3       |
+| TL2           | Red    | GPB3            | `TL2_RED_CTRL` | U2       | IN4       |
+| TL2           | Yellow | GPB4            | `TL2_YEL_CTRL` | U2       | IN5       |
+| TL2           | Green  | GPB5            | `TL2_GRN_CTRL` | U2       | IN6       |
+| TL3           | Red    | GPA5            | `TL3_RED_CTRL` | U2       | IN7       |
+| TL3           | Yellow | GPA6            | `TL3_YEL_CTRL` | U2       | IN8       |
+| TL3           | Green  | GPA4            | `TL3_GRN_CTRL` | U3       | IN1       |
+| TL4           | Red    | GPA2            | `TL4_RED_CTRL` | U3       | IN2       |
+| TL4           | Yellow | GPA3            | `TL4_YEL_CTRL` | U3       | IN3       |
+| TL4           | Green  | GPA1            | `TL4_GRN_CTRL` | U3       | IN4       |
+
+The remaining MCP23017 pins are marked as spare:
+
+| MCP23017 output | Use          |
+| --------------- | ------------ |
+| GPA0            | Spare output |
+| GPA7            | Spare output |
+| GPB6            | Spare output |
+| GPB7            | Spare output |
+
+These spare outputs are not used in the first perfboard version, but they are labelled so they can be used later if needed.
