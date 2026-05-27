@@ -16,9 +16,6 @@ public:
 
   void begin();
   void update();
-  bool isTooFast();
-  float getLastSpeedKmh();
-  String getLastDirection();
 
 private:
   enum MeasureState { IDLE, WAIT_FOR_SECOND_SENSOR, WAIT_FOR_CLEAR };
