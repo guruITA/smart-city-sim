@@ -190,7 +190,7 @@ The 3D render was used to verify component placement and spacing before assembly
 
 ### Perfboard Layout Version 2
 
-After careful consideration, I decided that the USB-C ports need to face the same side. Therefore, a new perfboard layout needs to be designed to accommodate this small change.
+After careful consideration, I decided that the USB-C ports need to face the same side. Therefore, a new perfboard layout needs to be designed to accommodate this small change. I also changed the JST connector footprint to an SM02B-SRSS-TB, because the 850 mAh Li-ion polymer battery uses a JST SHR-02V-S-B connector part.
 
 ![Perfboard layout version 2 design in KiCad PCB Editor](assets/city-sim-e-ink-display-perfboard-editor-v2.png)
 
@@ -235,12 +235,14 @@ These limitations led to the consideration of a custom PCB design.
 
 ## 7. Bill of Materials (BOM)
 
-| ID | Designator | Footprint                             | Quantity | Designation            | Reference |
-| -- | ---------- | ------------------------------------- | -------- | ---------------------- |-------------------|
-| 1  | BT1        | JST_EH_S2B-EH_1x02_P2.50mm_Horizontal | 1        | Battery_Cell           | [Digikey](https://www.digikey.com/en/products/detail/jst-sales-america-inc/S2B-EH/926533) |
-| 2  | E1         | PinSocket_1x08_P2.54mm_Vertical       | 1        | E-ink display HAT      | [Mouser](https://nl.mouser.com/ProductDetail/Harwin/M50-3030842?qs=%252BdQmOuGyFcEVh5gBUNIiFA%3D%3D) |
-| 3  | U1         | MODULE_ESP32-C3_SUPERMINI             | 1        | ESP32-C3_SUPERMINI_SMD | [Tinytronics](https://www.tinytronics.nl/en/development-boards/microcontroller-boards/with-wi-fi/esp32-c3-supermini-plus-development-board) |
-| 4  | U2         | TP4056-Module                         | 1        | TP4056_Module          | [Mouser](https://nl.mouser.com/ProductDetail/Soldered/333014?qs=sGAEpiMZZMs5TKDXZEoCqOJ%252BWtJg0exjNv7rV%2FQFNRhneIj2%2FqDp%252BA%3D%3D) |
+| ID | Designator | Footprint                         | Quantity | Designation                                     | Reference                                                                                                                                   |
+| -- | ---------- | --------------------------------- | -------- | ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1  | U1         | MODULE_ESP32-C3_SUPERMINI         | 1        | ESP32-C3_SUPERMINI_SMD                          | [Tinytronics](https://www.tinytronics.nl/en/development-boards/microcontroller-boards/with-wi-fi/esp32-c3-supermini-plus-development-board) |
+| 2  | U2         | TP4056-Module                     | 1        | TP4056_Module                                   | [Mouser](https://nl.mouser.com/ProductDetail/Soldered/333014?qs=sGAEpiMZZMs5TKDXZEoCqOJ%252BWtJg0exjNv7rV%2FQFNRhneIj2%2FqDp%252BA%3D%3D)   |
+| 3  | BT1        | SM02B-SRSS-TB                     | 1        | Battery Connector                               | [Mouser](https://nl.mouser.com/ProductDetail/JST-Commercial/SM02B-SRSS-TBLF-SN?qs=QpmGXVUTftG1n4Jj4cR4Rg%3D%3D)                             |
+| 4  | B1         | LiPo Battery                      | 1        | 3.7 V LiPo Battery (Connector: JST SHR-02V-S-B) | [Mouser](https://nl.mouser.com/ProductDetail/TinyCircuits/ASR00036?qs=byeeYqUIh0Mizxtsp6GM5A%3D%3D)                                         |
+| 5  | E1         | PinSocket_1x08_P2.54mm_Vertical   | 1        | E-ink Display HAT                               | [Mouser](https://nl.mouser.com/ProductDetail/Harwin/M50-3030842?qs=%252BdQmOuGyFcEVh5gBUNIiFA%3D%3D)                                        |
+| 6  | PCB1       | 3 × 7 cm perfboard, 2.54 mm pitch | 1        | Perfboard                                       | [KIWI electronics](https://www.kiwi-electronics.com/en/prototyping-board-3x7cm-2-54mm-pitch-7428)                                           |
 
 ---
 
