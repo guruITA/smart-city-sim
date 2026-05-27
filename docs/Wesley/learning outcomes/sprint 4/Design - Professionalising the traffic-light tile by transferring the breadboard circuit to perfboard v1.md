@@ -453,3 +453,21 @@ The remaining MCP23017 pins are marked as spare:
 | GPB7            | Spare output |
 
 These spare outputs are not used in the first perfboard version, but they are labelled so they can be used later if needed.
+
+## 4.10 ULN2803 low-side switching design
+
+The ULN2803 chips are labelled as `U2` and `U3`.
+
+The ULN2803 is used as a low-side sink driver. This means the LED branch is powered from the external LED supply, and the ULN2803 switches the path to ground.
+
+Each LED branch follows this structure:
+
+```text
++5V_LED -> LED in traffic-light model -> switched return wire -> resistor on perfboard -> ULN2803 output -> GND
+```
+
+This design means the ULN2803 does not provide positive power to the LEDs. It pulls the LED channel to ground when the matching input is active.
+
+Texas Instruments describes the ULN2803C as a 50 V, 500 mA Darlington transistor array with eight NPN Darlington pairs and high-voltage outputs (Texas Instruments, 2025). In this project, the LED current is much lower than 500 mA per channel, so the ULN2803 is suitable as the switching stage. ([Texas Instruments][4])
+
+The COM pin is marked as not required for the LED-only load in this design. The COM pin is mainly relevant for clamp diodes when switching inductive loads. Because this design only switches LEDs, the COM pin is not used as an LED power input.
