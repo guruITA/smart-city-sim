@@ -266,3 +266,15 @@ The schematic must show:
 * net labels instead of unclear long wires.
 
 KiCad’s Schematic Editor is used for schematic drawing, symbol management, footprint assignment, and data transfer to PCB design tools (KiCad, 2026). Even though this sprint uses perfboard instead of a manufactured PCB, KiCad is still useful because it makes the electrical circuit clear and checkable. ([KiCad Documentation][2])
+
+## 4.3 KiCad software version and file location
+
+| Item                           | Value                                                  |
+| ------------------------------ | ------------------------------------------------------ |
+| Software                       | KiCad                                                  |
+| Version used for documentation | KiCad 9.0                                              |
+| Project file                   | `traffic-light-perfboard.kicad_pro`                    |
+| Schematic file                 | `traffic-light-perfboard.kicad_sch`                    |
+| Exported schematic PDF         | `kicad-schematic-export.pdf`                           |
+| Exported schematic image       | `kicad-schematic-export.png`                           |
+| Storage location               | `docs/Wesley/learning outcomes/sprint 4/design-files/` |
