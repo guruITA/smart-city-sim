@@ -20,7 +20,7 @@ public:
 private:
   enum MeasureState { IDLE, WAIT_FOR_SECOND_SENSOR, WAIT_FOR_CLEAR };
 
-  enum CameraTriggerState { CAMERA_TRIGGER_IDLE, CAMERA_SEND_CAPTURE_REQUEST };
+  enum CameraCaptureState { CAMERA_CAPTURE_IDLE, CAMERA_SEND_CAPTURE_REQUEST };
 
   int _ir1Pin;
   int _ir2Pin;
@@ -62,7 +62,7 @@ private:
 
   static SpeedCamera* _instance;
 
-  CameraTriggerState _cameraTriggerState;
+  CameraCaptureState _cameraCaptureState;
 
   bool _pendingBackendUpdate;
   float _pendingBackendSpeedKmh;
@@ -83,9 +83,9 @@ private:
   void resetMeasurement();
   void processMeasurement(int fromSensor, int toSensor, unsigned long dtUs);
 
-  bool cameraTriggerBusy();
-  void startCameraTriggerOverWiFi();
-  void updateCameraTriggerOverWiFi();
+  bool cameraCaptureBusy();
+  void startCameraCapture();
+  void updateCameraCapture();
   void sendPendingBackendUpdate();
 };
 
