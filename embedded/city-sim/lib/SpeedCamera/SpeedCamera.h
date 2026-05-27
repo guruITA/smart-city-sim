@@ -26,8 +26,6 @@ private:
   int _ir2Pin;
   int _oledSdaPin;
   int _oledSclPin;
-  int _screenWidth;
-  int _screenHeight;
   int _oledAddr;
   int _irActiveState;
 
@@ -52,7 +50,6 @@ private:
   unsigned long _tStartUs;
 
   float _lastSpeedKmh;
-  bool _lastTooFast;
   String _lastDirection;
   unsigned long _lastEventMs;
   unsigned long _lastMeasurementDoneMs;
