@@ -471,3 +471,18 @@ This design means the ULN2803 does not provide positive power to the LEDs. It pu
 Texas Instruments describes the ULN2803C as a 50 V, 500 mA Darlington transistor array with eight NPN Darlington pairs and high-voltage outputs (Texas Instruments, 2025). In this project, the LED current is much lower than 500 mA per channel, so the ULN2803 is suitable as the switching stage. ([Texas Instruments][4])
 
 The COM pin is marked as not required for the LED-only load in this design. The COM pin is mainly relevant for clamp diodes when switching inductive loads. Because this design only switches LEDs, the COM pin is not used as an LED power input.
+
+
+## 4.11 Traffic-light connector schematic
+
+Each traffic-light model uses one 4-pin connector:
+
+| Connector | Pin 1     | Pin 2       | Pin 3       | Pin 4       |
+| --------- | --------- | ----------- | ----------- | ----------- |
+| J1        | `+5V_LED` | `TL1_RED_K` | `TL1_YEL_K` | `TL1_GRN_K` |
+| J2        | `+5V_LED` | `TL2_RED_K` | `TL2_YEL_K` | `TL2_GRN_K` |
+| J3        | `+5V_LED` | `TL3_RED_K` | `TL3_YEL_K` | `TL3_GRN_K` |
+| J4        | `+5V_LED` | `TL4_RED_K` | `TL4_YEL_K` | `TL4_GRN_K` |
+
+This connector design assumes that the traffic-light model uses a shared positive LED supply and three switched return wires. The current-limiting resistors are placed on the perfboard in the return path before the ULN2803 outputs. A resistor can be placed in series on either side of an LED branch, so this keeps the number of wires per traffic light low while still keeping one resistor per LED channel.
+
