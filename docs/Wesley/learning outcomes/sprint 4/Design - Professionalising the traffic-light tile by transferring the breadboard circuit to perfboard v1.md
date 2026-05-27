@@ -317,4 +317,52 @@ The design has one shared ground reference. This ground connects the ESP32-S3, M
 
 The schematic keeps `+3V3_LOGIC` and `+5V_LED` separate. They only share `GND`.
 
+## 4.6 Net labels
+
+The schematic uses net labels instead of long unclear wires. This makes the schematic easier to read and prevents the page from becoming crowded.
+
+The most important communication and power net labels are:
+
+| Net label    | Function            |
+| ------------ | ------------------- |
+| `+3V3_LOGIC` | Logic power         |
+| `+5V_LED`    | External LED power  |
+| `GND`        | Shared ground       |
+| `SDA`        | I2C data            |
+| `SCL`        | I2C clock           |
+| `MCP_RESET`  | MCP23017 reset line |
+
+The MCP23017-to-ULN2803 control nets are:
+
+| Net label      | Function                                           |
+| -------------- | -------------------------------------------------- |
+| `TL1_RED_CTRL` | MCP output to ULN input for traffic light 1 red    |
+| `TL1_YEL_CTRL` | MCP output to ULN input for traffic light 1 yellow |
+| `TL1_GRN_CTRL` | MCP output to ULN input for traffic light 1 green  |
+| `TL2_RED_CTRL` | MCP output to ULN input for traffic light 2 red    |
+| `TL2_YEL_CTRL` | MCP output to ULN input for traffic light 2 yellow |
+| `TL2_GRN_CTRL` | MCP output to ULN input for traffic light 2 green  |
+| `TL3_RED_CTRL` | MCP output to ULN input for traffic light 3 red    |
+| `TL3_YEL_CTRL` | MCP output to ULN input for traffic light 3 yellow |
+| `TL3_GRN_CTRL` | MCP output to ULN input for traffic light 3 green  |
+| `TL4_RED_CTRL` | MCP output to ULN input for traffic light 4 red    |
+| `TL4_YEL_CTRL` | MCP output to ULN input for traffic light 4 yellow |
+| `TL4_GRN_CTRL` | MCP output to ULN input for traffic light 4 green  |
+
+The LED-side switched return nets are labelled separately from the logic-side control nets:
+
+| Net label   | Function                                   |
+| ----------- | ------------------------------------------ |
+| `TL1_RED_K` | Switched return for traffic light 1 red    |
+| `TL1_YEL_K` | Switched return for traffic light 1 yellow |
+| `TL1_GRN_K` | Switched return for traffic light 1 green  |
+| `TL2_RED_K` | Switched return for traffic light 2 red    |
+| `TL2_YEL_K` | Switched return for traffic light 2 yellow |
+| `TL2_GRN_K` | Switched return for traffic light 2 green  |
+| `TL3_RED_K` | Switched return for traffic light 3 red    |
+| `TL3_YEL_K` | Switched return for traffic light 3 yellow |
+| `TL3_GRN_K` | Switched return for traffic light 3 green  |
+| `TL4_RED_K` | Switched return for traffic light 4 red    |
+| `TL4_YEL_K` | Switched return for traffic light 4 yellow |
+| `TL4_GRN_K` | Switched return for traffic light 4 green  |
 
