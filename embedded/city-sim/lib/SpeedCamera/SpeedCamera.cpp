@@ -22,7 +22,7 @@ SpeedCamera::SpeedCamera(int ir1Pin, int ir2Pin, int oledSdaPin, int oledSclPin,
       _measureState(IDLE), _firstSensor(0), _tStartUs(0), _lastSpeedKmh(0.0f), _lastDirection("-"),
       _lastEventMs(0), _lastMeasurementDoneMs(0), _lastUiRefresh(0), _bootScreenStartMs(0),
       _bootScreenShowing(false), _ir1EdgeDetected(false), _ir2EdgeDetected(false),
-      _ir1EdgeTimeUs(0), _ir2EdgeTimeUs(0), _cameraTriggerState(CAMERA_TRIGGER_IDLE),
+      _ir1EdgeTimeUs(0), _ir2EdgeTimeUs(0), _cameraCaptureState(CAMERA_CAPTURE_IDLE),
       _pendingBackendUpdate(false), _pendingBackendSpeedKmh(0.0f), _pendingBackendTooFast(false),
       _pendingBackendDirection("-"), _pendingBackendSpeedLimitKmh(0.0f) {}
 
@@ -77,7 +77,7 @@ void IRAM_ATTR SpeedCamera::handleIrEdge(int sensorNumber) {
 }
 
 void SpeedCamera::update() {
-  updateCameraTriggerOverWiFi();
+  updateCameraCapture();
 
   bool ir1 = sensorActive(_ir1Pin);
   bool ir2 = sensorActive(_ir2Pin);
@@ -269,18 +269,18 @@ void SpeedCamera::resetMeasurement() {
   _tStartUs = 0;
 }
 
-bool SpeedCamera::cameraTriggerBusy() {
-  return _cameraTriggerState != CAMERA_TRIGGER_IDLE;
+bool SpeedCamera::cameraCaptureBusy() {
+  return _cameraCaptureState != CAMERA_CAPTURE_IDLE;
 }
 
-void SpeedCamera::startCameraTriggerOverWiFi() {
-  if (cameraTriggerBusy()) {
-    Serial.println("Camera trigger skipped: already running.");
+void SpeedCamera::startCameraCapture() {
+  if (cameraCaptureBusy()) {
+    Serial.println("Camera capture skipped: already running.");
     return;
   }
 
-  Serial.println("Starting camera trigger through backend registered camera URL.");
-  _cameraTriggerState = CAMERA_SEND_CAPTURE_REQUEST;
+  Serial.println("Starting camera capture through backend registered camera URL.");
+  _cameraCaptureState = CAMERA_SEND_CAPTURE_REQUEST;
 }
 
 void SpeedCamera::sendPendingBackendUpdate() {
@@ -294,10 +294,10 @@ void SpeedCamera::sendPendingBackendUpdate() {
   _pendingBackendUpdate = false;
 }
 
-void SpeedCamera::updateCameraTriggerOverWiFi() {
-  switch (_cameraTriggerState) {
+void SpeedCamera::updateCameraCapture() {
+  switch (_cameraCaptureState) {
 
-  case CAMERA_TRIGGER_IDLE:
+  case CAMERA_CAPTURE_IDLE:
     return;
 
   case CAMERA_SEND_CAPTURE_REQUEST: {
@@ -307,11 +307,11 @@ void SpeedCamera::updateCameraTriggerOverWiFi() {
       int httpCode = -1;
       String response = NetworkController::fetch(captureUrl, httpCode);
 
-      Serial.print("Camera trigger HTTP code: ");
+      Serial.print("Camera capture HTTP code: ");
       Serial.println(httpCode);
 
       if (httpCode <= 0) {
-        Serial.println("Camera trigger failed.");
+        Serial.println("Camera capture failed.");
       } else {
         Serial.print("Camera response: ");
         Serial.println(response);
@@ -322,7 +322,7 @@ void SpeedCamera::updateCameraTriggerOverWiFi() {
 
     sendPendingBackendUpdate();
 
-    _cameraTriggerState = CAMERA_TRIGGER_IDLE;
+    _cameraCaptureState = CAMERA_CAPTURE_IDLE;
     break;
   }
   }
@@ -376,7 +376,7 @@ void SpeedCamera::processMeasurement(int fromSensor, int toSensor, unsigned long
     _pendingBackendDirection = _lastDirection;
     _pendingBackendSpeedLimitKmh = _speedLimitKmh;
 
-    startCameraTriggerOverWiFi();
+    startCameraCapture();
   } else {
     SpeedCameraNetwork::sendMeasurement(realSpeedKmh, _lastDirection, tooFast, _speedLimitKmh);
   }
