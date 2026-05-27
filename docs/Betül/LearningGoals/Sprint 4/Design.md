@@ -56,9 +56,7 @@ How should the City Sim backend be designed with Docker containers and HTTPS/TLS
 
 ## 4. Current Backend Situation
 
-[Describe the current setup shortly.]
-
-The current City Sim backend runs on a Raspberry Pi. The backend uses FastAPI as the API service and PostgreSQL as the database. Docker Compose is used to run the backend services.
+The current City Sim backend runs on a Raspberry Pi using FastAPI and PostgreSQL. While functional, it represents a state where backend services may become unavailable if the main process or hardware fails. Communication currently happens over unencrypted HTTP, making it vulnerable to interception. The backend is already functional, but the deployment can be improved by separating responsibilities more clearly and documenting recovery behaviour.
 
 ## 5. Proposed Backend Design
 
