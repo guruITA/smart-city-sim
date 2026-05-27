@@ -388,5 +388,39 @@ The I2C lines use pull-up resistors:
 
 The pull-ups are connected to 3.3V because the ESP32-S3 uses 3.3V logic.
 
+## 4.8 MCP23017 address, reset, and unused pins
 
+The MCP23017 is labelled as `U1`.
+
+The address pins are wired as follows:
+
+| MCP23017 pin | Connection | Reason            |
+| ------------ | ---------- | ----------------- |
+| A0           | GND        | Address selection |
+| A1           | GND        | Address selection |
+| A2           | GND        | Address selection |
+
+With A0, A1, and A2 connected to ground, the expander uses address `0x20`. The Microchip datasheet states that the MCP23017 address pins must be externally biased, so they must not be left floating (Microchip Technology Inc., 2022). ([Microchip][3])
+
+The RESET pin is wired as follows:
+
+| MCP23017 pin | Connection                          | Reason                                             |
+| ------------ | ----------------------------------- | -------------------------------------------------- |
+| RESET        | Pull-up to `+3V3_LOGIC` through R15 | Keeps the MCP23017 enabled during normal operation |
+
+The interrupt pins are not used in this design:
+
+| MCP23017 pin | Schematic label    | Design decision           |
+| ------------ | ------------------ | ------------------------- |
+| INTA         | NC / not connected | Interrupt output not used |
+| INTB         | NC / not connected | Interrupt output not used |
+
+The I2C pins are not left open:
+
+| MCP23017 pin | Connection             |
+| ------------ | ---------------------- |
+| SDA          | `SDA` net with pull-up |
+| SCL          | `SCL` net with pull-up |
+
+This is important because SDA and SCL are the communication lines between the ESP32-S3 and the MCP23017.
 
