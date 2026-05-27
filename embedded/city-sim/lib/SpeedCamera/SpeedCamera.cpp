@@ -27,6 +27,9 @@ SpeedCamera::SpeedCamera(int ir1Pin, int ir2Pin, int oledSdaPin, int oledSclPin,
       _pendingBackendDirection("-"), _pendingBackendSpeedLimitKmh(0.0f) {}
 
 void SpeedCamera::begin() {
+
+  Serial.begin(115200);
+  
   pinMode(_ir1Pin, INPUT);
   pinMode(_ir2Pin, INPUT);
 
