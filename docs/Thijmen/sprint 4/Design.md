@@ -166,25 +166,47 @@ The TP4056 module manages charging of the lithium battery and powers the system.
 
 ---
 
-### Perfboard Layout
+### Perfboard Layout Version 1
 
 The components were manually positioned on the perfboard to minimize wiring complexity and improve stability.
 
- ![Perfboard layout design in KiCad PCB Editor](assets/city-sim-e-ink-display-perfboard-editor.png)
+![Perfboard layout version 1 design in KiCad PCB Editor](assets/city-sim-e-ink-display-perfboard-editor.png)
 
 ---
 
-### Perfboard 3D Visualization
+### Perfboard 3D Visualization Version 1
 
 The 3D render was used to verify component placement and spacing before assembly.
 
 #### Front View
 
-![3D front view of the perfboard design](assets/city-sim-e-ink-display-perfboard-3d-front.png)
+![3D front view of the version 1 perfboard design](assets/city-sim-e-ink-display-perfboard-3d-front.png)
 
 #### Back View
 
- ![3D back view of the perfboard design](assets/city-sim-e-ink-display-perfboard-3d-back.png)
+![3D back view of the version 1 perfboard design](assets/city-sim-e-ink-display-perfboard-3d-back.png)
+
+---
+
+### Perfboard Layout Version 2
+
+After careful consideration, I decided that the USB-C ports need to face the same side. Therefore, a new perfboard layout needs to be designed to accommodate this small change.
+
+![Perfboard layout version 2 design in KiCad PCB Editor](assets/city-sim-e-ink-display-perfboard-editor-v2.png)
+
+---
+
+### Perfboard 3D Visualization Version 2
+
+The 3D render was used to verify component placement and spacing before assembly.
+
+#### Front View
+
+![3D front view of the version 2 perfboard design](assets/city-sim-e-ink-display-perfboard-3d-front-v2.png)
+
+#### Back View
+
+![3D back view of the version 2  perfboard design](assets/city-sim-e-ink-display-perfboard-3d-back-v2.png)
 
 ---
 
