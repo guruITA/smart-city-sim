@@ -20,16 +20,19 @@ SpeedCamera::SpeedCamera(int ir1Pin, int ir2Pin, int oledSdaPin, int oledSclPin,
       _bootScreenHoldMs(bootScreenHoldMs), _uiRefreshIntervalMs(uiRefreshIntervalMs),
       _displayWire(1), _display(screenWidth, screenHeight, &_displayWire, -1), _displayReady(false),
       _measureState(IDLE), _firstSensor(0), _tStartUs(0), _lastSpeedKmh(0.0f), _lastDirection("-"),
-      _lastEventMs(0), _lastMeasurementDoneMs(0), _lastUiRefresh(0), _bootScreenStartMs(0),
-      _bootScreenShowing(false), _ir1EdgeDetected(false), _ir2EdgeDetected(false),
-      _ir1EdgeTimeUs(0), _ir2EdgeTimeUs(0), _cameraCaptureState(CAMERA_CAPTURE_IDLE),
-      _pendingBackendUpdate(false), _pendingBackendSpeedKmh(0.0f), _pendingBackendTooFast(false),
-      _pendingBackendDirection("-"), _pendingBackendSpeedLimitKmh(0.0f) {}
+      _lastEventMs(0), _lastMeasurementDoneMs(0), _lastUiRefresh(0),
+      _okMeasurementWaitingForSpeed(false), _okMeasurementSpeedKmh(0.0f), _okMeasurementStartMs(0),
+      _tooFastMeasurementWaitingForSpeed(false), _tooFastMeasurementSpeedKmh(0.0f),
+      _tooFastMeasurementStartMs(0), _bootScreenStartMs(0), _bootScreenShowing(false),
+      _ir1EdgeDetected(false), _ir2EdgeDetected(false), _ir1EdgeTimeUs(0), _ir2EdgeTimeUs(0),
+      _cameraCaptureState(CAMERA_CAPTURE_IDLE), _pendingBackendUpdate(false),
+      _pendingBackendSpeedKmh(0.0f), _pendingBackendTooFast(false), _pendingBackendDirection("-"),
+      _pendingBackendSpeedLimitKmh(0.0f) {}
 
 void SpeedCamera::begin() {
 
   Serial.begin(115200);
-  
+
   pinMode(_ir1Pin, INPUT);
   pinMode(_ir2Pin, INPUT);
 
@@ -100,6 +103,54 @@ void SpeedCamera::update() {
   if (_bootScreenShowing && (millis() - _bootScreenStartMs >= _bootScreenHoldMs)) {
     drawStatusScreen(ir1, ir2);
     _bootScreenShowing = false;
+  }
+
+  if (_okMeasurementWaitingForSpeed && millis() - _okMeasurementStartMs >= 1500UL) {
+    _display.clearDisplay();
+    _display.setTextColor(SSD1306_WHITE);
+
+    _display.setTextSize(2);
+    _display.setCursor(20, 22);
+    _display.print(_okMeasurementSpeedKmh, 1);
+
+    _display.setTextSize(1);
+    _display.setCursor(88, 30);
+    _display.println("km/u");
+
+    _display.display();
+
+    _okMeasurementWaitingForSpeed = false;
+
+    _lastEventMs = millis();
+  }
+
+  if (_tooFastMeasurementWaitingForSpeed && millis() - _tooFastMeasurementStartMs >= 1500UL) {
+    _display.clearDisplay();
+    _display.setTextColor(SSD1306_WHITE);
+
+    _display.setTextSize(1);
+    _display.setCursor(0, 0);
+    _display.println("TOO FAST!");
+    _display.drawLine(0, 12, 127, 12, SSD1306_WHITE);
+
+    _display.setTextSize(2);
+    _display.setCursor(0, 22);
+    _display.print(_tooFastMeasurementSpeedKmh, 1);
+
+    _display.setTextSize(1);
+    _display.setCursor(88, 30);
+    _display.println("km/u");
+
+    _display.setCursor(0, 52);
+    _display.print("Allowed: ");
+    _display.print(_speedLimitKmh, 0);
+    _display.println(" km/u");
+
+    _display.display();
+
+    _tooFastMeasurementWaitingForSpeed = false;
+
+    _lastEventMs = millis();
   }
 
   bool inCooldown = (millis() - _lastMeasurementDoneMs) < _measurementCooldownMs;
@@ -175,16 +226,11 @@ void SpeedCamera::drawBootScreen() {
   }
 
   _display.clearDisplay();
-  _display.setTextSize(1);
   _display.setTextColor(SSD1306_WHITE);
-  _display.setCursor(0, 0);
 
-  _display.println("Speed Camera S3");
-  _display.println("Starting...");
-  _display.println("IR1 = GPIO6");
-  _display.println("IR2 = GPIO12");
-  _display.println("OLED SDA/SCL = 17/46");
-  _display.println("Backend + Camera");
+  _display.setTextSize(2);
+  _display.setCursor(20, 22);
+  _display.println("Loading");
 
   _display.display();
 }
@@ -195,35 +241,21 @@ void SpeedCamera::drawStatusScreen(bool ir1, bool ir2) {
   }
 
   _display.clearDisplay();
-  _display.setTextSize(1);
   _display.setTextColor(SSD1306_WHITE);
+
+  _display.setTextSize(1);
   _display.setCursor(0, 0);
+  _display.println("Allowed speed");
 
-  _display.println("Speed Camera S3");
-  _display.println("----------------");
+  _display.drawLine(0, 12, 127, 12, SSD1306_WHITE);
 
-  _display.print("IR1: ");
-  _display.println(ir1 ? "ACTIVE" : "REST");
+  _display.setTextSize(3);
+  _display.setCursor(18, 24);
+  _display.print(_speedLimitKmh, 0);
 
-  _display.print("IR2: ");
-  _display.println(ir2 ? "ACTIVE" : "REST");
-
-  _display.print("Last: ");
-  _display.print(_lastSpeedKmh, 1);
-  _display.println(" km/u");
-
-  _display.print("Limit: ");
-  _display.print(_speedLimitKmh, 1);
-  _display.println(" km/u");
-
-  _display.print("Direction: ");
-  _display.println(_lastDirection);
-
-  if (NetworkController::connected()) {
-    _display.println("WiFi: connected");
-  } else {
-    _display.println("WiFi: offline");
-  }
+  _display.setTextSize(1);
+  _display.setCursor(88, 38);
+  _display.println("km/u");
 
   _display.display();
 }
@@ -235,32 +267,37 @@ void SpeedCamera::drawMeasurementScreen(float speedKmh, bool tooFast, const Stri
   }
 
   _display.clearDisplay();
-  _display.setTextSize(1);
   _display.setTextColor(SSD1306_WHITE);
-  _display.setCursor(0, 0);
 
-  _display.println("MEASUREMENT READY");
-  _display.println("-----------------");
+  if (!tooFast) {
+    _okMeasurementWaitingForSpeed = true;
+    _okMeasurementSpeedKmh = speedKmh;
+    _okMeasurementStartMs = millis();
 
-  _display.print("Direction: ");
-  _display.println(direction);
+    _tooFastMeasurementWaitingForSpeed = false;
 
-  _display.print("Time: ");
-  _display.print(dtUs / 1000.0f, 1);
-  _display.println(" ms");
+    _display.drawCircle(64, 30, 18, SSD1306_WHITE);
+    _display.fillCircle(57, 25, 2, SSD1306_WHITE);
+    _display.fillCircle(71, 25, 2, SSD1306_WHITE);
+    _display.drawLine(55, 37, 59, 41, SSD1306_WHITE);
+    _display.drawLine(59, 41, 64, 43, SSD1306_WHITE);
+    _display.drawLine(64, 43, 69, 41, SSD1306_WHITE);
+    _display.drawLine(69, 41, 73, 37, SSD1306_WHITE);
 
-  _display.print("Speed: ");
-  _display.print(speedKmh, 1);
-  _display.println(" km/u");
-
-  _display.print("Limit: ");
-  _display.print(_speedLimitKmh, 1);
-  _display.println(" km/u");
-
-  if (tooFast) {
-    _display.println("Result: TOO FAST!");
   } else {
-    _display.println("Result: OK");
+    _tooFastMeasurementWaitingForSpeed = true;
+    _tooFastMeasurementSpeedKmh = speedKmh;
+    _tooFastMeasurementStartMs = millis();
+
+    _okMeasurementWaitingForSpeed = false;
+
+    _display.drawCircle(64, 30, 18, SSD1306_WHITE);
+    _display.fillCircle(57, 25, 2, SSD1306_WHITE);
+    _display.fillCircle(71, 25, 2, SSD1306_WHITE);
+    _display.drawLine(55, 42, 59, 38, SSD1306_WHITE);
+    _display.drawLine(59, 38, 64, 36, SSD1306_WHITE);
+    _display.drawLine(64, 36, 69, 38, SSD1306_WHITE);
+    _display.drawLine(69, 38, 73, 42, SSD1306_WHITE);
   }
 
   _display.display();
