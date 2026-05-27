@@ -247,3 +247,22 @@ This chapter answers the second sub-question:
 **How should the electrical circuit be defined in a professional KiCad schematic so the power, ground, I2C, driver, and LED connections are unambiguous?**
 
 The schematic is made in KiCad because Fritzing is used only for the physical build view, not as the professional schematic tool. The KiCad schematic defines the actual electrical connections using symbols, power symbols, net labels, and a title block.
+
+## 4.2 Purpose of the KiCad schematic
+
+The KiCad schematic is the main electrical design document. It must be possible to understand the circuit even without seeing the physical Fritzing view.
+
+The schematic must show:
+
+* ESP32-S3 connection points;
+* MCP23017 power, ground, SDA, SCL, RESET, address pins, and output pins;
+* ULN2803 inputs and outputs;
+* external LED power input;
+* common ground connection;
+* traffic-light LED connectors;
+* current-limiting resistors;
+* test points;
+* unused pins and spare outputs;
+* net labels instead of unclear long wires.
+
+KiCad’s Schematic Editor is used for schematic drawing, symbol management, footprint assignment, and data transfer to PCB design tools (KiCad, 2026). Even though this sprint uses perfboard instead of a manufactured PCB, KiCad is still useful because it makes the electrical circuit clear and checkable. ([KiCad Documentation][2])
