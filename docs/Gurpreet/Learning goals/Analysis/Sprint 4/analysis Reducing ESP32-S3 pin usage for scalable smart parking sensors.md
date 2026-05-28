@@ -49,6 +49,8 @@ The current prototype uses one ESP32-S3 as the main controller. A controller is 
 
 In this project, GPIO pins are important because they are the connection points on the ESP32-S3. Sensors, displays and other hardware need these pins to communicate with the controller. The ESP32-S3 provides programmable GPIO pins and several peripheral interfaces. In a shared prototype setup, these pins must be used carefully because multiple Smart City components need hardware connections [(Espressif Systems, z.d.)](https://documentation.espressif.com/esp32-s3_datasheet_en.pdf).
 
+As described further in Chapter 1, the main team problem is that the ESP32-S3 has a limited number of available pins while multiple team members need pins for their own Smart City components. The smart parking prototype currently uses several pins for the ultrasonic sensors. This affects the team because every pin used by the parking setup is no longer available for other parts of the shared system, such as the smart streetlight, speed camera or other future functions.
+
 The purpose of this document is to analyse which components or solutions can reduce the ESP32-S3 pin usage of the ultrasonic sensors while keeping the current smart parking prototype logic working. This is important because the system should remain usable for the current four parking spaces, but also be easier to expand when more sensors or other Smart City components are added.
 
 ---
@@ -77,16 +79,16 @@ This analysis is based on technical research into possible components and soluti
 
 The possible solutions are compared based on practical criteria:
 
-- compatibility with the ESP32-S3;
-- number of ESP32-S3 pins that can be saved;
-- communication method;
-- complexity;
-- scalability;
-- reliability;
-- suitability for ultrasonic sensors;
-- impact on the current parking prototype logic.
+- **Compatibility with the ESP32-S3:** whether the solution can work with the ESP32-S3 and its available interfaces.
+- **Number of ESP32-S3 pins that can be saved:** how much the solution reduces direct pin usage.
+- **Communication method:** how the component connects to the ESP32-S3, for example through I2C, direct GPIO or select lines.
+- **Complexity:** how difficult the solution is to build, program, test and maintain.
+- **Scalability:** how well the solution can support future expansion with more sensors or other Smart City components.
+- **Reliability:** whether the parking detection can keep working consistently after the change.
+- **Suitability for ultrasonic sensors:** whether the solution is suitable for timing-sensitive trigger and echo signals.
+- **Impact on the current parking prototype logic:** how much the current working software and hardware setup must change.
 
-These criteria are used because the solution must reduce pin usage, but should not make the current parking detection unreliable. The ultrasonic sensor uses an echo signal to calculate distance. The HC-SR04 datasheet explains that the echo pulse width is related to the measured distance, which means the timing of the echo signal is important for the distance calculation [(Tech Support, z.d.)](https://cdn.sparkfun.com/datasheets/Sensors/Proximity/HCSR04.pdf).
+These criteria are further elaborated in Section 6.2 of Chapter 6, where the possible solutions are compared in a table. This makes it easier to see which solution reduces pin usage, but still fits the current smart parking prototype. The ultrasonic sensor uses an echo signal to calculate distance. The HC-SR04 datasheet explains that the echo pulse width is related to the measured distance, which means the timing of the echo signal is important for the distance calculation [(Tech Support, z.d.)](https://cdn.sparkfun.com/datasheets/Sensors/Proximity/HCSR04.pdf).
 
 ---
 
