@@ -204,7 +204,7 @@ The Fritzing design is not a custom PCB design. It is a planning document for a 
 
 ### 3.3 Figure 1: front/component-side design
 
-[[picture front/component-side Fritzing design]]
+![Front/component-side design](../sprint%204/assets/sprint-4-perfboard-design/fritzing-front-component-side.png)
 
 *Figure 1. Fritzing front/component-side design of the perfboard circuit.*
 
@@ -237,7 +237,7 @@ The LEDs themselves are not placed on the perfboard in this design. They are pla
 
 ### 3.4 Figure 2: back/solder-side design
 
-[[picture back/solder-side Fritzing design]]
+![Back/solder-side design](../sprint%204/assets/sprint-4-perfboard-design/fritzing-back-solder-side.png)
 
 *Figure 2. Fritzing back/solder-side wiring plan of the perfboard circuit.*
 
