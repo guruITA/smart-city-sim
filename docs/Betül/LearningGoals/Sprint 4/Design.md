@@ -39,9 +39,9 @@ How should the City Sim backend be designed with Docker containers and HTTPS/TLS
 
 ### Sub-Questions
 
-1. How should the backend services be structured with Docker containers?
+1. Which parts of the existing backend deployment should be verified or improved for reliability?
 2. How can HTTPS/TLS improve backend communication security?
-3. Which reliability measures should be included in the backend design?
+3. Which improvements are realistic within the sprint scope?
 
 ## 3. Design Requirements
 | **ID** | **Requirement** | **Priority** | **How the design responds** |
@@ -58,9 +58,9 @@ How should the City Sim backend be designed with Docker containers and HTTPS/TLS
 
 The current City Sim backend runs on a Raspberry Pi using FastAPI and PostgreSQL. While functional, it represents a state where backend services may become unavailable if the main process or hardware fails. Communication currently happens over unencrypted HTTP, making it vulnerable to interception. The backend is already functional, but the deployment can be improved by separating responsibilities more clearly and documenting recovery behaviour.
 
+
 ## 5. Proposed Backend Design
 
-[Describe your improved structure.]
 
 ### 5.1 Reverse Proxy Container
 
