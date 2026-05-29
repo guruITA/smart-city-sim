@@ -13,7 +13,7 @@
 
 ## Introduction
 
-This document records the port 80 deployment on the Raspberry Pi. This was a Sprint 2 carry-over. The change itself took 30 minutes on May 4. Commit: `42d99bd`.
+This document records the port 80 deployment on the Raspberry Pi. This was a Sprint 2 carry over. The change itself took 30 minutes on May 4. Commit: `42d99bd`.
 
 ### Main question
 
