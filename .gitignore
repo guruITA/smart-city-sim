@@ -23,3 +23,7 @@ secrets.h
 # graphify knowledge graph output (local context engineering, not project work)
 graphify-out/
 *.graphify_*
+
+# database backups (never commit data dumps)
+backend/backups/
+*.dump

@@ -22,6 +22,10 @@ Mats feedback on this goal: research how data loss errors happen, how to prevent
 
 Research into what data loss scenarios exist (corruption, accidental deletion, SD card failure, power loss), how to prevent them, and what backup strategies work for PostgreSQL in Docker.
 
+**Advise document** - [Advise - Backup and persistence technology choices](Advise%20-%20Backup%20and%20persistence%20technology%20choices.md)
+
+Which backup method, storage layout, scheduling, and upgrade path to use, with the alternatives weighed and the choices justified.
+
 **Design document** - [Design - Backup and restore architecture](Design%20-%20Backup%20and%20restore%20architecture.md)
 
 Backup schedule, storage location, retention policy, restore procedure, and PostgreSQL upgrade strategy. A sustainable system that handles problems automatically.
@@ -49,6 +53,8 @@ The built backup scripts, cron jobs, tested restore procedure, and upgrade verif
 ## References
 
 Matin. (2026). Analysis: Data persistence risks and backup strategies [Analysis deliverable]. [Analysis - Data persistence risks and backup strategies](Analysis%20-%20Data%20persistence%20risks%20and%20backup%20strategies.md)
+
+Matin. (2026). Advise: Backup and persistence technology choices [Advise deliverable]. [Advise - Backup and persistence technology choices](Advise%20-%20Backup%20and%20persistence%20technology%20choices.md)
 
 Matin. (2026). Design: Backup and restore architecture [Design deliverable]. [Design - Backup and restore architecture](Design%20-%20Backup%20and%20restore%20architecture.md)
 
