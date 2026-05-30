@@ -19,3 +19,7 @@ diagram.json
 
 # secrets
 secrets.h
+
+# graphify knowledge graph output (local context engineering, not project work)
+graphify-out/
+*.graphify_*

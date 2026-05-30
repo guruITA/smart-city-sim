@@ -12,13 +12,15 @@ The backend already has 20+ endpoints, 7 routers, 6 tables, and a dashboard with
 
 ## T - Task
 
-Design and build one surprise feature that adds real value to the city backend. It should be something the mayor does not expect but immediately sees the point of. It must integrate with the existing architecture without breaking anything.
+First decide what the surprise feature will be and write it down with a clear motivation. Then design and build it. It should be something the mayor does not expect but immediately sees the point of. It must integrate with the existing architecture without breaking anything.
+
+Mats feedback on this goal: you still need to decide what the surprise is. Write it down and explain why you chose it.
 
 ### Deliverables
 
 **Design document** - [Design - Surprise feature concept](Design%20-%20Surprise%20feature%20concept.md)
 
-What the feature is, why it adds value, and how it fits the existing architecture.
+What the feature is, why I chose it, why it adds value to the city, and how it fits the existing architecture.
 
 **Realise document** - [Realise - Surprise feature implementation](Realise%20-%20Surprise%20feature%20implementation.md)
 

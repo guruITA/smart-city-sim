@@ -12,21 +12,23 @@ Gerald said in our Sprint 4 conversation: database upgrade and backup, make sure
 
 ## T - Task
 
-Set up automated database backups that run on a schedule. Build a restore procedure so the city can recover from data loss. Investigate PostgreSQL upgrade strategies so the database can be updated without losing data.
+First research what data loss scenarios exist in our setup and how other projects handle database durability in Docker. Then design a backup and restore system that is sustainable and prevents data loss in every scenario. Build automated backups, a tested restore procedure, and a safe PostgreSQL upgrade path.
+
+Mats feedback on this goal: research how data loss errors happen, how to prevent them, and how to catch them. Design a durable system, not just a one-time backup script.
 
 ### Deliverables
 
 **Analysis document** - [Analysis - Data persistence risks and backup strategies](Analysis%20-%20Data%20persistence%20risks%20and%20backup%20strategies.md)
 
-What can go wrong with our current setup and what backup strategies exist for PostgreSQL in Docker.
+Research into what data loss scenarios exist (corruption, accidental deletion, SD card failure, power loss), how to prevent them, and what backup strategies work for PostgreSQL in Docker.
 
 **Design document** - [Design - Backup and restore architecture](Design%20-%20Backup%20and%20restore%20architecture.md)
 
-Backup schedule, storage location, retention policy, and restore procedure.
+Backup schedule, storage location, retention policy, restore procedure, and PostgreSQL upgrade strategy. A sustainable system that handles problems automatically.
 
 **Realise document** - [Realise - Database backup implementation](Realise%20-%20Database%20backup%20implementation.md)
 
-The built backup scripts, cron jobs, and tested restore procedure.
+The built backup scripts, cron jobs, tested restore procedure, and upgrade verification.
 
 ## A - Action
 
