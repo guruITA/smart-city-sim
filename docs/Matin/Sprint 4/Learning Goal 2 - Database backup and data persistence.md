@@ -36,11 +36,21 @@ The built backup scripts, cron jobs, tested restore procedure, and upgrade verif
 
 ## A - Action
 
-[To be filled after implementation]
+We followed the same four outcomes. In the **Analysis** we went through our own `docker-compose.yml` and listed six realistic data loss scenarios: SD card failure (highest impact, the only copy lives on the card), power loss mid-write, an accidental `docker compose down -v`, accidental deletion, file corruption, and a failed PostgreSQL upgrade. Our setup protected against none of them. In the **Advise** we weighed the options and chose `pg_dump` (logical, compressed) over a raw file copy, a two-tier store with every dump copied off the Pi, `cron` for scheduling, and a dump-restore-verify-switch path for Gerald's upgrade. In the **Design** we laid out the backup flow, the retention table, and the exact restore and upgrade procedures, keeping every requirement traceable.
+
+In the **Realise** we built three scripts in `backend/scripts/`, all running against the existing `db` container so no extra service is added:
+
+- `backup.sh` (`pg_dump` of the whole database via `docker exec`, copy off the Pi, prune old local dumps)
+- `restore.sh` (`pg_restore` into a live or throwaway database, then print row counts to verify)
+- `check_backup.sh` (freshness check: fails if the newest dump is missing, too old, or too small)
+
+One practical fix came up during the build: the Windows mount wrote the scripts with CRLF line endings, which break `bash`, so we converted them to LF and confirmed each one passes `bash -n`.
 
 ## R - Result
 
-[To be filled after implementation]
+The three scripts are built and syntax-checked. `backup.sh` produces one timestamped compressed dump and copies it off the Pi, `restore.sh` rebuilds the data into a throwaway database and prints the row counts so a backup is proven usable and not just present, and `check_backup.sh` catches a silently failed job. A single `cron` entry runs the backup daily. The Analysis, Advise, and Design deliverables are finished and submitted in Portflow.
+
+The measured results (dump size, restore row-count match, upgrade verification) are not in yet, because I need the Pi and its real data to run them. The Realise document keeps explicit `[to be filled after Pi test]` placeholders so it never reports an estimate as a measurement. The plan is to run the backup, a test restore into `citysim_test`, and the upgrade path on the Pi, then paste the real numbers into the Realise before submitting it. The Reflection and Transfer below are written after the sprint review.
 
 ## R - Reflection
 

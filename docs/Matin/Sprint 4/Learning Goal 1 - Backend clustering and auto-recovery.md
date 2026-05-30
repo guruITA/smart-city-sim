@@ -36,11 +36,21 @@ The built Docker Compose setup with health checks, replicas, and recovery verifi
 
 ## A - Action
 
-[To be filled after implementation]
+We worked through the four outcomes in order. In the **Analysis** we researched seven failure modes of the backend and found the biggest gap: a hung (not crashed) process, which `restart: always` cannot catch because the container is still "up". The api container also had no Docker healthcheck. In the **Advise** we weighed the options and chose native tooling: a Docker healthcheck on the existing `/health` endpoint, NGINX as reverse proxy and load balancer in front of two API replicas, plus memory limits and SQLAlchemy connection settings for the smaller failures. In the **Design** we translated every requirement into one concrete architecture (NGINX on port 80, two replicas, one shared database) and a target `docker-compose.yml`.
+
+In the **Realise** we built that setup next to the live one, so the running city was never at risk:
+
+- `backend/docker-compose.cluster.yml` (NGINX + two API replicas + db, healthcheck, memory limits, `restart: unless-stopped`)
+- `backend/nginx.conf` (reverse proxy, `proxy_next_upstream` failover, `limit_req` rate limiting)
+- `backend/tests/resilience/resilience_test.py` (standard library only: load, soak, and recovery modes)
+
+Building it forced two honest corrections versus the Design: `python:3.11-slim` has no `curl`, so the healthcheck uses a small Python `urllib` call instead; and a fixed `container_name` blocks replicas, so we dropped it. We also proposed adding `pool_pre_ping=True` and `pool_recycle=1800` to `database.py`, but left it unapplied because the database engine is shared and that change needs the team's agreement first.
 
 ## R - Result
 
-[To be filled after implementation]
+The cluster setup is built and starts with `docker compose -f docker-compose.cluster.yml up --build --scale api=2`. NGINX owns port 80, balances over the replicas, and routes around an unhealthy one, so a single hung replica no longer takes the city down. The Analysis, Advise, and Design deliverables are finished and submitted in Portflow.
+
+The measured recovery time, load, and soak results are not in yet: I do not have access to the Pi outside school, so the Realise document keeps explicit `[to be filled after Pi test]` placeholders rather than reporting an estimate as a measurement. The plan is to run `resilience_test.py` on the Pi, confirm recovery stays inside the 5 second target Mats asked for, and paste the real numbers into the Realise before submitting it. The Reflection and Transfer below are written after the sprint review.
 
 ## R - Reflection
 

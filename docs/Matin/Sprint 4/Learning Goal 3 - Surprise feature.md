@@ -30,11 +30,23 @@ The built feature, testing, and integration with the dashboard.
 
 ## A - Action
 
-[To be filled after implementation]
+The first step was deciding the surprise and writing down why, which is what Mats asked for. We chose a **backend override**, shown as an emergency vehicle corridor: one call forces every traffic light to red so an ambulance can pass. We motivated it on three grounds in the **Design**: it closes a stated back-end requirement we had not built ("override the decisions of individual hubs from the back-end"), it reverses the city's data flow from tiles-push-up to backend-commands-down which is the unexpected part, and an emergency corridor is a real public-safety feature for the client.
+
+In the **Realise** we built it directly into the live backend, following the existing router pattern, and kept it purely additive so nothing that works today can break:
+
+- `models.py`: a new `Override` model (the `overrides` table)
+- `schemas.py`: `OverrideCreate` and `OverrideResponse`
+- `routers/override.py`: five endpoints, including `POST /emergency` (the surprise as one button)
+- `main.py`: the router registered at `/api/v1/override`, the same way as the other seven
+- `backend/tests/override/override_test.py`: a standard-library flow test
+
+The `emergency` endpoint first clears any earlier active traffic override, then sets one city-wide `all_red` with the reason `emergency_vehicle`, so only one is ever in force. A traffic light tile obeys it by polling `GET /api/v1/override/active?target=traffic`.
 
 ## R - Result
 
-[To be filled after implementation]
+The override feature is built and integrated as the eighth router and seventh table, with every change checked by `py_compile`. The backend can now overrule a hub, which is both the stated requirement we had not built and the unexpected reversal of control Mats asked us to surprise him with. The Design deliverable is finished and submitted in Portflow.
+
+The end to end flow test result is not in yet, because it has to run against the backend on the Pi. The Realise keeps explicit `[to be filled after Pi test]` placeholders. The plan is to run `python tests/override/override_test.py --url http://145.92.8.137` on the Pi, confirm the emergency-set, tile-poll, clear, and re-check steps all pass, and paste the result into the Realise. The remaining half, making the traffic light tile actually poll and obey `all_red`, is a handover to Wesley's tile firmware and has to be agreed with him, not changed by me. The Reflection and Transfer below are written after the sprint review.
 
 ## R - Reflection
 
