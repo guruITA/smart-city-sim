@@ -16,6 +16,8 @@ First decide what the surprise feature will be and write it down with a clear mo
 
 Mats feedback on this goal: you still need to decide what the surprise is. Write it down and explain why you chose it.
 
+**Decided surprise: a backend override.** The backend can overrule an individual tile, shown as an emergency vehicle corridor where one call forces every traffic light to red. I chose it because it closes a stated back-end requirement we had not built (override the decisions of individual hubs from the backend), because it reverses the city's data flow from tiles-push-up to backend-commands-down, which is the unexpected part, and because an emergency corridor is a real public-safety feature for the client. The motivation is worked out in the Design document.
+
 ### Deliverables
 
 **Design document** - [Design - Surprise feature concept](Design%20-%20Surprise%20feature%20concept.md)

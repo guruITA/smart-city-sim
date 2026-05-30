@@ -76,7 +76,7 @@ class Barrier(Base):
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
 class Traffic(Base):
-    
+
     __tablename__ = "traffic"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -87,3 +87,24 @@ class Traffic(Base):
     timestamp_ms = Column(Integer, nullable=False)
     valid = Column(Boolean, nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
+
+
+class Override(Base):
+    """
+    Backend override of an individual hub (the brain overruling a tile).
+
+    The back-end requirement says it must be possible to override the
+    decisions of individual hubs, for example to set all traffic lights on a
+    road to red for an emergency vehicle. A tile polls the active overrides
+    for its target and obeys the forced command instead of its own logic.
+    """
+
+    __tablename__ = "overrides"
+
+    id = Column(Integer, primary_key=True, index=True)
+    target = Column(String(50), nullable=False, index=True)  # traffic, barrier, all, ...
+    command = Column(String(50), nullable=False)  # all_red, green_corridor, closed, ...
+    reason = Column(String(200), default="")  # emergency_vehicle, roadworks, ...
+    active = Column(Boolean, default=True, index=True)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    cleared_at = Column(DateTime(timezone=True), nullable=True)
