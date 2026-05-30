@@ -88,16 +88,7 @@ The backend already has seven routers, six tables, and a dashboard, all behind t
 
 The flow is:
 
-```
-backend operator (or dashboard button)
-        |  POST /api/v1/override/emergency
-        v
-   overrides table  <-- one active "all_red" override for target=traffic
-        ^
-        |  GET /api/v1/override/active?target=traffic   (tile polls)
-        |
-   traffic light tile (ESP32)  ->  obeys "all_red" instead of its own logic
-```
+![alt text](emergencyOverride.png)
 
 A tile polls the backend for any active override for its target. If there is one, it obeys the forced command; if there is none, it runs its own sensor logic as before. This is the "brain overrules the hub" behaviour the requirement asks for, and it is opt-in per tile: a tile that does not poll is simply unaffected, so the feature is safe to add before every tile supports it.
 

@@ -72,7 +72,7 @@ The core of the design is a single scheduled job that produces one consistent, p
 We lay out the flow as a sequence of steps, each one a thing the Realise script will do, and we map it to the `db` container that already exists.
 
 ### The flow
-
+![alt text](backupFlow.png)
 ```
 cron (on the Pi, daily)
    |

@@ -76,28 +76,7 @@ Today there is one api container bound directly to port 80. That single containe
 
 The new topology has three layers. The ESP32 tiles and the dashboard talk to NGINX on port 80. NGINX balances over the API replicas. The replicas share the one PostgreSQL database.
 
-```
-        ESP32 tiles (parking, streetlight, railroad, traffic, speed)
-                         and the dashboard
-                                |
-                          HTTP on port 80
-                                |
-                       +-----------------+
-                       |      NGINX       |   reverse proxy and load balancer
-                       |  (entry point)   |
-                       +-----------------+
-                          /            \
-                         /              \
-                +-----------+      +-----------+
-                | api repl 1 |      | api repl 2 |   FastAPI, healthcheck on /health
-                +-----------+      +-----------+
-                         \              /
-                          \            /
-                       +-----------------+
-                       |   PostgreSQL     |   one shared database
-                       |   (db, pgdata)   |
-                       +-----------------+
-```
+![alt text](failoverTopology.png)
 
 NGINX now owns port 80. The api service no longer publishes a port; it is only reachable inside the Docker network, which NGINX reaches by the service name. PostgreSQL stays internal as before.
 
