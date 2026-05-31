@@ -45,19 +45,38 @@ How should HTTPS/TLS be designed for the existing City Sim backend deployment to
 
 
 ## 3. Design Requirements
-| **ID** | **Requirement** | **Priority** | **How the design responds** |
+
+The design uses the requirements from the Analysis report, but the focus is narrowed to what fits the current sprint. Since the API and database containers already exist, the main design focus is secure communication with HTTPS/TLS. Docker-related requirements are treated as supporting reliability checks, not as a full redesign of the container structure.
+
+| ID | Requirement | Priority | Design response |
 | --- | --- | --- | --- |
-| **R1** | **Input validation** | Must | Use FastAPI/Pydantic schemas for incoming payloads to prevent **malformed or invalid data**. |
-| **R2** | **Secret management** | Must | Use environment variables and keep real **`.env`** files out of Git. |
-| **R3** | **Persistent storage** | Must | Store PostgreSQL data in a **Docker volume** to reduce data loss risks during container restarts. |
-| **R4** | **Basic documentation** | Must | Document steps for starting, stopping, checking logs, and basic recovery. |
-| **R5** | **Transport encryption** | Should | Add **HTTPS/TLS** through a reverse proxy where feasible to protect data in transit. |
-| **R6** | **Service recovery** | Should | Use **restart policies** and health checks to **recover automatically where possible**. |
-| **R7** | **Network isolation** | Should | Keep the database internal to the Docker network, exposing only the reverse proxy. |
+| R1 | Transport encryption | Must | Design an HTTPS/TLS approach for the existing backend deployment. |
+| R2 | Secret management | Must | Keep credentials and certificate-related values out of source code. |
+| R3 | Network exposure | Must | Expose only necessary backend access and avoid direct database exposure. |
+| R4 | Input validation | Should | Keep or use FastAPI/Pydantic validation for incoming payloads. |
+| R5 | Health check usage | Should | Use the existing health check to verify backend availability. |
+| R6 | Persistent storage | Should | Verify that PostgreSQL data is stored in a persistent Docker volume. |
+| R7 | Restart behaviour | Should | Verify or recommend Docker restart policies. |
+| R8 | Backup and recovery | Could | Include backup and recovery as team-level recommendations. |
+
 
 ## 4. Current Backend Situation
 
-The current City Sim backend runs on a Raspberry Pi using FastAPI and PostgreSQL. While functional, it represents a state where backend services may become unavailable if the main process or hardware fails. Communication currently happens over unencrypted HTTP, making it vulnerable to interception. The backend is already functional, but the deployment can be improved by separating responsibilities more clearly and documenting recovery behaviour.
+The current City Sim backend already has a Docker-based deployment. The FastAPI backend and PostgreSQL database run as separate Docker services. This means the most important container separation is already present.
+
+A simplified version of the current structure is:
+
+```
+ESP32 devices / browser
+        ↓ HTTP
+FastAPI backend container
+        ↓ internal Docker network
+PostgreSQL database container
+```
+
+The current setup is functional, but the Analysis showed that communication over HTTP is a security risk because data is not encrypted in transit. This can make the system more vulnerable to eavesdropping or Man-in-the-Middle attacks.
+
+The current Docker setup also supports reliability because the API and database are already separated. However, this design still includes reliability checks as supporting concerns. These include health check usage, persistent storage, restart behaviour, secret management and network isolation.
 
 
 ## 5. Proposed Backend Design
