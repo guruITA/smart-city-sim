@@ -19,9 +19,9 @@
 2. Design Question  
 3. Design Requirements  
 4. Current Backend Situation  
-5. Proposed Backend Design  
+5. Proposed Security Design  
 6. HTTPS/TLS Design  
-7. Reliability Design Choices  
+7. Supporting Reliability Design Choices 
 8. Scope and Limitations  
 9. Conclusion  
 10. References  
@@ -29,19 +29,20 @@
 
 ## 1. Introduction
 
-[Explain shortly what this document is about.]
 
 ## 2. Design Question and Sub-Questions
 
 ### Main Question
 
-How should the City Sim backend be designed with Docker containers and HTTPS/TLS to improve security and reliability?
+How should HTTPS/TLS be designed for the existing City Sim backend deployment to improve secure communication, while keeping the current Docker-based setup reliable and realistic for the sprint?
+
 
 ### Sub-Questions
 
-1. Which parts of the existing backend deployment should be verified or improved for reliability?
-2. How can HTTPS/TLS improve backend communication security?
-3. Which improvements are realistic within the sprint scope?
+1. How can HTTPS/TLS improve communication security for the existing City Sim backend?
+2. Which HTTPS/TLS approach fits the current Raspberry Pi and Docker-based deployment best?
+3. Which existing Docker reliability features should be verified or documented to support the HTTPS/TLS design?
+
 
 ## 3. Design Requirements
 | **ID** | **Requirement** | **Priority** | **How the design responds** |
