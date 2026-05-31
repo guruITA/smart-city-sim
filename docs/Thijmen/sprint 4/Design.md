@@ -1,5 +1,14 @@
 # Professionalization Design E-ink display
 
+* **Author:** Thijmen Walter (Embedded & Robotics Engineer Student)
+* **Date:** 31-05-2026
+* **Version:** 2.0
+* **Classification:** Internal
+* **Client:** Mayor Mats Otten
+* **Company:** The Embedded Alliance
+
+---
+
 ## Table of Contents
 
 1. [Introduction](#1-introduction)
