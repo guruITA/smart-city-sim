@@ -234,7 +234,7 @@ The following table compares the three hardware implementation methods discussed
 | Scalability             | Low        | Medium    | High        |
 | Required experience     | Low        | Medium    | High        |
 
-**Table description:** Table 1 shows that breadboards provide the highest flexibility during development, while PCBs provide the highest reliability and professional quality. Perfboards offer a compromise between the two approaches by improving stability while remaining relatively inexpensive and easy to implement.
+Table 1 shows that breadboards provide the highest flexibility during development, while PCBs provide the highest reliability and professional quality. Perfboards offer a compromise between the two approaches by improving stability while remaining relatively inexpensive and easy to implement.
 
 ---
 
