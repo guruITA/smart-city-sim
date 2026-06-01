@@ -12,13 +12,23 @@ In the Sprint 3 mayor delivery, Mats said: "cluster the backend, if it crashes, 
 
 ## T - Task
 
-Build a clustering setup where the backend auto-recovers from crashes within 5 seconds. Implement health checks, automatic restarts, and optionally load balancing across multiple container replicas so the city never goes fully offline.
+First research what types of failures can happen in our Docker setup and how other projects prevent and handle them. Then design a system that catches these problems automatically. Build a clustering setup where the backend auto-recovers from crashes within 5 seconds. The solution needs to be sustainable, not just a quick fix that works once.
+
+Mats feedback on this goal: research how errors happen, how to prevent them, and how to catch them. Design a system that handles our problems automatically. Make sure the solution is durable.
 
 ### Deliverables
 
+**Analysis document** - [Analysis - Backend failure modes and prevention strategies](Analysis%20-%20Backend%20failure%20modes%20and%20prevention%20strategies.md)
+
+Research into what types of crashes and failures can happen, how to prevent them, and how to catch them when they do happen.
+
+**Advise document** - [Advise - Backend resilience technology choices](Advise%20-%20Backend%20resilience%20technology%20choices.md)
+
+Which technologies and approaches to use for detection, replicas, load balancing, and the remaining failures, with the alternatives weighed and the choices justified.
+
 **Design document** - [Design - Backend clustering and failover architecture](Design%20-%20Backend%20clustering%20and%20failover%20architecture.md)
 
-Architecture for health checks, restart policies, replica scaling, and failover strategy on a single Raspberry Pi.
+Architecture for health checks, restart policies, replica scaling, and failover strategy. How to set up a sustainable system that catches problems automatically.
 
 **Realise document** - [Realise - Backend clustering implementation](Realise%20-%20Backend%20clustering%20implementation.md)
 
@@ -26,11 +36,21 @@ The built Docker Compose setup with health checks, replicas, and recovery verifi
 
 ## A - Action
 
-[To be filled after implementation]
+We worked through the four outcomes in order. In the **Analysis** we researched seven failure modes of the backend and found the biggest gap: a hung (not crashed) process, which `restart: always` cannot catch because the container is still "up". The api container also had no Docker healthcheck. In the **Advise** we weighed the options and chose native tooling: a Docker healthcheck on the existing `/health` endpoint, NGINX as reverse proxy and load balancer in front of two API replicas, plus memory limits and SQLAlchemy connection settings for the smaller failures. In the **Design** we translated every requirement into one concrete architecture (NGINX on port 80, two replicas, one shared database) and a target `docker-compose.yml`.
+
+In the **Realise** we built that setup next to the live one, so the running city was never at risk:
+
+- `backend/docker-compose.cluster.yml` (NGINX + two API replicas + db, healthcheck, memory limits, `restart: unless-stopped`)
+- `backend/nginx.conf` (reverse proxy, `proxy_next_upstream` failover, `limit_req` rate limiting)
+- `backend/tests/resilience/resilience_test.py` (standard library only: load, soak, and recovery modes)
+
+Building it forced two honest corrections versus the Design: `python:3.11-slim` has no `curl`, so the healthcheck uses a small Python `urllib` call instead; and a fixed `container_name` blocks replicas, so we dropped it. We also proposed adding `pool_pre_ping=True` and `pool_recycle=1800` to `database.py`, but left it unapplied because the database engine is shared and that change needs the team's agreement first.
 
 ## R - Result
 
-[To be filled after implementation]
+The cluster setup is built and starts with `docker compose -f docker-compose.cluster.yml up --build --scale api=2`. NGINX owns port 80, balances over the replicas, and routes around an unhealthy one, so a single hung replica no longer takes the city down. The Analysis, Advise, and Design deliverables are finished and submitted in Portflow.
+
+The measured recovery time, load, and soak results are not in yet: I do not have access to the Pi outside school, so the Realise document keeps explicit `[to be filled after Pi test]` placeholders rather than reporting an estimate as a measurement. The plan is to run `resilience_test.py` on the Pi, confirm recovery stays inside the 5 second target Mats asked for, and paste the real numbers into the Realise before submitting it. The Reflection and Transfer below are written after the sprint review.
 
 ## R - Reflection
 
@@ -41,6 +61,10 @@ The built Docker Compose setup with health checks, replicas, and recovery verifi
 [To be filled after sprint review]
 
 ## References
+
+Matin. (2026). Analysis: Backend failure modes and prevention strategies [Analysis deliverable]. [Analysis - Backend failure modes and prevention strategies](Analysis%20-%20Backend%20failure%20modes%20and%20prevention%20strategies.md)
+
+Matin. (2026). Advise: Backend resilience technology choices [Advise deliverable]. [Advise - Backend resilience technology choices](Advise%20-%20Backend%20resilience%20technology%20choices.md)
 
 Matin. (2026). Design: Backend clustering and failover architecture [Design deliverable]. [Design - Backend clustering and failover architecture](Design%20-%20Backend%20clustering%20and%20failover%20architecture.md)
 
