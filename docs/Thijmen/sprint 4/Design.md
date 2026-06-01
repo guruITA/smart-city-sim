@@ -1,4 +1,4 @@
-# Professionalization Design E-Ink Display
+# Professionalization of a Breadboard Prototype into a Perfboard and PCB Solution for a City Sim E-Ink Display
 
 * **Author:** Thijmen Walter (Embedded & Robotics Engineer Student)
 * **Date:** 31-05-2026
@@ -9,92 +9,90 @@
 
 ## Table of Contents
 
-- [1. Introduction](#1-introduction)
-- [2. Design Objective](#2-design-objective)
-- [3. Requirements](#3-requirements)
-- [4. Design Evolution](#4-design-evolution)
-    - [4.1 Original Architecture](#41-original-architecture)
-    - [4.2 Modular Architecture](#42-modular-architecture)
-- [5. Hardware Design](#5-hardware-design)
-    - [5.1 Schematic Design](#51-schematic-design)
-    - [5.2 KiCad Design Workflow](#52-kicad-design-workflow)
-- [6. Breadboard Prototype](#6-breadboard-prototype)
-    - [6.1 Prototype Goals](#61-prototype-goals)
-    - [6.2 Advantages](#62-advantages)
-    - [6.3 Limitations](#63-limitations)
-- [7. Perfboard Design](#7-perfboard-design)
-    - [7.1 Transition from Breadboard](#71-transition-from-breadboard)
-    - [7.2 Layout](#72-layout)
-    - [7.3 Advantages and Limitations](#73-advantages-and-limitations)
-- [8. Bill of Materials](#8-bill-of-materials)
-- [9. Future Design Recommendations](#9-future-design-recommendations)
-    - [9.1 Future PCB Design](#91-future-pcb-design)
-    - [9.2 Expected Improvements](#92-expected-improvements)
-- [10. Conclusion](#10-conclusion)
-- [11. References](#11-references)
-- [12. Appendix](#12-appendix)
+* [1. Introduction](#1-introduction)
+* [2. Main Question and Subquestions](#2-main-question-and-subquestions)
+* [3. Methodology](#3-methodology)
+* [4. Chapter 1: Hardware Architecture](#4-chapter-1-hardware-architecture)
+    * [4.1 Introduction](#41-introduction)
+    * [4.2 Original Architecture](#42-original-architecture)
+    * [4.3 Modular Architecture](#43-modular-architecture)
+    * [4.4 Subconclusion](#44-subconclusion)
+* [5. Chapter 2: Hardware Design and Validation](#5-chapter-2-hardware-design-and-validation)
+    * [5.1 Introduction](#51-introduction)
+    * [5.2 Required Components](#52-required-components)
+    * [5.3 Schematic Design](#53-schematic-design)
+    * [5.4 KiCad Design Workflow](#54-kicad-design-workflow)
+    * [5.4 Subconclusion](#55-subconclusion)
+* [6. Chapter 3: Prototype Professionalization](#6-chapter-3-prototype-professionalization)
+    * [6.1 Introduction](#61-introduction)
+    * [6.2 Breadboard Prototype](#62-breadboard-prototype)
+    * [6.3 Perfboard Implementation](#63-perfboard-implementation)
+    * [6.4 Future PCB Design](#64-future-pcb-design)
+    * [6.5 Subconclusion](#65-subconclusion)
+* [7. Final Conclusion](#7-final-conclusion)
+* [8. Recommendations](#8-recommendations)
+* [9. References](#9-references)
+* [10. Appendix](#10-appendix)
 
 ---
 
 # 1. Introduction
 
-This document describes the design and professionalization of the City Sim e-ink display module. The project was developed for The Embedded Alliance as part of the Smart Cities learning environment.
+This document was written for The Embedded Alliance and the Smart Cities learning environment.
 
-The purpose of this document is to describe the transition from a breadboard prototype to a more permanent perfboard implementation and to present a future PCB design. This work builds upon the findings and requirements identified in the Analysis Document (Walter, 2026).
+The context of this document is the development of a reusable e-ink display module for the City Sim project. During development, an initial breadboard prototype was created to validate communication between the ESP32-C3 and the e-ink display. After successful testing, opportunities were identified to improve the reliability, maintainability, portability, and scalability of the hardware.
 
-The design process focused on improving reliability, reducing wiring complexity, increasing portability, and preparing the hardware for future manufacturing.
+The purpose of this document is to investigate how the prototype can be professionalized into a more permanent and reusable hardware solution. This is relevant because City Sim requires reliable display modules that can be integrated into multiple city tiles while remaining easy to reproduce and maintain.
 
----
+The design process focused on improving reliability, reducing wiring complexity, increasing portability, and preparing the hardware for future manufacturing. The design decisions presented in this document build upon the requirements and findings identified during the analysis phase (Walter, 2026).
 
-# 2. Design Objective
-
-The objective of this assignment is to create a reliable and reusable hardware platform for the City Sim e-ink display system.
-
-The design should:
-
-* Support the existing City Sim architecture.
-* Be reusable across multiple tiles.
-* Support dynamic data from the backend.
-* Improve hardware reliability.
-* Reduce wiring complexity.
-* Prepare the system for future PCB manufacturing.
-
-The design decisions presented in this document are based on the requirements and system considerations identified during the analysis phase (Walter, 2026).
+This document is written for project stakeholders, students, and technical supervisors. It assumes that the reader has a basic understanding of embedded systems and electronic prototyping.
 
 ---
 
-# 3. Requirements
+# 2. Main Question and Subquestions
 
-The following requirements were derived from the Analysis Document (Walter, 2026).
+The main design question of this document is:
 
-## Functional Requirements
+**How can the City Sim e-ink display prototype be professionalized into a reliable, reusable, and scalable hardware solution?**
 
-The system shall:
+To answer this question, the following subquestions were formulated:
 
-1. Display a city name.
-2. Display a city logo.
-3. Retrieve information from a backend API.
-4. Update displayed information when new data becomes available.
-5. Use the same firmware on multiple devices.
-
-## Non-Functional Requirements
-
-The system shall:
-
-1. Be reusable.
-2. Be scalable.
-3. Be reliable.
-4. Be maintainable.
-5. Minimize unnecessary display updates.
-6. Operate within the limitations of the e-ink display.
-
-These requirements formed the basis for the hardware design decisions described in this document.
+1. How should the hardware architecture of the e-ink display module be designed?
+2. How can the breadboard prototype be converted into a more reliable perfboard implementation?
+3. Which components are required for a portable and reusable e-ink display module?
+4. How can KiCad be used to support schematic design, layout planning, and validation?
+5. How can the design be prepared for future PCB manufacturing and large-scale deployment?
 
 ---
 
-# 4. Design Evolution
+# 3. Methodology
 
-## 4.1 Original Architecture
+This document was created using the following methods:
+
+* Literature research
+* Documentation analysis
+* Hardware prototyping
+* Schematic design in KiCad
+* Perfboard layout planning
+* PCB design development
+* Prototype evaluation and testing
+
+These methods were chosen because they provide both theoretical and practical insight into improving the reliability and manufacturability of embedded hardware systems.
+
+---
+
+# 4. Chapter 1: Hardware Architecture
+
+## 4.1 Introduction
+
+This chapter answers the following subquestion:
+
+**How should the hardware architecture of the e-ink display module be designed?**
+
+To answer this question, both the original architecture and the redesigned modular architecture are discussed.
+
+## 4.2 Original Architecture
 
 At the beginning of the project, all City Sim functionality was executed on a single ESP32-S3 development board.
 
@@ -105,9 +103,9 @@ The board was responsible for:
 * Display control
 * General system logic
 
-While functional, this solution occupied more space than necessary and mixed multiple responsibilities within a single hardware module.
+While functional, this solution occupied more space than necessary and combined multiple responsibilities within a single hardware module.
 
-## 4.2 Modular Architecture
+## 4.3 Modular Architecture
 
 Following the analysis phase, the display functionality was separated into a dedicated module using an ESP32-C3 SuperMini (Walter, 2026).
 
@@ -119,17 +117,30 @@ This redesign provided several advantages:
 * Easier integration into City Sim tiles
 * Improved scalability
 
+The ESP32-C3 was selected because it provides Wi-Fi connectivity, sufficient processing power, and a compact form factor suitable for embedded IoT applications (Espressif Systems, 2025).
+
 The ESP32-C3 SuperMini became the foundation for all subsequent prototype designs.
+
+## 4.4 Subconclusion
+
+The modular architecture provides a more suitable foundation for the City Sim display module because it reduces complexity, improves scalability, and separates display functionality from the remainder of the system.
 
 ---
 
-# 5. Hardware Design
+# 5. Chapter 2: Hardware Design and Validation
 
-## 5.1 Schematic Design
+## 5.1 Introduction
 
-The schematic was created in KiCad and served as the foundation for all hardware implementations (KiCad, 2025).
+This chapter answers the following subquestions:
 
-The design consists of four main functional blocks.
+* Which components are required for a portable and reusable e-ink display module?
+* How can KiCad be used to support schematic design, layout planning, and validation?
+
+To answer these questions, the hardware components, schematic design, and KiCad workflow are discussed.
+
+## 5.2 Required Components
+
+The final design consists of four primary functional blocks.
 
 ### ESP32-C3 SuperMini
 
@@ -153,7 +164,9 @@ The display receives:
 * RST
 * BUSY
 
-signals from the ESP32-C3. Compatibility with Waveshare and Seengreat displays was investigated because documentation for the MH-ET Live display was limited (Seengreat, n.d.; Waveshare, n.d.; Kravec, 2025).
+signals from the ESP32-C3.
+
+Compatibility with Waveshare and Seengreat displays was investigated because documentation for the MH-ET Live display was limited (Seengreat, n.d.; Waveshare, n.d.; Kravec, 2025).
 
 ### TP4056 Charging Module
 
@@ -163,13 +176,24 @@ The TP4056 charging module manages battery charging and protection.
 
 A rechargeable lithium-ion battery provides portable power for the display module.
 
-The schematic remained unchanged throughout all prototype stages to maintain firmware compatibility and simplify debugging.
+## 5.3 Schematic Design
+
+The schematic was created in KiCad and served as the foundation for all hardware implementations (KiCad, 2025).
+
+The design consists of four main functional blocks:
+
+* ESP32-C3 SuperMini
+* E-Ink Display HAT
+* TP4056 Charging Module
+* Battery System
 
 ### Schematic Diagram
 
-![City-sim E-ink display schematic](assets/city-sim-e-ink-display-schematic.png)
+![City Sim E-Ink Display Schematic](assets/city-sim-e-ink-display-schematic.png)
 
-## 5.2 KiCad Design Workflow
+The schematic remained unchanged throughout all prototype stages to maintain firmware compatibility and simplify debugging.
+
+## 5.4 KiCad Design Workflow
 
 KiCad was used throughout the entire design process for schematic design, perfboard planning, PCB layout development, and 3D visualization (KiCad, 2025).
 
@@ -202,11 +226,24 @@ KiCad's 3D viewer was used to validate:
 
 The corresponding KiCad project files are included in the project repository.
 
+## 5.5 Subconclusion
+
+The selected hardware components provide a suitable platform for the display module, while KiCad enabled efficient schematic development, design validation, and preparation for future PCB manufacturing.
+
 ---
 
-# 6. Breadboard Prototype
+# 6. Chapter 3: Prototype Professionalization
 
-## 6.1 Prototype Goals
+## 6.1 Introduction
+
+This chapter answers the following subquestions:
+
+* How can the breadboard prototype be converted into a more reliable perfboard implementation?
+* How can the design be prepared for future PCB manufacturing and large-scale deployment?
+
+To answer these questions, the breadboard prototype, perfboard implementation, and future PCB design are discussed.
+
+## 6.2 Breadboard Prototype
 
 The first implementation was built on a breadboard.
 
@@ -220,9 +257,11 @@ The breadboard prototype was used to:
 
 The prototype was created to validate assumptions identified during the analysis phase regarding display communication and hardware compatibility (Walter, 2026).
 
-## 6.2 Advantages
+### Advantages
 
-The breadboard provided several advantages:
+Breadboards are commonly used during early-stage hardware development because they allow rapid prototyping, easy modifications, and reusable components without soldering (Adafruit, 2024).
+
+Advantages included:
 
 * Rapid prototyping
 * Easy modifications
@@ -230,9 +269,7 @@ The breadboard provided several advantages:
 * No soldering required
 * Reusable components
 
-These characteristics make breadboards highly suitable during early-stage hardware development (Adafruit, 2024).
-
-## 6.3 Limitations
+### Limitations
 
 Several limitations became apparent during testing:
 
@@ -244,11 +281,7 @@ Several limitations became apparent during testing:
 
 These limitations motivated the transition to a perfboard design.
 
----
-
-# 7. Perfboard Design
-
-## 7.1 Transition from Breadboard
+## 6.3 Perfboard Implementation
 
 After successful testing, the design was transferred to a perfboard.
 
@@ -260,42 +293,32 @@ The goals were:
 * Create a cleaner design
 * Prepare for future PCB development
 
-Perfboards provide a more permanent prototyping solution compared to traditional breadboards while maintaining flexibility during development (MKTPCB, 2023).
+Perfboards provide a more permanent prototyping solution than traditional breadboards while maintaining flexibility during development (MKTPCB, 2023).
 
 The same schematic was reused to ensure consistency throughout the design process.
 
-## 7.2 Layout
-
-The first perfboard layout was designed in KiCad.
+### Perfboard Layout
 
 Design considerations included:
 
 * Short wire lengths
 * Accessible GPIO pins
 * Stable power connections
-* Compact placement
+* Compact component placement
 
-![Perfboard Layout image](assets/city-sim-e-ink-display-perfboard-editor.png)
+![Perfboard Layout](assets/city-sim-e-ink-display-perfboard-editor.png)
 
 ### 3D Validation
 
-3D renders were generated to validate:
+![Perfboard Front View](assets/city-sim-e-ink-display-perfboard-3d-front.png)
 
-* Physical spacing
-* Connector access
-* Component placement
-
-![Front View image](assets/city-sim-e-ink-display-perfboard-3d-front.png)
-
-![Back View image](assets/city-sim-e-ink-display-perfboard-3d-back.png)
-
-## 7.3 Advantages and Limitations
+![Perfboard Back View](assets/city-sim-e-ink-display-perfboard-3d-back.png)
 
 ### Advantages
 
 Compared to the breadboard:
 
-* More reliable connections
+* More reliable electrical connections
 * Improved durability
 * Better portability
 * Cleaner appearance
@@ -312,45 +335,25 @@ Some limitations remain:
 
 These limitations motivated the development of a custom PCB design.
 
----
+## 6.4 Future PCB Design
 
-# 8. Bill of Materials
-
-| ID | Designator | Component                                                                                                                                                                 | Specification / purpose                                                                                | Amount | Supplier         | Estimated unit price | Estimated total |
-| --- | --- | --- | --- | ---: | --- | ---: | ---: |
-| 1  | U1         | [ESP32-C3 SuperMini](https://www.tinytronics.nl/en/development-boards/microcontroller-boards/with-wi-fi/esp32-c3-supermini-plus-development-board)                        | Main microcontroller used for Wi-Fi communication, SPI control of the e-ink display, and system logic. |     1x | TinyTronics      |                €4.95 |           €4.95 |
-| 2  | U2         | [TP4056 Lithium Battery Charging Module](https://nl.mouser.com/ProductDetail/Soldered/333014?qs=sGAEpiMZZMs5TKDXZEoCqOJ%252BWtJg0exjNv7rV%2FQFNRhneIj2%2FqDp%252BA%3D%3D) | Battery charging and protection module for the 3.7V LiPo battery system.                               |     1x | Mouser           |                € 9.24 |           € 9.24 |
-| 3  | BT1        | [JST SM02B-SRSS-TB Battery Connector](https://nl.mouser.com/ProductDetail/JST-Commercial/SM02B-SRSS-TBLFSN?qs=cdbOS8ANM9BWPfwllEYjZw%3D%3D)                              | Connector used to safely interface the LiPo battery with the system.                                   |     1x | Mouser           |                €0.33 |           €0.33 |
-| 4  | B1         | [3.7V LiPo Battery (850mAh)](https://nl.mouser.com/ProductDetail/TinyCircuits/ASR00036?qs=byeeYqUIh0Mizxtsp6GM5A%3D%3D)                                                   | Rechargeable battery providing portable power for the entire system.                                   |     1x | Mouser           |                €11.94 |           €11.94 |
-| 5  | E1         | [PinSocket 1x08 2.54mm Header](https://nl.mouser.com/ProductDetail/Harwin/M50-3030842?qs=%252BdQmOuGyFcEVh5gBUNIiFA%3D%3D)                                                | Electrical interface between ESP32-C3 and the e-ink display HAT.                                       |     1x | Mouser           |                € 1.32 |           € 1.32 |
-| 6  | PCB1       | [3×7 cm Perfboard (2.54mm pitch)](https://www.kiwi-electronics.com/en/prototyping-board-3x7cm-2-54mm-pitch-7428)                                                          | Physical prototyping platform used for soldered assembly of the circuit.                               |     1x | Kiwi Electronics |                €1.68 |           €1.68 |
-| 7  | DISP1      | [E-Ink Display HAT 2.9” (296×128)](https://www.bitsandparts.nl/display-e-paper-2-9inch-296x128px-mh-et-live-zwart-rood-met-controller-p1931732)                                                                                                                                          | SPI-based e-ink display used to show city name and logo.                                               |     1x | Bits & Parts         |               €24.95 |          €24.95 |
-
-### Total Cost
-
-**Estimated total cost:** **€55.41**
-
----
-
-# 9. Future Design Recommendations
-
-## 9.1 Future PCB Design
-
-A custom PCB has been designed as the next stage of development.
+A custom PCB was designed as the next stage of development.
 
 The PCB uses the same validated schematic while replacing manual wiring with dedicated copper traces.
 
 Printed circuit boards provide improved reliability, manufacturability, and electrical consistency compared to manually assembled prototypes (SparkFun Electronics, 2025; TechTarget, 2024).
 
-![PCB Layout image](assets/city-sim-e-ink-display-pcb-editor.png)
+### PCB Layout
+
+![PCB Layout](assets/city-sim-e-ink-display-pcb-editor.png)
 
 ### PCB 3D Validation
 
-![PCB Front View image](assets/city-sim-e-ink-display-pcb-3d-front.png)
+![PCB Front View](assets/city-sim-e-ink-display-pcb-3d-front.png)
 
-![PCB Back View image](assets/city-sim-e-ink-display-pcb-3d-back.png)
+![PCB Back View](assets/city-sim-e-ink-display-pcb-3d-back.png)
 
-## 9.2 Expected Improvements
+### Expected Improvements
 
 The PCB design is expected to provide:
 
@@ -364,23 +367,39 @@ The PCB design is expected to provide:
 
 These improvements support the scalability and maintainability goals identified during the analysis phase (Walter, 2026).
 
+## 6.5 Subconclusion
+
+The breadboard prototype successfully validated the design, the perfboard implementation improved reliability and portability, and the future PCB design provides a clear path toward large-scale deployment and manufacturing.
+
+# 7. Final Conclusion
+
+This document investigated how the City Sim e-ink display prototype can be professionalized into a reliable, reusable, and scalable hardware solution.
+
+First, a modular hardware architecture based on the ESP32-C3 SuperMini was developed to improve scalability and reduce complexity.
+
+Second, the required hardware components were identified and validated using KiCad throughout the design process.
+
+Third, the breadboard prototype was successfully converted into a more reliable perfboard implementation that improved portability and durability.
+
+Finally, a custom PCB design was developed to prepare the system for future manufacturing and large-scale deployment.
+
+Based on the full analysis, it can be concluded that **the combination of a modular architecture, perfboard implementation, and future PCB design provides a reliable, maintainable, and scalable hardware solution for the City Sim platform.**
+
 ---
 
-# 10. Conclusion
+# 8. Recommendations
 
-This document described the professionalization of the City Sim e-ink display hardware.
+Based on the results of this document, the following recommendations are made:
 
-The project evolved from a breadboard prototype into a more reliable perfboard implementation while maintaining compatibility with the architecture defined during the analysis phase (Walter, 2026).
-
-The use of KiCad enabled consistent schematic management, perfboard planning, PCB design, and mechanical validation through 3D visualization (KiCad, 2025).
-
-The perfboard implementation successfully improved reliability, portability, and maintainability. The future PCB design builds upon these improvements and provides a pathway toward a more professional and reproducible hardware solution.
-
-The resulting design supports the requirements established during the analysis phase and provides a solid foundation for future development of the City Sim platform.
+1. Continue using the ESP32-C3 SuperMini as the standard display controller.
+2. Use perfboards during future prototype iterations before PCB production.
+3. Manufacture and test the custom PCB design.
+4. Perform long-term reliability testing using battery-powered operation.
+5. Standardize the PCB design for all City Sim display tiles.
 
 ---
 
-# 11. References
+# 9. References
 
 1. Adafruit. (2024). *Perma-Proto Guide*. Retrieved May 31, 2026, from https://learn.adafruit.com/breadboards-for-beginners/perma-protos
 
@@ -404,28 +423,32 @@ The resulting design supports the requirements established during the analysis p
 
 ---
 
-# 12. Appendix
+# 10. Appendix
 
 ## Appendix A – Schematic Diagram
 
 ESP32-C3 e-ink display schematic.
 
-## Appendix B – Perfboard Layout Version 1
+## Appendix B – Perfboard Layout
 
-KiCad layout and 3D renders.
+KiCad perfboard layout and design files.
 
-## Appendix C – Perfboard Layout Version 2
+## Appendix C – Perfboard 3D Renders
 
-KiCad layout and 3D renders.
+Front and back validation renders.
 
 ## Appendix D – PCB Design
 
-PCB layout and 3D renders.
+PCB layout and routing design.
 
-## Appendix E – Bill of Materials
+## Appendix E – PCB 3D Renders
+
+Front and back PCB visualizations.
+
+## Appendix F – Bill of Materials
 
 Detailed supplier and pricing information.
 
-## Appendix F – KiCad Project Files
+## Appendix G – KiCad Project Files
 
 Schematic, PCB, footprints, and project source files.
