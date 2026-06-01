@@ -249,4 +249,8 @@ The next Realisation phase should focus on testing what is feasible within the s
 
 ## 10. References
 
-[Use sources from your Analysis.]
+[My Analyse report](Analyse.md)
+
+Kirkland, W. (2026, 1 mei). The essential guide to SSL/TLS security & certificate automation (2026). Urllo. https://www.urllo.com/resources/learn/ssl-tls-security-guide
+
+Pasemko, S. (2026, 1 mei). Redirect HTTP to HTTPS: complete setup guide. Urllo. https://www.urllo.com/resources/learn/redirect-http-to-https
