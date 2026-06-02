@@ -1,11 +1,11 @@
 # Professionalization of a Breadboard Prototype into a Perfboard or PCB Solution
 
-* **Author:** Thijmen Walter
+* **Author:** Thijmen Walter (Embedded & Robotics Engineer Student)
 * **Date:** 31-05-2026
 * **Version:** 2.0
 * **Classification:** Internal
 * **Client:** Mayor Mats Otten
-* **Company:** HvA / HBO-ICT Project
+* **Company:** The Embedded Alliance
 
 ---
 
