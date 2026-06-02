@@ -61,3 +61,46 @@ https://127.0.0.1:8443
 
 This approach made it possible to test HTTPS/TLS safely without changing the active backend flow 
 (*About HTTPS - FastAPI*, z.d.).
+
+
+## 4. HTTPS/TLS Prototype Setup
+
+A separate Docker Compose HTTPS test setup was created. The existing HTTP backend was not replaced.
+
+The HTTPS prototype used:
+
+- a self-signed certificate (*Security/Server Side TLS*, z.d.);
+- a private key;
+- a separate HTTPS test service;
+- Uvicorn SSL options (Uvicorn, z.d.);
+- port `8443` for the local HTTPS test.
+
+The certificate files were stored locally:
+
+```
+certs/cert.pem
+certs/key.pem
+```
+
+The private key was excluded from Git using:
+
+```
+certs/*.pem
+```
+
+![](/docs/Betül/images/dircerts.png)
+
+![](/docs/Betül/images/gitignore.png)
+
+The HTTPS test service starts Uvicorn with:
+
+```bash
+--ssl-keyfile /certs/key.pem
+--ssl-certfile /certs/cert.pem
+```
+
+This allowed the FastAPI backend to serve HTTPS traffic during the prototype test 
+(*About HTTPS - FastAPI*, z.d.).
+
+
+![](/docs/Betül/images/docker-compose.https-test.png)
