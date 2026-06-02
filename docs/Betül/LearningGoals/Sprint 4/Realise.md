@@ -15,13 +15,14 @@
 
 ## Table of Contents
 
-1. Introduction
-2. Main- and Sub-Questions
-3. Implementation Context
-4. HTTPS/TLS Prototype Setup
-5. Test Results
-6. Conclusion
-7. References
+1. [Introduction](#1-introduction)
+2. [Main- and Sub-Questions](#2-realisation-question-and-sub-questions)
+3. [Implementation Context](#3-implementation-context)
+4. [HTTPS/TLS Prototype Setup](#4-httpstls-prototype-setup)
+5. [Test Results](#5-test-results)
+6. [Conclusion](#6-conclusion)
+7. [References](#7-references)
+
 
 
 ## 1. Introduction
@@ -89,8 +90,10 @@ certs/*.pem
 ```
 
 ![](/docs/Betül/images/dircerts.png)
+Figure 1. Local certificate directory used during the HTTPS/TLS prototype test. The screenshot shows the generated cert.pem and key.pem files, which were required to start the FastAPI backend with SSL enabled. These files formed the basis of the self‑signed certificate setup used for local HTTPS testing.
 
 ![](/docs/Betül/images/gitignore.png)
+Figure 2. Git ignore configuration for certificate files. The screenshot shows that all .pem files inside the certs directory were excluded from version control. This ensured that private keys were not accidentally committed to Git, following standard security practices for certificate handling.
 
 The HTTPS test service starts Uvicorn with:
 
@@ -104,6 +107,7 @@ This allowed the FastAPI backend to serve HTTPS traffic during the prototype tes
 
 
 ![](/docs/Betül/images/docker-compose.https-test.png)
+Figure 3. Docker Compose configuration for the HTTPS test service. The screenshot shows the separate HTTPS container that was added for the prototype. This service starts Uvicorn with SSL options and runs independently from the existing HTTP backend, allowing HTTPS to be tested without disrupting the active deployment.
 
 ## 5. Test Results
 
@@ -115,9 +119,7 @@ Before testing the HTTPS endpoint, the running containers were checked with:
 docker compose ps
 ```
 ![](/docs/Betül/images/dockercomposeps.png)
-
-The output shows that the normal API container, the HTTPS test container and the database container were running at the same time. This confirms that the HTTPS prototype was added alongside the existing backend instead of replacing it.
-
+Figure 4. Docker Compose environment during the HTTPS/TLS prototype test. The screenshot shows the normal API container, the separate HTTPS test container and the PostgreSQL database container running at the same time. This confirms that the HTTPS prototype was added alongside the existing backend instead of replacing it, ensuring that the active HTTP backend remained fully operational during testing.
 
 ### 5.2 Health check
 The HTTPS endpoint was tested with:
@@ -135,6 +137,7 @@ The result was:
 The `-k` option was required because the certificate was self-signed and therefore not trusted by the operating system (*Security/Server Side TLS*, z.d.).
 
 ![](/docs/Betül/images/healthcheck-certificaat-ok.png)
+Figure 5. Successful HTTPS/TLS health check using the local test environment. The screenshot shows the curl -k command returning {"status":"ok"}, confirming that the FastAPI backend responded correctly over an encrypted HTTPS connection using the self‑signed certificate.
 
 The browser also showed the following certificate warning:
 
@@ -147,12 +150,13 @@ This warning is expected for a self-signed certificate. It confirms that HTTPS/T
 
 
 ![](/docs/Betül/images/healthcheck-certificaat.png)
-
+Figure 6. Browser certificate warning during the HTTPS/TLS prototype test. The screenshot shows the expected NET::ERR_CERT_AUTHORITY_INVALID message, which occurs when using a self‑signed certificate. This confirms that HTTPS was active, even though the certificate was not trusted by a public certificate authority.
 
 The original backend was kept available during the prototype test. This shows that the HTTPS/TLS test did not replace or break the normal HTTP backend.
 
 
 ![](/docs/Betül/images/healthcheck.png)
+Figure 7. Original HTTP backend running alongside the HTTPS prototype. The screenshot shows that the normal backend on http://localhost:80/health continued functioning during the test. This demonstrates that the HTTPS prototype did not replace or break the existing backend, which was a key requirement of the realisation.
 
 ## 6. Conclusion
 
