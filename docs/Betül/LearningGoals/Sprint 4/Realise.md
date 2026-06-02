@@ -154,3 +154,29 @@ The original backend was kept available during the prototype test. This shows th
 
 ![](/docs/Betül/images/healthcheck.png)
 
+## 6. Conclusion
+
+The local HTTPS/TLS prototype test was successful. The backend responded correctly through:
+
+```
+https://127.0.0.1:8443/health
+```
+
+with the response:
+
+```json
+{"status":"ok"}
+```
+
+This proves that HTTPS/TLS can technically be added to the Docker-based FastAPI backend (Uvicorn, z.d.).
+
+Because the prototype uses a self-signed certificate, it should be treated as a feasibility test and not as a production-ready HTTPS deployment. The prototype was not deployed to the shared Raspberry Pi environment. This was a deliberate decision to avoid disrupting the active team backend during the final sprint. For the shared deployment, HTTPS/TLS should be added later in a controlled team moment, preferably through the existing NGINX-based backend stack (*Security/Server Side TLS*, z.d.).
+
+
+## 7. References
+
+*About HTTPS - FastAPI*. (z.d.). FastApi. https://fastapi.tiangolo.com/deployment/https/
+
+*Security/Server Side TLS*. (z.d.). https://wiki.mozilla.org/Security/Server_Side_TLS
+
+Uvicorn. (z.d.). *Deployment - Uvicorn*. https://uvicorn.dev/deployment/
