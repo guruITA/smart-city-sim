@@ -104,3 +104,53 @@ This allowed the FastAPI backend to serve HTTPS traffic during the prototype tes
 
 
 ![](/docs/Betül/images/docker-compose.https-test.png)
+
+## 5. Test Results
+
+### 5.1 Container status
+
+Before testing the HTTPS endpoint, the running containers were checked with:
+
+```powershell
+docker compose ps
+```
+![](/docs/Betül/images/dockercomposeps.png)
+
+The output shows that the normal API container, the HTTPS test container and the database container were running at the same time. This confirms that the HTTPS prototype was added alongside the existing backend instead of replacing it.
+
+
+### 5.2 Health check
+The HTTPS endpoint was tested with:
+
+```powershell
+curl.exe -k https://127.0.0.1:8443/health
+```
+
+The result was:
+
+```json
+{"status":"ok"}
+```
+
+The `-k` option was required because the certificate was self-signed and therefore not trusted by the operating system (*Security/Server Side TLS*, z.d.).
+
+![](/docs/Betül/images/healthcheck-certificaat-ok.png)
+
+The browser also showed the following certificate warning:
+
+```
+NET::ERR_CERT_AUTHORITY_INVALID
+```
+
+This warning is expected for a self-signed certificate. It confirms that HTTPS/TLS was active, but that the certificate was not trusted by an official certificate authority 
+(*About HTTPS - FastAPI*, z.d.).
+
+
+![](/docs/Betül/images/healthcheck-certificaat.png)
+
+
+The original backend was kept available during the prototype test. This shows that the HTTPS/TLS test did not replace or break the normal HTTP backend.
+
+
+![](/docs/Betül/images/healthcheck.png)
+
