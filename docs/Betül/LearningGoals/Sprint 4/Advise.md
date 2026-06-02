@@ -14,14 +14,14 @@
 
 ## Table of Contents
 
-1. Introduction
-2. Main- and Sub-Questions
-3. Evaluation of the Realisation
-4. Recommended Integration Approach
-5. Advice to the Backend Team
-6. Limitations
-7. Conclusion
-8. References
+1. [Introduction](#1-introduction)
+2. [Main- and Sub-Questions](#2-advice-question-and-sub-questions)
+3. [Evaluation of the Realisation](#3-evaluation-of-the-realisation)
+4. [Recommended Integration Approach](#4-recommended-integration-approach)
+5. [Advice to the Backend Team](#5-advice-to-the-backend-team)
+6. [Limitations](#6-limitations)
+7. [Conclusion](#7-conclusion)
+8. [References](#8-references)
 
 
 ## 1. Introduction
