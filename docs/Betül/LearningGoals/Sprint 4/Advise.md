@@ -129,3 +129,19 @@ The local HTTPS/TLS prototype has some limitations:
 
 These limitations do not make the prototype invalid. They show that the prototype should be used as evidence of feasibility, while the final deployment should be handled more carefully.
 
+## 7. Conclusion
+
+The local HTTPS/TLS prototype proved that encrypted communication can be added to the Docker-based FastAPI backend. However, it should not be deployed directly to the shared Raspberry Pi environment shortly before the final delivery, because the active backend is used by the team, ESP32 devices and dashboard.
+
+The recommended approach is to keep the current Raspberry Pi deployment stable and document HTTPS/TLS as a future improvement. If the project is continued, HTTPS/TLS should preferably be added through the existing NGINX-based backend stack. This is safer and cleaner than configuring HTTPS directly inside every FastAPI container, because NGINX can handle external secure traffic while the FastAPI services continue running internally.
+
+This advice keeps the final sprint delivery stable while still giving the team a clear technical direction for improving backend security in future development.
+
+
+## 8. References
+
+*About HTTPS - FastAPI*. (z.d.). FastApi. https://fastapi.tiangolo.com/deployment/https/
+
+NGINX Reverse Proxy | NGINX Documentation. (2026, 4 mei). https://docs.nginx.com/nginx/admin-guide/web-server/reverse-proxy/ 
+
+Uvicorn. (z.d.). *Deployment - Uvicorn*. https://uvicorn.dev/deployment/
