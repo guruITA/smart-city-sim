@@ -42,3 +42,22 @@ How can HTTPS/TLS be tested on the existing City Sim backend without disrupting 
 1. How can a self-signed certificate be used to test HTTPS/TLS locally?
 2. How can the HTTPS/TLS prototype be added without replacing the existing HTTP backend?
 3. What test results show that the HTTPS/TLS prototype works?
+
+## 3. Implementation Context
+
+The existing backend already runs with Docker Compose. The normal HTTP backend remained available during the test, while HTTPS/TLS was tested through a separate local prototype setup (Uvicorn, z.d.).
+
+The existing backend stayed available on:
+
+```
+http://localhost:80
+```
+
+The local HTTPS/TLS prototype was tested on:
+
+```
+https://127.0.0.1:8443
+```
+
+This approach made it possible to test HTTPS/TLS safely without changing the active backend flow 
+(*About HTTPS - FastAPI*, z.d.).
