@@ -22,3 +22,23 @@
 5. Test Results
 6. Conclusion
 7. References
+
+
+## 1. Introduction
+
+This realisation report describes a local HTTPS/TLS prototype test for the City Sim backend. The goal was to test whether encrypted HTTPS communication can be added to the existing Docker-based FastAPI backend without disrupting the current working HTTP backend.
+
+The test was performed locally instead of directly on the shared Raspberry Pi deployment. This was a deliberate scope decision, because the Raspberry Pi backend is used by the team, ESP32 devices and dashboard. Changing the shared deployment during the final sprint could create unnecessary risk.
+
+
+## 2. Main- and Sub-Questions
+
+### Main Question
+
+How can HTTPS/TLS be tested on the existing City Sim backend without disrupting the current Docker-based deployment?
+
+### Sub-Questions
+
+1. How can a self-signed certificate be used to test HTTPS/TLS locally?
+2. How can the HTTPS/TLS prototype be added without replacing the existing HTTP backend?
+3. What test results show that the HTTPS/TLS prototype works?
