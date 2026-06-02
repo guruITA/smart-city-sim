@@ -4,8 +4,8 @@
 |---|---|
 | Title | Analysis Report — Secure and Reliable Embedded-Backend Communication in Smart City Systems |
 | Author | Betül Aydin |
-| Date | 21 May 2026 |
-| Version | 1.0 |
+| Date | 1 June 2026 |
+| Version | 1.1 |
 | Classification | Internal |
 | Mayor | Mats |
 | Company | Amsterdam University of Applied Sciences |
@@ -14,227 +14,163 @@
 
 ## Table of Contents
 
-1. Introduction  
-2. Research Question and Sub-Questions  
-3. Real-World Problem Context  
-4. Embedded-Backend Communication in Smart City Systems  
-5. Security Risks in Embedded-Backend Communication  
-6. Reliability Risks in Embedded-Backend Communication  
-7. Requirements for a Secure and Reliable Backend Deployment  
-8. Relevance to the City Sim Project  
-9. Conclusion  
-10. References  
+1. [Introduction](#1-introduction)  
+2. [Research Question and Sub-Questions](#2-research-question-and-sub-questions)  
+3. [Embedded-Backend Communication in Smart City Systems](#3-embedded-backend-communication-in-smart-city-systems)  
+4. [Security Risks in Embedded-Backend Communication](#4-security-risks-in-embedded-backend-communication)  
+5. [Reliability Risks in Embedded-Backend Communication](#5-reliability-risks-in-embedded-backend-communication)  
+6. [Requirements for Secure and Reliable Embedded-Backend Communication](#6-requirements-for-secure-and-reliable-embedded-backend-communication)  
+7. [Conclusion](#7-conclusion)  
+8. [References](#8-references)
 
 ## 1. Introduction
 
-This analysis report investigates how embedded-backend communication in smart city systems can be made more secure and reliable. In smart city environments, embedded devices such as sensors, traffic lights, streetlights and parking systems collect data from the physical environment and send this data to backend systems. These backend systems can validate, store and process the data for monitoring, analysis or future control decisions.
+This analysis report investigates how embedded-backend communication in smart city systems can be made more secure and reliable. In these systems, embedded devices such as sensors, traffic lights, streetlights and parking systems collect data from the physical environment and send it to backend systems for validation, storage, monitoring and future control decisions.
 
-The reason for this analysis is that a basic working prototype is not automatically suitable for a more professional smart city environment. A prototype may function correctly, but it can still be vulnerable if communication is unencrypted, backend services are not separated, data is not stored persistently or recovery steps are unclear.
+As IoT systems move from prototypes toward real-world use, a working prototype is not automatically secure or reliable enough for professional city services (Zhou et al., 2023; Solouki et al., 2024). Unencrypted communication, manipulated requests or backend failure can affect data quality, monitoring and future control functions.
 
-This report first explains the real-world problem behind embedded-backend communication. It then analyses security risks, reliability risks and the requirements needed to make the communication more secure and dependable. The findings provide the foundation for the Design phase, where the requirements can be applied to the City Sim backend context using Docker containers and HTTPS/TLS.
+This is relevant to the City Sim project because the prototype uses embedded devices, a central backend, a Raspberry Pi and Docker-based backend services. Therefore, the project benefits from professional design choices such as secure communication, service separation, persistent storage and recovery planning.
+
+This report explains the communication structure, analyses the main security and reliability risks, and translates these risks into requirements for the Design phase.
 
 ## 2. Research Question and Sub-Questions
 
-## Main Question
+This section defines the focus of the analysis. The main question describes the overall problem, while the sub-questions divide the analysis into communication structure, security risks, reliability risks and practical requirements.
+
+### Main Question
 
 **How can embedded-backend communication in smart city systems be made secure and reliable?**
 
-## Sub-Questions
+### Sub-Questions
 
-1. **What is the real-world problem behind embedded-backend communication in smart city systems?**
+1. **How does embedded-backend communication work in smart city systems?**
 2. **What security risks can occur when embedded devices communicate with backend systems?**
 3. **What reliability risks can occur when embedded devices depend on backend systems?**
 4. **What requirements are needed to make embedded-backend communication secure and reliable?**
 
-## 3. Real-World Problem Context
+## 3. Embedded-Backend Communication in Smart City Systems
 
-The growth of the Internet of Things (IoT) has placed small computing devices, known as embedded systems, at the heart of modern cities. These devices manage important tasks like monitoring traffic and environment sensors (Zhou et al., 2023). However, as these systems move from simple prototypes to real-world use, they face a "dependability gap". This means they are not yet safe, reliable, or secure enough for professional city services (Solouki et al., 2024).
+This chapter explains the basic communication structure between embedded devices and backend systems. This is needed before analysing risks, because security and reliability problems depend on how data moves through the system and which components process it.
 
-### Security Risks and the CIA Triad  
-Connected devices are often targets for hackers because they expand the attack surface of a network. These risks are usually measured using the CIA triad (Confidentiality, Integrity, and Availability) (Securing Connected Embedded Systems From Cyber Threats | HCLTech, z.d.):
+In a smart city system, embedded devices such as ESP32 boards collect sensor data from the physical environment. Because embedded hardware has limited resources, this data is often sent as a lightweight JSON or binary payload. The data is then transmitted over a network such as Wi-Fi, Ethernet or cellular communication. For this project context, HTTPS/TLS is the relevant communication method because it protects data while it is being sent.
 
-- Confidentiality (Privacy): Many devices use unencrypted communication. This allows hackers to "eavesdrop" and steal private data. 
-- Integrity (Accuracy): Through Man-in-the-Middle (MitM) attacks, a hacker can change data packets. This leads to the backend receiving fake or wrong sensor data (Sowa, 2025d). 
-- Availability (Service): Systems are vulnerable to network attacks or software crashes that can stop the device from working.
+The backend receives the request through an API endpoint, validates the incoming data and can apply authentication mechanisms such as API keys or tokens if required (Apriorit, 2025). After validation, a backend service such as FastAPI processes the data and stores it in a database such as PostgreSQL for monitoring or future analysis.
 
-### Reliability and the Single Point of Failure  
-Besides hackers, basic systems often fail because of how they are designed. In many prototype setups, the backend acts as a single point of failure. This means that if the main backend service or the hardware (like a Raspberry Pi) crashes, the entire smart city system stops working.
-These failures can be caused by simple hardware errors or mistakes in the software code (Admin, 2025b). 
+Although different IoT protocols exist, this analysis does not focus on choosing between HTTPS and MQTT. HTTPS has already been chosen as the relevant direction for this project. HTTP/HTTPS is suitable for web APIs, while MQTT is often used for event-driven IoT communication with a publish/subscribe model (Power by akacia, 阿卡希亞(股)公司, www.akacia.com.tw, 2026; Vikram, 2026b). The rest of this analysis therefore focuses on making the chosen HTTPS/TLS direction more secure and reliable.
 
-### The Hardware Constraint Challenge          
-Fixing these problems is difficult because of the limitations of embedded hardware. Devices like the ESP32 or Raspberry Pi have limited power and memory. Because of these limits, it is hard to run heavy security software or complex monitoring tools without making the device too slow.
+Backend reliability is also part of embedded-backend communication. A tool such as Docker Compose can support this by separating services into containers, such as the API, database and reverse proxy. Restart policies, health checks and persistent volumes can improve recovery behaviour and reduce data loss during container restarts or recreations (Abdelzaher et al., 2025).
 
-The main problem is that standard communication between devices and backends is often too fragile for real-world city operations. A system that does not protect its data or separate its services is not yet suitable for professional use. To reach a professional standard, the architecture must be improved to ensure that data is accurate and services keep running even if a crash occurs (Apriorit, 2025).
+Together, HTTPS/TLS and containerization support secure and reliable communication. HTTPS/TLS protects data in transit, while Docker Compose supports service separation, recovery behaviour and persistent data storage.
 
-## 4. Embedded-Backend Communication in Smart City Systems
+## 4. Security Risks in Embedded-Backend Communication
 
-In a Smart City ecosystem, the communication between embedded devices and the backend is the foundational "connective tissue" that supports important urban functions. This architecture must balance the resource constraints of embedded hardware with the need for secure transport and backend reliability (Patidar, 2026).
+This chapter analyses the main security risks when embedded devices communicate with backend services. These risks matter because smart city systems process operational data and may later support control functions. If communication or backend access is not protected, the system can receive manipulated data, expose sensitive information or become easier to attack (Mktg & Mktg, 2023).
 
-### The Communication Flow: A Layered Architecture
+### 4.1 Unencrypted Communication
 
-Professional smart city systems often follow a layered design to manage the flow of data from the physical environment to the user interface:
-- **Embedded Device:** A microcontroller (such as an ESP32) collects data from sensors—monitoring variables like traffic flow or air quality. Due to resource constraints, data is often formatted as lightweight JSON or binary payloads.
-- **Secure Transport (HTTPS/TLS):** Data is transmitted over a network (Wi-Fi, Ethernet, or cellular). To ensure data integrity and confidentiality, HTTPS/TLS is used to encrypt data in transit. While TLS secures the communication channel, database security and device authentication are managed as separate layers.
-- **API Endpoint / Message Broker:** This serves as the formal entry point. While the TLS layer secures the connection, the backend validates the incoming data and can apply additional authentication mechanisms if required, such as API keys or tokens(Mieruński, 2026).
-- **Backend Service & Database:** A service (e.g., FastAPI) processes the data and stores it in a database (e.g., PostgreSQL) for historical analysis.
+Using unencrypted protocols, such as standard HTTP or plain MQTT, creates risks for confidentiality and integrity. Standard HTTP sends data without encryption, which means unauthorized actors may be able to read or change the information in transit. This also creates a risk of Man-in-the-Middle attacks (Sowa, 2025).
 
-### Protocol Comparison: HTTP/HTTPS vs. MQTT
+Even simple sensor values can become sensitive when collected over time, because they can reveal operational patterns. HTTPS/TLS is therefore important because it encrypts data in transit and reduces the risk of interception or modification (Bosch, z.d.).
 
-The choice of protocol dictates the system's responsiveness and efficiency.
-- **HTTP/HTTPS (Request-Response):** This is the standard for web APIs and is effective for sending data to web APIs or configuration updates. However, because it is client-initiated, it is less suitable for direct server-initiated commands, as the server cannot spontaneously send data to the device without the device "polling" first (Power by akacia, 阿卡希亞(股)公司, www.akacia.com.tw, 2026).
-- **MQTT (Publish/Subscribe):** Designed specifically for the IoT, MQTT is highly efficient due to its low overhead. It is better suited for two-way, event-driven communication because a broker can push messages to devices over a persistent connection. Reliability depends on the configured Quality of Service (QoS) level and network stability (Vikram, 2026b).
+### 4.2 Fake or Manipulated Data
 
-### Backend Reliability and Containerization
+Backend services that do not validate incoming data are vulnerable to fake or manipulated requests. If an API endpoint is open and unprotected, unauthorized devices can send false sensor readings or status updates (Mktg & Mktg, 2023b). This can pollute historical data and make monitoring or future analysis unreliable.
 
-For a smart city system, the backend must remain available so that incoming sensor data can still be received, processed and stored. A container-based deployment tool such as Docker Compose can support backend reliability by separating services and making them easier to manage.
+The backend must therefore handle malformed payloads, invalid data types and unexpected values. Validation with FastAPI and Pydantic schemas can help prevent incorrect data from being processed or stored (Sowa, 2025b).
 
-- **Service Isolation and Maintenance:** Components such as the API, database, reverse proxy or message broker can run in separate containers. This makes it easier to isolate, restart and maintain individual services.
+### 4.3 Weak Authentication or No Authentication
 
-- **Restart Policies and Health Checks:** Docker Compose can use restart policies and health checks to help services recover after crashes or reboots and to detect whether a container is still functioning correctly.
+A common IoT risk is that the backend cannot verify whether a connecting device is legitimate. Without authentication, another device could pretend to be a sensor and send data to the backend. This becomes especially risky if future control functions depend on incoming data (Apriorit, 2025; Emq, 2024).
 
-- **Persistent Data Management:** Persistent volumes reduce the risk of data loss during container restarts or recreations. However, stronger data protection also requires regular database backups and proper storage management (Abdelzaher et al., 2025).
+Prototype systems can reduce this risk with simpler mechanisms such as API keys or unique tokens. These help the backend distinguish trusted devices from unauthorized requests (Bosch, z.d.).
 
-Together, HTTPS/TLS and containerization support secure and reliable embedded-backend communication. HTTPS/TLS protects data in transit, while Docker Compose supports service separation, recovery behaviour and persistent data storage.
+### 4.4 Exposed Backend Services
 
-## 5. Security Risks in Embedded-Backend Communication
+Exposing unnecessary backend services increases the attack surface. Internal components, such as the database, should not be directly reachable from outside the server environment. Container-based networking can help isolate internal communication between services, such as the API and database (HiveMQ Team, 2026).
 
-The interaction between embedded hardware and backend services introduces specific attack vectors that can compromise the functionality of a Smart City system. Because these systems often manage operational or sensitive data, addressing security risks is essential to maintain the integrity of urban monitoring and future control functions (Mktg & Mktg, 2023).
+Only necessary API endpoints should be exposed. Public debug ports, unnecessary service ports or overly visible API documentation can reveal internal structure and make attacks easier (Sowa, 2025c).
 
-### 5.1 Unencrypted Communication
-Using unencrypted protocols, such as standard HTTP or plain MQTT, creates significant vulnerabilities regarding data confidentiality and integrity.  
-- **Plain Text Transmission:** Standard HTTP transmits data without encryption, allowing unauthorized actors on the network path to read the information.  
-- **Eavesdropping and MitM:** Without transport-level security, systems are vulnerable to Man-in-the-Middle (MitM) attacks, where an attacker intercepts or modifies traffic in transit (Sowa, 2025).  
-- **Data Aggregation Risks:** While individual sensor values may seem minor, the accumulation of such data over time can reveal sensitive operational patterns about city infrastructure.  
-- **Protection via TLS:** Implementing HTTPS/TLS is a common method for encrypting data in transit, significantly reducing the risk of tampering during transmission (Bosch, z.d.).
+### 4.5 Secrets and Configuration
 
-### 5.2 Fake or Manipulated Data
-Backend services that do not properly validate incoming data are susceptible to data pollution and logic errors.
-- **Unauthorized Requests:** If API endpoints are left open and unprotected, malicious actors can send fake sensor readings or status updates (Mktg & Mktg, 2023b).
-- **Database Pollution:** Injected fake data can corrupt historical records, making long-term analysis and monitoring unreliable.
-- **Improper Input Validation:** The backend must be able to handle malformed payloads, invalid data types, or unexpected values. Without robust validation (e.g., via FastAPI/Pydantic schemas), these inputs could lead to application errors or incorrect automated decisions (Sowa, 2025b).
+Sensitive credentials, such as database passwords and API tokens, are a frequent source of security problems. Hardcoded credentials in firmware or source code are risky because they can be extracted through static analysis or physical access (Mktg & Mktg, 2023c).
 
-### 5.3 Weak Authentication or No Authentication
-A common risk in IoT systems is the inability of the backend to verify the identity of a connecting device.
-- **Identity Verification:** The backend needs a mechanism to distinguish between a legitimate sensor (like an ESP32) and an unauthorized device (Apriorit, 2025).
-- **Device Spoofing:** Without authentication, any device can "pretend" to be a sensor and push data to a specific endpoint, potentially triggering unauthorized actions in future control scenarios (Emq, 2024).
-- **Implementation Options:** While advanced systems may use X.509 digital certificates, prototype implementations often utilize API keys or unique tokens to authorize device access (Bosch, z.d.).
+A safer approach is to manage secrets through environment variables instead of storing them in version control (Apriorit, 2025). Configuration templates such as `.env.example` can still be used without exposing real passwords or tokens.
 
-### 5.4 Exposed Backend Services
-Providing external or unnecessary network access to internal backend components significantly increases the system's attack surface.
-- **Network Isolation:** Services should utilize container-based networking to ensure that internal communication, such as the link between the API and the database is isolated from unauthorized network segments (HiveMQ Team, 2026).
-- **Access Control:** Internal services and databases should generally not be directly reachable from outside the server environment.
-- **Endpoint Visibility:** Publicly available API documentation or exposed debug ports can reveal the internal structure of the system, making it easier for attackers to find entry points (Sowa, 2025c).
+## 5. Reliability Risks in Embedded-Backend Communication
 
-### 5.5 Secrets and Configuration
-The management of sensitive credentials, such as database passwords and API tokens, is a frequent point of failure.
-- **Hardcoded Credentials:** Embedding fixed passwords or keys directly into the firmware or source code is a major security flaw, as these can be extracted via static analysis or physical access (Mktg & Mktg, 2023c).
-- **Environment Variables:** A common best practice is managing secrets through environment variables rather than storing them in version control (Apriorit, 2025).
-- **Configuration Security:** Utilizing templates (e.g., .env.example) allows for a consistent structure across development environments without exposing actual secrets in shared repositories.
+This chapter analyses reliability risks. Reliability, or dependability, means that the system can continue delivering its service even when faults occur. In a smart city context, this is important because backend, database or network failures can affect monitoring and future control functions (Solouki et al., 2024; Admin, 2025).
 
-## 6. Reliability Risks in Embedded-Backend Communication
+### 5.1 Backend Service Failure
 
-Reliability, often referred to as **dependability**, is the system's ability to maintain its service delivery even when internal faults occur. In a Smart City context, a **failure** happens when the system's actual behavior diverges from its expected operation (Solouki et al., 2024). Identifying these risks is essential for creating a resilient design that ensures important urban functions remain operational despite hardware or software issues (Admin, 2025).
+If the backend service, such as a FastAPI application, crashes or becomes unresponsive, embedded devices lose their target endpoint. They may still collect data locally, but they can no longer send it to the backend.
 
-### 6.1 Backend Service Failure
+This can stop dashboard updates and leave operators with outdated information. In a later stage, it could also prevent the backend from sending commands back to devices that require real-time adjustment (Admin, 2025).
 
-If the backend service (such as a FastAPI application) crashes or becomes unresponsive, the **link** between the city's sensors and the management logic **is interrupted**.
+### 5.2 Database Failure
 
-- **Interruption of Data Reception:** While embedded devices might still collect data locally, they lose their target endpoint and can no longer transmit information to the backend.
-- **Impact on Future Control Functions:** The backend becomes unable to send commands back to the devices, which is a significant risk for **future control functions** that require real-time adjustment based on sensor input (Admin, 2025).
-- **Frozen Monitoring:** Dashboards stop updating, leaving operators with outdated information that does not reflect the current state of the city.
+A backend can remain online but still fail to communicate with its database because of configuration errors, resource exhaustion or database container failure. Since the database stores the latest reliable system state, a database failure can cause the system to lose its operational context (Solouki et al., 2024).
 
-### 6.2 Database Failure
+Database failure can also create gaps in historical data. If the backend receives requests but cannot store them, monitoring and analysis records become incomplete. Poor error handling can also cause the backend service itself to crash (Admin, 2025).
 
-A backend may remain online but become unable to communicate with its database, often due to configuration errors or resource exhaustion.
+### 5.3 Data Loss and Lack of Persistence
 
-- **Loss of Latest System State:** The database often serves as the **"stable memory"** that stores the latest fault-free state of the system. If the database fails, the system loses its current operational context or "checkpoint". Without this saved state, a subsequent restart of the backend would mean the system has no record of the city's most recent status (e.g., the current state of traffic controllers) (Solouki et al., 2024).
-- **Gaps in Historical Data:** The backend may still receive incoming requests, but the inability to store them leads to gaps in the records used for **monitoring and analysis**.
-- **Application Instability:** If the software does not properly handle database connection errors through robust exception handling, a database failure can cause the entire backend service to crash (Admin, 2025).
+Data loss is a major risk when persistent storage is not configured correctly. Containers are temporary by nature, so data can be lost when a container is removed, recreated or rebuilt.
 
-### 6.3 Data Loss and Lack of Persistence
+To improve reliability, database files must be mapped to persistent storage on the host machine (Solouki et al., 2024). However, persistent volumes are not enough on their own. Backups are still needed to recover from hardware failure or storage corruption.
 
-Data loss is a high-impact risk when the system lacks a robust strategy for **persistent storage**.
+### 5.4 Network Instability
 
-- **Ephemeral Container Storage:** Containers are temporary by nature; while data might survive a simple restart, it is typically **lost when a container is removed, recreated, or rebuilt** unless explicitly managed.
-- **Persistent Storage Mapping:** To ensure reliability, database files must be mapped to **persistent storage** on the host machine, ensuring information remains available across these lifecycle events (Solouki et al., 2024).
-- **The Role of Backups:** While persistent storage protects data during service updates, regular **backups** are still required to recover the system in the event of major hardware failures.
+Smart city sensors often rely on wireless connections that can be affected by interference, distance or temporary signal loss. This can cause delayed, missing, duplicate or out-of-order data packets (Solouki et al., 2024).
 
-### 6.4 Network Instability
+The backend should therefore handle network-related inconsistencies without crashing or creating unreliable database records.
 
-Smart City sensors often rely on wireless connections that are susceptible to environmental influences and interference.
+### 5.5 Single Point of Failure
 
-- **Transient Faults:** Signal issues can cause temporary disruptions, resulting in delayed or missing data packets.
-- **Duplicate Data:** When a device re-executes a transmission to compensate for a weak signal, it can lead to the backend receiving duplicate or out-of-order messages (Solouki et al., 2024).
-- **Backend Resilience:** The backend must be designed to handle these network-induced inconsistencies without crashing or creating duplicate records in the database.
+Relying on one physical host, such as a Raspberry Pi or server, creates a single point of failure. Power loss, SD-card corruption or hardware malfunction can make the full backend infrastructure unavailable (Admin, 2025).
 
-### 6.5 Single Point of Failure
+Docker Compose can reduce this risk by making the backend easier to redeploy on alternative hardware. However, this only helps if the necessary data, configuration files and documentation are available (W, 2026). 
 
-Relying on a single physical host (like one Raspberry Pi or server) to run the entire backend infrastructure creates a **Single Point of Failure**.
+## 6. Requirements for Secure and Reliable Embedded-Backend Communication
 
-- **Hardware Vulnerability:** The entire system is vulnerable to common hardware issues such as **power loss, storage failure (e.g., SD-card corruption), or general hardware malfunctions** (Admin, 2025).
-- **Lack of Redundancy:** Without a standby system or a clear recovery plan, a single hardware fault **can result in service downtime** for the city’s monitoring infrastructure (W, 2026).
-- **Portability as Mitigation:** Utilizing **Docker Compose** helps mitigate this risk by making the infrastructure portable, allowing for faster redeployment on alternative hardware. However, this is only effective if the **necessary data, configuration files, and documentation** are also readily available.
+This chapter translates the security and reliability risks from the previous chapters into practical design goals. The MoSCoW method is used to keep the scope realistic for the current prototype phase. These requirements form the bridge between the Analysis phase and the Design phase.
 
+### 6.1 Must Have Requirements
 
-## 7. Requirements for Secure and Reliable Embedded-Backend Communication
-
-The following requirements translate the security and reliability risks from the analysis into practical design goals. The MoSCoW method is used to keep the scope realistic for the current prototype phase.
-
-### 7.1 Must Have Requirements
-
-**R1: Input Validation**
-
+**R1: Input Validation**  
 The backend must validate incoming data payloads, for example with Pydantic schemas, to prevent malformed, invalid or unexpected data from being processed.
 
-**R2: Secret Management**
-
+**R2: Secret Management**  
 Credentials such as database passwords and API tokens must be managed through environment variables instead of being hardcoded in firmware or source code.
 
-**R3: Persistent Storage**
-
+**R3: Persistent Storage**  
 Database files must be stored in persistent volumes so that data remains available when containers are removed, recreated or rebuilt.
 
-**R4: Basic Deployment Documentation**
-
+**R4: Basic Deployment Documentation**  
 The backend deployment steps, environment configuration and basic recovery steps must be documented so the system can be maintained or redeployed by the team.
 
-### 7.2 Should Have Requirements
+### 6.2 Should Have Requirements
 
-**R5: Transport Encryption**
-
+**R5: Transport Encryption**  
 Communication between embedded devices and the backend should use HTTPS/TLS where possible to protect data in transit from interception or modification.
 
-**R6: Automated Service Recovery**
-
+**R6: Automated Service Recovery**  
 The backend should use restart policies and health checks to detect failures and recover services where possible.
 
-**R7: Network Isolation**
-
+**R7: Network Isolation**  
 Internal services, such as the database, should stay inside a private network. Only necessary API endpoints should be exposed, preferably through a reverse proxy.
 
-**R8: Backup and Recovery Strategy**
-
+**R8: Backup and Recovery Strategy**  
 A backup and recovery process should be described to support recovery from hardware failure, storage corruption or data loss.
 
-### 7.3 Could Have Requirements
+### 6.3 Could Have Requirements
 
-**R9: Device Authentication**
-
+**R9: Device Authentication**  
 The backend could use API keys or tokens to verify connecting devices and reduce the risk of unauthorized spoofing.
 
-**R10: Future Advanced Improvements**
+**R10: Future Advanced Improvements**  
+Advanced measures such as network resilience handling, deployment portability, hardware-backed security, signed firmware updates, monitoring tools or cloud fallback could be considered in future iterations, but they are outside the current prototype scope.
 
-Advanced measures such as network resilience handling, deployment portability, hardware-backed security, signed firmware updates, monitoring tools or cloud fallback could be considered in future iterations, but they are outside the current prototype scope. 
-
-## 8. Relevance to the City Sim Project
-
-The City Sim project is a small-scale version of the real-world problem described in this analysis. In the project, embedded devices communicate with a central backend that receives, stores and processes sensor data. Even though the system is a prototype, it still benefits from professional design choices such as secure communication, service separation, persistent storage and recovery planning.
-
-The analysis is relevant to City Sim because the backend is deployed on a Raspberry Pi and uses Docker-based backend services. This creates a realistic context for applying the requirements from Chapter 7. For example, HTTPS/TLS can improve communication security, persistent volumes can reduce the risk of data loss, and restart policies or health checks can improve service recovery.
-
-The Design phase should therefore apply these requirements to the City Sim backend context. The design should focus on a realistic Docker-based structure with separated services, persistent storage and an HTTPS/TLS approach where feasible within the sprint scope.
-
-## 9. Conclusion
+## 7. Conclusion
 
 This analysis answered the main question: **How can embedded-backend communication in smart city systems be made secure and reliable?**
 
@@ -242,9 +178,11 @@ Embedded-backend communication can be made more secure by protecting data in tra
 
 Reliability can be improved by focusing on service availability, persistent storage, recovery behaviour and deployment documentation. Risks such as backend failure, database failure, data loss, network instability and single-server dependency show that a working prototype still needs clear reliability measures.
 
+For the City Sim project, these findings are relevant because the backend is deployed on a Raspberry Pi and uses Docker-based backend services. This creates a realistic context for applying the requirements from this analysis. HTTPS/TLS can improve communication security, persistent volumes can reduce the risk of data loss, and restart policies or health checks can improve service recovery.
+
 The most important requirements for a realistic prototype are input validation, secret management, persistent storage and basic deployment documentation. These form the foundation for the Design phase, where the requirements can be applied to the City Sim backend using Docker containers, persistent volumes and an HTTPS/TLS approach where feasible.
 
-## 10. References
+## 8. References
 
 Patidar, R. (2026, 1 mei). How Embedded Software is Powering the Future of Smart Devices. EvinceDev Blog. https://evincedev.com/blog/embedded-software-development-guide/
 
@@ -272,4 +210,4 @@ Admin. (2025, 4 augustus). How to Design Fail-Safe Systems for Critical Embedded
 
 W, S. (2026, 25 april). Risk Management in Embedded Projects & Approaches and Best Practices. https://www.linkedin.com/pulse/risk-management-embedded-projects-approaches-best-practices-veber-dce4c/
 
-Zhou, X., Wang, P., Zhou, L., Xun, P., & Lu, K. (2023). A Survey of the Security Analysis of Embedded Devices. Sensors, 23(22), 9221. https://doi.org/10.3390/s23229221 
+Zhou, X., Wang, P., Zhou, L., Xun, P., & Lu, K. (2023). A Survey of the Security Analysis of Embedded Devices. Sensors, 23(22), 9221. https://doi.org/10.3390/s23229221

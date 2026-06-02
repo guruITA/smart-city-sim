@@ -1,0 +1,20 @@
+services:
+  api-https-test:
+    build: .
+    container_name: citysim-api-https-test
+    ports:
+      - "8443:8000"
+    env_file:
+      - .env
+    volumes:
+      - ./certs:/certs:ro
+    depends_on:
+      db:
+        condition: service_healthy
+    command: >
+      uvicorn main:app
+      --host 0.0.0.0
+      --port 8000
+      --ssl-keyfile /certs/key.pem
+      --ssl-certfile /certs/cert.pem
+    restart: "no"
