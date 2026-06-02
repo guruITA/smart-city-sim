@@ -18,9 +18,9 @@ namespace Config {
     }
 
     namespace EinkDisplay {
-        constexpr int CLK_PIN  = 13;
-        constexpr int MOSI_PIN = 11;
-        constexpr int CS_PIN   = 10;
+        constexpr int MOSI_PIN = 5;
+        constexpr int CLK_PIN  = 4;
+        constexpr int CS_PIN   = 6;
         constexpr int DC_PIN   = 9;
         constexpr int RST_PIN  = 8;
         constexpr int BUSY_PIN = 7;
