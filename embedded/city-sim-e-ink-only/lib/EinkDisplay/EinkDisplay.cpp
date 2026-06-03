@@ -154,9 +154,9 @@ void EinkDisplay::startSyncTask() {
         (void*)this,
         1,
         nullptr,
-        1
+        0
     );
-    Serial.println("EinkDisplay sync task started on core 1");
+    Serial.println("EinkDisplay sync task started on core 0");
 }
 
 void EinkDisplay::syncTaskLoop(void* param) {
