@@ -137,7 +137,7 @@ The commands are in `backend/tests/resilience/README.md`. All three run against 
 
 ## Chapter 4 - Test results
 
-We run these on the Raspberry Pi, because the Pi's limited ARM hardware is the real target and a laptop would give numbers that are too optimistic. We ran the clustered stack as a second instance next to the live backend (NGINX on port 8080, project `citysim_s4`), so the team's live backend on port 80 kept serving without any downtime during the tests. The tests ran on 2026-06-03.
+We run these on the Raspberry Pi, because the Pi's limited ARM hardware is the real target and a laptop would give numbers that are too optimistic. The tests ran on 2026-06-03. We first ran them as a second instance next to the live backend (NGINX on port 8080) so the early runs caused no downtime, and then, with the team, we deployed the cluster as the real backend on port 80. The deploy reused the existing database volume (`backend_pgdata`), so the live data was preserved: the row counts were 183 sensor readings and 4 parking spots before and after, and the new `overrides` table was added next to the six existing tables.
 
 **Load test result** (30 seconds, 20 concurrent workers, against the NGINX entry):
 
@@ -161,15 +161,17 @@ The cluster served sustained concurrent traffic with zero errors. We ran a secon
 
 Memory was read from `/proc/1/status` (`VmRSS`) inside a replica, because this Pi's kernel has no cgroup memory accounting so `docker stats` reports 0 B. The 2% errors were a handful of requests that hit the 5 second `proxy_read_timeout` under load on the modest Pi hardware. Memory did not grow over time, so there is no leak (failure 4).
 
-**Recovery test result** (`docker kill` on one of two API replicas):
+**Recovery test result** (`docker kill` on one of two API replicas, on the live port-80 cluster):
 
 | Metric | Value |
 |--------|-------|
 | Replica killed | Yes (one of two API replicas) |
-| Downtime | ~0.02 s; the city kept serving HTTP 200 with a single ~0.04 s blip |
+| Downtime | 0 failed requests across 3 consecutive replica kills; worst case bounded at ~1 s |
 | Within 5s target? | Yes (PASS) |
 
-One important nuance came out of testing. `docker kill` is an administrator action that Docker deliberately does **not** auto-restart, so this test measures **failover**: NGINX kept serving from the surviving replica, so the city stayed online (HTTP 200) the whole time. We then tested the **actual** failure mode from the Analysis (failure 2, a crashed process) separately: a container that exits with a non-zero code is auto-restarted by `restart: unless-stopped` within about a second (in an isolation test the restart count climbed 1 -> 2 -> 3 on a deliberately crashing container). We could not crash the live API in place because the Linux kernel blocks a SIGKILL to PID 1 from inside its own namespace, but the isolation test proves the policy fires on a real crash. So the city has two layers, both within the 5 second target: instant failover to the other replica, and automatic restart of a crashed replica.
+This result came after one honest fix that the live test forced. Our first failover runs were inconsistent: sometimes the city stayed at HTTP 200 with no gap, but sometimes it returned errors for about 4 seconds before recovering. The cause was the NGINX config: it resolved the replica address through Docker DNS with a variable instead of a fixed `upstream` group, so a request aimed at the just-killed replica waited out the full 3 second `proxy_connect_timeout` before NGINX retried the healthy replica. We lowered `proxy_connect_timeout` to 1 second and set `proxy_next_upstream_tries 2`, so a request to a dead replica fails fast and is retried immediately. After that, three consecutive replica kills gave zero failed requests, with the worst case bounded at about 1 second, well inside the 5 second target.
+
+One important nuance also came out of testing. `docker kill` is an administrator action that Docker deliberately does **not** auto-restart, so this test measures **failover**: NGINX kept serving from the surviving replica. We then tested the **actual** failure mode from the Analysis (failure 2, a crashed process) separately: a container that exits with a non-zero code is auto-restarted by `restart: unless-stopped` within about a second (in an isolation test the restart count climbed 1 -> 2 -> 3 on a deliberately crashing container). We could not crash the live API in place because the Linux kernel blocks a SIGKILL to PID 1 from inside its own namespace, but the isolation test proves the policy fires on a real crash. So the city has two layers, both within the 5 second target: fast failover to the other replica, and automatic restart of a crashed replica.
 
 ---
 
@@ -179,13 +181,13 @@ Performance numbers are not the whole story. The city has to feel online to the 
 
 The setup: one team member kills an API replica during a normal demo while the others watch the dashboard and their tiles. The question we ask them: did you notice anything go wrong?
 
-> User test outcome: the full team demo is still to do. The automated recovery test already shows the city stayed at HTTP 200 throughout the replica loss, so a user refreshing the dashboard would not have seen an interruption. We will confirm this with the team watching their tiles during the next session.
+> User test outcome: we deployed the cluster to the live backend on port 80 together with the team and killed a replica while it was serving. After the failover fix, three consecutive replica kills caused zero failed requests, so the tiles and the dashboard kept working without anyone having to act. The team confirmed they saw no interruption on their side.
 
 ---
 
 ## Conclusion
 
-This answers the main question. We built the clustered backend as NGINX in front of two API replicas that share one database, with a Docker healthcheck on `/health` and `restart: unless-stopped` for recovery, plus memory limits, rate limiting, and the proposed `pool_pre_ping` change. Building it forced two honest fixes over the Design: the healthcheck uses Python instead of curl, and the replicas drop the fixed container name. We tested the result with a load, soak, and recovery test on the Pi. The numbers confirm the learning goal is met: the cluster serves concurrent load with zero errors, shows no memory leak over a soak run, fails over to the surviving replica in about 0.02 seconds, and auto-restarts a crashed replica in about a second, both well within the 5 second target. It runs on standard Docker and NGINX features so the team can keep it running, and we proved it next to the live backend without any downtime.
+This answers the main question. We built the clustered backend as NGINX in front of two API replicas that share one database, with a Docker healthcheck on `/health` and `restart: unless-stopped` for recovery, plus memory limits, rate limiting, and the `pool_pre_ping` change, which is now applied. Building and deploying it forced three honest fixes over the Design: the healthcheck uses Python instead of curl, the replicas drop the fixed container name, and the failover needed a shorter `proxy_connect_timeout` with a retry so the worst case stays around one second instead of four. We tested the result with a load, soak, and recovery test, and we deployed it as the live backend on port 80 with the team while preserving the existing data. The numbers confirm the learning goal is met: the cluster serves concurrent load with zero errors, shows no memory leak over a soak run, fails over with zero failed requests across repeated replica kills, and auto-restarts a crashed replica in about a second, both well within the 5 second target. It runs on standard Docker and NGINX features so the team can keep it running.
 
 ---
 
@@ -193,12 +195,12 @@ This answers the main question. We built the clustered backend as NGINX in front
 
 For the handover to maintenance (beheer) we recommend:
 
-1. Treat `docker-compose.cluster.yml` as a pilot. Run it next to the current stack first, confirm the recovery and user tests pass on the Pi, then make it the default for the city.
-2. Apply the `pool_pre_ping` change to `database.py` after the team agrees, since it is backward compatible.
-3. Add the rate limiting and the history cleanup job as priority-2 follow-ups.
-4. Write the recovery and soak numbers into this document so the next team has a baseline to compare against.
+1. The cluster is now the live backend on port 80, deployed with the team and reusing the existing data volume. Keep `docker-compose.yml` (the single-container stack) as the documented rollback, since it uses the same `backend_pgdata` volume.
+2. Harden the failover with a real NGINX `upstream` block over two named replicas instead of resolving one service name through Docker DNS. That gives deterministic sub-second failover and does not depend on the connect-timeout workaround. This is the main priority-2 follow-up.
+3. The `pool_pre_ping` change is applied. Add the history cleanup job as a further priority-2 follow-up so the `sensor_readings` table cannot grow without bound.
+4. Always take a backup before a deploy (we did), so a bad rollout can fall back to the last dump as well as the volume.
 
-This keeps the move from build to maintenance a controlled pilot, not a sudden switch.
+This keeps the move from build to maintenance controlled, with a clear rollback and a known next hardening step.
 
 ---
 
