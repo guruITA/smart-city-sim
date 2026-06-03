@@ -5,7 +5,7 @@
 | Title                | Advise Report — HTTPS/TLS Integration for the City Sim Backend |
 | Author               | Betül Aydin                                                    |
 | Date                 | 1 June 2026                                                    |
-| Version              | 1.0                                                            |
+| Version              | 2                                                              |
 | Classification       | Internal                                                       |
 | Mayor                | Mats                                                           |
 | Company              | Amsterdam University of Applied Sciences                       |
