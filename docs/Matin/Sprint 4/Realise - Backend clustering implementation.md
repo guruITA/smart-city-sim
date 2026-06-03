@@ -107,7 +107,7 @@ cd backend
 docker compose -f docker-compose.cluster.yml up --build --scale api=2
 ```
 
-NGINX answers on port 80 and balances over the two API replicas. Scaling up or down is one flag, for example `--scale api=3`, which answers the upscale and downscale requirement.
+NGINX answers on port 80 and balances over the two API replicas. Scaling up or down is one flag, for example `--scale api=3`. This is **manual** scaling: an operator changes the replica count by hand. It answers the upscale and downscale requirement in the sense that the city can run more or fewer replicas, but it is not yet **automatic** scaling on load. True autoscaling, where the replica count follows CPU or request load on its own, needs an orchestrator such as Kubernetes (K3s) with a HorizontalPodAutoscaler. We treat that as the next step, described in the recommendation, because it is a larger infrastructure change that belongs with the infra owner.
 
 ---
 
@@ -199,6 +199,7 @@ For the handover to maintenance (beheer) we recommend:
 2. Harden the failover with a real NGINX `upstream` block over two named replicas instead of resolving one service name through Docker DNS. That gives deterministic sub-second failover and does not depend on the connect-timeout workaround. This is the main priority-2 follow-up.
 3. The `pool_pre_ping` change is applied. Add the history cleanup job as a further priority-2 follow-up so the `sensor_readings` table cannot grow without bound.
 4. Always take a backup before a deploy (we did), so a bad rollout can fall back to the last dump as well as the volume.
+5. For **automatic** scaling on load, move the cluster to Kubernetes (K3s) with a HorizontalPodAutoscaler that scales the replica count on CPU usage, behind a Service and Ingress. Today's `--scale` is manual. K3s is a larger infrastructure change and belongs with the infra owner (Thijs), so we note it as the autoscaling path rather than building it this sprint. The team already has a K3s setup guide to follow (K3s, autoscaling reference).
 
 This keeps the move from build to maintenance controlled, with a clear rollback and a known next hardening step.
 

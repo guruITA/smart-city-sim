@@ -44,7 +44,7 @@ In the **Realise** we built that setup next to the live one, so the running city
 - `backend/nginx.conf` (reverse proxy, `proxy_next_upstream` failover, `limit_req` rate limiting)
 - `backend/tests/resilience/resilience_test.py` (standard library only: load, soak, and recovery modes)
 
-Building it forced two honest corrections versus the Design: `python:3.11-slim` has no `curl`, so the healthcheck uses a small Python `urllib` call instead; and a fixed `container_name` blocks replicas, so we dropped it. We also proposed adding `pool_pre_ping=True` and `pool_recycle=1800` to `database.py`, but left it unapplied because the database engine is shared and that change needs the team's agreement first.
+Building and deploying it forced three honest corrections versus the Design: `python:3.11-slim` has no `curl`, so the healthcheck uses a small Python `urllib` call instead; a fixed `container_name` blocks replicas, so we dropped it; and the live failover sometimes waited out the full connect timeout on a dead replica, so we lowered `proxy_connect_timeout` to 1 second with a retry. We also added `pool_pre_ping=True` and `pool_recycle=1800` to `database.py`. That change touches the shared database engine, so we held it until the team agreed; with the team present at the live deploy that condition was met and it is now applied.
 
 ## R - Result
 
