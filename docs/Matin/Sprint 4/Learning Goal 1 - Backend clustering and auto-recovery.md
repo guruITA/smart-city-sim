@@ -34,6 +34,18 @@ Architecture for health checks, restart policies, replica scaling, and failover 
 
 The built Docker Compose setup with health checks, replicas, and recovery verification.
 
+### Autoscaling follow-up (recommendation #5)
+
+The Realise closed with a recommendation: the Compose cluster scales by hand (`--scale`), so for **automatic** scaling on load, move to Kubernetes (K3s) with a HorizontalPodAutoscaler. We took that recommendation and built it as an extra Design and Realise, so the same learning goal also shows the automatic-scaling path, not only the recommendation.
+
+**Design document** - [Design - Kubernetes autoscaling architecture](Design%20-%20Kubernetes%20autoscaling%20architecture.md)
+
+How to scale the stateless API automatically while keeping the one shared database single, so the shared data cannot split brain. Includes the safe, parallel rollout next to the live backend and the path to more nodes.
+
+**Realise document** - [Realise - Kubernetes autoscaling implementation](Realise%20-%20Kubernetes%20autoscaling%20implementation.md)
+
+The built K3s manifests (`backend/k8s/`) and the autoscaling test. The build is complete and validated; the measured Pi numbers are filled in after a run on the Pi.
+
 ## A - Action
 
 We worked through the four outcomes in order. In the **Analysis** we researched seven failure modes of the backend and found the biggest gap: a hung (not crashed) process, which `restart: always` cannot catch because the container is still "up". The api container also had no Docker healthcheck. In the **Advise** we weighed the options and chose native tooling: a Docker healthcheck on the existing `/health` endpoint, NGINX as reverse proxy and load balancer in front of two API replicas, plus memory limits and SQLAlchemy connection settings for the smaller failures. In the **Design** we translated every requirement into one concrete architecture (NGINX on port 80, two replicas, one shared database) and a target `docker-compose.yml`.
