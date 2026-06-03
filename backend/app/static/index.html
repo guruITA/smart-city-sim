@@ -4,9 +4,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>City Sim Dashboard</title>
+    <title>City Sim - Command Center</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=DM+Mono:wght@400;500&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap"
         rel="stylesheet">
     <style>
         * {
@@ -16,70 +18,310 @@
         }
 
         :root {
-            --bg: #0a0c10;
-            --surface: #13161d;
-            --border: #252830;
-            --text: #e2e4e9;
-            --muted: #6b7080;
-            --green: #22c55e;
-            --green-dim: #16331d;
+            --bg-0: #14130f;
+            --bg-1: #1a1916;
+            --bg-2: #1f1e1c;
+            --surface: rgba(255, 255, 255, 0.035);
+            --surface-2: rgba(255, 255, 255, 0.05);
+            --hair: rgba(255, 255, 255, 0.08);
+            --hair-strong: rgba(255, 255, 255, 0.14);
+            --text: #f3efe6;
+            --muted: #a8a097;
+            --amber: #ef9f27;
+            --amber-deep: #BA7517;
+            --amber-glow: rgba(239, 159, 39, 0.16);
             --red: #ef4444;
-            --red-dim: #3b1212;
-            --amber: #f59e0b;
-            --amber-dim: #33250b;
-            --blue: #3b82f6;
-            --blue-dim: #0f1d3d;
-            --purple: #a855f7;
-            --purple-dim: #1f0f33;
-            --orange: #f97316;
-            --orange-dim: #331a06;
+            --red-dim: rgba(239, 68, 68, 0.14);
+            --red-glow: rgba(239, 68, 68, 0.28);
+            --green: #5dcaa5;
+            --green-dim: rgba(93, 202, 165, 0.13);
+
+            /* per-hub accents */
+            --parking: #ef9f27;
+            --streetlight: #f5d061;
+            --traffic: #5dcaa5;
+            --railroad: #85b7eb;
+            --speedcam: #b39ae6;
+            --eink: #c9c4bb;
+
+            /* legacy aliases used by carried-over render JS (DO NOT remove) */
+            --blue: #85b7eb;
+            --purple: #b39ae6;
+            --orange: #ef9f27;
+            --border: var(--hair);
+            --text-dim: #a8a097;
+        }
+
+        html {
+            scroll-behavior: smooth;
         }
 
         body {
-            font-family: 'DM Sans', sans-serif;
-            background: var(--bg);
+            font-family: 'Space Grotesk', sans-serif;
             color: var(--text);
             min-height: 100vh;
+            background-color: var(--bg-0);
+            background-image:
+                radial-gradient(900px 520px at 78% -8%, var(--amber-glow), transparent 60%),
+                radial-gradient(700px 420px at 6% 4%, rgba(133, 183, 235, 0.06), transparent 55%),
+                linear-gradient(180deg, var(--bg-1), var(--bg-0) 60%);
+            background-attachment: fixed;
+            position: relative;
         }
 
-        .topbar {
+        /* faint grid texture overlay */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            background-image:
+                linear-gradient(rgba(255, 255, 255, 0.022) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.022) 1px, transparent 1px);
+            background-size: 46px 46px;
+            mask-image: radial-gradient(circle at 60% 0%, #000 0%, transparent 75%);
+            -webkit-mask-image: radial-gradient(circle at 60% 0%, #000 0%, transparent 75%);
+        }
+
+        /* city-wide red scan, toggled via .city-alert on body */
+        body::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 60;
+            opacity: 0;
+            background: linear-gradient(180deg, transparent, rgba(239, 68, 68, 0.16), transparent);
+            transition: opacity 0.4s ease;
+        }
+
+        body.city-alert::after {
+            opacity: 1;
+            animation: scan 2.6s ease-in-out infinite;
+        }
+
+        @keyframes scan {
+
+            0%,
+            100% {
+                opacity: 0.05;
+            }
+
+            50% {
+                opacity: 0.6;
+            }
+        }
+
+        .shell {
+            position: relative;
+            z-index: 1;
+            max-width: 1480px;
+            margin: 0 auto;
+            padding: 0 22px 64px;
+        }
+
+        /* ===== COMMAND BAR ===== */
+        .cmdbar {
+            position: sticky;
+            top: 0;
+            z-index: 40;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            padding: 16px 32px;
-            border-bottom: 1px solid var(--border);
-            background: var(--surface);
+            gap: 20px;
+            flex-wrap: wrap;
+            padding: 16px 22px;
+            margin: 0 -22px 26px;
+            background: rgba(20, 19, 15, 0.82);
+            backdrop-filter: blur(14px) saturate(120%);
+            -webkit-backdrop-filter: blur(14px) saturate(120%);
+            border-bottom: 1px solid var(--hair);
         }
 
-        .topbar-left {
+        .cmd-brand {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 13px;
+            min-width: 0;
         }
 
-        .topbar-logo {
-            width: 32px;
-            height: 32px;
-            background: linear-gradient(135deg, var(--blue), var(--purple));
+        .cmd-mark {
+            width: 42px;
+            height: 42px;
             border-radius: 8px;
+            display: grid;
+            place-items: center;
+            color: var(--amber);
+            background:
+                radial-gradient(circle at 30% 25%, rgba(239, 159, 39, 0.22), transparent 70%),
+                var(--surface-2);
+            border: 1px solid var(--hair-strong);
+            box-shadow: inset 0 0 14px rgba(239, 159, 39, 0.12);
+            flex-shrink: 0;
         }
 
-        .topbar-title {
+        .cmd-mark svg {
+            width: 22px;
+            height: 22px;
+        }
+
+        .cmd-titles {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            min-width: 0;
+        }
+
+        .cmd-title {
             font-size: 16px;
             font-weight: 700;
-            letter-spacing: -0.3px;
+            letter-spacing: 0.4px;
+            text-transform: uppercase;
+            line-height: 1;
         }
 
-        .topbar-subtitle {
-            font-size: 12px;
+        .cmd-sub {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
             color: var(--muted);
-            font-family: 'DM Mono', monospace;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
         }
 
-        .topbar-right {
+        .cmd-spacer {
+            flex: 1 1 40px;
+        }
+
+        .cmd-uplink {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            padding: 8px 14px;
+            border-radius: 8px;
+            border: 1px solid var(--hair);
+            background: var(--surface);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .cmd-uplink .uplink-bars {
+            display: flex;
+            align-items: flex-end;
+            gap: 3px;
+            height: 18px;
+        }
+
+        .cmd-uplink .uplink-bars i {
+            width: 3px;
+            background: var(--amber);
+            border-radius: 1px;
+            opacity: 0.85;
+            animation: equalize 1.1s ease-in-out infinite;
+        }
+
+        .cmd-uplink .uplink-bars i:nth-child(1) {
+            height: 38%;
+            animation-delay: 0s;
+        }
+
+        .cmd-uplink .uplink-bars i:nth-child(2) {
+            height: 70%;
+            animation-delay: 0.18s;
+        }
+
+        .cmd-uplink .uplink-bars i:nth-child(3) {
+            height: 100%;
+            animation-delay: 0.36s;
+        }
+
+        .cmd-uplink .uplink-bars i:nth-child(4) {
+            height: 55%;
+            animation-delay: 0.54s;
+        }
+
+        @keyframes equalize {
+
+            0%,
+            100% {
+                transform: scaleY(0.45);
+                opacity: 0.55;
+            }
+
+            50% {
+                transform: scaleY(1);
+                opacity: 1;
+            }
+        }
+
+        .cmd-uplink .uplink-text {
+            display: flex;
+            flex-direction: column;
+            line-height: 1.15;
+        }
+
+        .cmd-uplink .uplink-text b {
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 1.4px;
+            color: var(--text);
+        }
+
+        .cmd-uplink .uplink-text span {
+            font-size: 9px;
+            letter-spacing: 2px;
+            color: var(--muted);
+        }
+
+        .cmd-status {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 8px 14px;
+            border-radius: 8px;
+            border: 1px solid var(--hair);
+            background: var(--green-dim);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            letter-spacing: 0.6px;
+            color: var(--green);
+            text-transform: uppercase;
+            transition: all 0.35s ease;
+            white-space: nowrap;
+        }
+
+        .cmd-status .stat-ico {
+            width: 14px;
+            height: 14px;
+            display: block;
+        }
+
+        body.city-alert .cmd-status {
+            background: var(--red-dim);
+            color: #ffb4b4;
+            border-color: rgba(239, 68, 68, 0.4);
+            box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.25), 0 0 22px var(--red-glow);
+            animation: barpulse 1.4s ease-in-out infinite;
+        }
+
+        @keyframes barpulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.25), 0 0 16px var(--red-glow);
+            }
+
+            50% {
+                box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.5), 0 0 34px var(--red-glow);
+            }
+        }
+
+        .conn {
             display: flex;
             align-items: center;
             gap: 8px;
+            padding: 8px 13px;
+            border-radius: 8px;
+            border: 1px solid var(--hair);
+            background: var(--surface);
         }
 
         .conn-dot {
@@ -87,11 +329,13 @@
             height: 8px;
             border-radius: 50%;
             background: var(--green);
+            box-shadow: 0 0 8px var(--green);
             animation: pulse 2s ease infinite;
         }
 
         .conn-dot.off {
             background: var(--red);
+            box-shadow: 0 0 8px var(--red);
             animation: none;
         }
 
@@ -103,117 +347,488 @@
             }
 
             50% {
-                opacity: 0.5;
+                opacity: 0.4;
             }
         }
 
         .conn-label {
             font-size: 12px;
-            font-family: 'DM Mono', monospace;
+            font-family: 'JetBrains Mono', monospace;
             color: var(--muted);
+            letter-spacing: 1px;
+            text-transform: uppercase;
         }
 
-        .main {
+        /* ===== HERO OVERRIDE ===== */
+        .hero {
+            position: relative;
+            border: 1px solid var(--hair-strong);
+            border-radius: 8px;
+            padding: 26px;
+            margin-bottom: 30px;
+            overflow: hidden;
+            background:
+                radial-gradient(620px 280px at 88% 10%, rgba(239, 68, 68, 0.12), transparent 65%),
+                linear-gradient(135deg, rgba(239, 68, 68, 0.05), rgba(31, 30, 28, 0.5));
+            opacity: 0;
+            transform: translateY(16px);
+            animation: rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+            animation-delay: 0.05s;
+        }
+
+        .hero::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(180deg, var(--red), transparent);
+        }
+
+        body.city-alert .hero {
+            border-color: rgba(239, 68, 68, 0.45);
+            box-shadow: inset 0 0 0 1px rgba(239, 68, 68, 0.2), 0 0 44px rgba(239, 68, 68, 0.12);
+        }
+
+        .hero-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1px;
-            background: var(--border);
-            min-height: calc(100vh - 57px);
+            grid-template-columns: 1.05fr 0.95fr;
+            gap: 26px;
+            align-items: stretch;
         }
 
-        .tile-panel {
-            background: var(--bg);
-            padding: 28px;
+        .hero-eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--red);
+            margin-bottom: 14px;
+        }
+
+        .hero-eyebrow svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .hero h1 {
+            font-size: clamp(26px, 3.4vw, 40px);
+            font-weight: 700;
+            line-height: 1.04;
+            letter-spacing: -0.5px;
+            margin-bottom: 10px;
+        }
+
+        .hero h1 .accent {
+            color: var(--red);
+        }
+
+        .hero-tagline {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            color: var(--muted);
+            letter-spacing: 0.5px;
+            margin-bottom: 22px;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 18px;
+        }
+
+        .btn-emergency {
+            position: relative;
+            border: 1px solid rgba(239, 68, 68, 0.6);
+            border-radius: 8px;
+            padding: 16px 24px;
+            background: linear-gradient(135deg, #ef4444, #b91c1c);
+            color: #fff;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 11px;
+            text-transform: uppercase;
+            box-shadow: 0 8px 24px rgba(239, 68, 68, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+            transition: transform 0.12s ease, box-shadow 0.25s ease, filter 0.2s ease;
+            overflow: hidden;
+        }
+
+        .btn-emergency svg {
+            width: 19px;
+            height: 19px;
+        }
+
+        .btn-emergency::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 50% 120%, rgba(255, 255, 255, 0.35), transparent 60%);
+            opacity: 0;
+            transition: opacity 0.25s ease;
+        }
+
+        .btn-emergency:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 36px rgba(239, 68, 68, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+            filter: brightness(1.05);
+        }
+
+        .btn-emergency:hover::after {
+            opacity: 1;
+        }
+
+        .btn-emergency:active {
+            transform: translateY(0);
+        }
+
+        .btn-ghost {
+            border: 1px solid var(--hair-strong);
+            border-radius: 8px;
+            padding: 14px 20px;
+            background: var(--surface);
+            color: var(--text);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            transition: border-color 0.2s ease, background 0.2s ease, color 0.2s ease;
+        }
+
+        .btn-ghost svg {
+            width: 15px;
+            height: 15px;
+        }
+
+        .btn-ghost:hover {
+            border-color: var(--amber);
+            color: var(--amber);
+            background: var(--amber-glow);
+        }
+
+        .hero-foot {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            color: var(--muted);
+            line-height: 1.6;
+            border-top: 1px solid var(--hair);
+            padding-top: 14px;
+        }
+
+        /* command log column */
+        .logwrap {
             display: flex;
             flex-direction: column;
+            border: 1px solid var(--hair);
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.28);
+            overflow: hidden;
+            min-height: 240px;
         }
 
-        #einkPanel {
+        .log-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 11px 15px;
+            border-bottom: 1px solid var(--hair);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .log-head .lh-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            letter-spacing: 1.6px;
+            text-transform: uppercase;
+            color: var(--text);
+        }
+
+        .log-head .lh-title svg {
+            width: 14px;
+            height: 14px;
+            color: var(--amber);
+        }
+
+        .eink-status,
+        #overrideStatus {
+            font-size: 11px;
+            color: var(--muted);
+            font-family: 'JetBrains Mono', monospace;
+            letter-spacing: 0.4px;
+        }
+
+        #overrideStatus {
+            padding: 9px 15px;
+            border-bottom: 1px solid var(--hair);
+            display: block;
+            color: var(--green);
+        }
+
+        #overrideList {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 13px 15px;
+            margin-top: 0 !important;
+            overflow-y: auto;
+            max-height: 260px;
+            flex: 1;
+        }
+
+        #overrideList>div {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        /* ===== SECTION HEADERS ===== */
+        .rail {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin: 6px 2px 18px;
+        }
+
+        .rail-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            letter-spacing: 2.4px;
+            text-transform: uppercase;
+            color: var(--muted);
+            white-space: nowrap;
+        }
+
+        .rail-line {
+            height: 1px;
+            flex: 1;
+            background: linear-gradient(90deg, var(--hair-strong), transparent);
+        }
+
+        /* ===== HUB GRID ===== */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+        }
+
+        .hub {
+            --accent: var(--amber);
+            position: relative;
+            background: var(--surface);
+            border: 1px solid var(--hair);
+            border-radius: 8px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: rise 0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        .hub::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: 8px;
+            padding: 1px;
+            background: linear-gradient(160deg, color-mix(in srgb, var(--accent) 40%, transparent), transparent 45%);
+            -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .hub::after {
+            content: "";
+            position: absolute;
+            top: -40%;
+            right: -30%;
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            background: radial-gradient(circle, color-mix(in srgb, var(--accent) 16%, transparent), transparent 70%);
+            pointer-events: none;
+        }
+
+        /* full-width hubs */
+        .hub.span2 {
             grid-column: span 2;
         }
 
-        .tile-header {
+        /* red alert state, added additively by JS via .hub-alert */
+        .hub.hub-alert {
+            border-color: rgba(239, 68, 68, 0.5);
+            box-shadow: inset 0 0 0 1px rgba(239, 68, 68, 0.25), 0 0 30px rgba(239, 68, 68, 0.16);
+            animation: rise 0.65s cubic-bezier(0.22, 1, 0.36, 1) forwards, hubalert 1.6s ease-in-out infinite 0.7s;
+        }
+
+        @keyframes hubalert {
+
+            0%,
+            100% {
+                box-shadow: inset 0 0 0 1px rgba(239, 68, 68, 0.2), 0 0 18px rgba(239, 68, 68, 0.1);
+            }
+
+            50% {
+                box-shadow: inset 0 0 0 1px rgba(239, 68, 68, 0.45), 0 0 38px rgba(239, 68, 68, 0.24);
+            }
+        }
+
+        @keyframes rise {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .hub-top {
             display: flex;
             align-items: center;
-            gap: 12px;
-            margin-bottom: 24px;
+            gap: 13px;
+            margin-bottom: 18px;
+            position: relative;
         }
 
-        .tile-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-        }
-
-        .tile-icon.parking {
-            background: var(--blue-dim);
-        }
-
-        .tile-icon.streetlight {
-            background: var(--amber-dim);
-        }
-
-        .tile-icon.traffic {
-            background: var(--green-dim);
-        }
-
-        .tile-icon.railroad {
-            background: var(--red-dim);
-        }
-
-        .tile-icon.speedcam {
-            background: var(--orange-dim);
-        }
-
-        .tile-icon.eink {
-            background: var(--purple-dim);
-        }
-
-        .tile-info h2 {
-            font-size: 16px;
-            font-weight: 700;
-            letter-spacing: -0.3px;
-        }
-
-        .tile-info .owner {
-            font-size: 12px;
-            color: var(--muted);
-            font-family: 'DM Mono', monospace;
-        }
-
-        .tile-stats {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-
-        .mini-stat {
-            background: var(--surface);
-            border: 1px solid var(--border);
+        .hub-ico {
+            width: 42px;
+            height: 42px;
             border-radius: 8px;
-            padding: 12px 16px;
+            display: grid;
+            place-items: center;
+            color: var(--accent);
+            background: color-mix(in srgb, var(--accent) 12%, transparent);
+            border: 1px solid color-mix(in srgb, var(--accent) 28%, transparent);
+            flex-shrink: 0;
+        }
+
+        .hub-ico svg {
+            width: 21px;
+            height: 21px;
+        }
+
+        .hub-meta {
+            min-width: 0;
             flex: 1;
+        }
+
+        .hub-meta h2 {
+            font-size: 17px;
+            font-weight: 600;
+            letter-spacing: -0.2px;
+            line-height: 1.1;
+        }
+
+        .hub-meta .owner {
+            font-size: 11px;
+            color: var(--muted);
+            font-family: 'JetBrains Mono', monospace;
+            letter-spacing: 0.3px;
+            margin-top: 3px;
+        }
+
+        .hub-tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 9px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--accent);
+            padding: 4px 8px;
+            border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+            border-radius: 6px;
+            white-space: nowrap;
+            align-self: flex-start;
+        }
+
+        /* stat tiles */
+        .stats {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            background: rgba(0, 0, 0, 0.22);
+            border: 1px solid var(--hair);
+            border-radius: 8px;
+            padding: 13px 14px;
+            flex: 1;
+            min-width: 76px;
             text-align: center;
         }
 
-        .mini-stat .val {
-            font-size: 24px;
+        .stat .val {
+            font-size: 26px;
             font-weight: 700;
-            font-family: 'DM Mono', monospace;
+            font-family: 'JetBrains Mono', monospace;
+            letter-spacing: -0.5px;
+            line-height: 1;
         }
 
-        .mini-stat .lbl {
-            font-size: 11px;
+        .stat .lbl {
+            font-size: 10px;
             color: var(--muted);
-            margin-top: 2px;
+            margin-top: 6px;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
+            font-family: 'JetBrains Mono', monospace;
         }
 
+        /* live refresh pulse hook (applied additively if desired; safe default) */
+        .data-live {
+            transition: opacity 0.3s ease;
+        }
+
+        .sub {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 1.6px;
+            margin: 8px 0 11px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .sub::after {
+            content: "";
+            height: 1px;
+            flex: 1;
+            background: var(--hair);
+        }
+
+        /* legacy class alias used by carried JS string templates */
+        .section-label {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 1.6px;
+            margin: 8px 0 10px;
+        }
+
+        /* parking spots */
         .spots-row {
             display: flex;
             gap: 8px;
@@ -222,26 +837,28 @@
 
         .spot-chip {
             border-radius: 8px;
-            padding: 10px 16px;
-            font-size: 13px;
+            padding: 11px 14px;
+            font-size: 12px;
             font-weight: 500;
+            font-family: 'JetBrains Mono', monospace;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 9px;
             flex: 1;
-            min-width: 100px;
+            min-width: 104px;
+            border: 1px solid var(--hair);
         }
 
         .spot-chip.free {
             background: var(--green-dim);
-            border: 1px solid #1a4a25;
+            border-color: rgba(93, 202, 165, 0.3);
             color: var(--green);
         }
 
         .spot-chip.occupied {
             background: var(--red-dim);
-            border: 1px solid #4a1a1a;
-            color: var(--red);
+            border-color: rgba(239, 68, 68, 0.32);
+            color: #ff9b9b;
         }
 
         .spot-dot {
@@ -252,24 +869,28 @@
 
         .spot-chip.free .spot-dot {
             background: var(--green);
+            box-shadow: 0 0 7px var(--green);
         }
 
         .spot-chip.occupied .spot-dot {
             background: var(--red);
+            box-shadow: 0 0 7px var(--red);
         }
 
         .spot-chip .spot-dist {
             margin-left: auto;
-            font-family: 'DM Mono', monospace;
+            font-family: 'JetBrains Mono', monospace;
             font-size: 11px;
             opacity: 0.7;
         }
 
+        /* railroad approach line */
         .approach-line {
             position: relative;
             height: 4px;
-            background-color: var(--muted);
-            margin: 2rem;
+            background-color: var(--hair-strong);
+            margin: 2.4rem 1rem;
+            border-radius: 2px;
         }
 
         .railroad-dot {
@@ -277,150 +898,205 @@
             width: 18px;
             height: 18px;
             border-radius: 50%;
-            top: -6px; /* vertically center on the line */
+            top: -7px;
             background-color: var(--muted);
             display: flex;
             align-items: center;
             justify-content: center;
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
         }
 
         .dot-label {
             position: absolute;
-            top: -20px;
-            font-size: 11px;
+            top: -22px;
+            font-size: 10px;
             transform: translateX(calc(-50% + calc(18px / 2)));
-            font-family: 'DM Mono', monospace;
+            font-family: 'JetBrains Mono', monospace;
             color: var(--text);
             white-space: nowrap;
         }
 
         .distance-label {
             position: absolute;
-            top: 10px;
-            font-size: 11px;
+            top: 12px;
+            font-size: 10px;
             transform: translateX(-50%);
-            font-family: 'DM Mono', monospace;
+            font-family: 'JetBrains Mono', monospace;
             color: var(--muted);
         }
 
-        .readings-list {
-            flex: 1;
+        /* generic readings list / rows */
+        .streetlight-grid,
+        .traffic-grid,
+        .railroad-info {
             display: flex;
             flex-direction: column;
-            gap: 6px;
-            overflow-y: auto;
-            max-height: 200px;
+            gap: 8px;
         }
 
-        .reading-row {
+        .light-item {
             display: flex;
             align-items: center;
-            gap: 10px;
-            padding: 8px 12px;
-            background: var(--surface);
-            border-radius: 6px;
+            gap: 12px;
+            padding: 11px 14px;
+            background: rgba(0, 0, 0, 0.22);
+            border-radius: 8px;
+            border: 1px solid var(--hair);
+        }
+
+        .light-bulb {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            border: 2px solid var(--hair-strong);
+            flex-shrink: 0;
+        }
+
+        .light-bulb.on {
+            background: var(--streetlight);
+            border-color: var(--streetlight);
+            box-shadow: 0 0 14px var(--streetlight);
+        }
+
+        .light-bulb.off {
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .tl-stack {
+            display: flex;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+
+        .tl-dot {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            border: 2px solid var(--hair-strong);
+        }
+
+        .tl-dot.red-on {
+            background: var(--red);
+            border-color: var(--red);
+            box-shadow: 0 0 9px var(--red);
+        }
+
+        .tl-dot.amber-on {
+            background: var(--amber);
+            border-color: var(--amber);
+            box-shadow: 0 0 9px var(--amber);
+        }
+
+        .tl-dot.green-on {
+            background: var(--green);
+            border-color: var(--green);
+            box-shadow: 0 0 9px var(--green);
+        }
+
+        .tl-dot.dim {
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .light-label {
             font-size: 13px;
-        }
-
-        .reading-row .r-type {
-            font-family: 'DM Mono', monospace;
-            font-size: 11px;
-            color: var(--muted);
-            min-width: 50px;
-        }
-
-        .reading-row .r-val {
-            font-family: 'DM Mono', monospace;
             font-weight: 500;
         }
 
-        .reading-row .r-time {
+        .light-val {
             margin-left: auto;
+            font-family: 'JetBrains Mono', monospace;
             font-size: 11px;
             color: var(--muted);
-            font-family: 'DM Mono', monospace;
         }
 
-        .no-data-msg {
-            color: var(--muted);
-            font-size: 13px;
-            padding: 20px 0;
-            text-align: center;
-            font-style: italic;
-        }
-
+        /* status badges */
         .status-badge {
             display: inline-flex;
             align-items: center;
             gap: 6px;
             padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 11px;
+            border-radius: 6px;
+            font-size: 10px;
             font-weight: 500;
-            font-family: 'DM Mono', monospace;
+            font-family: 'JetBrains Mono', monospace;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.8px;
+            border: 1px solid transparent;
         }
 
         .status-badge.on {
             background: var(--green-dim);
             color: var(--green);
+            border-color: rgba(93, 202, 165, 0.25);
         }
 
         .status-badge.off {
             background: var(--surface);
             color: var(--muted);
-            border: 1px solid var(--border);
+            border-color: var(--hair);
         }
 
         .status-badge.active {
-            background: var(--amber-dim);
+            background: var(--amber-glow);
             color: var(--amber);
+            border-color: rgba(239, 159, 39, 0.3);
         }
 
         .status-badge.idle {
             background: var(--surface);
             color: var(--muted);
-            border: 1px solid var(--border);
+            border-color: var(--hair);
         }
 
         .status-badge.danger {
             background: var(--red-dim);
-            color: var(--red);
+            color: #ff9b9b;
+            border-color: rgba(239, 68, 68, 0.3);
         }
 
+        .no-data-msg {
+            color: var(--muted);
+            font-size: 12px;
+            font-family: 'JetBrains Mono', monospace;
+            padding: 22px 0;
+            text-align: center;
+            letter-spacing: 0.5px;
+        }
+
+        /* speed camera */
         .speed-list {
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 7px;
             overflow-y: auto;
-            max-height: 220px;
+            max-height: 230px;
         }
 
         .speed-row {
             display: flex;
             align-items: center;
             gap: 10px;
-            padding: 8px 12px;
-            background: var(--surface);
-            border-radius: 6px;
-            border: 1px solid var(--border);
+            padding: 9px 13px;
+            background: rgba(0, 0, 0, 0.22);
+            border-radius: 8px;
+            border: 1px solid var(--hair);
             font-size: 13px;
         }
 
         .speed-row.violation {
-            border-color: #4a1a1a;
+            border-color: rgba(239, 68, 68, 0.32);
+            background: var(--red-dim);
         }
 
         .speed-val {
-            font-family: 'DM Mono', monospace;
+            font-family: 'JetBrains Mono', monospace;
             font-weight: 700;
             font-size: 15px;
-            min-width: 70px;
+            min-width: 96px;
         }
 
         .speed-dir {
-            font-family: 'DM Mono', monospace;
+            font-family: 'JetBrains Mono', monospace;
             font-size: 11px;
             color: var(--muted);
         }
@@ -429,72 +1105,124 @@
             margin-left: auto;
             font-size: 11px;
             color: var(--muted);
-            font-family: 'DM Mono', monospace;
+            font-family: 'JetBrains Mono', monospace;
         }
 
+        /* ===== PER-HUB OVERRIDE PRESETS ===== */
+        .ov-block {
+            margin-top: auto;
+            padding-top: 16px;
+        }
+
+        .ov-row {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .ov-preset {
+            border: 1px solid var(--hair-strong);
+            border-radius: 7px;
+            padding: 8px 13px;
+            background: var(--surface);
+            color: var(--text);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 0.4px;
+            cursor: pointer;
+            transition: border-color 0.18s ease, color 0.18s ease, background 0.18s ease, transform 0.1s ease;
+        }
+
+        .ov-preset:hover {
+            border-color: var(--accent, var(--amber));
+            color: var(--accent, var(--amber));
+            background: color-mix(in srgb, var(--accent, var(--amber)) 12%, transparent);
+            transform: translateY(-1px);
+        }
+
+        .ov-preset:active {
+            transform: translateY(0);
+        }
+
+        /* danger-leaning presets */
+        .ov-preset.danger:hover {
+            border-color: var(--red);
+            color: #ff9b9b;
+            background: var(--red-dim);
+        }
+
+        /* ===== E-INK EDITOR ===== */
         .eink-layout {
             display: grid;
             grid-template-columns: 1.1fr 0.9fr;
-            gap: 14px;
-            flex: 1;
-            min-height: 0;
+            gap: 16px;
         }
 
         .eink-form {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
         }
 
         .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
+            gap: 12px;
         }
 
         .form-field {
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 7px;
         }
 
         .field-label {
-            font-size: 11px;
+            font-size: 10px;
             color: var(--muted);
             text-transform: uppercase;
-            letter-spacing: 0.8px;
+            letter-spacing: 1.2px;
+            font-family: 'JetBrains Mono', monospace;
         }
 
         .eink-input,
         .eink-select,
         .eink-textarea {
             width: 100%;
-            background: var(--surface);
-            border: 1px solid var(--border);
+            background: rgba(0, 0, 0, 0.28);
+            border: 1px solid var(--hair-strong);
             border-radius: 8px;
             color: var(--text);
-            font: inherit;
-            padding: 10px 12px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            padding: 11px 12px;
+            transition: border-color 0.18s ease, box-shadow 0.18s ease;
         }
 
         .eink-textarea {
             min-height: 150px;
             resize: vertical;
-            font-family: 'DM Mono', monospace;
-            line-height: 1.15;
+            line-height: 1.2;
         }
 
         .eink-input:focus,
         .eink-select:focus,
         .eink-textarea:focus {
-            outline: 1px solid var(--purple);
-            border-color: var(--purple);
+            outline: none;
+            border-color: var(--eink);
+            box-shadow: 0 0 0 3px rgba(201, 196, 187, 0.12);
+        }
+
+        .eink-select option {
+            background: var(--bg-2);
+            color: var(--text);
         }
 
         .eink-actions {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             flex-wrap: wrap;
             margin-top: 4px;
         }
@@ -502,11 +1230,11 @@
         .eink-import-box {
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            padding: 12px;
-            border: 1px dashed var(--border);
-            border-radius: 12px;
-            background: rgba(255, 255, 255, 0.02);
+            gap: 11px;
+            padding: 14px;
+            border: 1px dashed var(--hair-strong);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.015);
         }
 
         .eink-import-row {
@@ -518,23 +1246,27 @@
         .eink-import-textarea {
             min-height: 92px;
             resize: vertical;
-            font-family: 'DM Mono', monospace;
-            line-height: 1.15;
+            line-height: 1.2;
         }
 
         .eink-secondary-button {
-            border: 1px solid var(--border);
-            border-radius: 999px;
-            padding: 9px 14px;
-            background: transparent;
+            border: 1px solid var(--hair-strong);
+            border-radius: 7px;
+            padding: 9px 15px;
+            background: var(--surface);
             color: var(--text);
-            font-weight: 600;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 0.4px;
             cursor: pointer;
+            transition: border-color 0.18s ease, color 0.18s ease, background 0.18s ease;
         }
 
         .eink-secondary-button:hover {
-            border-color: var(--purple);
-            color: var(--purple);
+            border-color: var(--eink);
+            color: #fff;
+            background: var(--surface-2);
         }
 
         .eink-file-input {
@@ -542,34 +1274,32 @@
         }
 
         .eink-button {
-            border: 0;
-            border-radius: 999px;
-            padding: 10px 16px;
-            background: linear-gradient(135deg, var(--purple), var(--blue));
-            color: white;
-            font-weight: 700;
+            border: 1px solid color-mix(in srgb, var(--eink) 40%, transparent);
+            border-radius: 8px;
+            padding: 11px 18px;
+            background: linear-gradient(135deg, rgba(201, 196, 187, 0.25), rgba(201, 196, 187, 0.1));
+            color: var(--text);
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 600;
+            font-size: 13px;
+            letter-spacing: 0.3px;
             cursor: pointer;
+            transition: filter 0.18s ease, transform 0.1s ease;
         }
 
         .eink-button:hover {
-            filter: brightness(1.05);
-        }
-
-        .eink-status {
-            font-size: 12px;
-            color: var(--muted);
-            font-family: 'DM Mono', monospace;
+            filter: brightness(1.15);
+            transform: translateY(-1px);
         }
 
         .eink-preview {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 14px;
+            background: rgba(0, 0, 0, 0.28);
+            border: 1px solid var(--hair);
+            border-radius: 8px;
+            padding: 16px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            min-height: 100%;
+            gap: 12px;
         }
 
         .eink-preview-header {
@@ -580,21 +1310,25 @@
         }
 
         .eink-preview-title {
-            font-size: 13px;
-            font-weight: 700;
+            font-size: 12px;
+            font-weight: 600;
+            font-family: 'JetBrains Mono', monospace;
+            letter-spacing: 1.4px;
+            text-transform: uppercase;
+            color: var(--muted);
         }
 
         .eink-preview-meta {
             font-size: 11px;
             color: var(--muted);
-            font-family: 'DM Mono', monospace;
+            font-family: 'JetBrains Mono', monospace;
         }
 
         .eink-preview-canvas {
             background: #f4f1e7;
-            border-radius: 10px;
+            border-radius: 8px;
             border: 1px solid #d7d1c4;
-            padding: 14px;
+            padding: 16px;
             min-height: 250px;
             display: flex;
             flex-direction: column;
@@ -603,7 +1337,7 @@
         }
 
         .eink-preview-text {
-            font-family: 'DM Sans', sans-serif;
+            font-family: 'Space Grotesk', sans-serif;
             font-size: 22px;
             font-weight: 700;
             letter-spacing: -0.4px;
@@ -617,7 +1351,7 @@
             align-self: flex-start;
             padding: 8px;
             background: rgba(255, 255, 255, 0.55);
-            border-radius: 10px;
+            border-radius: 8px;
         }
 
         .eink-pixel {
@@ -645,352 +1379,551 @@
         }
 
         .eink-preview-note {
-            font-size: 12px;
+            font-size: 11px;
             color: var(--muted);
-            line-height: 1.4;
+            line-height: 1.5;
+            font-family: 'JetBrains Mono', monospace;
         }
 
-        .streetlight-grid,
-        .traffic-grid,
-        .railroad-info {
+        /* ===== CUSTOM COMMAND BENCH ===== */
+        .bench {
+            border: 1px solid var(--hair);
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 18px;
+            margin-top: 18px;
+        }
+
+        .bench-title {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            letter-spacing: 1.8px;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 14px;
             display: flex;
-            flex-direction: column;
+            align-items: center;
             gap: 8px;
         }
 
-        .light-item {
+        .bench-title svg {
+            width: 14px;
+            height: 14px;
+            color: var(--amber);
+        }
+
+        .bench-row {
             display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
             align-items: center;
-            gap: 12px;
-            padding: 10px 14px;
-            background: var(--surface);
-            border-radius: 8px;
-            border: 1px solid var(--border);
         }
 
-        .light-bulb {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            border: 2px solid var(--border);
+        .bench-row .eink-input,
+        .bench-row .eink-select {
+            width: auto;
+            flex: 1;
+            min-width: 130px;
         }
 
-        .light-bulb.on {
-            background: var(--amber);
-            border-color: var(--amber);
-            box-shadow: 0 0 12px var(--amber);
+        /* reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.001ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.001ms !important;
+                scroll-behavior: auto !important;
+            }
+
+            .hub,
+            .hero {
+                opacity: 1 !important;
+                transform: none !important;
+            }
         }
 
-        .light-bulb.off {
-            background: var(--surface);
-        }
-
-        .tl-stack {
-            display: flex;
-            gap: 4px;
-        }
-
-        .tl-dot {
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            border: 2px solid var(--border);
-        }
-
-        .tl-dot.red-on {
-            background: var(--red);
-            border-color: var(--red);
-            box-shadow: 0 0 8px var(--red);
-        }
-
-        .tl-dot.amber-on {
-            background: var(--amber);
-            border-color: var(--amber);
-            box-shadow: 0 0 8px var(--amber);
-        }
-
-        .tl-dot.green-on {
-            background: var(--green);
-            border-color: var(--green);
-            box-shadow: 0 0 8px var(--green);
-        }
-
-        .tl-dot.dim {
-            background: var(--surface);
-        }
-
-        .light-label {
-            font-size: 13px;
-            font-weight: 500;
-        }
-
-        .light-val {
-            margin-left: auto;
-            font-family: 'DM Mono', monospace;
-            font-size: 12px;
-            color: var(--muted);
-        }
-
-        .section-label {
-            font-size: 11px;
-            color: var(--muted);
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-            margin-bottom: 10px;
-            margin-top: 8px;
-        }
-
-        @media (max-width: 800px) {
-            .main {
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1000px) {
+            .hero-grid {
                 grid-template-columns: 1fr;
             }
 
-            #einkPanel {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hub.span2 {
                 grid-column: auto;
+            }
+
+            .eink-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 620px) {
+            .shell {
+                padding: 0 14px 48px;
+            }
+
+            .cmdbar {
+                margin: 0 -14px 22px;
+                padding: 14px 16px;
+                gap: 14px;
+            }
+
+            .cmd-clock {
+                font-size: 18px;
+            }
+
+            .hero {
+                padding: 20px;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .btn-emergency {
+                width: 100%;
+                justify-content: center;
             }
         }
     </style>
 </head>
 
 <body>
-    <div class="topbar">
-        <div class="topbar-left">
-            <div class="topbar-logo"></div>
-            <div>
-                <div class="topbar-title">City Sim Dashboard</div>
-                <div class="topbar-subtitle">The Embedded Alliance</div>
+    <!-- ===== COMMAND BAR ===== -->
+    <header class="cmdbar">
+        <div class="cmd-brand">
+            <div class="cmd-mark">
+                <!-- lucide: radio-tower -->
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4.9 16.1C1 12.2 1 5.8 4.9 1.9" />
+                    <path d="M7.8 4.7a6.14 6.14 0 0 0-.8 7.5" />
+                    <circle cx="12" cy="9" r="2" />
+                    <path d="M16.2 4.8c2 2 2.26 5.11.8 7.47" />
+                    <path d="M19.1 1.9a9.96 9.96 0 0 1 0 14.1" />
+                    <path d="M9.5 18h5" />
+                    <path d="m8 22 4-11 4 11" />
+                </svg>
+            </div>
+            <div class="cmd-titles">
+                <span class="cmd-title">City Sim</span>
+                <span class="cmd-sub">The Embedded Alliance</span>
             </div>
         </div>
-        <div class="topbar-right">
+
+        <div class="cmd-spacer"></div>
+
+        <div class="cmd-uplink" aria-hidden="true">
+            <div class="uplink-bars"><i></i><i></i><i></i><i></i></div>
+            <div class="uplink-text">
+                <b>UPLINK</b>
+                <span>2S POLL</span>
+            </div>
+        </div>
+
+        <div class="cmd-status" id="cityStatus">
+            <svg class="stat-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+            </svg>
+            <span id="cityStatusText">ALL HUBS NOMINAL</span>
+        </div>
+
+        <div class="conn">
             <div class="conn-dot" id="connDot"></div>
             <span class="conn-label" id="connLabel">connecting...</span>
         </div>
-    </div>
+    </header>
 
-    <div class="main">
-        <!-- PARKING -->
-        <div class="tile-panel" id="parkingPanel">
-            <div class="tile-header">
-                <div class="tile-icon parking">P</div>
-                <div class="tile-info">
-                    <h2>Parking</h2>
-                    <div class="owner">matin / esp32 + sonar</div>
+    <div class="shell">
+        <!-- ===== HERO: BACKEND OVERRIDE ===== -->
+        <section class="hero">
+            <div class="hero-grid">
+                <div class="hero-lead">
+                    <span class="hero-eyebrow">
+                        <!-- lucide: shield-alert -->
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />
+                            <path d="M12 8v4" />
+                            <path d="M12 16h.01" />
+                        </svg>
+                        Backend Override // Priority Channel
+                    </span>
+                    <h1>One backend. Every hub.<br><span class="accent">Total command.</span></h1>
+                    <p class="hero-tagline">The control desk can overrule every tile at once. Trigger the emergency corridor and the whole city goes red.</p>
+
+                    <div class="hero-actions">
+                        <button class="btn-emergency" id="emergencyBtn" type="button">
+                            <!-- lucide: siren -->
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M7 18v-6a5 5 0 1 1 10 0v6" />
+                                <path d="M5 21a1 1 0 0 0 1-1v-1a1 1 0 0 0-1-1 1 1 0 0 0-1 1v1a1 1 0 0 0 1 1z" />
+                                <path d="M21 12h1" />
+                                <path d="M18.5 4.5 18 5" />
+                                <path d="M2 12h1" />
+                                <path d="M12 2v1" />
+                                <path d="m4.929 4.929.707.707" />
+                                <path d="M12 12v6" />
+                            </svg>
+                            Emergency Corridor
+                        </button>
+                        <button class="btn-ghost" id="clearOverridesBtn" type="button">
+                            <!-- lucide: rotate-ccw -->
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                                <path d="M3 3v5h5" />
+                            </svg>
+                            Stand down (clear all)
+                        </button>
+                    </div>
+
+                    <p class="hero-foot">Each hub runs its own sensor logic until the backend speaks. An override is pushed down and obeyed the next time a tile polls. This reverses the data flow: hubs stop reporting up, the brain starts commanding down.</p>
+                </div>
+
+                <!-- LIVE COMMAND LOG -->
+                <div class="logwrap">
+                    <div class="log-head">
+                        <span class="lh-title">
+                            <!-- lucide: terminal -->
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="m4 17 6-6-6-6" />
+                                <path d="M12 19h8" />
+                            </svg>
+                            Command Log
+                        </span>
+                    </div>
+                    <span class="eink-status" id="overrideStatus">Loading overrides...</span>
+                    <div id="overrideList" style="margin-top:12px; display:flex; flex-direction:column; gap:8px;"></div>
                 </div>
             </div>
-            <div class="tile-stats">
-                <div class="mini-stat">
-                    <div class="val" id="pTotal" style="color:var(--blue)">-</div>
-                    <div class="lbl">Total</div>
-                </div>
-                <div class="mini-stat">
-                    <div class="val" id="pFree" style="color:var(--green)">-</div>
-                    <div class="lbl">Free</div>
-                </div>
-                <div class="mini-stat">
-                    <div class="val" id="pOcc" style="color:var(--red)">-</div>
-                    <div class="lbl">Occupied</div>
-                </div>
-            </div>
-            <div class="section-label">Spots</div>
-            <div class="spots-row" id="spotsRow">
-                <div class="no-data-msg">No spots registered</div>
-            </div>
+        </section>
+
+        <!-- ===== HUB GRID ===== -->
+        <div class="rail">
+            <span class="rail-label">City Hubs // Live Telemetry</span>
+            <span class="rail-line"></span>
         </div>
 
-        <!-- STREETLIGHT -->
-        <div class="tile-panel" id="streetlightPanel">
-            <div class="tile-header">
-                <div class="tile-icon streetlight">S</div>
-                <div class="tile-info">
-                    <h2>Streetlight</h2>
-                    <div class="owner">gurpreet / esp32 + ldr</div>
+        <div class="grid">
+            <!-- PARKING -->
+            <section class="hub" id="parkingPanel" style="--accent: var(--parking); animation-delay: 0.12s;">
+                <div class="hub-top">
+                    <div class="hub-ico">
+                        <!-- lucide: square-parking -->
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect width="18" height="18" x="3" y="3" rx="2" />
+                            <path d="M9 17V7h4a3 3 0 0 1 0 6H9" />
+                        </svg>
+                    </div>
+                    <div class="hub-meta">
+                        <h2>Parking</h2>
+                        <div class="owner">matin / esp32 + sonar</div>
+                    </div>
+                    <span class="hub-tag">HC-SR04</span>
                 </div>
-            </div>
-            <div class="section-label">Recent readings</div>
-            <div class="streetlight-grid" id="streetlightGrid">
-                <div class="no-data-msg">No streetlight data yet</div>
-            </div>
-        </div>
+                <div class="stats">
+                    <div class="stat">
+                        <div class="val" id="pTotal" style="color:var(--parking)">-</div>
+                        <div class="lbl">Total</div>
+                    </div>
+                    <div class="stat">
+                        <div class="val" id="pFree" style="color:var(--green)">-</div>
+                        <div class="lbl">Free</div>
+                    </div>
+                    <div class="stat">
+                        <div class="val" id="pOcc" style="color:var(--red)">-</div>
+                        <div class="lbl">Occupied</div>
+                    </div>
+                </div>
+                <div class="section-label">Spots</div>
+                <div class="spots-row" id="spotsRow">
+                    <div class="no-data-msg">No spots registered</div>
+                </div>
+                <div class="ov-block">
+                    <div class="ov-row">
+                        <button class="ov-preset danger" type="button" data-target="parking" data-command="full" data-reason="manual: lot closed">Mark full</button>
+                        <button class="ov-preset" type="button" data-target="parking" data-command="free" data-reason="manual: lot open">Mark free</button>
+                        <button class="ov-preset" type="button" data-target="parking" data-command="auto" data-reason="manual: resume sensor">Auto</button>
+                    </div>
+                </div>
+            </section>
 
-        <!-- TRAFFIC LIGHT -->
-        <div class="tile-panel" id="trafficPanel">
-            <div class="tile-header">
-                <div class="tile-icon traffic">T</div>
-                <div class="tile-info">
-                    <h2>Traffic Light</h2>
-                    <div class="owner">wesley / esp32 + leds</div>
+            <!-- STREETLIGHT -->
+            <section class="hub" id="streetlightPanel" style="--accent: var(--streetlight); animation-delay: 0.19s;">
+                <div class="hub-top">
+                    <div class="hub-ico">
+                        <!-- lucide: lightbulb -->
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5" />
+                            <path d="M9 18h6" />
+                            <path d="M10 22h4" />
+                        </svg>
+                    </div>
+                    <div class="hub-meta">
+                        <h2>Streetlight</h2>
+                        <div class="owner">gurpreet / esp32 + ldr</div>
+                    </div>
+                    <span class="hub-tag">LDR</span>
                 </div>
-            </div>
-            <div class="section-label">Recent readings</div>
-            <div class="traffic-grid" id="trafficGrid">
-                <div class="no-data-msg">No traffic light data yet</div>
-            </div>
-        </div>
+                <div class="section-label">Recent readings</div>
+                <div class="streetlight-grid" id="streetlightGrid">
+                    <div class="no-data-msg">No streetlight data yet</div>
+                </div>
+                <div class="ov-block">
+                    <div class="ov-row">
+                        <button class="ov-preset" type="button" data-target="streetlight" data-command="force_on" data-reason="manual: lights on">All on</button>
+                        <button class="ov-preset danger" type="button" data-target="streetlight" data-command="force_off" data-reason="manual: lights off">All off</button>
+                        <button class="ov-preset" type="button" data-target="streetlight" data-command="auto" data-reason="manual: resume LDR logic">Auto</button>
+                    </div>
+                </div>
+            </section>
 
-        <!-- RAILROAD CROSSING -->
-        <div class="tile-panel" id="railroadPanel">
-            <div class="tile-header">
-                <div class="tile-icon railroad">R</div>
-                <div class="tile-info">
-                    <h2>Railroad Crossing</h2>
-                    <div class="owner">thijmen / esp32 + ir + oled</div>
+            <!-- TRAFFIC LIGHT -->
+            <section class="hub" id="trafficPanel" style="--accent: var(--traffic); animation-delay: 0.26s;">
+                <div class="hub-top">
+                    <div class="hub-ico">
+                        <!-- lucide: traffic-cone -->
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9.3 6.2a4.55 4.55 0 0 0 5.4 0" />
+                            <path d="M7.9 10.7c.9.8 2.4 1.3 4.1 1.3s3.2-.5 4.1-1.3" />
+                            <path d="M13.9 3.5a1.93 1.93 0 0 0-3.8-.1l-3 10c-.1.2-.1.4-.1.6 0 1.7 2.7 3 6 3s6-1.3 6-3c0-.2 0-.4-.1-.5Z" />
+                            <path d="m7.5 12.2-4.7 2.7c-.5.3-.8.7-.8 1.1 0 1.7 3.5 3 8 3s8-1.3 8-3c0-.4-.3-.8-.8-1.1l-4.7-2.7" />
+                        </svg>
+                    </div>
+                    <div class="hub-meta">
+                        <h2>Traffic Light</h2>
+                        <div class="owner">wesley / esp32 + leds</div>
+                    </div>
+                    <span class="hub-tag">LEDS</span>
                 </div>
-            </div>
-            <div class="railroad-info" id="railroadGrid">
-            <div class="section-label">Current approaching train</div>
-            <div class="tile-stats">
-                <div class="mini-stat">
-                    <div>
-                        <div class="lbl" id="trainId">
-                            -
+                <div class="section-label">Recent readings</div>
+                <div class="traffic-grid" id="trafficGrid">
+                    <div class="no-data-msg">No traffic light data yet</div>
+                </div>
+                <div class="ov-block">
+                    <div class="ov-row">
+                        <button class="ov-preset danger" type="button" data-target="traffic" data-command="all_red" data-reason="manual: stop all traffic">All red</button>
+                        <button class="ov-preset" type="button" data-target="traffic" data-command="all_green" data-reason="manual: green corridor">All green</button>
+                        <button class="ov-preset" type="button" data-target="traffic" data-command="flashing" data-reason="manual: caution flashing">Flashing</button>
+                        <button class="ov-preset" type="button" data-target="traffic" data-command="normal" data-reason="manual: resume own logic">Resume</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- RAILROAD CROSSING -->
+            <section class="hub" id="railroadPanel" style="--accent: var(--railroad); animation-delay: 0.33s;">
+                <div class="hub-top">
+                    <div class="hub-ico">
+                        <!-- lucide: train-front -->
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M8 3.1V7a4 4 0 0 0 8 0V3.1" />
+                            <path d="m9 15-1-1" />
+                            <path d="m15 15 1-1" />
+                            <path d="M9 19c-2.8 0-5-2.2-5-5v-4a8 8 0 0 1 16 0v4c0 2.8-2.2 5-5 5Z" />
+                            <path d="m8 19-2 3" />
+                            <path d="m16 19 2 3" />
+                        </svg>
+                    </div>
+                    <div class="hub-meta">
+                        <h2>Railroad Crossing</h2>
+                        <div class="owner">thijmen / esp32 + ir + oled</div>
+                    </div>
+                    <span class="hub-tag">IR + OLED</span>
+                </div>
+                <div class="railroad-info" id="railroadGrid">
+                    <div class="section-label">Current approaching train</div>
+                    <div class="stats">
+                        <div class="stat" style="text-align:left;">
+                            <div>
+                                <div class="lbl" id="trainId">
+                                    -
+                                </div>
+                            </div>
+                            <div class="approach-line" id="approachLine"></div>
                         </div>
                     </div>
-                    <div class="approach-line" id="approachLine"></div>
                 </div>
-            </div>
-            </div>
-        </div>
-        <!-- SPEED CAMERA -->
-        <div class="tile-panel" id="speedCameraPanel">
-            <div class="tile-header">
-                <div class="tile-icon speedcam">V</div>
-                <div class="tile-info">
-                    <h2>Speed Camera</h2>
-                    <div class="owner">gurpreet / esp32 + ir sensors</div>
-                </div>
-            </div>
-            <div class="tile-stats">
-                <div class="mini-stat">
-                    <div class="val" id="scTotal" style="color:var(--orange)">-</div>
-                    <div class="lbl">Readings</div>
-                </div>
-                <div class="mini-stat">
-                    <div class="val" id="scViolations" style="color:var(--red)">-</div>
-                    <div class="lbl">Violations</div>
-                </div>
-                <div class="mini-stat">
-                    <div class="val" id="scAvg" style="color:var(--text)">-</div>
-                    <div class="lbl">Avg km/h</div>
-                </div>
-                <div class="mini-stat">
-                    <div class="val" id="scMax" style="color:var(--amber)">-</div>
-                    <div class="lbl">Max km/h</div>
-                </div>
-            </div>
-            <div class="section-label">Recent measurements</div>
-            <div class="speed-list" id="speedList">
-                <div class="no-data-msg">No speed camera data yet</div>
-            </div>
-        </div>
-        <!-- E-INK DISPLAY -->
-        <div class="tile-panel" id="einkPanel">
-            <div class="tile-header">
-                <div class="tile-icon eink">E</div>
-                <div class="tile-info">
-                    <h2>E-ink Display</h2>
-                    <div class="owner">backend synced / 3-color panel</div>
-                </div>
-            </div>
-            <div class="eink-layout">
-                <div class="eink-form">
-                    <div class="form-field">
-                        <div class="field-label">Text</div>
-                        <input class="eink-input" id="einkText" type="text" maxlength="120" placeholder="Enter display text">
+                <div class="ov-block">
+                    <div class="ov-row">
+                        <button class="ov-preset danger" type="button" data-target="barrier" data-command="close" data-reason="manual: force barrier down">Close</button>
+                        <button class="ov-preset" type="button" data-target="barrier" data-command="open" data-reason="manual: force barrier up">Open</button>
+                        <button class="ov-preset" type="button" data-target="barrier" data-command="maintenance" data-reason="manual: lock for maintenance">Maintenance</button>
                     </div>
-                    <div class="form-row">
+                </div>
+            </section>
+
+            <!-- SPEED CAMERA -->
+            <section class="hub" id="speedCameraPanel" style="--accent: var(--speedcam); animation-delay: 0.40s;">
+                <div class="hub-top">
+                    <div class="hub-ico">
+                        <!-- lucide: gauge -->
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="m12 14 4-4" />
+                            <path d="M3.34 19a10 10 0 1 1 17.32 0" />
+                        </svg>
+                    </div>
+                    <div class="hub-meta">
+                        <h2>Speed Camera</h2>
+                        <div class="owner">gurpreet / esp32 + ir sensors</div>
+                    </div>
+                    <span class="hub-tag">DUAL IR</span>
+                </div>
+                <div class="stats">
+                    <div class="stat">
+                        <div class="val" id="scTotal" style="color:var(--speedcam)">-</div>
+                        <div class="lbl">Readings</div>
+                    </div>
+                    <div class="stat">
+                        <div class="val" id="scViolations" style="color:var(--red)">-</div>
+                        <div class="lbl">Violations</div>
+                    </div>
+                    <div class="stat">
+                        <div class="val" id="scAvg" style="color:var(--text)">-</div>
+                        <div class="lbl">Avg km/h</div>
+                    </div>
+                    <div class="stat">
+                        <div class="val" id="scMax" style="color:var(--amber)">-</div>
+                        <div class="lbl">Max km/h</div>
+                    </div>
+                </div>
+                <div class="section-label">Recent measurements</div>
+                <div class="speed-list" id="speedList">
+                    <div class="no-data-msg">No speed camera data yet</div>
+                </div>
+            </section>
+
+            <!-- E-INK DISPLAY -->
+            <section class="hub span2" id="einkPanel" style="--accent: var(--eink); animation-delay: 0.47s;">
+                <div class="hub-top">
+                    <div class="hub-ico">
+                        <!-- lucide: monitor -->
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect width="20" height="14" x="2" y="3" rx="2" />
+                            <line x1="8" x2="16" y1="21" y2="21" />
+                            <line x1="12" x2="12" y1="17" y2="21" />
+                        </svg>
+                    </div>
+                    <div class="hub-meta">
+                        <h2>E-ink Display</h2>
+                        <div class="owner">backend synced / 3-color panel</div>
+                    </div>
+                    <span class="hub-tag">3-COLOR</span>
+                </div>
+                <div class="eink-layout">
+                    <div class="eink-form">
                         <div class="form-field">
-                            <div class="field-label">Text color</div>
-                            <select class="eink-select" id="einkTextColor">
-                                <option value="black">Black</option>
-                                <option value="red">Red</option>
-                                <option value="white">White</option>
-                            </select>
+                            <div class="field-label">Text</div>
+                            <input class="eink-input" id="einkText" type="text" maxlength="120" placeholder="Enter display text">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-field">
+                                <div class="field-label">Text color</div>
+                                <select class="eink-select" id="einkTextColor">
+                                    <option value="black">Black</option>
+                                    <option value="red">Red</option>
+                                    <option value="white">White</option>
+                                </select>
+                            </div>
+                            <div class="form-field">
+                                <div class="field-label">Image color</div>
+                                <select class="eink-select" id="einkImageColor">
+                                    <option value="black">Black</option>
+                                    <option value="red">Red</option>
+                                    <option value="white">White</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-field">
+                                <div class="field-label">Image width</div>
+                                <input class="eink-input" id="einkImageWidth" type="number" min="0" max="200" step="1">
+                            </div>
+                            <div class="form-field">
+                                <div class="field-label">Image height</div>
+                                <input class="eink-input" id="einkImageHeight" type="number" min="0" max="200" step="1">
+                            </div>
                         </div>
                         <div class="form-field">
-                            <div class="field-label">Image color</div>
-                            <select class="eink-select" id="einkImageColor">
-                                <option value="black">Black</option>
-                                <option value="red">Red</option>
-                                <option value="white">White</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-field">
-                            <div class="field-label">Image width</div>
-                            <input class="eink-input" id="einkImageWidth" type="number" min="0" max="200" step="1">
+                            <div class="field-label">Image enabled</div>
+                            <label class="status-badge idle" style="justify-content:flex-start; width:fit-content; cursor:pointer;">
+                                <input id="einkImageEnabled" type="checkbox" style="margin-right:8px; accent-color:var(--eink);">
+                                Use bitmap image
+                            </label>
                         </div>
                         <div class="form-field">
-                            <div class="field-label">Image height</div>
-                            <input class="eink-input" id="einkImageHeight" type="number" min="0" max="200" step="1">
+                            <div class="field-label">Image rows</div>
+                            <textarea class="eink-textarea" id="einkImageRows" spellcheck="false" placeholder="1010... one row per line"></textarea>
+                        </div>
+                        <div class="eink-import-box">
+                            <div class="field-label">Import helper</div>
+                            <textarea class="eink-textarea eink-import-textarea" id="einkImportText" spellcheck="false" placeholder="Paste rows like:\n10101\n11000\n11111"></textarea>
+                            <div class="eink-import-row">
+                                <button class="eink-secondary-button" id="einkImportRowsBtn" type="button">Use pasted bitmap</button>
+                                <button class="eink-secondary-button" id="einkUploadImageBtn" type="button">Upload image</button>
+                                <input class="eink-file-input" id="einkImageFile" type="file" accept="image/*">
+                            </div>
+                            <div class="eink-status">Pasted bitmaps are normalized into 0/1 rows. Uploaded images are sampled to the current width and height.</div>
+                        </div>
+                        <div class="eink-actions">
+                            <button class="eink-button" id="einkSaveBtn" type="button">Sync to e-ink</button>
+                            <span class="eink-status" id="einkStatus">Loading current state...</span>
                         </div>
                     </div>
-                    <div class="form-field">
-                        <div class="field-label">Image enabled</div>
-                        <label class="status-badge idle" style="justify-content:flex-start; width:fit-content; cursor:pointer;">
-                            <input id="einkImageEnabled" type="checkbox" style="margin-right:8px; accent-color:var(--purple);">
-                            Use bitmap image
-                        </label>
-                    </div>
-                    <div class="form-field">
-                        <div class="field-label">Image rows</div>
-                        <textarea class="eink-textarea" id="einkImageRows" spellcheck="false" placeholder="1010... one row per line"></textarea>
-                    </div>
-                    <div class="eink-import-box">
-                        <div class="field-label">Import helper</div>
-                        <textarea class="eink-textarea eink-import-textarea" id="einkImportText" spellcheck="false" placeholder="Paste rows like:\n10101\n11000\n11111"></textarea>
-                        <div class="eink-import-row">
-                            <button class="eink-secondary-button" id="einkImportRowsBtn" type="button">Use pasted bitmap</button>
-                            <button class="eink-secondary-button" id="einkUploadImageBtn" type="button">Upload image</button>
-                            <input class="eink-file-input" id="einkImageFile" type="file" accept="image/*">
+                    <div class="eink-preview">
+                        <div class="eink-preview-header">
+                            <div class="eink-preview-title">Live preview</div>
+                            <div class="eink-preview-meta" id="einkPreviewMeta">-</div>
                         </div>
-                        <div class="eink-status">Pasted bitmaps are normalized into 0/1 rows. Uploaded images are sampled to the current width and height.</div>
-                    </div>
-                    <div class="eink-actions">
-                        <button class="eink-button" id="einkSaveBtn" type="button">Sync to e-ink</button>
-                        <span class="eink-status" id="einkStatus">Loading current state...</span>
+                        <div class="eink-preview-canvas" id="einkPreviewCanvas">
+                            <div class="eink-preview-text" id="einkPreviewText">-</div>
+                            <div class="eink-preview-image" id="einkPreviewImage"></div>
+                        </div>
+                        <div class="eink-preview-note">The backend stores the selected text color and row-encoded bitmap. The ESP32 fetches that state and renders it on the 3-color e-ink panel.</div>
                     </div>
                 </div>
-                <div class="eink-preview">
-                    <div class="eink-preview-header">
-                        <div class="eink-preview-title">Live preview</div>
-                        <div class="eink-preview-meta" id="einkPreviewMeta">-</div>
+                <div class="ov-block">
+                    <div class="ov-row">
+                        <button class="ov-preset danger" type="button" data-target="eink" data-command="show_alert" data-reason="manual: show alert">Show alert</button>
+                        <button class="ov-preset" type="button" data-target="eink" data-command="clear" data-reason="manual: clear sign">Clear sign</button>
                     </div>
-                    <div class="eink-preview-canvas" id="einkPreviewCanvas">
-                        <div class="eink-preview-text" id="einkPreviewText">-</div>
-                        <div class="eink-preview-image" id="einkPreviewImage"></div>
-                    </div>
-                    <div class="eink-preview-note">The backend stores the selected text color and row-encoded bitmap. The ESP32 fetches that state and renders it on the 3-color e-ink panel.</div>
                 </div>
-            </div>
+            </section>
         </div>
 
-        <!-- EMERGENCY OVERRIDE (Sprint 4 surprise: the backend overrules the hubs) -->
-        <div class="tile-panel" id="overridePanel">
-            <div class="tile-header">
-                <div class="tile-icon" style="background:var(--red)">!</div>
-                <div class="tile-info">
-                    <h2>Emergency Override</h2>
-                    <div class="owner">matin / backend overrules the hubs</div>
-                </div>
+        <!-- ===== CUSTOM COMMAND BENCH ===== -->
+        <div class="bench" id="overridePanel">
+            <div class="bench-title">
+                <!-- lucide: cpu -->
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect width="16" height="16" x="4" y="4" rx="2" />
+                    <rect width="6" height="6" x="9" y="9" rx="1" />
+                    <path d="M15 2v2" />
+                    <path d="M15 20v2" />
+                    <path d="M2 15h2" />
+                    <path d="M2 9h2" />
+                    <path d="M20 15h2" />
+                    <path d="M20 9h2" />
+                    <path d="M9 2v2" />
+                    <path d="M9 20v2" />
+                </svg>
+                Custom command // any target, any command
             </div>
-            <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:14px;">
-                <button class="eink-button" id="emergencyBtn" type="button" style="background:var(--red)">Emergency corridor: all traffic red</button>
-                <button class="eink-secondary-button" id="clearOverridesBtn" type="button">Clear all overrides</button>
-            </div>
-            <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:10px;">
+            <div class="bench-row">
                 <select class="eink-select" id="ovTarget">
                     <option value="traffic">traffic</option>
                     <option value="barrier">barrier</option>
                     <option value="streetlight">streetlight</option>
                     <option value="all">all</option>
                 </select>
-                <input class="eink-input" id="ovCommand" type="text" placeholder="command e.g. all_red" style="max-width:170px">
-                <input class="eink-input" id="ovReason" type="text" placeholder="reason" style="max-width:150px">
+                <input class="eink-input" id="ovCommand" type="text" placeholder="command e.g. all_red" style="max-width:200px">
+                <input class="eink-input" id="ovReason" type="text" placeholder="reason" style="max-width:180px">
                 <button class="eink-secondary-button" id="forceOverrideBtn" type="button">Force command</button>
             </div>
-            <span class="eink-status" id="overrideStatus">Loading overrides...</span>
-            <div id="overrideList" style="margin-top:12px; display:flex; flex-direction:column; gap:8px;"></div>
         </div>
     </div>
 
@@ -1481,6 +2414,16 @@
             loadOverride();
         }
 
+        async function sendOverride(target, command, reason) {
+            document.getElementById("overrideStatus").textContent = "Forcing " + command + " on " + target + "...";
+            await fetch(API + "/api/v1/override", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ target, command, reason: reason || "manual override" }),
+            });
+            loadOverride();
+        }
+
         async function refresh() {
             const ok = await loadParking();
             conn(ok);
@@ -1502,6 +2445,9 @@
         document.getElementById("emergencyBtn").addEventListener("click", triggerEmergency);
         document.getElementById("clearOverridesBtn").addEventListener("click", clearAllOverrides);
         document.getElementById("forceOverrideBtn").addEventListener("click", forceOverride);
+        document.querySelectorAll(".ov-preset").forEach(b =>
+            b.addEventListener("click", () => sendOverride(b.dataset.target, b.dataset.command, b.dataset.reason))
+        );
         document.getElementById("einkSaveBtn").addEventListener("click", saveEinkDisplay);
         document.getElementById("einkImportRowsBtn").addEventListener("click", () => {
             const rows = normalizeBitmapRows(document.getElementById("einkImportText").value);
