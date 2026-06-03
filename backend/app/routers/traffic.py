@@ -8,6 +8,46 @@ router = APIRouter(
     tags=["traffic"],
     )
 
+
+def decide_traffic_command(event: TrafficCreate) -> dict:
+    """Simple rule-based traffic logic for the traffic light system."""
+
+    interpreted_state = event.interpretedState.lower()
+
+    if not event.valid:
+        return {
+            "command": "IGNORE_INVALID_EVENT",
+            "targetDirection": event.direction,
+            "reason": "The event was marked as invalid"
+        }
+
+    if interpreted_state == "emergency_detected":
+        return {
+            "command": "ALL_RED",
+            "targetDirection": "all",
+            "reason": "Emergency detected"
+        }
+
+    if interpreted_state == "waiting_vehicle":
+        return {
+            "command": "GIVE_GREEN",
+            "targetDirection": event.direction,
+            "reason": f"Vehicle waiting at {event.direction}"
+        }
+
+    if interpreted_state == "pedestrian_waiting":
+        return {
+            "command": "PEDESTRIAN_GREEN",
+            "targetDirection": event.direction,
+            "reason": f"Pedestrian waiting at {event.direction}"
+        }
+
+    return {
+        "command": "KEEP_CURRENT_STATE",
+        "targetDirection": event.direction,
+        "reason": "No traffic action needed"
+    }
+
 @router.post("")
 def create_traffic_event(
     event: TrafficCreate,
@@ -27,22 +67,30 @@ def create_traffic_event(
         db.commit()
         db.refresh(traffic_event)
 
+        decision = decide_traffic_command(event)
+
         print(
-        f"Received traffic event: "
-        f"sensor={event.sensorId}, "
-        f"direction={event.direction}, "
-        f"phase={event.phase}, "
-        f"state={event.interpretedState}, "
-        f"valid={event.valid}"
-    )
+            f"Received traffic event: "
+            f"sensor={event.sensorId}, "
+            f"direction={event.direction}, "
+            f"phase={event.phase}, "
+            f"state={event.interpretedState}, "
+            f"valid={event.valid}, "
+            f"command={decision['command']}"
+        )
 
-        return {"status": "received"}
+        return {
+            "status": "received",
+            "eventId": traffic_event.id,
+            "decision": decision
+        }
 
-    except Exception:
+    except Exception as e:
         db.rollback()
+        print(f"Could not store traffic event: {e}")
         raise HTTPException(
             status_code=500,
-            detail="Could not store traffic event"
+            detail=f"Could not store traffic event: {str(e)}"
         )
 
 
