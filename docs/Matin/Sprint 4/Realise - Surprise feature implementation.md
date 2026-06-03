@@ -164,7 +164,7 @@ Numbers are not the whole story. The surprise has to land with the team and read
 
 The setup: during a normal demo, one team member triggers `/emergency` from the dashboard or a curl call while the others watch the traffic light tile. The question we ask them: did the city behave the way an emergency corridor should, and did you expect the backend could do that?
 
-> User test outcome: the team demo with Wesley's traffic light tile is still to do, because it needs the tile firmware to poll `/active` and obey `all_red`. The backend side is proven end to end: one call to `/emergency` forces an active `all_red` override, a polling tile sees it, and clearing returns the city to normal. The remaining step is the tile-side handover described in the recommendation.
+> User test outcome: Wesley's traffic light tile was not working during the session, so we could not test the light going red on the hardware. To make the surprise demoable without depending on one tile, we added an Emergency Override panel to the dashboard: an emergency button that forces all traffic lights to red, a clear-all button, and a generic force-command form. On the live backend the panel triggers the override, shows it as active, and clears it again. We also confirmed the override is broader than traffic lights by forcing a `force_down` command on the `barrier` target. The remaining step is the tile-side handover: Wesley's firmware has to poll `/active` and obey `all_red` once his tile works again.
 
 ---
 

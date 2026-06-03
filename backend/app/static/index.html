@@ -964,6 +964,34 @@
                 </div>
             </div>
         </div>
+
+        <!-- EMERGENCY OVERRIDE (Sprint 4 surprise: the backend overrules the hubs) -->
+        <div class="tile-panel" id="overridePanel">
+            <div class="tile-header">
+                <div class="tile-icon" style="background:var(--red)">!</div>
+                <div class="tile-info">
+                    <h2>Emergency Override</h2>
+                    <div class="owner">matin / backend overrules the hubs</div>
+                </div>
+            </div>
+            <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:14px;">
+                <button class="eink-button" id="emergencyBtn" type="button" style="background:var(--red)">Emergency corridor: all traffic red</button>
+                <button class="eink-secondary-button" id="clearOverridesBtn" type="button">Clear all overrides</button>
+            </div>
+            <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin-bottom:10px;">
+                <select class="eink-select" id="ovTarget">
+                    <option value="traffic">traffic</option>
+                    <option value="barrier">barrier</option>
+                    <option value="streetlight">streetlight</option>
+                    <option value="all">all</option>
+                </select>
+                <input class="eink-input" id="ovCommand" type="text" placeholder="command e.g. all_red" style="max-width:170px">
+                <input class="eink-input" id="ovReason" type="text" placeholder="reason" style="max-width:150px">
+                <button class="eink-secondary-button" id="forceOverrideBtn" type="button">Force command</button>
+            </div>
+            <span class="eink-status" id="overrideStatus">Loading overrides...</span>
+            <div id="overrideList" style="margin-top:12px; display:flex; flex-direction:column; gap:8px;"></div>
+        </div>
     </div>
 
     <script>
@@ -1388,6 +1416,71 @@
             } catch (e) { }
         }
 
+        async function loadOverride() {
+            try {
+                const r = await fetch(API + "/api/v1/override/active");
+                const list = await r.json();
+                const box = document.getElementById("overrideList");
+                if (!list.length) {
+                    box.innerHTML = "<div style='color:var(--text-dim,#888)'>No active overrides. Every hub runs on its own sensor logic.</div>";
+                    document.getElementById("overrideStatus").textContent = "City normal - no overrides active";
+                } else {
+                    box.innerHTML = list.map(o =>
+                        `<div style="display:flex; justify-content:space-between; align-items:center; padding:8px 10px; border-radius:6px; background:rgba(255,255,255,0.04)">
+                            <span><b style="color:var(--red)">${o.command}</b> on <b>${o.target}</b> <span style="color:var(--text-dim,#888)">(${o.reason || "-"})</span></span>
+                            <button class="eink-secondary-button" data-clear="${o.id}" type="button">Clear</button>
+                        </div>`
+                    ).join("");
+                    document.getElementById("overrideStatus").textContent = list.length + " override(s) active - backend is overruling the hubs";
+                    box.querySelectorAll("[data-clear]").forEach(btn =>
+                        btn.addEventListener("click", () => clearOverride(btn.getAttribute("data-clear")))
+                    );
+                }
+                return true;
+            } catch (e) {
+                document.getElementById("overrideStatus").textContent = "Could not load overrides";
+                return false;
+            }
+        }
+
+        async function clearOverride(id) {
+            await fetch(API + "/api/v1/override/" + id + "/clear", { method: "POST" });
+            loadOverride();
+        }
+
+        async function clearAllOverrides() {
+            const r = await fetch(API + "/api/v1/override/active");
+            const list = await r.json();
+            for (const o of list) {
+                await fetch(API + "/api/v1/override/" + o.id + "/clear", { method: "POST" });
+            }
+            loadOverride();
+        }
+
+        async function triggerEmergency() {
+            document.getElementById("overrideStatus").textContent = "Triggering emergency corridor...";
+            await fetch(API + "/api/v1/override/emergency", { method: "POST" });
+            loadOverride();
+        }
+
+        async function forceOverride() {
+            const target = document.getElementById("ovTarget").value;
+            const command = document.getElementById("ovCommand").value.trim();
+            const reason = document.getElementById("ovReason").value.trim();
+            if (!command) {
+                document.getElementById("overrideStatus").textContent = "Enter a command first";
+                return;
+            }
+            await fetch(API + "/api/v1/override", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ target, command, reason }),
+            });
+            document.getElementById("ovCommand").value = "";
+            document.getElementById("ovReason").value = "";
+            loadOverride();
+        }
+
         async function refresh() {
             const ok = await loadParking();
             conn(ok);
@@ -1397,6 +1490,7 @@
                 loadTile("railroadCrossing", "railroadGrid", renderRailroad);
                 loadApproachingTrains();
                 loadSpeedCamera();
+                loadOverride();
                 if (!einkInitialised) {
                     loadEinkDisplay();
                 } else {
@@ -1405,6 +1499,9 @@
             }
         }
 
+        document.getElementById("emergencyBtn").addEventListener("click", triggerEmergency);
+        document.getElementById("clearOverridesBtn").addEventListener("click", clearAllOverrides);
+        document.getElementById("forceOverrideBtn").addEventListener("click", forceOverride);
         document.getElementById("einkSaveBtn").addEventListener("click", saveEinkDisplay);
         document.getElementById("einkImportRowsBtn").addEventListener("click", () => {
             const rows = normalizeBitmapRows(document.getElementById("einkImportText").value);
