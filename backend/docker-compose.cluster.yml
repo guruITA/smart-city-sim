@@ -1,0 +1,64 @@
+# Clustered backend stack for Learning Goal 1 (auto-recovery and failover).
+# This runs ALONGSIDE the existing docker-compose.yml. It does not replace it.
+# Start with:  docker compose -f docker-compose.cluster.yml up --build --scale api=2
+#
+# Layout: NGINX on port 80 in front of two or more API replicas that share one DB.
+services:
+  nginx:
+    image: nginx:alpine
+    container_name: citysim-nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - api
+    restart: unless-stopped
+
+  api:
+    build: .
+    # No container_name here on purpose: a fixed name blocks running replicas.
+    expose:
+      - "8000"
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+    deploy:
+      replicas: 2
+      resources:
+        limits:
+          memory: 256M
+    # python:3.11-slim has no curl, so the healthcheck uses the Python standard
+    # library instead of curl to probe /health.
+    healthcheck:
+      test: [ "CMD-SHELL", "python -c \"import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8000/health').status==200 else 1)\"" ]
+      interval: 5s
+      timeout: 3s
+      retries: 1
+      start_period: 10s
+
+  db:
+    image: postgres:16-alpine
+    container_name: citysim-db
+    env_file:
+      - .env
+    # No host port mapping for the database in the clustered stack: it is only
+    # reachable inside the Docker network, which is safer.
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U citysim" ]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+    restart: unless-stopped
+
+volumes:
+  pgdata:

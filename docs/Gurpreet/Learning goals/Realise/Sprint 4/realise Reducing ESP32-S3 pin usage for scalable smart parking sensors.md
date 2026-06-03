@@ -11,42 +11,42 @@
 
 ## Table of Contents
 
-- [1. Introduction](#1-introduction)
-- [2. Main question and subquestions](#2-main-question-and-subquestions)
-- [3. Methodology](#3-methodology)
-- [4. Chapter 1: Working implementation](#4-chapter-1-working-implementation)
-    - [4.1 Introduction](#41-introduction)
-    - [4.2 Difference compared with the previous implementation](#42-difference-compared-with-the-previous-implementation)
-    - [4.3 GitLab source code](#43-gitlab-source-code)
-    - [4.4 File-based class diagram](#44-file-based-class-diagram)
-    - [4.5 Integration in the shared project](#45-integration-in-the-shared-project)
-    - [4.6 Subconclusion](#46-subconclusion)
-- [5. Chapter 2: MCP23017 hardware and software realisation](#5-chapter-2-mcp23017-hardware-and-software-realisation)
-    - [5.1 Introduction](#51-introduction)
-    - [5.2 MCP23017 setup](#52-mcp23017-setup)
-    - [5.3 Trigger and echo pin setup](#53-trigger-and-echo-pin-setup)
-    - [5.4 I2C bus with OLED and MCP23017](#54-i2c-bus-with-oled-and-mcp23017)
-    - [5.5 Subconclusion](#55-subconclusion)
-- [6. Chapter 3: Sensor measurement and parking logic](#6-chapter-3-sensor-measurement-and-parking-logic)
-    - [6.1 Introduction](#61-introduction)
-    - [6.2 Sequential sensor measurement](#62-sequential-sensor-measurement)
-    - [6.3 Echo measurement through MCP23017](#63-echo-measurement-through-mcp23017)
-    - [6.4 Stable occupied/free decision](#64-stable-occupiedfree-decision)
-    - [6.5 OLED output](#65-oled-output)
-    - [6.6 Subconclusion](#66-subconclusion)
-- [7. Chapter 4: Backend communication](#7-chapter-4-backend-communication)
-    - [7.1 Introduction](#71-introduction)
-    - [7.2 ParkingNetwork component](#72-parkingnetwork-component)
-    - [7.3 Sending only first state and changes](#73-sending-only-first-state-and-changes)
-    - [7.4 Subconclusion](#74-subconclusion)
-- [8. Chapter 5: Testing and validation](#8-chapter-5-testing-and-validation)
-    - [8.1 Introduction](#81-introduction)
-    - [8.2 Validation results](#82-validation-results)
-    - [8.3 Limitations and technical attention points](#83-limitations-and-technical-attention-points)
-    - [8.4 Subconclusion](#84-subconclusion)
-- [9. Final conclusion](#9-final-conclusion)
-- [10. Recommendations](#10-recommendations)
-- [11. References](#11-references)
+- [1. Introduction](<realise Reducing ESP32-S3 pin usage for scalable smart parking sensors.md#1-introduction>)
+- [2. Main question and subquestions](<realise Reducing ESP32-S3 pin usage for scalable smart parking sensors.md#2-main-question-and-subquestions>)
+- [3. Methodology](<realise Reducing ESP32-S3 pin usage for scalable smart parking sensors.md#3-methodology>)
+- [4. Chapter 1: Working implementation](<realise Reducing ESP32-S3 pin usage for scalable smart parking sensors.md#4-chapter-1-working-implementation>)
+    - [4.1 Introduction](<realise Reducing ESP32-S3 pin usage for scalable smart parking sensors.md#41-introduction>)
+    - [4.2 Difference compared with the previous implementation](<realise Reducing ESP32-S3 pin usage for scalable smart parking sensors.md#42-difference-compared-with-the-previous-implementation>)
+    - [4.3 GitLab source code](<realise Reducing ESP32-S3 pin usage for scalable smart parking sensors.md#43-gitlab-source-code>)
+    - [4.4 File-based class diagram](<realise Reducing ESP32-S3 pin usage for scalable smart parking sensors.md#44-file-based-class-diagram>)
+    - [4.5 Integration in the shared project](<realise Reducing ESP32-S3 pin usage for scalable smart parking sensors.md#45-integration-in-the-shared-project>)
+    - [4.6 Subconclusion](<realise Reducing ESP32-S3 pin usage for scalable smart parking sensors.md#46-subconclusion>)
+- [5. Chapter 2: MCP23017 hardware and software realisation](<realise Reducing ESP32-S3 pin usage for scalable smart parking sensors.md#5-chapter-2-mcp23017-hardware-and-software-realisation>)
+    - [5.1 Introduction](<realise Reducing ESP32-S3 pin usage for scalable smart parking sensors.md#51-introduction>)
+    - [5.2 MCP23017 setup](<realise Reducing ESP32-S3 pin usage for scalable smart parking sensors.md#52-mcp23017-setup>)
+    - [5.3 Trigger and echo pin setup](<realise Reducing ESP32-S3 pin usage for scalable smart parking sensors.md#53-trigger-and-echo-pin-setup>)
+    - [5.4 I2C bus with OLED and MCP23017](<realise Reducing ESP32-S3 pin usage for scalable smart parking sensors.md#54-i2c-bus-with-oled-and-mcp23017>)
+    - [5.5 Subconclusion](<realise Reducing ESP32-S3 pin usage for scalable smart parking sensors.md#55-subconclusion>)
+- [6. Chapter 3: Sensor measurement and parking logic](<realise Reducing ESP32-S3 pin usage for scalable smart parking sensors.md#6-chapter-3-sensor-measurement-and-parking-logic>)
+    - [6.1 Introduction](<realise Reducing ESP32-S3 pin usage for scalable smart parking sensors.md#61-introduction>)
+    - [6.2 Sequential sensor measurement](<realise Reducing ESP32-S3 pin usage for scalable smart parking sensors.md#62-sequential-sensor-measurement>)
+    - [6.3 Echo measurement through MCP23017](<realise Reducing ESP32-S3 pin usage for scalable smart parking sensors.md#63-echo-measurement-through-mcp23017>)
+    - [6.4 Stable occupied/free decision](<realise Reducing ESP32-S3 pin usage for scalable smart parking sensors.md#64-stable-occupiedfree-decision>)
+    - [6.5 OLED output](<realise Reducing ESP32-S3 pin usage for scalable smart parking sensors.md#65-oled-output>)
+    - [6.6 Subconclusion](<realise Reducing ESP32-S3 pin usage for scalable smart parking sensors.md#66-subconclusion>)
+- [7. Chapter 4: Backend communication](<realise Reducing ESP32-S3 pin usage for scalable smart parking sensors.md#7-chapter-4-backend-communication>)
+    - [7.1 Introduction](<realise Reducing ESP32-S3 pin usage for scalable smart parking sensors.md#71-introduction>)
+    - [7.2 ParkingNetwork component](<realise Reducing ESP32-S3 pin usage for scalable smart parking sensors.md#72-parkingnetwork-component>)
+    - [7.3 Sending only first state and changes](<realise Reducing ESP32-S3 pin usage for scalable smart parking sensors.md#73-sending-only-first-state-and-changes>)
+    - [7.4 Subconclusion](<realise Reducing ESP32-S3 pin usage for scalable smart parking sensors.md#74-subconclusion>)
+- [8. Chapter 5: Testing and validation](<realise Reducing ESP32-S3 pin usage for scalable smart parking sensors.md#8-chapter-5-testing-and-validation>)
+    - [8.1 Introduction](<realise Reducing ESP32-S3 pin usage for scalable smart parking sensors.md#81-introduction>)
+    - [8.2 Validation results](<realise Reducing ESP32-S3 pin usage for scalable smart parking sensors.md#82-validation-results>)
+    - [8.3 Limitations and technical attention points](<realise Reducing ESP32-S3 pin usage for scalable smart parking sensors.md#83-limitations-and-technical-attention-points>)
+    - [8.4 Subconclusion](<realise Reducing ESP32-S3 pin usage for scalable smart parking sensors.md#84-subconclusion>)
+- [9. Final conclusion](<realise Reducing ESP32-S3 pin usage for scalable smart parking sensors.md#9-final-conclusion>)
+- [10. Recommendations](<realise Reducing ESP32-S3 pin usage for scalable smart parking sensors.md#10-recommendations>)
+- [11. References](<realise Reducing ESP32-S3 pin usage for scalable smart parking sensors.md#11-references>)
 
 ---
 
@@ -119,7 +119,7 @@ In the current implementation, the hardware layer changed. The MCP23017 is now u
 
 The most important software changes are:
 
-| Part                  | Previous implementation              | Current implementation                      |
+| Part                  | Previous implementation              | Current implementation                       |
 | --------------------- | ------------------------------------ | -------------------------------------------- |
 | Sensor pin handling   | Direct ESP32-S3 GPIO                 | MCP23017 I/O pins through I2C                |
 | Trigger pins          | One shared trigger pin               | One trigger pin per sensor on MCP23017       |
@@ -821,7 +821,7 @@ The design document already identified important risks: MCP23017 base wiring, I2
 
 The following validation points were used to check the current realisation after the hardware and code were built:
 
-| Validation point                 | Result in the current realisation                                                                                                                           |
+| Validation point                 | Result in the current realisation                                                                                                                            |
 | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | MCP23017 startup check           | The serial monitor confirms that the MCP23017 starts with the configured I2C address.                                                                        |
 | OLED startup check               | The OLED display starts and shows the parking status screen.                                                                                                 |

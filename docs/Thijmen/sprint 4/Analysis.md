@@ -1,13 +1,14 @@
 # Professionalization of a Breadboard Prototype into a Perfboard or PCB Solution
 
-* **Author:** Thijmen Walter
-* **Date:** 20-05-2026
-* **Version:** 1.0
-* **Classification:** School Assignment
+* **Author:** Thijmen Walter (Embedded & Robotics Engineer Student)
+* **Date:** 31-05-2026
+* **Version:** 2.0
+* **Classification:** Internal
 * **Client:** Mayor Mats Otten
-* **Company:** HvA / HBO-ICT Project
+* **Company:** The Embedded Alliance
 
 ---
+
 ## Table of Contents
 
 * [1. Introduction](#1-introduction)  
@@ -28,6 +29,8 @@
 This document was written for The Embedded Alliance, Mayor Mats Otten, and other stakeholders involved in the Smart City project. The document is intended for readers with low to intermediate prior knowledge of embedded systems, electronics, and hardware prototyping.
 
 The context of this document is a Smart City embedded hardware project consisting of a train railroad crossing tile with warning lights and automatic barrier control when a train is detected. In addition, the project contains a separate hardware module with an e-ink display used for information visualization.
+
+Embedded hardware projects are often developed in multiple stages. During the early stages, developers commonly use a breadboard, which is a reusable prototyping platform that allows electronic components to be connected without soldering [(Adafruit, 2024)](https://learn.adafruit.com/breadboards-for-beginners/perma-protos). When a design becomes more stable, it can be transferred to a perfboard, a board with pre-drilled holes that allows components to be permanently soldered into place. For fully professional products, a Printed Circuit Board (PCB) is often used. A PCB contains custom-designed copper traces that replace manual wiring and provide a compact, reliable, and scalable hardware solution [(TechTarget, 2024)](https://www.techtarget.com/whatis/definition/printed-circuit-board-PCB). Understanding the differences between these implementation methods is important when determining how a prototype can be transformed into a more professional system.
 
 During development, the hardware was implemented using breadboards for rapid prototyping and testing. While this allowed quick experimentation, the setup became less suitable for reliable demonstrations, transport, and long-term usage.
 
@@ -56,11 +59,11 @@ To answer this question, the following subquestions were formulated:
 
 This document was created using the following research methods:
 
-- Literature research about breadboards, perfboards, soldering, and PCB development
-- Analysis of the current hardware prototype
-- Comparison of hardware implementation methods
-- Evaluation of reliability, maintainability, and scalability
-- Feedback from teammates and lecturers
+* Literature research about breadboards, perfboards, soldering, and PCB development
+* Analysis of the current hardware prototype
+* Comparison of hardware implementation methods
+* Evaluation of reliability, maintainability, and scalability
+* Feedback from teammates and lecturers
 
 These methods were selected because they provide both theoretical knowledge and practical insights into improving the current hardware implementation.
 
@@ -69,6 +72,8 @@ These methods were selected because they provide both theoretical knowledge and 
 # 4. Chapter 1: Breadboard limitations
 
 ## 4.1 Introduction
+
+Breadboards are widely used during the prototyping phase of electronics projects because they allow circuits to be assembled and modified without soldering [(Adafruit, 2024)](https://learn.adafruit.com/breadboards-for-beginners/perma-protos). Although they provide flexibility during development, breadboards are generally not intended for permanent implementations. This chapter examines the limitations of the current breadboard setup and evaluates how these limitations affect the Smart City railroad crossing prototype and e-ink display module.
 
 This chapter answers the following subquestion:
 
@@ -98,7 +103,7 @@ Another limitation of breadboards is reduced maintainability. Large numbers of j
 
 In the current implementation, the railroad crossing tile contains multiple hardware components such as LEDs, train detection logic, and barrier control connections. As the number of connections increases, the breadboard setup becomes more difficult to organize and maintain.
 
-In addition, breadboard prototypes often appear unfinished or temporary. This negatively affects presentations to stakeholders, clients, and lecturers because the implementation does not visually represent a finalized product [(Autodesk, 2024)](https://www.autodesk.com/solutions/pcb-design-software).
+In addition, breadboard prototypes often appear unfinished or temporary. This negatively affects presentations to stakeholders, clients, and lecturers because the implementation does not visually represent a finalized product [(Adafruit, 2024)](https://learn.adafruit.com/breadboards-for-beginners/perma-protos).
 
 A more permanent implementation would improve organization, readability, and professional appearance.
 
@@ -113,6 +118,8 @@ Based on this chapter, it can be concluded that breadboards are useful for rapid
 # 5. Chapter 2: Perfboard implementation
 
 ## 5.1 Introduction
+
+A perfboard is a prototyping board containing a grid of holes that allows electronic components to be soldered permanently [MKTPCB (2023)](https://www.mktpcb.com/perfboard/). Unlike breadboards, perfboards create fixed electrical connections, resulting in improved reliability and durability. This chapter evaluates whether a perfboard could serve as an effective intermediate solution for professionalizing the current prototype.
 
 This chapter answers the following subquestion:
 
@@ -160,6 +167,8 @@ Based on this chapter, it can be concluded that perfboards provide a reliable an
 
 ## 6.1 Introduction
 
+A Printed Circuit Board (PCB) is a custom-designed board that contains conductive traces, pads, and mounting points for electronic components [(TechTarget, 2024)](https://www.techtarget.com/whatis/definition/printed-circuit-board-PCB). PCBs are commonly used in commercial products because they provide high reliability, compactness, and scalability. This chapter investigates whether a PCB solution would be suitable for the current Smart City project.
+
 This chapter answers the following subquestion:
 
 **What are the advantages and disadvantages of designing a PCB?**
@@ -170,17 +179,17 @@ The chapter focuses on design quality, scalability, manufacturing, and professio
 
 ## 6.2 Advantages of PCBs
 
-PCBs provide the most professional implementation method for embedded hardware projects. Components and electrical traces are designed digitally, resulting in a clean and optimized layout [(KiCad, 2025)](https://www.kicad.org).
+PCBs provide the most professional implementation method for embedded hardware projects. Components and electrical traces are designed digitally, resulting in a clean and optimized layout (KiCad, 2025).
 
-Professional PCB manufacturers such as [MKTPCB (2023)](https://www.mktpcb.com) also provide rapid prototyping and PCB assembly services, making PCB production increasingly accessible for student and prototype projects.
+Professional PCB manufacturers such as [MKTPCB (2023)](https://www.mktpcb.com/) also provide rapid prototyping and PCB assembly services, making PCB production increasingly accessible for student and prototype projects.
 
 This improves:
 
-- Reliability
-- Readability
-- Compactness
-- Reproducibility
-- Scalability
+* Reliability
+* Readability
+* Compactness
+* Reproducibility
+* Scalability
 
 A PCB also reduces wiring complexity and minimizes the chance of incorrect manual connections.
 
@@ -194,9 +203,9 @@ A separate PCB for the e-ink display module could also simplify integration and 
 
 The largest disadvantage of PCB development is the increased complexity. PCB design requires knowledge of electronic schematics, routing, component footprints, and manufacturing requirements.
 
-Additionally, manufacturing a PCB introduces additional costs and waiting time. Design mistakes may require a complete redesign and reordering process [(Autodesk, 2024)](https://www.autodesk.com/solutions/pcb-design-software).
+Additionally, manufacturing a PCB introduces additional costs and waiting time. Design mistakes may require a complete redesign and reordering process [(Adafruit, 2024)](https://learn.adafruit.com/breadboards-for-beginners/perma-protos).
 
-PCB manufacturing also requires preparation of design files such as schematics, Gerber files, and component lists before production can begin [MKTPCB (2023)](https://www.mktpcb.com/perfboard/).
+PCB manufacturing also requires preparation of design files such as schematics, Gerber files, and component lists before production can begin (MKTPCB, 2023).
 
 For rapidly changing prototypes, PCB development may therefore be less practical during early project stages.
 
@@ -212,16 +221,20 @@ Based on this chapter, it can be concluded that PCBs provide the highest level o
 
 # 7. Comparison of solutions
 
-Breadboards are mainly intended for temporary experimentation, while perfboards provide a more permanent soldered solution for prototype hardware implementations [MKTPCB (2023)](https://www.mktpcb.com/perfboard/).
+The following table compares the three hardware implementation methods discussed in this document. The comparison focuses on the criteria that are most relevant to the Smart City project, including reliability, ease of modification, appearance, cost, scalability, and required technical experience.
 
-| Property | Breadboard | Perfboard | PCB |
-|---|---|---|---|
-| Reliability | Low | Medium | High |
-| Ease of modification | High | Medium | Low |
-| Professional appearance | Low | Medium | High |
-| Cost | Low | Low | Medium/High |
-| Scalability | Low | Medium | High |
-| Required experience | Low | Medium | High |
+**Table 1: Comparison of Breadboard, Perfboard, and PCB Solutions**
+
+| Property                | Breadboard | Perfboard | PCB         |
+| ----------------------- | ---------- | --------- | ----------- |
+| Reliability             | Low        | Medium    | High        |
+| Ease of modification    | High       | Medium    | Low         |
+| Professional appearance | Low        | Medium    | High        |
+| Cost                    | Low        | Low       | Medium/High |
+| Scalability             | Low        | Medium    | High        |
+| Required experience     | Low        | Medium    | High        |
+
+Table 1 shows that breadboards provide the highest flexibility during development, while PCBs provide the highest reliability and professional quality. Perfboards offer a compromise between the two approaches by improving stability while remaining relatively inexpensive and easy to implement.
 
 ---
 
@@ -241,7 +254,7 @@ For the current project scope, a perfboard implementation is the most realistic 
 
 ---
 
-## 9. Recommendations
+# 9. Recommendations
 
 Based on the results of this document, the following recommendations are made:
 
@@ -255,7 +268,6 @@ Based on the results of this document, the following recommendations are made:
 
 5. Continue evaluating the hardware setup during testing to determine whether a future transition from perfboard to PCB is justified based on reliability, scalability, and project requirements.
 
-
 ---
 
 # 10. References
@@ -266,6 +278,7 @@ Based on the results of this document, the following recommendations are made:
 4. Adafruit. (2024). *Perma-Proto Guide*. Retrieved May 20, 2026, from [https://learn.adafruit.com/breadboards-for-beginners/perma-protos](https://learn.adafruit.com/breadboards-for-beginners/perma-protos)
 5. Autodesk. (2024). *PCB Design Resources*. Retrieved May 20, 2026, from [https://www.autodesk.com/solutions/pcb-design-software](https://www.autodesk.com/solutions/pcb-design-software)
 6. MKTPCB. (2023). *Perfboard | A Quick Guide | Types, Uses, Techniques, and More*. Retrieved May 20, 2026, from [https://www.mktpcb.com/perfboard/](https://www.mktpcb.com/perfboard/)
+7. TechTarget. (2024). *What is a Printed Circuit Board (PCB)?*. Retrieved May 31, 2026, from [https://www.techtarget.com/whatis/definition/printed-circuit-board-PCB](https://www.techtarget.com/whatis/definition/printed-circuit-board-PCB)
 
 ---
 

@@ -266,3 +266,226 @@ The schematic must show:
 * net labels instead of unclear long wires.
 
 KiCad’s Schematic Editor is used for schematic drawing, symbol management, footprint assignment, and data transfer to PCB design tools (KiCad, 2026). Even though this sprint uses perfboard instead of a manufactured PCB, KiCad is still useful because it makes the electrical circuit clear and checkable. ([KiCad Documentation][2])
+
+## 4.3 KiCad software version and file location
+
+| Item                           | Value                                                  |
+| ------------------------------ | ------------------------------------------------------ |
+| Software                       | KiCad                                                  |
+| Version used for documentation | KiCad 9.0                                              |
+| Project file                   | `traffic-light-perfboard.kicad_pro`                    |
+| Schematic file                 | `traffic-light-perfboard.kicad_sch`                    |
+| Exported schematic PDF         | `kicad-schematic-export.pdf`                           |
+| Exported schematic image       | `kicad-schematic-export.png`                           |
+| Storage location               | `docs/Wesley/learning outcomes/sprint 4/design-files/` |
+
+## 4.4 Schematic page setup
+
+The KiCad schematic uses the following page setup:
+
+| Field     | Value                                            |
+| --------- | ------------------------------------------------ |
+| Page size | A4 landscape                                     |
+| Margin    | Approximately 2 cm free space around the drawing |
+| Title     | Traffic-light perfboard transfer schematic       |
+| Author    | Wesley                                           |
+| Version   | 1.0                                              |
+| File name | `traffic-light-perfboard.kicad_sch`              |
+| Date      | 22 May 2026                                      |
+
+The title block is placed in the bottom-right corner. It includes the author, version number, and file name so the schematic can be identified when exported or printed.
+
+![Figure 2. KiCad schematic export of the traffic-light perfboard circuit](assets/sprint-4-perfboard-design/kicad-schematic-export.png)
+
+*Figure 2. KiCad schematic of the perfboard circuit. The schematic uses power symbols, ground symbols, net labels, component labels, and a bottom-right title block with the author, version number, and file name. This image is exported from `traffic-light-perfboard.kicad_sch`.*
+
+## 4.5 Power and ground symbols
+
+The schematic uses proper KiCad power symbols instead of only drawing coloured wires. This is important because the schematic software must understand which nets are connected.
+
+The design uses these power symbols and power nets:
+
+| Net label    | Meaning                             |
+| ------------ | ----------------------------------- |
+| `+3V3_LOGIC` | 3.3V logic supply from the ESP32-S3 |
+| `+5V_LED`    | External regulated LED power supply |
+| `GND`        | Shared ground reference             |
+| `SDA`        | I2C data line                       |
+| `SCL`        | I2C clock line                      |
+
+The design has one shared ground reference. This ground connects the ESP32-S3, MCP23017, both ULN2803 chips, and the negative side of the external LED power supply.
+
+The schematic keeps `+3V3_LOGIC` and `+5V_LED` separate. They only share `GND`.
+
+## 4.6 Net labels
+
+The schematic uses net labels instead of long unclear wires. This makes the schematic easier to read and prevents the page from becoming crowded.
+
+The most important communication and power net labels are:
+
+| Net label    | Function            |
+| ------------ | ------------------- |
+| `+3V3_LOGIC` | Logic power         |
+| `+5V_LED`    | External LED power  |
+| `GND`        | Shared ground       |
+| `SDA`        | I2C data            |
+| `SCL`        | I2C clock           |
+| `MCP_RESET`  | MCP23017 reset line |
+
+The MCP23017-to-ULN2803 control nets are:
+
+| Net label      | Function                                           |
+| -------------- | -------------------------------------------------- |
+| `TL1_RED_CTRL` | MCP output to ULN input for traffic light 1 red    |
+| `TL1_YEL_CTRL` | MCP output to ULN input for traffic light 1 yellow |
+| `TL1_GRN_CTRL` | MCP output to ULN input for traffic light 1 green  |
+| `TL2_RED_CTRL` | MCP output to ULN input for traffic light 2 red    |
+| `TL2_YEL_CTRL` | MCP output to ULN input for traffic light 2 yellow |
+| `TL2_GRN_CTRL` | MCP output to ULN input for traffic light 2 green  |
+| `TL3_RED_CTRL` | MCP output to ULN input for traffic light 3 red    |
+| `TL3_YEL_CTRL` | MCP output to ULN input for traffic light 3 yellow |
+| `TL3_GRN_CTRL` | MCP output to ULN input for traffic light 3 green  |
+| `TL4_RED_CTRL` | MCP output to ULN input for traffic light 4 red    |
+| `TL4_YEL_CTRL` | MCP output to ULN input for traffic light 4 yellow |
+| `TL4_GRN_CTRL` | MCP output to ULN input for traffic light 4 green  |
+
+The LED-side switched return nets are labelled separately from the logic-side control nets:
+
+| Net label   | Function                                   |
+| ----------- | ------------------------------------------ |
+| `TL1_RED_K` | Switched return for traffic light 1 red    |
+| `TL1_YEL_K` | Switched return for traffic light 1 yellow |
+| `TL1_GRN_K` | Switched return for traffic light 1 green  |
+| `TL2_RED_K` | Switched return for traffic light 2 red    |
+| `TL2_YEL_K` | Switched return for traffic light 2 yellow |
+| `TL2_GRN_K` | Switched return for traffic light 2 green  |
+| `TL3_RED_K` | Switched return for traffic light 3 red    |
+| `TL3_YEL_K` | Switched return for traffic light 3 yellow |
+| `TL3_GRN_K` | Switched return for traffic light 3 green  |
+| `TL4_RED_K` | Switched return for traffic light 4 red    |
+| `TL4_YEL_K` | Switched return for traffic light 4 yellow |
+| `TL4_GRN_K` | Switched return for traffic light 4 green  |
+
+## 4.7 ESP32-S3 to MCP23017 schematic design
+
+The ESP32-S3 is shown as connector `J6`, because the full development board is not redesigned as a custom circuit. The schematic only shows the pins that are used by this perfboard circuit.
+
+| ESP32-S3 function | Connector label | Net          |
+| ----------------- | --------------- | ------------ |
+| 3.3V              | J6 pin 1        | `+3V3_LOGIC` |
+| GND               | J6 pin 2        | `GND`        |
+| GPIO5             | J6 pin 3        | `SDA`        |
+| GPIO4             | J6 pin 4        | `SCL`        |
+
+The realised breadboard setup uses GPIO5 for SDA and GPIO4 for SCL. This design keeps that mapping so the perfboard version follows the tested version instead of creating a new wiring standard.
+
+The I2C lines use pull-up resistors:
+
+| Label |  Value | Connection            |
+| ----- | -----: | --------------------- |
+| R13   | 5.1 kΩ | `SDA` to `+3V3_LOGIC` |
+| R14   | 5.1 kΩ | `SCL` to `+3V3_LOGIC` |
+
+The pull-ups are connected to 3.3V because the ESP32-S3 uses 3.3V logic.
+
+## 4.8 MCP23017 address, reset, and unused pins
+
+The MCP23017 is labelled as `U1`.
+
+The address pins are wired as follows:
+
+| MCP23017 pin | Connection | Reason            |
+| ------------ | ---------- | ----------------- |
+| A0           | GND        | Address selection |
+| A1           | GND        | Address selection |
+| A2           | GND        | Address selection |
+
+With A0, A1, and A2 connected to ground, the expander uses address `0x20`. The Microchip datasheet states that the MCP23017 address pins must be externally biased, so they must not be left floating (Microchip Technology Inc., 2022). ([Microchip][3])
+
+The RESET pin is wired as follows:
+
+| MCP23017 pin | Connection                          | Reason                                             |
+| ------------ | ----------------------------------- | -------------------------------------------------- |
+| RESET        | Pull-up to `+3V3_LOGIC` through R15 | Keeps the MCP23017 enabled during normal operation |
+
+The interrupt pins are not used in this design:
+
+| MCP23017 pin | Schematic label    | Design decision           |
+| ------------ | ------------------ | ------------------------- |
+| INTA         | NC / not connected | Interrupt output not used |
+| INTB         | NC / not connected | Interrupt output not used |
+
+The I2C pins are not left open:
+
+| MCP23017 pin | Connection             |
+| ------------ | ---------------------- |
+| SDA          | `SDA` net with pull-up |
+| SCL          | `SCL` net with pull-up |
+
+This is important because SDA and SCL are the communication lines between the ESP32-S3 and the MCP23017.
+
+## 4.9 MCP23017 to ULN2803 schematic design
+
+The schematic keeps the final realised output mapping from the working breadboard version. That means the design follows the version that has already been tested.
+
+| Traffic light | Colour | MCP23017 output | Control net    | ULN chip | ULN input |
+| ------------- | ------ | --------------- | -------------- | -------- | --------- |
+| TL1           | Red    | GPB0            | `TL1_RED_CTRL` | U2       | IN1       |
+| TL1           | Yellow | GPB1            | `TL1_YEL_CTRL` | U2       | IN2       |
+| TL1           | Green  | GPB2            | `TL1_GRN_CTRL` | U2       | IN3       |
+| TL2           | Red    | GPB3            | `TL2_RED_CTRL` | U2       | IN4       |
+| TL2           | Yellow | GPB4            | `TL2_YEL_CTRL` | U2       | IN5       |
+| TL2           | Green  | GPB5            | `TL2_GRN_CTRL` | U2       | IN6       |
+| TL3           | Red    | GPA5            | `TL3_RED_CTRL` | U2       | IN7       |
+| TL3           | Yellow | GPA6            | `TL3_YEL_CTRL` | U2       | IN8       |
+| TL3           | Green  | GPA4            | `TL3_GRN_CTRL` | U3       | IN1       |
+| TL4           | Red    | GPA2            | `TL4_RED_CTRL` | U3       | IN2       |
+| TL4           | Yellow | GPA3            | `TL4_YEL_CTRL` | U3       | IN3       |
+| TL4           | Green  | GPA1            | `TL4_GRN_CTRL` | U3       | IN4       |
+
+The remaining MCP23017 pins are marked as spare:
+
+| MCP23017 output | Use          |
+| --------------- | ------------ |
+| GPA0            | Spare output |
+| GPA7            | Spare output |
+| GPB6            | Spare output |
+| GPB7            | Spare output |
+
+These spare outputs are not used in the first perfboard version, but they are labelled so they can be used later if needed.
+
+## 4.10 ULN2803 low-side switching design
+
+The ULN2803 chips are labelled as `U2` and `U3`.
+
+The ULN2803 is used as a low-side sink driver. This means the LED branch is powered from the external LED supply, and the ULN2803 switches the path to ground.
+
+Each LED branch follows this structure:
+
+```text
++5V_LED -> LED in traffic-light model -> switched return wire -> resistor on perfboard -> ULN2803 output -> GND
+```
+
+This design means the ULN2803 does not provide positive power to the LEDs. It pulls the LED channel to ground when the matching input is active.
+
+Texas Instruments describes the ULN2803C as a 50 V, 500 mA Darlington transistor array with eight NPN Darlington pairs and high-voltage outputs (Texas Instruments, 2025). In this project, the LED current is much lower than 500 mA per channel, so the ULN2803 is suitable as the switching stage. ([Texas Instruments][4])
+
+The COM pin is marked as not required for the LED-only load in this design. The COM pin is mainly relevant for clamp diodes when switching inductive loads. Because this design only switches LEDs, the COM pin is not used as an LED power input.
+
+
+## 4.11 Traffic-light connector schematic
+
+Each traffic-light model uses one 4-pin connector:
+
+| Connector | Pin 1     | Pin 2       | Pin 3       | Pin 4       |
+| --------- | --------- | ----------- | ----------- | ----------- |
+| J1        | `+5V_LED` | `TL1_RED_K` | `TL1_YEL_K` | `TL1_GRN_K` |
+| J2        | `+5V_LED` | `TL2_RED_K` | `TL2_YEL_K` | `TL2_GRN_K` |
+| J3        | `+5V_LED` | `TL3_RED_K` | `TL3_YEL_K` | `TL3_GRN_K` |
+| J4        | `+5V_LED` | `TL4_RED_K` | `TL4_YEL_K` | `TL4_GRN_K` |
+
+This connector design assumes that the traffic-light model uses a shared positive LED supply and three switched return wires. The current-limiting resistors are placed on the perfboard in the return path before the ULN2803 outputs. A resistor can be placed in series on either side of an LED branch, so this keeps the number of wires per traffic light low while still keeping one resistor per LED channel.
+
+## 4.12 Sub-conclusion
+
+The KiCad schematic defines the electrical design more professionally than a Fritzing schematic. It uses real power symbols, clear net labels, a title block, visible component labels, and a complete mapping from ESP32-S3 to MCP23017 to ULN2803 to traffic-light connectors. The schematic also makes the important electrical choices explicit: SDA and SCL are pulled up to 3.3V, the MCP23017 address pins are tied to ground, the ULN2803 chips are used as low-side sink drivers, and the LED power rail is separated from the 3.3V logic rail.

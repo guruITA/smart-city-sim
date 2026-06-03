@@ -16,6 +16,7 @@ A correct result is a working perfboard version of the current traffic-light ele
 
 ## Table of Contents
 
+
 - [1. Introduction](#1-introduction)
   - [1.1 Project context](#11-project-context)
   - [1.2 Problem statement](#12-problem-statement)
@@ -60,6 +61,7 @@ A correct result is a working perfboard version of the current traffic-light ele
   - [11.1 Answer to the main research question](#111-answer-to-the-main-research-question)
   - [11.2 Result for the next phase](#112-result-for-the-next-phase)
 - [References](#references)
+- [Appendix A - Responsible use of ChatGPT](#appendix-a---responsible-use-of-chatgpt)
 
 
 ---
@@ -507,3 +509,12 @@ Wesley. (2026a). *Realisation - Breadboard realisation of the four-way traffic-l
 Wesley. (2026b). *Advice — Learning goal 1 - Expanding the traffic-light system to multiple traffic lights* [Advice deliverable]. https://gitlab.fdmci.hva.nl/studio/smart-cities/projecten/2025-2026-semester-2/city-sim-learning-group/city-the-embedded-alliance-city-sim-learning-group/-/blob/b5f926b9d9d3c148d7a5338833cf6bd165b40239/docs/Wesley/learning%20outcomes/sprint%202/Advice%20%E2%80%94%20Learning%20Goal%201%20-%20Expanding%20the%20traffic-light%20system%20to%20multiple%20traffic%20lights.md
 
 Wesley. (2026c). *Realise - Recognizing when a car is waiting at the traffic light and sending that information to the backend* [Realisation deliverable]. https://gitlab.fdmci.hva.nl/studio/smart-cities/projecten/2025-2026-semester-2/city-sim-learning-group/city-the-embedded-alliance-city-sim-learning-group/-/blob/b5f926b9d9d3c148d7a5338833cf6bd165b40239/docs/Wesley/learning%20outcomes/sprint%203/Realise%20-%20Recognizing%20when%20a%20car%20is%20waiting%20at%20the%20traffic%20light%20and%20sending%20that%20information%20to%20the%20backend.md
+
+
+## Appendix A - Responsible use of ChatGPT
+
+For this deliverable, I used ChatGPT as a support tool for grammar, spelling, and suggestions for formatting. I did not use it to replace my own project work or to hide the source of the work.
+
+The technical content, project context, circuit choices, learning goal, and final responsibility remain mine. ChatGPT was used to help improve readability, sentence structure, spelling, and the organisation of the document. I checked the final text myself so that it still matches my project and my own understanding.
+
+I include this appendix to be transparent about the use of AI support. This makes the process honest and helps prevent the work from being presented as hidden AI-generated work or as plagiarism.

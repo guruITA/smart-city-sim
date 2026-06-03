@@ -132,3 +132,25 @@ class TrafficEventResponse(BaseModel):
     created_at: datetime
 
     model_config = {"from_attributes": True}
+
+
+# --- Override (backend overrules a hub) ---
+
+class OverrideCreate(BaseModel):
+    """Schema for POST /api/v1/override — the backend forces a command on a tile."""
+
+    target: str = Field(..., example="traffic", description="Which hub group to override (traffic, barrier, all)")
+    command: str = Field(..., example="all_red", description="Forced command the tile must obey")
+    reason: str = Field(default="", example="emergency_vehicle", description="Why the override is set")
+
+
+class OverrideResponse(BaseModel):
+    id: int
+    target: str
+    command: str
+    reason: str
+    active: bool
+    created_at: datetime
+    cleared_at: datetime | None
+
+    model_config = {"from_attributes": True}

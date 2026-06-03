@@ -1,4 +1,4 @@
-# Realise - Speed camera API implementation
+# Realise: Speed camera API implementation
 
 | | |
 |---|---|
@@ -19,14 +19,14 @@ This document records what I built for the speed camera API and how I tested it.
 
 What was built, and does it work?
 
-### Sub-questions
+### Sub questions
 
 1. What files were created or changed?
 2. How was it tested?
 
 ---
 
-## Chapter 1 - Implementation
+## Chapter 1: Implementation
 
 ### Context
 
