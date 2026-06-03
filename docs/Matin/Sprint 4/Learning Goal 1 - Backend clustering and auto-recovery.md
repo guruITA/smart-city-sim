@@ -50,7 +50,7 @@ Building it forced two honest corrections versus the Design: `python:3.11-slim` 
 
 The cluster setup is built and starts with `docker compose -f docker-compose.cluster.yml up --build --scale api=2`. NGINX owns port 80, balances over the replicas, and routes around an unhealthy one, so a single hung replica no longer takes the city down. The Analysis, Advise, and Design deliverables are finished and submitted in Portflow.
 
-The measured recovery time, load, and soak results are not in yet: I do not have access to the Pi outside school, so the Realise document keeps explicit `[to be filled after Pi test]` placeholders rather than reporting an estimate as a measurement. The plan is to run `resilience_test.py` on the Pi, confirm recovery stays inside the 5 second target Mats asked for, and paste the real numbers into the Realise before submitting it. The Reflection and Transfer below are written after the sprint review.
+The measured results are now in. On 2026-06-03 I ran the resilience tests on the Pi, with the clustered stack running next to the live backend so the team had no downtime. The cluster served concurrent load with zero errors, a 5 minute soak showed no memory leak (replica RSS stayed flat at ~79 MB), failover to the surviving replica took about 0.02 seconds (the city stayed at HTTP 200 throughout), and a crashed process is auto-restarted by the restart policy in about a second. Both recovery paths are inside the 5 second target Mats asked for. The numbers are in the Realise document. The Reflection and Transfer below are written after the sprint review.
 
 ## R - Reflection
 

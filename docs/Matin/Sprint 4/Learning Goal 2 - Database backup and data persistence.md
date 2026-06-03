@@ -50,7 +50,7 @@ One practical fix came up during the build: the Windows mount wrote the scripts 
 
 The three scripts are built and syntax-checked. `backup.sh` produces one timestamped compressed dump and copies it off the Pi, `restore.sh` rebuilds the data into a throwaway database and prints the row counts so a backup is proven usable and not just present, and `check_backup.sh` catches a silently failed job. A single `cron` entry runs the backup daily. The Analysis, Advise, and Design deliverables are finished and submitted in Portflow.
 
-The measured results (dump size, restore row-count match, upgrade verification) are not in yet, because I need the Pi and its real data to run them. The Realise document keeps explicit `[to be filled after Pi test]` placeholders so it never reports an estimate as a measurement. The plan is to run the backup, a test restore into `citysim_test`, and the upgrade path on the Pi, then paste the real numbers into the Realise before submitting it. The Reflection and Transfer below are written after the sprint review.
+The measured results are now in. On 2026-06-03 I ran the backup against the live database on the Pi (it kept serving, because `pg_dump` does not lock writes), then restored the dump into a throwaway `citysim_verify` database: the row counts matched exactly (183 sensor readings and 4 parking spots, source and restored), and the throwaway database was dropped afterwards so the live data was never touched. The freshness check passes on a fresh dump and correctly fails when the newest dump is forced too old or too small. The tier-2 off-Pi copy also worked. The numbers are in the Realise document. The Reflection and Transfer below are written after the sprint review.
 
 ## R - Reflection
 

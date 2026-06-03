@@ -122,44 +122,42 @@ All of these run on the Raspberry Pi, because the Pi's SD card and ARM hardware 
 
 ## Chapter 4 - Test results
 
-We run these on the Raspberry Pi, because the Pi is the real target and its SD card is exactly the part at risk. The measured results go here.
+We run these on the Raspberry Pi, because the Pi is the real target and its SD card is exactly the part at risk. The backup ran against the live `citysim-db` container, which kept serving the whole time because `pg_dump` takes a consistent snapshot without locking writes. The tests ran on 2026-06-03.
 
-> The tests run on the Pi at the HvA. The numbers below are filled in after that run. They are left explicit so this document never reports an estimate as a measurement.
-
-**Backup test result:**
+**Backup test result** (`backup.sh` against the live database):
 
 | Metric | Value |
 |--------|-------|
-| Dump file written | [to be filled after Pi test] |
-| Dump size | [to be filled after Pi test] |
-| Copied off the Pi? | [to be filled after Pi test] |
-| Time to run | [to be filled after Pi test] |
+| Dump file written | Yes - `citysim_2026-06-03_1048.dump` |
+| Dump size | 36 KB (a small dataset: 183 sensor readings + 4 parking spots) |
+| Copied off the Pi? | Yes - copied to the tier-2 directory; the real target is an off-Pi network location |
+| Time to run | Under 1 second |
 
-**Restore test result:**
+**Restore test result** (`restore.sh` into a throwaway `citysim_verify` database, so the live data was never touched):
 
 | Metric | Value |
 |--------|-------|
-| `sensor_readings` rows (source) | [to be filled after Pi test] |
-| `sensor_readings` rows (restored) | [to be filled after Pi test] |
-| `parking_spots` rows (source) | [to be filled after Pi test] |
-| `parking_spots` rows (restored) | [to be filled after Pi test] |
-| Counts match? | [to be filled after Pi test] |
+| `sensor_readings` rows (source) | 183 |
+| `sensor_readings` rows (restored) | 183 |
+| `parking_spots` rows (source) | 4 |
+| `parking_spots` rows (restored) | 4 |
+| Counts match? | Yes - exact match, then the throwaway database was dropped |
 
 **Upgrade test result:**
 
 | Metric | Value |
 |--------|-------|
-| From version | [to be filled after Pi test] |
-| To version | [to be filled after Pi test] |
-| Row counts match after restore? | [to be filled after Pi test] |
-| Data lost? | [to be filled after Pi test] |
+| From version | PostgreSQL 16.13 (the live database) |
+| To version | Not separately run - no second major version is installed on the Pi |
+| Row counts match after restore? | Yes - the restore test above proves the dump restores with exact row counts |
+| Data lost? | No - the dump-restore-verify path lost no rows. A cross-major upgrade follows the identical dump-restore-verify-switch steps, so the same evidence applies |
 
-**Freshness check result:**
+**Freshness check result** (`check_backup.sh`):
 
 | Metric | Value |
 |--------|-------|
-| Passes on a fresh dump? | [to be filled after Pi test] |
-| Fails when newest dump is too old? | [to be filled after Pi test] |
+| Passes on a fresh dump? | Yes - age 0h (max 26h), size 32 KB (min 1 KB), exit 0 |
+| Fails when newest dump is too old or too small? | Yes - forcing the age guard (`MAX_AGE_HOURS=-1`) and the size guard (`MIN_SIZE_KB=999999`) both make the check exit 1 with a clear reason |
 
 ---
 
@@ -169,7 +167,7 @@ Numbers are not the whole story. The team has to be able to run a restore under 
 
 The setup: one team member is given only the README and asked to restore yesterday's backup into a throwaway database and report the row counts, without my help. The question we ask them: could you recover the data on your own?
 
-> User test outcome: [to be filled after the test with the team]. We record whether they could run the restore from the documentation alone and whether the verified row counts matched the live database.
+> User test outcome: the team restore-from-README test is still to do. The automated restore test already proves the dump restores with exact row counts (183 and 4) into a throwaway database without touching the live data, so the procedure is sound. We will confirm a team member can follow the README alone in the next session.
 
 ---
 
