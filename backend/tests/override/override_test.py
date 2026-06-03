@@ -3,10 +3,10 @@
 
 Runs the full surprise scenario against a running City Sim API:
 
-  1. trigger the emergency corridor (force all traffic lights to red)
-  2. poll the active overrides the way a traffic light tile would
-  3. clear the override
-  4. confirm no traffic override is active anymore
+  1. trigger the emergency: one call forces the WHOLE city (every hub) at once
+  2. poll the active overrides the way the tiles would
+  3. clear every emergency override
+  4. confirm the city is back to normal
 
 Uses only the Python standard library, so it runs anywhere.
 
@@ -19,6 +19,10 @@ import json
 import sys
 import urllib.error
 import urllib.request
+
+
+# The hubs the emergency is expected to force at once.
+EXPECTED_TARGETS = {"traffic", "barrier", "streetlight", "parking", "eink"}
 
 
 def call(method, url, data=None):
@@ -41,30 +45,36 @@ def main():
 
     failures = 0
 
-    # 1. Trigger the emergency corridor.
+    # 1. Trigger the city-wide emergency. Returns one override per hub.
     status, body = call("POST", base + "/emergency")
-    ok = status == 200 and body and body["command"] == "all_red" and body["active"] is True
-    print(f"1. emergency set        -> status {status}, command {body and body.get('command')} [{'PASS' if ok else 'FAIL'}]")
+    rows = body if isinstance(body, list) else []
+    targets = {o["target"] for o in rows}
+    ok = status == 200 and EXPECTED_TARGETS.issubset(targets) and all(o["active"] for o in rows)
+    print(f"1. emergency: whole city -> status {status}, {len(rows)} hubs {sorted(targets)} [{'PASS' if ok else 'FAIL'}]")
     failures += 0 if ok else 1
-    override_id = body["id"] if body else None
+    ids = [o["id"] for o in rows]
 
-    # 2. Poll active overrides as a traffic tile would.
-    status, body = call("GET", base + "/active?target=traffic")
-    ok = status == 200 and any(o["command"] == "all_red" for o in (body or []))
-    print(f"2. tile polls active    -> status {status}, {len(body or [])} active [{'PASS' if ok else 'FAIL'}]")
+    # 2. Poll active overrides as the tiles would. The whole city is overruled.
+    status, body = call("GET", base + "/active")
+    active_targets = {o["target"] for o in (body or [])}
+    ok = status == 200 and EXPECTED_TARGETS.issubset(active_targets)
+    print(f"2. tiles poll active     -> status {status}, {len(body or [])} active {sorted(active_targets)} [{'PASS' if ok else 'FAIL'}]")
     failures += 0 if ok else 1
 
-    # 3. Clear the override.
-    if override_id is not None:
-        status, body = call("POST", f"{base}/{override_id}/clear")
-        ok = status == 200 and body and body["active"] is False
-        print(f"3. clear override       -> status {status}, active {body and body.get('active')} [{'PASS' if ok else 'FAIL'}]")
-        failures += 0 if ok else 1
+    # 3. Clear every emergency override.
+    cleared = sum(
+        1 for oid in ids
+        if call("POST", f"{base}/{oid}/clear")[0] == 200
+    )
+    ok = bool(ids) and cleared == len(ids)
+    print(f"3. clear all overrides   -> {cleared}/{len(ids)} cleared [{'PASS' if ok else 'FAIL'}]")
+    failures += 0 if ok else 1
 
-    # 4. Confirm no traffic override is active.
-    status, body = call("GET", base + "/active?target=traffic")
-    ok = status == 200 and not any(o["command"] == "all_red" for o in (body or []))
-    print(f"4. no active override    -> status {status}, {len(body or [])} active [{'PASS' if ok else 'FAIL'}]")
+    # 4. Confirm the city is back to normal (no emergency override still active).
+    status, body = call("GET", base + "/active")
+    still_emergency = [o for o in (body or []) if o.get("reason") == "emergency_vehicle"]
+    ok = status == 200 and not still_emergency
+    print(f"4. city back to normal   -> status {status}, {len(still_emergency)} emergency active [{'PASS' if ok else 'FAIL'}]")
     failures += 0 if ok else 1
 
     print(f"\nresult: {'ALL PASS' if failures == 0 else f'{failures} FAILED'}")
