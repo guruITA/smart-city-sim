@@ -4,7 +4,7 @@
 | -------------------- | -------------------------------------------------------------- |
 | Title                | Advise Report — HTTPS/TLS Integration for the City Sim Backend |
 | Author               | Betül Aydin                                                    |
-| Date                 | 1 June 2026                                                    |
+| Date                 | 3 June 2026                                                    |
 | Version              | 2                                                              |
 | Classification       | Internal                                                       |
 | Mayor                | Mats                                                           |
@@ -16,7 +16,7 @@
 
 1. [Introduction](#1-introduction)
 2. [Main- and Sub-Questions](#2-advice-question-and-sub-questions)
-3. [Local HTTPS/TLS Test Setup and Results](#3-local-https/tls-test-setup-and-results)
+3. [Local HTTPS/TLS Test Setup and Results](#3-local-httpstls-test-setup-and-results)
 4. [Recommended Integration Approach](#4-recommended-integration-approach)
 5. [Advice to the Backend Team](#5-advice-to-the-backend-team)
 6. [Limitations and ESP32 Considerations](#6-limitations-and-esp32-considerations)
