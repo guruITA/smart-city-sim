@@ -199,7 +199,7 @@ For the handover to maintenance (beheer) we recommend:
 2. Harden the failover with a real NGINX `upstream` block over two named replicas instead of resolving one service name through Docker DNS. That gives deterministic sub-second failover and does not depend on the connect-timeout workaround. This is the main priority-2 follow-up.
 3. The `pool_pre_ping` change is applied. Add the history cleanup job as a further priority-2 follow-up so the `sensor_readings` table cannot grow without bound.
 4. Always take a backup before a deploy (we did), so a bad rollout can fall back to the last dump as well as the volume.
-5. For **automatic** scaling on load, move the cluster to Kubernetes (K3s) with a HorizontalPodAutoscaler that scales the replica count on CPU usage, behind a Service and Ingress. Today's `--scale` is manual. K3s is a larger infrastructure change and belongs with the infra owner (Thijs), so we note it as the autoscaling path rather than building it this sprint. The team already has a K3s setup guide to follow (K3s, autoscaling reference).
+5. For **automatic** scaling on load, move the cluster to Kubernetes (K3s) with a HorizontalPodAutoscaler that scales the replica count on CPU usage, behind a Service and Ingress. Today's `--scale` is manual. K3s is a larger infrastructure change, so we note it as the autoscaling path rather than building it this sprint, to be picked up as a team decision on the shared backend. The team already has a K3s setup guide to follow (K3s, autoscaling reference).
 
 This keeps the move from build to maintenance controlled, with a clear rollback and a known next hardening step.
 
