@@ -3,10 +3,15 @@
 #include <GxEPD2_3C.h>
 #include <Fonts/FreeMonoBold9pt7b.h>
 #include "NetworkController.h"
+#include "OverrideController.h"
 using Display = GxEPD2_3C<GxEPD2_290_C90c, GxEPD2_290_C90c::HEIGHT>;
 
 static SPIClass _spi(HSPI);
 static Display* _disp = nullptr;
+
+// Marker stored in _currentPayload while the emergency alert is on screen, so
+// the slow e-ink refreshes once on the transition instead of every sync cycle.
+static const char* const EINK_OVERRIDE_SENTINEL = "__override_alert__";
 
 EinkDisplay::EinkDisplay(int clkPin, int mosiPin, int csPin, int dcPin, int rstPin, int busyPin)
     : _clkPin(clkPin), _mosiPin(mosiPin), _csPin(csPin), _dcPin(dcPin), _rstPin(rstPin), _busyPin(busyPin), _currentPayload("") {}
@@ -170,6 +175,20 @@ void EinkDisplay::syncTaskLoop(void* param) {
     while (true) {
         unsigned long now = millis();
         unsigned long elapsed = now - lastSync;
+
+        // Backend override: show an emergency alert and pause the normal payload
+        // sync while it is active. Rendered once on the transition; when the
+        // override clears, the next fetched payload differs from the sentinel and
+        // the normal screen is drawn again.
+        if (OverrideController::isCommand("eink", "show_alert")) {
+            if (self->_currentPayload != EINK_OVERRIDE_SENTINEL) {
+                Serial.println("[EinkSync] Override active -> EMERGENCY alert");
+                self->showState("EMERGENCY", "red", false, "red", 0, 0, "");
+                self->_currentPayload = EINK_OVERRIDE_SENTINEL;
+            }
+            vTaskDelay(pdMS_TO_TICKS(500));
+            continue;
+        }
 
         if (elapsed >= SYNC_INTERVAL_MS) {
             lastSync = now;

@@ -1,4 +1,5 @@
 #include "Parking.h"
+#include "OverrideController.h"
 
 // https://www.instructables.com/Non-blocking-Ultrasonic-Sensor-for-Arduino/
 Parking* Parking::_instance = NULL;
@@ -60,6 +61,24 @@ void Parking::begin() {
 void Parking::update() {
   const int8_t TOTAL_SPOTS = sizeof(_parkingSpots) / sizeof(_parkingSpots[0]);
   unsigned long currentMillis = millis();
+
+  // Backend override: the brain marks the lot full so no one enters during an
+  // emergency. Hold the FULL screen and skip our own sonar logic until cleared.
+  if (OverrideController::isCommand("parking", "full")) {
+    // Abort any in-flight measurement so its echo interrupt is not left attached
+    // while the override holds. Idempotent: after the first pass the pin is -1.
+    if (_activeEchoPin >= 0) {
+      detachInterrupt(digitalPinToInterrupt(_activeEchoPin));
+      _activeEchoPin = -1;
+    }
+    _parkingSpots[_currentSensorIndex].state = IDLE;
+
+    if (currentMillis - _lastUiRefreshMs >= _uiRefreshIntervalMs) {
+      drawOverrideFull();
+      _lastUiRefreshMs = currentMillis;
+    }
+    return;
+  }
 
   if (currentMillis - _lastSensorMeasureMs >= _sensorMeasureIntervalMs) {
     bool measurementFinished = updateDistanceMeasurement(_parkingSpots[_currentSensorIndex]);
@@ -247,6 +266,35 @@ void Parking::drawStatusScreen() {
   _display.setTextSize(3);
   _display.setCursor(95, 24);
   _display.print(availableSpots);
+
+  _display.display();
+}
+
+void Parking::drawOverrideFull() {
+  _display.clearDisplay();
+  _display.setTextColor(SSD1306_WHITE);
+
+  _display.setTextSize(1);
+  _display.setCursor(0, 0);
+  _display.println("Parking");
+
+  _display.setTextSize(2);
+  _display.setCursor(0, 26);
+  _display.println("FULL");
+
+  _display.setTextSize(1);
+  _display.setCursor(0, 52);
+  _display.println("override");
+
+  _display.drawLine(78, 0, 78, 63, SSD1306_WHITE);
+
+  _display.setTextSize(1);
+  _display.setCursor(88, 4);
+  _display.println("Free");
+
+  _display.setTextSize(3);
+  _display.setCursor(95, 24);
+  _display.print(0);
 
   _display.display();
 }

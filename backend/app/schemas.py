@@ -134,6 +134,11 @@ class OverrideCreate(BaseModel):
 
 
 class OverrideResponse(BaseModel):
+    # Field order is part of the contract: the tile firmware parses this JSON by
+    # hand (String.indexOf, no JSON library) and relies on "command" coming right
+    # after "target". Do not reorder these fields without updating the firmware
+    # parsers in embedded/city-sim/lib/OverrideController and
+    # embedded/.../OverrideClient.h.
     id: int
     target: str
     command: str

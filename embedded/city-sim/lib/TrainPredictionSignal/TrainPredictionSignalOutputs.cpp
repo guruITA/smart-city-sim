@@ -17,6 +17,21 @@ void TrainPredictionSignal::handleServo() {
   }
 }
 
+void TrainPredictionSignal::applyOverrideClose() {
+  if (_currentBarrierPos != _barrierClosedAngle) {
+    _servo.write(_barrierClosedAngle);
+    _currentBarrierPos = _barrierClosedAngle;
+  }
+
+  if (millis() - _blinkTimer >= _blinkInterval) {
+    _blinkTimer = millis();
+    _ledToggle = !_ledToggle;
+    digitalWrite(_led1Pin, _ledToggle);
+    digitalWrite(_led2Pin, !_ledToggle);
+    ledcWriteTone(_buzzerPin, _ledToggle ? 800 : 1200);
+  }
+}
+
 void TrainPredictionSignal::handleWarningLEDSAndSound() {
   if (_currentState != WAITING) {
     digitalWrite(_led1Pin, LOW);

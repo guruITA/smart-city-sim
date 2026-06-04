@@ -58,6 +58,7 @@ private:
   void handleServo();
   void handleWarningLEDSAndSound();
   void handleButton();
+  void applyOverrideClose();
 
   bool httpRequest(const String& method, const String& endpoint, const String& body, int& httpCode, String& responseBody);
   bool createTrain();

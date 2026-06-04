@@ -1,4 +1,5 @@
 #include "Streetlight.h"
+#include "OverrideController.h"
 
 StreetLight::StreetLight(int ldrPin, int relayPin, int threshold, int interval) {
   _ldrPin = ldrPin;
@@ -15,6 +16,13 @@ void StreetLight::begin() {
 }
 
 void StreetLight::update() {
+  // Backend override: force full lighting for visibility during an emergency,
+  // ignoring the LDR until the override is cleared.
+  if (OverrideController::isCommand("streetlight", "force_on")) {
+    digitalWrite(_relayPin, HIGH);
+    return;
+  }
+
   unsigned long currentMillis = millis();
 
   if (currentMillis - _previousMillis >= _interval) {

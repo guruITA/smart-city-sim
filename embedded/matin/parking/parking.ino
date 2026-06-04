@@ -13,15 +13,22 @@
 #include <Arduino.h>
 #include <WiFi.h>
 #include <HTTPClient.h>
+#include "OverrideClient.h"
 
 // --- WiFi config ---
-const char* WIFI_SSID = "YOUR_WIFI_SSID";
-const char* WIFI_PASS = "YOUR_WIFI_PASSWORD";
+// Private demo network: the Pi runs the access point, not HvA wifi (eduroam is
+// WPA-Enterprise + client isolation, so the ESP32 cannot reach the Pi over it).
+const char* WIFI_SSID = "citysim";
+const char* WIFI_PASS = "embedded2026";
 
 // --- API config ---
-// Change this to the IP of the machine running docker compose
-const char* API_BASE_URL = "http://192.168.1.100:8000";
+// The Pi is the access point at a fixed IP, backend on port 80.
+const char* API_BASE_URL = "http://192.168.4.1:80";
 const int SPOT_NUMBER = 1;
+
+// Backend override: lets the control desk force this tile, for example mark the
+// lot full during an emergency. Polls /api/v1/override/active?target=parking.
+OverrideClient parkingOverride(API_BASE_URL, "parking");
 
 // --- Ultrasonic sensor pins ---
 #define TRIG_PIN 5
@@ -143,6 +150,7 @@ void setup() {
 
   // Connect to WiFi
   connectWifi();
+  parkingOverride.begin();
 
   Serial.println("Smart Parking Sensor started");
   Serial.print("Spot number: ");
@@ -150,6 +158,15 @@ void setup() {
 }
 
 void loop() {
+  // Backend override takes priority over local sensing. When the lot is forced
+  // full, show occupied (red) and skip our own measurement until it clears.
+  parkingOverride.update();
+  if (parkingOverride.is("full")) {
+    updateLeds(true);
+    delay(100);
+    return;
+  }
+
   float distance = measureDistance();
 
   if (distance < 0) {

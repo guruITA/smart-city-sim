@@ -63,6 +63,7 @@ private:
   const char* getStateText(bool isOccupied);
   int countAvailableSpots();
   void drawStatusScreen();
+  void drawOverrideFull();
 
 public:
   Parking(uint8_t trigPin, uint8_t echo1Pin, uint8_t echo2Pin, uint8_t echo3Pin, uint8_t echo4Pin,

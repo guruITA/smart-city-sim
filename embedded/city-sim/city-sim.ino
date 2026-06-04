@@ -1,5 +1,6 @@
 #include "Config.h"
 #include "NetworkController.h"
+#include "OverrideController.h"
 #include "Streetlight.h"
 #include "TrainPredictionSignal.h"
 #include "EinkDisplay.h"
@@ -8,12 +9,12 @@
 
 #define builtin LED_BUILTIN
 
-//  WiFi details
-const char* WIFI_SSID = "";
-const char* WIFI_PASSWORD = "";
+//  WiFi details - private demo network (Pi runs the access point, not HvA wifi)
+const char* WIFI_SSID = "citysim";
+const char* WIFI_PASSWORD = "embedded2026";
 
-// backend URL
-const String API_BASE_URL = "http://:8000";
+// backend URL - Pi is the access point at a fixed IP, backend on port 80
+const String API_BASE_URL = "http://192.168.4.1:80";
 
 StreetLight lamp(
   Config::Streetlight::LDR_PIN,
@@ -81,6 +82,7 @@ void setup() {
   }
 
   NetworkController::setApiBaseUrl(API_BASE_URL);
+  OverrideController::begin();
   lamp.begin();
   eink.begin();
   eink.startSyncTask();
@@ -90,6 +92,7 @@ void setup() {
 }
 
 void loop() {
+  OverrideController::update();
   lamp.update();
   trainSignal.update();
   speedCamera.update();

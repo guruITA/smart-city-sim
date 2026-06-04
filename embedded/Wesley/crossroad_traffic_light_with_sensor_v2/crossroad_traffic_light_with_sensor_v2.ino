@@ -28,13 +28,27 @@
 // Wi-Fi and backend settings
 // ============================================================
 
-const char* API_BASE_URL = "http://145.92.8.137:80";
+// Private demo network: Pi is the access point at a fixed IP, backend on port 80.
+const char* API_BASE_URL = "http://192.168.4.1:80";
 
 // Replace this path when the real traffic-light endpoint is available.
 const char* TRAFFIC_ENDPOINT_PATH = "/api/v1/traffic/update";
 
 const unsigned long WIFI_CONNECT_TIMEOUT = 20000;
 const unsigned long HTTP_TIMEOUT = 5000;
+
+// ============================================================
+// Backend override (emergency corridor)
+// ============================================================
+
+// The backend can overrule this hub, for example forcing all traffic lights to
+// red for an emergency vehicle. We poll the active overrides for our target and
+// obey the forced command until the backend clears it.
+const char* OVERRIDE_ENDPOINT_PATH = "/api/v1/override/active?target=traffic";
+const unsigned long OVERRIDE_POLL_INTERVAL = 2000;
+
+unsigned long lastOverridePoll = 0;
+bool overrideActive = false;
 
 // ============================================================
 // Vehicle sensor settings
@@ -601,6 +615,72 @@ uint8_t getNextPhase(uint8_t phase) {
 }
 
 // ============================================================
+// Backend override functions
+// ============================================================
+
+String getOverrideUrl() {
+  return String(API_BASE_URL) + OVERRIDE_ENDPOINT_PATH;
+}
+
+void pollTrafficOverride(unsigned long now) {
+  if (now - lastOverridePoll < OVERRIDE_POLL_INTERVAL) {
+    return;
+  }
+  lastOverridePoll = now;
+
+  if (WiFi.status() != WL_CONNECTED) {
+    return;
+  }
+
+  HTTPClient http;
+  http.setTimeout(HTTP_TIMEOUT);
+
+  if (!http.begin(getOverrideUrl())) {
+    return;
+  }
+
+  int httpResponseCode = http.GET();
+
+  if (httpResponseCode == 200) {
+    String body = http.getString();
+
+    // The backend returns the active traffic overrides newest first, so read the
+    // first command value and obey only when the newest one is all_red. Reading
+    // the newest (not just any "all_red" in the array) avoids obeying a stale
+    // override that a later command already replaced.
+    bool nowActive = false;
+    int c = body.indexOf("\"command\"");
+    if (c >= 0) {
+      int colon = body.indexOf(':', c);
+      int q1 = (colon >= 0) ? body.indexOf('"', colon + 1) : -1;
+      int q2 = (q1 >= 0) ? body.indexOf('"', q1 + 1) : -1;
+      if (q2 > q1 && q1 >= 0) {
+        nowActive = (body.substring(q1 + 1, q2) == "all_red");
+      }
+    }
+
+    if (nowActive != overrideActive) {
+      overrideActive = nowActive;
+
+      if (overrideActive) {
+        allRed();
+        Serial.println("[OVERRIDE] Backend forced ALL_RED for an emergency.");
+      } else {
+        currentPhase = PHASE_ALL_RED_1;
+        lastPhaseChange = millis();
+        applyPhase(currentPhase);
+        Serial.println("[OVERRIDE] Released, resuming normal cycle.");
+      }
+    }
+  } else if (httpResponseCode > 0) {
+    Serial.print("[OVERRIDE] Poll returned HTTP ");
+    Serial.println(httpResponseCode);
+  }
+
+  http.end();
+}
+
+// ============================================================
 // Setup
 // ============================================================
 
@@ -645,6 +725,13 @@ void loop() {
 
   updateSensor(now);
   printSensorStatus(now);
+  pollTrafficOverride(now);
+
+  // While the backend override is active the lights are held all-red, so do not
+  // advance the phase state machine until it is cleared.
+  if (overrideActive) {
+    return;
+  }
 
   if (now - lastPhaseChange >= getPhaseDuration(currentPhase)) {
     currentPhase = getNextPhase(currentPhase);

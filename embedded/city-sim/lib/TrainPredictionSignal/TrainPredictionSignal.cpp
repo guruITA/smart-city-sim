@@ -1,5 +1,6 @@
 #include "TrainPredictionSignal.h"
 #include "NetworkController.h"
+#include "OverrideController.h"
 #include <WiFi.h>
 #include <HTTPClient.h>
 
@@ -31,6 +32,14 @@ void TrainPredictionSignal::begin() {
 }
 
 void TrainPredictionSignal::update() {
+  // Backend override: lock the crossing to its safe state (barrier down, lights
+  // and buzzer warning) for an emergency, ignoring the button and train logic
+  // until the override is cleared.
+  if (OverrideController::isCommand("barrier", "close")) {
+    applyOverrideClose();
+    return;
+  }
+
   handleButton();
   handleServo();
   handleWarningLEDSAndSound();
