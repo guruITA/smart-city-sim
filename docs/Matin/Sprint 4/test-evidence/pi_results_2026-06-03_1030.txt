@@ -1,0 +1,71 @@
+City Sim Sprint 4 test run
+date:    Wed  3 Jun 10:30:31 BST 2026
+url:     http://localhost:8080
+results: tests/pi_results_2026-06-03_1030.txt
+
+========== LG3 override flow (Surprise feature Realise) ==========
+1. emergency set        -> status 200, command all_red [PASS]
+2. tile polls active    -> status 200, 1 active [PASS]
+3. clear override       -> status 200, active False [PASS]
+4. no active override    -> status 200, 0 active [PASS]
+
+result: ALL PASS
+
+========== LG1 load test (Clustering Realise) ==========
+=== LOAD test: http://localhost:8080/health for 30s, concurrency 20 ===
+requests:        5026
+errors:          4712 (93.75%)
+throughput:      167.5 req/s
+latency avg:     104.4 ms
+latency p95:     214.2 ms
+latency max:     1122.2 ms
+
+========== LG1 recovery / failover (Clustering Realise) ==========
+[lg1] killing replica: citysim_s4-api-1
+citysim_s4-api-1
+=== RECOVERY test: http://localhost:8080/health ===
+baseline: healthy
+killing replica: citysim_s4-api-1
+recovered after: 0.02 s
+target (<=5s):   PASS
+
+========== LG1 soak test SKIPPED (set SOAK_SECONDS=1800 to run the real soak) ==========
+
+========== LG2 backup (Database backup Realise) ==========
+[backup] dumping citysim from citysim-db -> ./backups/citysim_2026-06-03_1031.dump
+[backup] wrote 36K to ./backups/citysim_2026-06-03_1031.dump
+[backup] WARNING: OFFSITE_DIR not set, dump exists only on the Pi
+[backup] pruned local dumps older than 7 days
+[backup] done
+
+========== LG2 source row counts (live citysim) ==========
+      table      | count 
+-----------------+-------
+ sensor_readings |   183
+ parking_spots   |     4
+(2 rows)
+
+
+========== LG2 restore-verify into citysim_verify (does NOT touch live data) ==========
+[lg2] restoring newest dump: ./backups/citysim_2026-06-03_1031.dump
+[restore] target database: citysim_verify
+[restore] creating database citysim_verify (ok if it already exists)
+[restore] loading ./backups/citysim_2026-06-03_1031.dump into citysim_verify
+[restore] verifying row counts:
+      table      | count 
+-----------------+-------
+ sensor_readings |   183
+ parking_spots   |     4
+(2 rows)
+
+[restore] done. Check the counts above against the source database.
+[lg2] dropped throwaway citysim_verify
+
+========== LG2 backup freshness check (Database backup Realise) ==========
+[check] newest backup: ./backups/citysim_2026-06-03_1031.dump
+[check] age: 0h (max 26h), size: 32KB (min 1KB)
+[check] OK: backup is fresh and non-empty
+
+========== DONE ==========
+All output saved to tests/pi_results_2026-06-03_1030.txt
+Copy the numbers above into the three Realise docs (Sprint 4).

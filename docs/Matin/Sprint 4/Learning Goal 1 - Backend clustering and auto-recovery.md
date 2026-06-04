@@ -34,6 +34,18 @@ Architecture for health checks, restart policies, replica scaling, and failover 
 
 The built Docker Compose setup with health checks, replicas, and recovery verification.
 
+### Autoscaling follow-up (recommendation #5)
+
+The Realise closed with a recommendation: the Compose cluster scales by hand (`--scale`), so for **automatic** scaling on load, move to Kubernetes (K3s) with a HorizontalPodAutoscaler. We took that recommendation and built it as an extra Design and Realise, so the same learning goal also shows the automatic-scaling path, not only the recommendation.
+
+**Design document** - [Design - Kubernetes autoscaling architecture](Design%20-%20Kubernetes%20autoscaling%20architecture.md)
+
+How to scale the stateless API automatically while keeping the one shared database single, so the shared data cannot split brain. Includes the safe, parallel rollout next to the live backend and the path to more nodes.
+
+**Realise document** - [Realise - Kubernetes autoscaling implementation](Realise%20-%20Kubernetes%20autoscaling%20implementation.md)
+
+The built K3s manifests (`backend/k8s/`) and the autoscaling test. The build is complete and validated; the measured Pi numbers are filled in after a run on the Pi.
+
 ## A - Action
 
 We worked through the four outcomes in order. In the **Analysis** we researched seven failure modes of the backend and found the biggest gap: a hung (not crashed) process, which `restart: always` cannot catch because the container is still "up". The api container also had no Docker healthcheck. In the **Advise** we weighed the options and chose native tooling: a Docker healthcheck on the existing `/health` endpoint, NGINX as reverse proxy and load balancer in front of two API replicas, plus memory limits and SQLAlchemy connection settings for the smaller failures. In the **Design** we translated every requirement into one concrete architecture (NGINX on port 80, two replicas, one shared database) and a target `docker-compose.yml`.
@@ -44,13 +56,13 @@ In the **Realise** we built that setup next to the live one, so the running city
 - `backend/nginx.conf` (reverse proxy, `proxy_next_upstream` failover, `limit_req` rate limiting)
 - `backend/tests/resilience/resilience_test.py` (standard library only: load, soak, and recovery modes)
 
-Building it forced two honest corrections versus the Design: `python:3.11-slim` has no `curl`, so the healthcheck uses a small Python `urllib` call instead; and a fixed `container_name` blocks replicas, so we dropped it. We also proposed adding `pool_pre_ping=True` and `pool_recycle=1800` to `database.py`, but left it unapplied because the database engine is shared and that change needs the team's agreement first.
+Building and deploying it forced three honest corrections versus the Design: `python:3.11-slim` has no `curl`, so the healthcheck uses a small Python `urllib` call instead; a fixed `container_name` blocks replicas, so we dropped it; and the live failover sometimes waited out the full connect timeout on a dead replica, so we lowered `proxy_connect_timeout` to 1 second with a retry. We also added `pool_pre_ping=True` and `pool_recycle=1800` to `database.py`. That change touches the shared database engine, so we held it until the team agreed; with the team present at the live deploy that condition was met and it is now applied.
 
 ## R - Result
 
 The cluster setup is built and starts with `docker compose -f docker-compose.cluster.yml up --build --scale api=2`. NGINX owns port 80, balances over the replicas, and routes around an unhealthy one, so a single hung replica no longer takes the city down. The Analysis, Advise, and Design deliverables are finished and submitted in Portflow.
 
-The measured recovery time, load, and soak results are not in yet: I do not have access to the Pi outside school, so the Realise document keeps explicit `[to be filled after Pi test]` placeholders rather than reporting an estimate as a measurement. The plan is to run `resilience_test.py` on the Pi, confirm recovery stays inside the 5 second target Mats asked for, and paste the real numbers into the Realise before submitting it. The Reflection and Transfer below are written after the sprint review.
+The measured results are now in, and the cluster is live. On 2026-06-03 I ran the resilience tests on the Pi and then, with the team, deployed the cluster as the real backend on port 80. The deploy reused the existing database volume so the live data was preserved (183 readings and 4 parking spots before and after). The cluster served concurrent load with zero errors and a 5 minute soak showed no memory leak (replica RSS flat at ~79 MB). Failover needed one honest fix the live test forced: the first runs were inconsistent (sometimes ~4 seconds of errors) because NGINX waited out the full connect timeout on a dead replica, so I lowered `proxy_connect_timeout` to 1 second with a retry. After that, three replica kills in a row gave zero failed requests. A genuinely crashed process is also auto-restarted by the restart policy in about a second. Both recovery paths are inside the 5 second target Mats asked for. The numbers are in the Realise document. The Reflection and Transfer below are written after the sprint review.
 
 ## R - Reflection
 

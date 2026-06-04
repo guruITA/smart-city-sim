@@ -1,0 +1,108 @@
+# PostgreSQL: the single stateful core of the backend.
+#
+# This is a StatefulSet with replicas: 1 ON PURPOSE. The database is the one piece
+# that must NEVER be autoscaled or run as two writers. Two postgres pods writing to
+# the same data, or two primaries after a network split, is exactly the "split
+# brain" that corrupts a shared backend. So:
+#   - replicas is fixed at 1
+#   - there is NO HorizontalPodAutoscaler pointing at this object
+#   - the data lives on its own PersistentVolumeClaim (ReadWriteOnce), so only one
+#     node can mount it at a time
+# Database availability is handled by backups (Learning Goal 2), not by cloning the
+# database. Replicated database storage (Longhorn) or streaming replication is noted
+# as future work in the Design document, deliberately out of scope here.
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+  namespace: citysim
+  labels:
+    app: postgres
+spec:
+  # Headless service: gives the single postgres pod a stable DNS name
+  # (postgres.citysim.svc.cluster.local) that the api pods connect to.
+  clusterIP: None
+  selector:
+    app: postgres
+  ports:
+    - name: postgres
+      port: 5432
+      targetPort: 5432
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres
+  namespace: citysim
+  labels:
+    app: postgres
+spec:
+  serviceName: postgres
+  replicas: 1                      # intentional: never scale the database
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      # Optional explicit pinning to one node. With the default local-path storage
+      # the data is node-local so the pod already stays put. Uncomment and set a
+      # real node name if you want to force the database onto a specific machine.
+      # nodeSelector:
+      #   kubernetes.io/hostname: pi-server
+      containers:
+        - name: postgres
+          image: postgres:16-alpine
+          ports:
+            - containerPort: 5432
+          envFrom:
+            - configMapRef:
+                name: citysim-config
+          env:
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: citysim-secret
+                  key: POSTGRES_PASSWORD
+            # Keep the data in a subdirectory so an init on a non-empty volume
+            # mount cannot collide with mount metadata.
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
+          volumeMounts:
+            - name: pgdata
+              mountPath: /var/lib/postgresql/data
+          readinessProbe:
+            exec:
+              command: ["pg_isready", "-U", "citysim"]
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 5
+          livenessProbe:
+            exec:
+              command: ["pg_isready", "-U", "citysim"]
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 5
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+  volumeClaimTemplates:
+    - metadata:
+        name: pgdata
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        # local-path is the storage class that ships with K3s. For storage that
+        # survives a node failure, install Longhorn and set storageClassName:
+        # longhorn here (see README, multi-node section).
+        storageClassName: local-path
+        resources:
+          requests:
+            storage: 1Gi
