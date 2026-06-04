@@ -86,15 +86,10 @@ For future development or handover, HTTPS/TLS should preferably be added through
 
 The recommended future architecture is:
 
-```text
-ESP32 devices / browser
-        ↓ HTTPS
-NGINX reverse proxy
-        ↓ internal Docker network
-FastAPI API replicas
-        ↓ internal Docker network
-PostgreSQL database
-```
+flowchart TD
+    A[ESP32 devices / Browser] -->|HTTPS| B[NGINX reverse proxy]
+    B -->|Internal Docker network| C[FastAPI API replicas]
+    C -->|Internal Docker network| D[PostgreSQL database]
 
 In this structure, NGINX handles the secure external connection, while the FastAPI services continue to run internally. This separates certificate management from the application code and fits better with the team’s clustered backend design. (NGINX Reverse Proxy | NGINX Documentation, 2026)
 
