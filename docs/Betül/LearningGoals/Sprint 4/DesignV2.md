@@ -96,3 +96,85 @@ For the local prototype, HTTPS/TLS will be tested directly with Uvicorn SSL opti
 The prototype will use a self-signed certificate, a private key and a separate HTTPS test service. A self-signed certificate is suitable for local testing, but it is not a final production certificate because it is not trusted by browsers or devices by default (Kirkland, 2026). By running the HTTPS test service separately, the existing HTTP backend does not need to be replaced during testing.
 
 A reverse proxy such as NGINX could be considered for a later shared deployment, because it separates certificate handling from the FastAPI application (NGINX, 2026). However, this design focuses on the local HTTPS/TLS prototype for the Realisation phase. The reverse proxy option is only mentioned as a possible future improvement and is further evaluated in the Advise document.
+
+## 6. Implementation Design for the Realisation Phase
+
+This chapter describes the planned implementation design. It does not describe what was already done; that belongs in the Realisation document. The purpose of this chapter is to make clear which components must be prepared, what configuration changes are needed, and how the design should be tested.
+
+### 6.1 Direct HTTPS/TLS Option
+
+The local HTTPS/TLS prototype needs the following components:
+
+| Component | Purpose |
+| --- | --- |
+| FastAPI backend | The backend application that will respond to requests. |
+| Uvicorn SSL options | Used to start the FastAPI backend with a certificate and private key. |
+| Self-signed certificate | Used to test HTTPS/TLS locally without an official certificate authority. |
+| Private key | Required together with the certificate to enable HTTPS/TLS. |
+| Separate HTTPS test service | Allows HTTPS/TLS to be tested without replacing the normal HTTP backend. |
+| `.gitignore` rule | Prevents certificate and key files from being committed to Git. |
+| Health endpoint | Used to test whether the backend responds correctly over HTTPS. |
+
+### 6.2 Planned File and Configuration Changes
+The Realisation phase should add a local certificate folder for the HTTPS/TLS test:
+
+```text
+certs/
+  cert.pem
+  key.pem
+```
+
+The private key and certificate files should not be committed to Git. Therefore, the following rule should be added to `.gitignore`:
+
+```gitignore
+certs/*.pem
+```
+
+A separate HTTPS test service should be added to the local Docker Compose test setup. This service should start the FastAPI backend with Uvicorn SSL options:
+
+```bash
+--ssl-keyfile /certs/key.pem
+--ssl-certfile /certs/cert.pem
+```
+
+The HTTPS test service should use a separate port, for example:
+
+```text
+https://127.0.0.1:8443
+```
+
+The existing HTTP backend should remain available during the test. This is important because the HTTPS/TLS prototype should not replace or break the current backend flow.
+
+### 6.3 Test Design
+
+The HTTPS/TLS design should be tested with the existing health endpoint. The main test is:
+
+```powershell
+curl.exe -k https://127.0.0.1:8443/health
+```
+
+The expected response is:
+
+```json
+{"status":"ok"}
+```
+
+The -k option is needed because the prototype uses a self-signed certificate. The browser may also show a certificate warning. This is expected during local testing because the certificate is not signed by a trusted certificate authority (Kirkland, 2026).
+
+The original HTTP backend should also be tested to confirm that it still works:
+
+```powershell
+curl.exe http://localhost:80/health
+```
+
+If both tests succeed, the Realisation phase can show that HTTPS/TLS was added as a safe local prototype and that the existing backend was not replaced or broken.
+
+## 7. Supporting Reliability Considerations
+
+The main focus of this design is HTTPS/TLS. However, reliability still matters because secure communication is only useful if the backend remains available and maintainable.
+
+The existing health endpoint should be used to check whether the backend is reachable. Persistent storage should be verified so database data is not lost when containers are recreated. Restart behaviour should be checked or recommended so backend services can recover after simple failures or reboots.
+
+Secrets should also be managed safely. Database passwords, API tokens, certificate files and private keys should not be hardcoded or committed to Git. Real values should be stored locally or in deployment-specific environment files, while safe templates such as `.env.example` can be shared in the repository.
+
+These reliability points support the HTTPS/TLS design, but they are not the main implementation focus of this document.
