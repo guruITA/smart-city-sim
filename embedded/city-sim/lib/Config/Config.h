@@ -14,7 +14,7 @@ namespace Config {
         constexpr const char* WIFI_PASSWORD = "";
 
         /** @brief Base URL for the API endpoint. */
-        constexpr const char* API_BASE_URL = "";
+        constexpr const char* API_BASE_URL = "http://145.92.8.137";
     }
 
     /** @brief Configuration values for the street light. */
