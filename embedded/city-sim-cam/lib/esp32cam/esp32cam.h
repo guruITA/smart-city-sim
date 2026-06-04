@@ -23,11 +23,11 @@
 
 #define FLASH_LED_PIN 4
 
-static constexpr const char* WIFI_SSID = "G";
-static constexpr const char* WIFI_PASSWORD = "Guru2002";
+static constexpr const char* WIFI_SSID = "";
+static constexpr const char* WIFI_PASSWORD = "";
 
 static constexpr const char* BACKEND_CAMERA_REGISTER_URL =
-    "http://10.255.103.19/api/v1/speedcamera/camera/register";
+    "http://145.92.8.137/api/v1/speedcamera/camera/register";
 
 static constexpr const char* CAMERA_ID = "esp32cam-1";
 
