@@ -113,7 +113,17 @@ The commands are in `backend/k8s/README.md` and `backend/tests/autoscaling/READM
 
 ## Chapter 4 - Test results
 
-These run on the Raspberry Pi. They are filled in after the Pi run.
+### Deployment constraint: the demo Pi has too little memory for K3s
+
+When we went to run the test on the live Raspberry Pi (2026-06-04) we hit a real hardware limit and recorded it as a finding, because it shapes the result.
+
+- The demo Pi has about **906 MB of total RAM**. During demo preparation the live Docker stack (PostgreSQL + two API replicas + NGINX) already used about **440 MB**, leaving roughly **467 MB free**.
+- A K3s server needs about **512 MB on its own**, before any workload, and our stack then adds a PostgreSQL pod and two to five API pods on top.
+- Running K3s next to the live Docker cluster would exceed the Pi's memory and trigger the kernel OOM killer, which could kill the live backend the whole team depends on for the demo.
+
+So we deliberately did **not** install K3s on the demo Pi. This is itself a result that matches the Design: autoscaling needs spare capacity to scale into, and a single 1 GB Pi that is already serving the city has none. The production path is therefore the multi-node setup the Design describes (several nodes with more RAM), not one small Pi. The manifests, the HPA, and the load test are built and validated; the measured numbers below wait on a node with adequate memory (about 2 GB or more), for example a laptop VM or a larger Pi, run next to nothing else.
+
+The tables below stay open until that run.
 
 **Autoscaling result** (load Job, watch the HPA):
 
@@ -157,7 +167,7 @@ The setup: with the stack running, one team member starts the load and another d
 
 ## Conclusion
 
-The autoscaling stack is built, validated, and ready to run on the Pi. It implements the Design: the stateless API is a Deployment scaled by a HorizontalPodAutoscaler between two and five pods behind one Service, and the database is a single StatefulSet pod with its own volume that is never scaled, so the shared data keeps one source of truth and cannot split brain. Building it forced three honest points over the Design: the image is imported into containerd because K3s does not read Docker's store, the API is tested on a NodePort because the live backend holds port 80, and the Ingress is hostless because the tiles use the IP. The work runs entirely next to the live backend, so the team is never at risk until a proven cutover with a backup and a rollback. The measured autoscaling, recovery, and migration numbers are added after the Pi run; once they are in, this closes Learning Goal 1 recommendation #5 with a working, tested automatic-scaling backend.
+The autoscaling stack is built, validated, and ready to run on the Pi. It implements the Design: the stateless API is a Deployment scaled by a HorizontalPodAutoscaler between two and five pods behind one Service, and the database is a single StatefulSet pod with its own volume that is never scaled, so the shared data keeps one source of truth and cannot split brain. Building it forced three honest points over the Design: the image is imported into containerd because K3s does not read Docker's store, the API is tested on a NodePort because the live backend holds port 80, and the Ingress is hostless because the tiles use the IP. The work runs entirely next to the live backend, so the team is never at risk until a proven cutover with a backup and a rollback. Going to the live Pi surfaced a real constraint (Chapter 4): the 1 GB demo Pi has no spare memory to run K3s next to the city, so the autoscaling numbers wait on a node with about 2 GB or more. The build itself is finished and validated; once those numbers are measured on adequate hardware, this closes Learning Goal 1 recommendation #5 with a working, tested automatic-scaling backend.
 
 ---
 
