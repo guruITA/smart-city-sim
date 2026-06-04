@@ -621,13 +621,13 @@ SparkFun Electronics. (n.d.-b). *How to solder: Through-hole soldering*. SparkFu
 
 Texas Instruments. (2004). *ULN2803A Darlington transistor arrays* (Rev. C) [Data sheet]. https://cdn.sparkfun.com/assets/f/0/6/6/5/uln2803a.pdf
 
-Wesley. (2026a). *Realisation - Breadboard realisation of the four-way traffic-light setup* [Realisation deliverable].
+Wesley. (2026a). *Realisation - Breadboard realisation of the four-way traffic-light setup* [Realisation deliverable]. https://gitlab.fdmci.hva.nl/studio/smart-cities/projecten/2025-2026-semester-2/city-sim-learning-group/city-the-embedded-alliance-city-sim-learning-group/-/blob/4dc5ece3b97db8e8fc1445ebd89904e7971e8750/docs/Wesley/learning%20outcomes/sprint%202/Realisation%20-%20Breadboard%20Realisation%20of%20the%20Four-Way%20Traffic-Light%20Setup.md
 
-Wesley. (2026b). *Analysis - Professionalising the traffic-light tile by transferring the breadboard circuit to perfboard* [Analysis deliverable].
+Wesley. (2026b). *Analysis - Professionalising the traffic-light tile by transferring the breadboard circuit to perfboard* [Analysis deliverable]. https://gitlab.fdmci.hva.nl/studio/smart-cities/projecten/2025-2026-semester-2/city-sim-learning-group/city-the-embedded-alliance-city-sim-learning-group/-/blob/4dc5ece3b97db8e8fc1445ebd89904e7971e8750/docs/Wesley/learning%20outcomes/sprint%204/Analysis%20-%20Professionalising%20the%20traffic-light%20tile%20by%20transferring%20the%20breadboard%20circuit%20to%20perfboard%20v2.md
 
-Wesley. (2026c). *Design - Professionalising the traffic-light tile by transferring the breadboard circuit to perfboard* [Design deliverable].
+Wesley. (2026c). *Design - Professionalising the traffic-light tile by transferring the breadboard circuit to perfboard* [Design deliverable]. https://gitlab.fdmci.hva.nl/studio/smart-cities/projecten/2025-2026-semester-2/city-sim-learning-group/city-the-embedded-alliance-city-sim-learning-group/-/blob/4dc5ece3b97db8e8fc1445ebd89904e7971e8750/docs/Wesley/learning%20outcomes/sprint%204/Design%20-%20Professionalising%20the%20traffic-light%20tile%20by%20transferring%20the%20breadboard%20circuit%20to%20perfboard%20v2.md
 
-Wesley. (2026d). *Realisation - Developing and using tests during realisation for MCP23017 and ULN2803 integration* [Realisation deliverable].
+Wesley. (2026d). *Realisation - Developing and using tests during realisation for MCP23017 and ULN2803 integration* [Realisation deliverable]. https://gitlab.fdmci.hva.nl/studio/smart-cities/projecten/2025-2026-semester-2/city-sim-learning-group/city-the-embedded-alliance-city-sim-learning-group/-/blob/4dc5ece3b97db8e8fc1445ebd89904e7971e8750/docs/Wesley/learning%20outcomes/sprint%202/Realisation%20-%20Developing%20and%20Using%20Tests%20During%20Realisation%20for%20MCP23017%20and%20ULN2803%20Integration%20v2.md
 
 ---
 

@@ -4,9 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>City Sim Dashboard</title>
+    <title>City Sim // Stedelijk Overzicht</title>
+    <link rel="icon" href="data:,">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=DM+Mono:wght@400;500&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@500;600;700;800;900&family=Martian+Mono:wght@300;400;500;600&display=swap"
         rel="stylesheet">
     <style>
         * {
@@ -16,90 +20,102 @@
         }
 
         :root {
-            --bg: #0a0c10;
-            --surface: #13161d;
-            --border: #252830;
-            --text: #e2e4e9;
-            --muted: #6b7080;
-            --green: #22c55e;
-            --green-dim: #16331d;
-            --red: #ef4444;
-            --red-dim: #3b1212;
-            --amber: #f59e0b;
-            --amber-dim: #33250b;
-            --blue: #3b82f6;
-            --blue-dim: #0f1d3d;
-            --purple: #a855f7;
-            --purple-dim: #1f0f33;
-            --orange: #f97316;
-            --orange-dim: #331a06;
+            /* ===== DE STIJL / NEO-PLASTIC PALETTE ===== */
+            --ink: #14110C;
+            --ink-soft: #2A241A;
+            --paper: #EFEADD;
+            --paper-2: #F6F2E8;
+            --paper-3: #E6DFCD;
+            --paper-line: #D8CFB8;
+
+            /* Mondrian primaries + civic extensions */
+            --red: #D7263D;
+            --blue: #1B3A8B;
+            --yellow: #F2B705;
+            --green: #1F7A53;
+            --orange: #E8590C;
+
+            /* per-hub accents */
+            --traffic: #D7263D;
+            --parking: #F2B705;
+            --streetlight: #E8590C;
+            --railroad: #1B3A8B;
+            --speedcam: #14110C;
+            --eink: #1F7A53;
+
+            /* legacy aliases used by carried-over render JS (DO NOT remove) */
+            --bg-2: #F6F2E8;
+            --muted: #6B6457;
+            --text: #14110C;
+            --text-dim: #6B6457;
+            --hair: #D8CFB8;
+            --hair-strong: #14110C;
+            --amber: #E8590C;
+            --purple: #14110C;
+            --surface: #F6F2E8;
+            --border: #D8CFB8;
+            --rule: 4px;
+        }
+
+        html {
+            scroll-behavior: smooth;
         }
 
         body {
-            font-family: 'DM Sans', sans-serif;
-            background: var(--bg);
-            color: var(--text);
+            font-family: 'Martian Mono', 'Big Shoulders Display', monospace;
+            color: var(--ink);
             min-height: 100vh;
+            background-color: var(--paper);
+            /* layered atmosphere: paper grain + faint coordinate grid + warm registration glows */
+            background-image:
+                url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E"),
+                radial-gradient(720px 480px at 92% -6%, rgba(242, 183, 5, 0.10), transparent 60%),
+                radial-gradient(620px 440px at 2% 102%, rgba(27, 58, 139, 0.07), transparent 58%),
+                linear-gradient(180deg, var(--paper-2), var(--paper) 55%);
+            background-attachment: fixed, fixed, fixed, fixed;
+            position: relative;
+            -webkit-font-smoothing: antialiased;
         }
 
-        .topbar {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 16px 32px;
-            border-bottom: 1px solid var(--border);
-            background: var(--surface);
+        /* faint engineering / coordinate grid */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+            background-image:
+                linear-gradient(rgba(20, 17, 12, 0.045) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(20, 17, 12, 0.045) 1px, transparent 1px),
+                linear-gradient(rgba(20, 17, 12, 0.022) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(20, 17, 12, 0.022) 1px, transparent 1px);
+            background-size: 96px 96px, 96px 96px, 24px 24px, 24px 24px;
+            mask-image: radial-gradient(circle at 50% 12%, #000 0%, transparent 88%);
+            -webkit-mask-image: radial-gradient(circle at 50% 12%, #000 0%, transparent 88%);
         }
 
-        .topbar-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
+        /* city-wide red wash, toggled via .city-alert on body */
+        body::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 80;
+            opacity: 0;
+            background: linear-gradient(180deg, transparent, rgba(215, 38, 61, 0.16), transparent);
+            transition: opacity 0.4s ease;
         }
 
-        .topbar-logo {
-            width: 32px;
-            height: 32px;
-            background: linear-gradient(135deg, var(--blue), var(--purple));
-            border-radius: 8px;
+        body.city-alert::after {
+            opacity: 1;
+            animation: scan 2.4s ease-in-out infinite;
         }
 
-        .topbar-title {
-            font-size: 16px;
-            font-weight: 700;
-            letter-spacing: -0.3px;
-        }
-
-        .topbar-subtitle {
-            font-size: 12px;
-            color: var(--muted);
-            font-family: 'DM Mono', monospace;
-        }
-
-        .topbar-right {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .conn-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--green);
-            animation: pulse 2s ease infinite;
-        }
-
-        .conn-dot.off {
-            background: var(--red);
-            animation: none;
-        }
-
-        @keyframes pulse {
+        @keyframes scan {
 
             0%,
             100% {
-                opacity: 1;
+                opacity: 0.06;
             }
 
             50% {
@@ -107,147 +123,818 @@
             }
         }
 
-        .conn-label {
-            font-size: 12px;
-            font-family: 'DM Mono', monospace;
-            color: var(--muted);
+        .shell {
+            position: relative;
+            z-index: 1;
+            max-width: 1480px;
+            margin: 0 auto;
+            padding: 0 26px 80px;
         }
 
-        .main {
+        /* coordinate watermark fixed to the page edge */
+        .geo-mark {
+            position: fixed;
+            right: 14px;
+            bottom: 14px;
+            z-index: 2;
+            font-family: 'Martian Mono', monospace;
+            font-size: 10px;
+            font-weight: 400;
+            letter-spacing: 2px;
+            color: rgba(20, 17, 12, 0.34);
+            text-transform: uppercase;
+            writing-mode: vertical-rl;
+            pointer-events: none;
+            text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+        }
+
+        /* ===== MASTHEAD (transit board) ===== */
+        .masthead {
+            position: relative;
+            border: var(--rule) solid var(--ink);
+            border-bottom-width: 5px;
+            background: var(--paper-2);
+            margin: 22px 0 0;
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1px;
-            background: var(--border);
-            min-height: calc(100vh - 57px);
+            grid-template-columns: auto 1fr auto;
+            align-items: stretch;
+            overflow: hidden;
+            opacity: 0;
+            animation: snapDown 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
-        .tile-panel {
-            background: var(--bg);
-            padding: 28px;
+        /* yellow registration block, left */
+        .mh-block {
+            background: var(--yellow);
+            border-right: var(--rule) solid var(--ink);
+            display: grid;
+            place-items: center;
+            padding: 0 22px;
+            min-width: 92px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mh-block svg {
+            width: 38px;
+            height: 38px;
+            color: var(--ink);
+            position: relative;
+            z-index: 1;
+        }
+
+        .mh-block::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: var(--ink);
+            transform: translateX(-101%);
+            animation: wipeRight 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.45s forwards;
+        }
+
+        .mh-title {
+            padding: 16px 24px 14px;
             display: flex;
             flex-direction: column;
-        }
-
-        #einkPanel {
-            grid-column: span 2;
-        }
-
-        .tile-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 24px;
-        }
-
-        .tile-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
             justify-content: center;
-            font-size: 20px;
+            min-width: 0;
         }
 
-        .tile-icon.parking {
-            background: var(--blue-dim);
-        }
-
-        .tile-icon.streetlight {
-            background: var(--amber-dim);
-        }
-
-        .tile-icon.traffic {
-            background: var(--green-dim);
-        }
-
-        .tile-icon.railroad {
-            background: var(--red-dim);
-        }
-
-        .tile-icon.speedcam {
-            background: var(--orange-dim);
-        }
-
-        .tile-icon.eink {
-            background: var(--purple-dim);
-        }
-
-        .tile-info h2 {
-            font-size: 16px;
-            font-weight: 700;
-            letter-spacing: -0.3px;
-        }
-
-        .tile-info .owner {
-            font-size: 12px;
-            color: var(--muted);
-            font-family: 'DM Mono', monospace;
-        }
-
-        .tile-stats {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-
-        .mini-stat {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 12px 16px;
-            flex: 1;
-            text-align: center;
-        }
-
-        .mini-stat .val {
-            font-size: 24px;
-            font-weight: 700;
-            font-family: 'DM Mono', monospace;
-        }
-
-        .mini-stat .lbl {
-            font-size: 11px;
-            color: var(--muted);
-            margin-top: 2px;
+        .mh-kicker {
+            font-family: 'Martian Mono', monospace;
+            font-size: 10px;
+            font-weight: 500;
+            letter-spacing: 4px;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            color: var(--ink-soft);
+            margin-bottom: 4px;
         }
 
+        .mh-name {
+            font-family: 'Big Shoulders Display', sans-serif;
+            font-weight: 800;
+            font-size: clamp(30px, 5.4vw, 62px);
+            line-height: 0.86;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            color: var(--ink);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .mh-name .sep {
+            color: var(--red);
+            margin: 0 2px;
+        }
+
+        .mh-sub {
+            font-family: 'Martian Mono', monospace;
+            font-size: 10px;
+            font-weight: 400;
+            letter-spacing: 2.6px;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-top: 7px;
+        }
+
+        /* status column, right */
+        .mh-status {
+            border-left: var(--rule) solid var(--ink);
+            display: grid;
+            grid-template-rows: 1fr 1fr;
+            min-width: 232px;
+        }
+
+        .mh-conn {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 0 18px;
+            background: var(--paper-3);
+            border-bottom: var(--rule) solid var(--ink);
+            font-family: 'Martian Mono', monospace;
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 1.4px;
+            text-transform: uppercase;
+            color: var(--ink);
+        }
+
+        .conn-dot {
+            width: 12px;
+            height: 12px;
+            background: var(--green);
+            flex-shrink: 0;
+            box-shadow: 0 0 0 2px var(--ink);
+            animation: blink 1.8s steps(1) infinite;
+        }
+
+        .conn-dot.off {
+            background: var(--red);
+            animation: none;
+        }
+
+        @keyframes blink {
+
+            0%,
+            60%,
+            100% {
+                opacity: 1;
+            }
+
+            70%,
+            90% {
+                opacity: 0.25;
+            }
+        }
+
+        .conn-label {
+            min-width: 0;
+        }
+
+        .mh-city {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0 18px;
+            background: var(--green);
+            color: var(--paper-2);
+            font-family: 'Martian Mono', monospace;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 1.4px;
+            text-transform: uppercase;
+            transition: background 0.35s ease, color 0.35s ease;
+        }
+
+        .mh-city .stat-ico {
+            width: 15px;
+            height: 15px;
+            flex-shrink: 0;
+        }
+
+        body.city-alert .mh-city {
+            background: var(--red);
+            color: var(--paper-2);
+            animation: cityPulse 1.2s ease-in-out infinite;
+        }
+
+        @keyframes cityPulse {
+
+            0%,
+            100% {
+                background: var(--red);
+            }
+
+            50% {
+                background: #9b1023;
+            }
+        }
+
+        /* ===== THE NEO-PLASTIC BOARD ===== */
+        /* one heavy asymmetric grid wrapping hero + all hubs */
+        .board {
+            margin-top: 22px;
+            display: grid;
+            gap: 0;
+            grid-template-columns: repeat(12, 1fr);
+            grid-auto-rows: minmax(10px, auto);
+            border: 5px solid var(--ink);
+            background: var(--ink);
+        }
+
+        /* every block shares the heavy-rule cell + build-in */
+        .block {
+            --accent: var(--ink);
+            position: relative;
+            background: var(--paper-2);
+            border-right: var(--rule) solid var(--ink);
+            border-bottom: var(--rule) solid var(--ink);
+            padding: 20px 22px 22px;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            overflow: hidden;
+            opacity: 0;
+            clip-path: inset(0 100% 0 0);
+            animation: clipIn 0.62s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        @keyframes clipIn {
+            to {
+                opacity: 1;
+                clip-path: inset(0 0 0 0);
+            }
+        }
+
+        @keyframes snapDown {
+            from {
+                opacity: 0;
+                transform: translateY(-14px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes wipeRight {
+            to {
+                transform: translateX(101%);
+            }
+        }
+
+        @keyframes wipeDown {
+            from {
+                transform: scaleX(0);
+            }
+
+            to {
+                transform: scaleX(1);
+            }
+        }
+
+        @keyframes rise {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* hover: block lifts toward the operator */
+        .block.interactive {
+            transition: background 0.2s ease;
+        }
+
+        .block.interactive:hover {
+            background: var(--paper);
+        }
+
+        /* accent bar: thick civic-signage rule that wipes in along the top */
+        .accent-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 8px;
+            background: var(--accent);
+            transform: scaleX(0);
+            transform-origin: left center;
+            animation: wipeDown 0.55s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation-delay: inherit;
+        }
+
+        /* ===== GRID PLACEMENT (asymmetric, unequal blocks) ===== */
+        /* HERO override: dominant black field, spans full width, tallest */
+        .b-hero {
+            grid-column: 1 / 9;
+            grid-row: 1 / 3;
+        }
+
+        .b-log {
+            grid-column: 9 / 13;
+            grid-row: 1 / 3;
+        }
+
+        .b-parking {
+            grid-column: 1 / 5;
+        }
+
+        .b-streetlight {
+            grid-column: 5 / 9;
+        }
+
+        .b-speedcam {
+            grid-column: 9 / 13;
+            grid-row: span 2;
+        }
+
+        .b-traffic {
+            grid-column: 1 / 5;
+        }
+
+        .b-railroad {
+            grid-column: 5 / 9;
+        }
+
+        .b-eink {
+            grid-column: 1 / 9;
+        }
+
+        .b-bench {
+            grid-column: 1 / 13;
+            border-right: none;
+            border-bottom: none;
+        }
+
+        /* staggered constructivist build-in */
+        .b-hero {
+            animation-delay: 0.04s;
+        }
+
+        .b-log {
+            animation-delay: 0.14s;
+        }
+
+        .b-parking {
+            animation-delay: 0.22s;
+        }
+
+        .b-streetlight {
+            animation-delay: 0.30s;
+        }
+
+        .b-speedcam {
+            animation-delay: 0.38s;
+        }
+
+        .b-traffic {
+            animation-delay: 0.46s;
+        }
+
+        .b-railroad {
+            animation-delay: 0.54s;
+        }
+
+        .b-eink {
+            animation-delay: 0.62s;
+        }
+
+        .b-bench {
+            animation-delay: 0.70s;
+        }
+
+        /* ===== HERO OVERRIDE = THE HERO (black master control) ===== */
+        .b-hero {
+            background: var(--ink);
+            color: var(--paper);
+            padding: 26px 28px 28px;
+            justify-content: space-between;
+        }
+
+        .b-hero::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background-image:
+                linear-gradient(rgba(239, 234, 221, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(239, 234, 221, 0.04) 1px, transparent 1px);
+            background-size: 28px 28px;
+            opacity: 0.5;
+        }
+
+        body.city-alert .b-hero {
+            animation: clipIn 0.62s cubic-bezier(0.16, 1, 0.3, 1) forwards, heroPulse 1.6s ease-in-out infinite 0.7s;
+        }
+
+        @keyframes heroPulse {
+
+            0%,
+            100% {
+                box-shadow: inset 0 0 0 0 rgba(215, 38, 61, 0);
+            }
+
+            50% {
+                box-shadow: inset 0 0 0 5px rgba(215, 38, 61, 0.55);
+            }
+        }
+
+        .hero-eyebrow {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            font-family: 'Martian Mono', monospace;
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 2.6px;
+            text-transform: uppercase;
+            color: var(--paper);
+            margin-bottom: 16px;
+            padding: 5px 10px 5px 0;
+        }
+
+        .hero-eyebrow::before {
+            content: "";
+            width: 14px;
+            height: 14px;
+            background: var(--red);
+            flex-shrink: 0;
+            animation: blink 1.4s steps(1) infinite;
+        }
+
+        .hero-eyebrow svg {
+            width: 15px;
+            height: 15px;
+            color: var(--red);
+        }
+
+        .b-hero h1 {
+            position: relative;
+            font-family: 'Big Shoulders Display', sans-serif;
+            font-weight: 800;
+            font-size: clamp(34px, 4.6vw, 62px);
+            line-height: 0.84;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            margin-bottom: 14px;
+        }
+
+        .b-hero h1 .accent {
+            display: inline-block;
+            background: var(--red);
+            color: var(--paper);
+            padding: 0 10px 3px;
+        }
+
+        .hero-tagline {
+            position: relative;
+            font-family: 'Martian Mono', monospace;
+            font-size: 12px;
+            font-weight: 400;
+            line-height: 1.55;
+            letter-spacing: 0.3px;
+            color: #C8C0AE;
+            margin-bottom: 22px;
+            max-width: 52ch;
+        }
+
+        .hero-actions {
+            position: relative;
+            display: flex;
+            gap: 0;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+            border: var(--rule) solid var(--paper);
+            width: fit-content;
+            max-width: 100%;
+        }
+
+        .btn-emergency {
+            position: relative;
+            border: none;
+            border-right: var(--rule) solid var(--paper);
+            padding: 17px 26px;
+            background: var(--red);
+            color: var(--paper);
+            font-family: 'Big Shoulders Display', sans-serif;
+            font-size: 19px;
+            font-weight: 800;
+            letter-spacing: 1.2px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            text-transform: uppercase;
+            transition: background 0.16s ease, color 0.16s ease;
+            overflow: hidden;
+        }
+
+        .btn-emergency svg {
+            width: 21px;
+            height: 21px;
+        }
+
+        .btn-emergency::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: var(--ink);
+            transform: scaleY(0);
+            transform-origin: bottom;
+            transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 0;
+        }
+
+        .btn-emergency span,
+        .btn-emergency svg {
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn-emergency:hover {
+            color: var(--red);
+        }
+
+        .btn-emergency:hover::after {
+            transform: scaleY(1);
+        }
+
+        .btn-emergency:active {
+            transform: translateY(1px);
+        }
+
+        .btn-ghost {
+            border: none;
+            padding: 17px 22px;
+            background: transparent;
+            color: var(--paper);
+            font-family: 'Martian Mono', monospace;
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 9px;
+            transition: background 0.16s ease, color 0.16s ease;
+        }
+
+        .btn-ghost svg {
+            width: 15px;
+            height: 15px;
+        }
+
+        .btn-ghost:hover {
+            background: var(--paper);
+            color: var(--ink);
+        }
+
+        .hero-foot {
+            position: relative;
+            font-family: 'Martian Mono', monospace;
+            font-size: 10.5px;
+            font-weight: 300;
+            color: #A89F8B;
+            line-height: 1.65;
+            border-top: 2px solid rgba(239, 234, 221, 0.22);
+            padding-top: 14px;
+        }
+
+        /* ===== COMMAND LOG block ===== */
+        .b-log {
+            padding: 0;
+            background: var(--ink);
+            color: var(--paper);
+        }
+
+        .log-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 14px 16px;
+            background: var(--red);
+            border-bottom: var(--rule) solid var(--paper);
+        }
+
+        .log-head .lh-title {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            font-family: 'Big Shoulders Display', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: 1.4px;
+            text-transform: uppercase;
+            color: var(--paper);
+        }
+
+        .log-head .lh-title svg {
+            width: 17px;
+            height: 17px;
+            color: var(--paper);
+        }
+
+        #overrideStatus {
+            font-family: 'Martian Mono', monospace;
+            font-size: 10.5px;
+            font-weight: 400;
+            letter-spacing: 0.3px;
+            color: #2bd58c;
+            padding: 12px 16px;
+            border-bottom: 2px solid rgba(239, 234, 221, 0.2);
+            display: block;
+            line-height: 1.5;
+        }
+
+        #overrideList {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 14px 16px;
+            margin-top: 0 !important;
+            overflow-y: auto;
+            flex: 1;
+            min-height: 120px;
+        }
+
+        #overrideList>div {
+            font-family: 'Martian Mono', monospace;
+            font-size: 11px;
+            line-height: 1.5;
+            color: var(--paper);
+        }
+
+        #overrideList b {
+            font-weight: 600;
+        }
+
+        /* ===== HUB BLOCK INTERNALS ===== */
+        .hub-top {
+            display: flex;
+            align-items: flex-start;
+            gap: 13px;
+            margin-bottom: 16px;
+            padding-top: 6px;
+        }
+
+        .hub-ico {
+            width: 44px;
+            height: 44px;
+            display: grid;
+            place-items: center;
+            color: var(--paper-2);
+            background: var(--accent);
+            border: 3px solid var(--ink);
+            flex-shrink: 0;
+        }
+
+        .hub-ico svg {
+            width: 22px;
+            height: 22px;
+        }
+
+        .hub-meta {
+            min-width: 0;
+            flex: 1;
+        }
+
+        .hub-meta h2 {
+            font-family: 'Big Shoulders Display', sans-serif;
+            font-size: 27px;
+            font-weight: 700;
+            letter-spacing: 0.4px;
+            text-transform: uppercase;
+            line-height: 0.92;
+            color: var(--ink);
+        }
+
+        .hub-meta .owner {
+            font-family: 'Martian Mono', monospace;
+            font-size: 10px;
+            font-weight: 400;
+            color: var(--muted);
+            letter-spacing: 0.4px;
+            margin-top: 5px;
+        }
+
+        .hub-tag {
+            font-family: 'Martian Mono', monospace;
+            font-size: 9px;
+            font-weight: 600;
+            letter-spacing: 1.4px;
+            text-transform: uppercase;
+            color: var(--paper-2);
+            background: var(--ink);
+            padding: 5px 9px;
+            white-space: nowrap;
+            align-self: flex-start;
+        }
+
+        /* stat tiles: hard-ruled register */
+        .stats {
+            display: flex;
+            gap: 0;
+            margin-bottom: 16px;
+            border: 3px solid var(--ink);
+            background: var(--ink);
+        }
+
+        .stat {
+            background: var(--paper);
+            padding: 12px 12px 13px;
+            flex: 1;
+            min-width: 0;
+            text-align: center;
+            border-right: 3px solid var(--ink);
+        }
+
+        .stat:last-child {
+            border-right: none;
+        }
+
+        .stat .val {
+            font-family: 'Big Shoulders Display', sans-serif;
+            font-size: 38px;
+            font-weight: 800;
+            letter-spacing: 0;
+            line-height: 0.82;
+            color: var(--ink);
+        }
+
+        .stat .lbl {
+            font-family: 'Martian Mono', monospace;
+            font-size: 9px;
+            font-weight: 500;
+            color: var(--muted);
+            margin-top: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .data-live {
+            transition: opacity 0.3s ease;
+        }
+
+        /* section label = stamped strip */
+        .section-label,
+        .sub {
+            font-family: 'Martian Mono', monospace;
+            font-size: 9.5px;
+            font-weight: 600;
+            color: var(--ink);
+            text-transform: uppercase;
+            letter-spacing: 1.8px;
+            margin: 6px 0 11px;
+            padding-bottom: 6px;
+            border-bottom: 2px solid var(--ink);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* parking spots */
         .spots-row {
             display: flex;
-            gap: 8px;
+            gap: 7px;
             flex-wrap: wrap;
         }
 
         .spot-chip {
-            border-radius: 8px;
-            padding: 10px 16px;
-            font-size: 13px;
+            padding: 10px 13px;
+            font-family: 'Martian Mono', monospace;
+            font-size: 11px;
             font-weight: 500;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 9px;
             flex: 1;
             min-width: 100px;
+            border: 3px solid var(--ink);
+            background: var(--paper);
+            color: var(--ink);
         }
 
         .spot-chip.free {
-            background: var(--green-dim);
-            border: 1px solid #1a4a25;
-            color: var(--green);
+            background: var(--paper);
+            color: var(--ink);
         }
 
         .spot-chip.occupied {
-            background: var(--red-dim);
-            border: 1px solid #4a1a1a;
-            color: var(--red);
+            background: var(--red);
+            color: var(--paper-2);
         }
 
         .spot-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
+            width: 10px;
+            height: 10px;
+            flex-shrink: 0;
+            box-shadow: 0 0 0 2px var(--ink);
         }
 
         .spot-chip.free .spot-dot {
@@ -255,201 +942,312 @@
         }
 
         .spot-chip.occupied .spot-dot {
-            background: var(--red);
+            background: var(--paper-2);
+            box-shadow: 0 0 0 2px var(--ink);
         }
 
         .spot-chip .spot-dist {
             margin-left: auto;
-            font-family: 'DM Mono', monospace;
-            font-size: 11px;
-            opacity: 0.7;
+            font-size: 10px;
+            opacity: 0.8;
         }
 
+        /* railroad approach line */
         .approach-line {
             position: relative;
             height: 4px;
-            background-color: var(--muted);
-            margin: 2rem;
+            background-color: var(--ink);
+            margin: 2.6rem 1rem 1.4rem;
         }
 
         .railroad-dot {
             position: absolute;
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            top: -6px; /* vertically center on the line */
+            width: 16px;
+            height: 16px;
+            top: -6px;
             background-color: var(--muted);
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            box-shadow: 0 0 0 2px var(--ink);
         }
 
         .dot-label {
             position: absolute;
-            top: -20px;
-            font-size: 11px;
-            transform: translateX(calc(-50% + calc(18px / 2)));
-            font-family: 'DM Mono', monospace;
-            color: var(--text);
+            top: -22px;
+            font-size: 9px;
+            transform: translateX(calc(-50% + 8px));
+            font-family: 'Martian Mono', monospace;
+            font-weight: 500;
+            color: var(--ink);
             white-space: nowrap;
         }
 
         .distance-label {
             position: absolute;
-            top: 10px;
-            font-size: 11px;
+            top: 12px;
+            font-size: 9px;
             transform: translateX(-50%);
-            font-family: 'DM Mono', monospace;
+            font-family: 'Martian Mono', monospace;
             color: var(--muted);
         }
 
-        .readings-list {
-            flex: 1;
+        /* generic readings list / rows */
+        .streetlight-grid,
+        .traffic-grid,
+        .railroad-info {
             display: flex;
             flex-direction: column;
-            gap: 6px;
-            overflow-y: auto;
-            max-height: 200px;
+            gap: 7px;
         }
 
-        .reading-row {
+        .light-item {
             display: flex;
             align-items: center;
-            gap: 10px;
-            padding: 8px 12px;
-            background: var(--surface);
-            border-radius: 6px;
-            font-size: 13px;
+            gap: 12px;
+            padding: 10px 13px;
+            background: var(--paper);
+            border: 3px solid var(--ink);
         }
 
-        .reading-row .r-type {
-            font-family: 'DM Mono', monospace;
+        .light-bulb {
+            width: 22px;
+            height: 22px;
+            border: 3px solid var(--ink);
+            flex-shrink: 0;
+            background: var(--paper-3);
+        }
+
+        .light-bulb.on {
+            background: var(--orange);
+        }
+
+        .light-bulb.off {
+            background: var(--paper-3);
+        }
+
+        .tl-stack {
+            display: flex;
+            gap: 4px;
+            flex-shrink: 0;
+            padding: 4px;
+            background: var(--ink);
+        }
+
+        .tl-dot {
+            width: 15px;
+            height: 15px;
+            background: var(--paper-3);
+            border: 2px solid var(--ink);
+            box-shadow: inset 0 0 0 1px rgba(20, 17, 12, 0.2);
+        }
+
+        .tl-dot.red-on {
+            background: var(--red);
+        }
+
+        .tl-dot.amber-on {
+            background: var(--yellow);
+        }
+
+        .tl-dot.green-on {
+            background: var(--green);
+        }
+
+        .tl-dot.dim {
+            background: var(--paper-3);
+        }
+
+        .light-label {
+            font-family: 'Martian Mono', monospace;
             font-size: 11px;
-            color: var(--muted);
-            min-width: 50px;
-        }
-
-        .reading-row .r-val {
-            font-family: 'DM Mono', monospace;
             font-weight: 500;
+            color: var(--ink);
         }
 
-        .reading-row .r-time {
+        .light-val {
             margin-left: auto;
-            font-size: 11px;
+            font-family: 'Martian Mono', monospace;
+            font-size: 10px;
             color: var(--muted);
-            font-family: 'DM Mono', monospace;
         }
 
-        .no-data-msg {
-            color: var(--muted);
-            font-size: 13px;
-            padding: 20px 0;
-            text-align: center;
-            font-style: italic;
-        }
-
+        /* status badges */
         .status-badge {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 500;
-            font-family: 'DM Mono', monospace;
+            padding: 4px 9px;
+            font-family: 'Martian Mono', monospace;
+            font-size: 9px;
+            font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 0.8px;
+            border: 2px solid var(--ink);
+            background: var(--paper);
+            color: var(--ink);
         }
 
         .status-badge.on {
-            background: var(--green-dim);
-            color: var(--green);
+            background: var(--green);
+            color: var(--paper-2);
         }
 
         .status-badge.off {
-            background: var(--surface);
+            background: var(--paper-3);
             color: var(--muted);
-            border: 1px solid var(--border);
         }
 
         .status-badge.active {
-            background: var(--amber-dim);
-            color: var(--amber);
+            background: var(--yellow);
+            color: var(--ink);
         }
 
         .status-badge.idle {
-            background: var(--surface);
+            background: var(--paper-3);
             color: var(--muted);
-            border: 1px solid var(--border);
         }
 
         .status-badge.danger {
-            background: var(--red-dim);
-            color: var(--red);
+            background: var(--red);
+            color: var(--paper-2);
         }
 
+        .no-data-msg {
+            font-family: 'Martian Mono', monospace;
+            color: var(--muted);
+            font-size: 11px;
+            padding: 20px 0;
+            text-align: center;
+            letter-spacing: 0.5px;
+            border: 2px dashed var(--paper-line);
+        }
+
+        /* speed camera */
         .speed-list {
             display: flex;
             flex-direction: column;
             gap: 6px;
             overflow-y: auto;
-            max-height: 220px;
+            flex: 1;
+            min-height: 0;
         }
 
         .speed-row {
             display: flex;
             align-items: center;
             gap: 10px;
-            padding: 8px 12px;
-            background: var(--surface);
-            border-radius: 6px;
-            border: 1px solid var(--border);
-            font-size: 13px;
+            padding: 9px 12px;
+            background: var(--paper);
+            border: 3px solid var(--ink);
+            font-family: 'Martian Mono', monospace;
+            font-size: 12px;
         }
 
         .speed-row.violation {
-            border-color: #4a1a1a;
+            background: var(--red);
+        }
+
+        .speed-row.violation .speed-dir,
+        .speed-row.violation .speed-time {
+            color: var(--paper-2);
         }
 
         .speed-val {
-            font-family: 'DM Mono', monospace;
-            font-weight: 700;
-            font-size: 15px;
-            min-width: 70px;
+            font-family: 'Big Shoulders Display', sans-serif;
+            font-weight: 800;
+            font-size: 21px;
+            min-width: 96px;
+            color: var(--ink);
+            letter-spacing: 0.3px;
         }
 
         .speed-dir {
-            font-family: 'DM Mono', monospace;
-            font-size: 11px;
+            font-family: 'Martian Mono', monospace;
+            font-size: 10px;
             color: var(--muted);
         }
 
         .speed-time {
             margin-left: auto;
-            font-size: 11px;
+            font-size: 10px;
             color: var(--muted);
-            font-family: 'DM Mono', monospace;
+            font-family: 'Martian Mono', monospace;
         }
 
+        /* ===== PER-HUB OVERRIDE PRESETS ===== */
+        .ov-block {
+            margin-top: auto;
+            padding-top: 16px;
+        }
+
+        .ov-block .ov-lead {
+            font-family: 'Martian Mono', monospace;
+            font-size: 8.5px;
+            font-weight: 600;
+            letter-spacing: 1.6px;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 8px;
+        }
+
+        .ov-row {
+            display: flex;
+            gap: 0;
+            flex-wrap: wrap;
+            align-items: stretch;
+            border: 3px solid var(--ink);
+            width: fit-content;
+            max-width: 100%;
+        }
+
+        .ov-preset {
+            border: none;
+            border-right: 3px solid var(--ink);
+            padding: 9px 14px;
+            background: var(--paper);
+            color: var(--ink);
+            font-family: 'Martian Mono', monospace;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: background 0.14s ease, color 0.14s ease;
+        }
+
+        .ov-row .ov-preset:last-child {
+            border-right: none;
+        }
+
+        .ov-preset:hover {
+            background: var(--accent, var(--ink));
+            color: var(--paper-2);
+        }
+
+        .ov-preset:active {
+            transform: translateY(1px);
+        }
+
+        .ov-preset.danger:hover {
+            background: var(--red);
+            color: var(--paper-2);
+        }
+
+        /* ===== E-INK EDITOR ===== */
         .eink-layout {
             display: grid;
-            grid-template-columns: 1.1fr 0.9fr;
-            gap: 14px;
-            flex: 1;
-            min-height: 0;
+            grid-template-columns: 1.05fr 0.95fr;
+            gap: 18px;
         }
 
         .eink-form {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 12px;
         }
 
         .form-row {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
+            gap: 12px;
         }
 
         .form-field {
@@ -459,82 +1257,93 @@
         }
 
         .field-label {
-            font-size: 11px;
-            color: var(--muted);
+            font-family: 'Martian Mono', monospace;
+            font-size: 9px;
+            font-weight: 600;
+            color: var(--ink);
             text-transform: uppercase;
-            letter-spacing: 0.8px;
+            letter-spacing: 1.2px;
         }
 
         .eink-input,
         .eink-select,
         .eink-textarea {
             width: 100%;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            color: var(--text);
-            font: inherit;
-            padding: 10px 12px;
+            background: var(--paper);
+            border: 3px solid var(--ink);
+            color: var(--ink);
+            font-family: 'Martian Mono', monospace;
+            font-size: 12px;
+            font-weight: 400;
+            padding: 10px 11px;
+            transition: background 0.16s ease, box-shadow 0.16s ease;
         }
 
         .eink-textarea {
-            min-height: 150px;
+            min-height: 132px;
             resize: vertical;
-            font-family: 'DM Mono', monospace;
-            line-height: 1.15;
+            line-height: 1.3;
         }
 
         .eink-input:focus,
         .eink-select:focus,
         .eink-textarea:focus {
-            outline: 1px solid var(--purple);
-            border-color: var(--purple);
+            outline: none;
+            background: var(--paper-2);
+            box-shadow: inset 0 0 0 3px var(--yellow);
+        }
+
+        .eink-select option {
+            background: var(--paper-2);
+            color: var(--ink);
         }
 
         .eink-actions {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             flex-wrap: wrap;
-            margin-top: 4px;
+            margin-top: 2px;
         }
 
         .eink-import-box {
             display: flex;
             flex-direction: column;
             gap: 10px;
-            padding: 12px;
-            border: 1px dashed var(--border);
-            border-radius: 12px;
-            background: rgba(255, 255, 255, 0.02);
+            padding: 13px;
+            border: 3px dashed var(--ink);
+            background: var(--paper);
         }
 
         .eink-import-row {
             display: flex;
-            gap: 10px;
+            gap: 9px;
             flex-wrap: wrap;
         }
 
         .eink-import-textarea {
-            min-height: 92px;
+            min-height: 84px;
             resize: vertical;
-            font-family: 'DM Mono', monospace;
-            line-height: 1.15;
+            line-height: 1.3;
         }
 
         .eink-secondary-button {
-            border: 1px solid var(--border);
-            border-radius: 999px;
-            padding: 9px 14px;
-            background: transparent;
-            color: var(--text);
+            border: 3px solid var(--ink);
+            padding: 8px 14px;
+            background: var(--paper);
+            color: var(--ink);
+            font-family: 'Martian Mono', monospace;
+            font-size: 10px;
             font-weight: 600;
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
             cursor: pointer;
+            transition: background 0.14s ease, color 0.14s ease;
         }
 
         .eink-secondary-button:hover {
-            border-color: var(--purple);
-            color: var(--purple);
+            background: var(--ink);
+            color: var(--paper-2);
         }
 
         .eink-file-input {
@@ -542,34 +1351,38 @@
         }
 
         .eink-button {
-            border: 0;
-            border-radius: 999px;
-            padding: 10px 16px;
-            background: linear-gradient(135deg, var(--purple), var(--blue));
-            color: white;
+            border: 3px solid var(--ink);
+            padding: 11px 20px;
+            background: var(--green);
+            color: var(--paper-2);
+            font-family: 'Big Shoulders Display', sans-serif;
             font-weight: 700;
+            font-size: 16px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
             cursor: pointer;
+            transition: background 0.14s ease;
         }
 
         .eink-button:hover {
-            filter: brightness(1.05);
+            background: var(--ink);
         }
 
         .eink-status {
-            font-size: 12px;
+            font-family: 'Martian Mono', monospace;
+            font-size: 10px;
+            font-weight: 400;
             color: var(--muted);
-            font-family: 'DM Mono', monospace;
+            letter-spacing: 0.3px;
         }
 
         .eink-preview {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 14px;
+            background: var(--paper);
+            border: 3px solid var(--ink);
+            padding: 15px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            min-height: 100%;
+            gap: 12px;
         }
 
         .eink-preview-header {
@@ -577,37 +1390,43 @@
             align-items: center;
             justify-content: space-between;
             gap: 10px;
+            border-bottom: 2px solid var(--ink);
+            padding-bottom: 9px;
         }
 
         .eink-preview-title {
-            font-size: 13px;
-            font-weight: 700;
+            font-family: 'Martian Mono', monospace;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 1.4px;
+            text-transform: uppercase;
+            color: var(--ink);
         }
 
         .eink-preview-meta {
-            font-size: 11px;
+            font-family: 'Martian Mono', monospace;
+            font-size: 10px;
             color: var(--muted);
-            font-family: 'DM Mono', monospace;
         }
 
         .eink-preview-canvas {
-            background: #f4f1e7;
-            border-radius: 10px;
-            border: 1px solid #d7d1c4;
-            padding: 14px;
-            min-height: 250px;
+            background: #FBF9F2;
+            border: 3px solid var(--ink);
+            padding: 16px;
+            min-height: 230px;
             display: flex;
             flex-direction: column;
             gap: 12px;
-            color: #111;
+            color: var(--ink);
         }
 
         .eink-preview-text {
-            font-family: 'DM Sans', sans-serif;
-            font-size: 22px;
-            font-weight: 700;
-            letter-spacing: -0.4px;
-            line-height: 1.1;
+            font-family: 'Big Shoulders Display', sans-serif;
+            font-size: 30px;
+            font-weight: 800;
+            letter-spacing: 0.4px;
+            text-transform: uppercase;
+            line-height: 0.96;
             word-break: break-word;
         }
 
@@ -615,355 +1434,802 @@
             display: grid;
             gap: 1px;
             align-self: flex-start;
-            padding: 8px;
-            background: rgba(255, 255, 255, 0.55);
-            border-radius: 10px;
+            padding: 7px;
+            background: #ECE7D9;
+            border: 2px solid var(--ink);
         }
 
         .eink-pixel {
             width: 10px;
             height: 10px;
             background: transparent;
-            border-radius: 2px;
         }
 
         .eink-pixel.on-black {
-            background: #111;
+            background: var(--ink);
         }
 
         .eink-pixel.on-red {
-            background: #b42318;
+            background: var(--red);
         }
 
         .eink-pixel.on-white {
             background: #ffffff;
-            box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+            box-shadow: inset 0 0 0 1px rgba(20, 17, 12, 0.18);
         }
 
         .eink-pixel.off {
-            background: rgba(17, 17, 17, 0.08);
+            background: rgba(20, 17, 12, 0.08);
         }
 
         .eink-preview-note {
-            font-size: 12px;
+            font-family: 'Martian Mono', monospace;
+            font-size: 10px;
+            font-weight: 300;
             color: var(--muted);
-            line-height: 1.4;
+            line-height: 1.55;
         }
 
-        .streetlight-grid,
-        .traffic-grid,
-        .railroad-info {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
+        /* ===== CUSTOM COMMAND BENCH ===== */
+        .b-bench {
+            background: var(--paper-2);
         }
 
-        .light-item {
+        .bench-title {
+            font-family: 'Big Shoulders Display', sans-serif;
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: var(--ink);
+            margin-bottom: 16px;
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 10px 14px;
-            background: var(--surface);
-            border-radius: 8px;
-            border: 1px solid var(--border);
+            gap: 10px;
+            border-bottom: 3px solid var(--ink);
+            padding-bottom: 12px;
         }
 
-        .light-bulb {
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            border: 2px solid var(--border);
+        .bench-title svg {
+            width: 19px;
+            height: 19px;
+            color: var(--ink);
         }
 
-        .light-bulb.on {
-            background: var(--amber);
-            border-color: var(--amber);
-            box-shadow: 0 0 12px var(--amber);
-        }
-
-        .light-bulb.off {
-            background: var(--surface);
-        }
-
-        .tl-stack {
+        .bench-row {
             display: flex;
-            gap: 4px;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
         }
 
-        .tl-dot {
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            border: 2px solid var(--border);
+        .bench-row .eink-input,
+        .bench-row .eink-select {
+            width: auto;
+            flex: 1;
+            min-width: 130px;
         }
 
-        .tl-dot.red-on {
-            background: var(--red);
-            border-color: var(--red);
-            box-shadow: 0 0 8px var(--red);
+        /* command reference list */
+        .cmd-ref {
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 3px solid var(--ink);
         }
 
-        .tl-dot.amber-on {
-            background: var(--amber);
-            border-color: var(--amber);
-            box-shadow: 0 0 8px var(--amber);
-        }
-
-        .tl-dot.green-on {
-            background: var(--green);
-            border-color: var(--green);
-            box-shadow: 0 0 8px var(--green);
-        }
-
-        .tl-dot.dim {
-            background: var(--surface);
-        }
-
-        .light-label {
-            font-size: 13px;
-            font-weight: 500;
-        }
-
-        .light-val {
-            margin-left: auto;
-            font-family: 'DM Mono', monospace;
-            font-size: 12px;
-            color: var(--muted);
-        }
-
-        .section-label {
-            font-size: 11px;
-            color: var(--muted);
+        .cmd-ref-head {
+            font-family: 'Martian Mono', monospace;
+            font-size: 10px;
+            font-weight: 600;
+            letter-spacing: 1.6px;
             text-transform: uppercase;
-            letter-spacing: 0.8px;
-            margin-bottom: 10px;
-            margin-top: 8px;
+            color: var(--ink);
+            margin-bottom: 12px;
         }
 
-        @media (max-width: 800px) {
-            .main {
+        .cmd-ref-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 0;
+            border: 3px solid var(--ink);
+            background: var(--ink);
+        }
+
+        .cmd-ref-cell {
+            position: relative;
+            padding: 12px 14px;
+            background: var(--paper);
+            border-right: 3px solid var(--ink);
+            border-bottom: 3px solid var(--ink);
+            min-width: 0;
+        }
+
+        .cmd-ref-cell .cr-target {
+            font-family: 'Big Shoulders Display', sans-serif;
+            font-weight: 700;
+            font-size: 19px;
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+            line-height: 1;
+        }
+
+        .cmd-ref-cell .cr-target small {
+            font-family: 'Martian Mono', monospace;
+            font-weight: 400;
+            font-size: 9px;
+            letter-spacing: 0.5px;
+            color: var(--muted);
+            text-transform: none;
+        }
+
+        .cmd-ref-cell .cr-cmds {
+            font-family: 'Martian Mono', monospace;
+            font-size: 11px;
+            font-weight: 400;
+            color: var(--text-dim);
+            word-break: break-word;
+            line-height: 1.5;
+        }
+
+        .cmd-ref-foot {
+            font-family: 'Martian Mono', monospace;
+            font-size: 10px;
+            font-weight: 300;
+            color: var(--muted);
+            margin-top: 12px;
+            line-height: 1.55;
+        }
+
+        /* ===== REDUCED MOTION ===== */
+        @media (prefers-reduced-motion: reduce) {
+
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.001ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.001ms !important;
+                scroll-behavior: auto !important;
+            }
+
+            .block,
+            .masthead {
+                opacity: 1 !important;
+                clip-path: none !important;
+                transform: none !important;
+            }
+
+            .accent-bar,
+            .mh-block::after {
+                transform: scaleX(1) !important;
+            }
+
+            .mh-block::after {
+                display: none;
+            }
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1080px) {
+            .board {
+                grid-template-columns: repeat(6, 1fr);
+            }
+
+            .b-hero {
+                grid-column: 1 / 7;
+                grid-row: auto;
+            }
+
+            .b-log {
+                grid-column: 1 / 7;
+                grid-row: auto;
+            }
+
+            .b-parking {
+                grid-column: 1 / 4;
+            }
+
+            .b-streetlight {
+                grid-column: 4 / 7;
+            }
+
+            .b-speedcam {
+                grid-column: 1 / 4;
+                grid-row: auto;
+            }
+
+            .b-traffic {
+                grid-column: 4 / 7;
+            }
+
+            .b-railroad {
+                grid-column: 1 / 4;
+            }
+
+            .b-eink {
+                grid-column: 1 / 7;
+            }
+
+            .b-bench {
+                grid-column: 1 / 7;
+            }
+        }
+
+        @media (max-width: 820px) {
+            .shell {
+                padding: 0 18px 60px;
+            }
+
+            .masthead {
+                grid-template-columns: auto 1fr;
+            }
+
+            .mh-status {
+                grid-column: 1 / 3;
+                grid-row: 2;
+                border-left: none;
+                border-top: var(--rule) solid var(--ink);
+                grid-template-rows: none;
+                grid-template-columns: 1fr 1fr;
+                min-width: 0;
+            }
+
+            .mh-conn {
+                border-bottom: none;
+                border-right: var(--rule) solid var(--ink);
+            }
+
+            .eink-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 560px) {
+
+            /* board collapses to a single column; heavy rules adapt */
+            .board {
+                grid-template-columns: 1fr;
+                border-width: 4px;
+            }
+
+            .block {
+                grid-column: 1 / -1 !important;
+                grid-row: auto !important;
+                border-right: none;
+                clip-path: none;
+            }
+
+            .shell {
+                padding: 0 13px 48px;
+            }
+
+            .masthead {
+                grid-template-columns: 1fr;
+                border-width: 4px;
+            }
+
+            .mh-block {
+                border-right: none;
+                border-bottom: var(--rule) solid var(--ink);
+                padding: 14px;
+                min-height: 64px;
+            }
+
+            .mh-status {
+                grid-column: auto;
+                grid-template-columns: 1fr;
+                grid-template-rows: auto auto;
+            }
+
+            .mh-conn {
+                border-right: none;
+                border-bottom: var(--rule) solid var(--ink);
+                padding: 12px 16px;
+            }
+
+            .mh-city {
+                padding: 12px 16px;
+            }
+
+            .mh-name {
+                white-space: normal;
+                font-size: clamp(30px, 12vw, 48px);
+                line-height: 0.84;
+            }
+
+            .form-row {
                 grid-template-columns: 1fr;
             }
 
-            #einkPanel {
-                grid-column: auto;
+            .hero-actions {
+                width: 100%;
+            }
+
+            .btn-emergency {
+                flex: 1;
+                justify-content: center;
+                border-right: none;
+                border-bottom: var(--rule) solid var(--paper);
+            }
+
+            .btn-ghost {
+                flex: 1;
+                justify-content: center;
+            }
+
+            .stat .val {
+                font-size: 30px;
+            }
+
+            .cmd-ref-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .geo-mark {
+                display: none;
             }
         }
     </style>
 </head>
 
 <body>
-    <div class="topbar">
-        <div class="topbar-left">
-            <div class="topbar-logo"></div>
-            <div>
-                <div class="topbar-title">City Sim Dashboard</div>
-                <div class="topbar-subtitle">The Embedded Alliance</div>
-            </div>
-        </div>
-        <div class="topbar-right">
-            <div class="conn-dot" id="connDot"></div>
-            <span class="conn-label" id="connLabel">connecting...</span>
-        </div>
-    </div>
+    <span class="geo-mark" aria-hidden="true">Amsterdam 52.3676&deg; N // 4.9041&deg; E</span>
 
-    <div class="main">
-        <!-- PARKING -->
-        <div class="tile-panel" id="parkingPanel">
-            <div class="tile-header">
-                <div class="tile-icon parking">P</div>
-                <div class="tile-info">
-                    <h2>Parking</h2>
-                    <div class="owner">matin / esp32 + sonar</div>
+    <div class="shell">
+        <!-- ===== MASTHEAD ===== -->
+        <header class="masthead">
+            <div class="mh-block" aria-hidden="true">
+                <!-- lucide: radio-tower -->
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4.9 16.1C1 12.2 1 5.8 4.9 1.9" />
+                    <path d="M7.8 4.7a6.14 6.14 0 0 0-.8 7.5" />
+                    <circle cx="12" cy="9" r="2" />
+                    <path d="M16.2 4.8c2 2 2.26 5.11.8 7.47" />
+                    <path d="M19.1 1.9a9.96 9.96 0 0 1 0 14.1" />
+                    <path d="M9.5 18h5" />
+                    <path d="m8 22 4-11 4 11" />
+                </svg>
+            </div>
+            <div class="mh-title">
+                <span class="mh-kicker">Gemeente Amsterdam // V&amp;OR Control Board</span>
+                <span class="mh-name">City Sim<span class="sep">//</span>Stedelijk Overzicht</span>
+                <span class="mh-sub">The Embedded Alliance &mdash; One Backend Commands The City</span>
+            </div>
+            <div class="mh-status">
+                <div class="mh-city" id="cityStatus">
+                    <svg class="stat-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+                    </svg>
+                    <span id="cityStatusText">All hubs nominal</span>
+                </div>
+                <div class="mh-conn">
+                    <div class="conn-dot" id="connDot"></div>
+                    <span class="conn-label" id="connLabel">connecting...</span>
                 </div>
             </div>
-            <div class="tile-stats">
-                <div class="mini-stat">
-                    <div class="val" id="pTotal" style="color:var(--blue)">-</div>
-                    <div class="lbl">Total</div>
-                </div>
-                <div class="mini-stat">
-                    <div class="val" id="pFree" style="color:var(--green)">-</div>
-                    <div class="lbl">Free</div>
-                </div>
-                <div class="mini-stat">
-                    <div class="val" id="pOcc" style="color:var(--red)">-</div>
-                    <div class="lbl">Occupied</div>
-                </div>
-            </div>
-            <div class="section-label">Spots</div>
-            <div class="spots-row" id="spotsRow">
-                <div class="no-data-msg">No spots registered</div>
-            </div>
-        </div>
+        </header>
 
-        <!-- STREETLIGHT -->
-        <div class="tile-panel" id="streetlightPanel">
-            <div class="tile-header">
-                <div class="tile-icon streetlight">S</div>
-                <div class="tile-info">
-                    <h2>Streetlight</h2>
-                    <div class="owner">gurpreet / esp32 + ldr</div>
-                </div>
-            </div>
-            <div class="section-label">Recent readings</div>
-            <div class="streetlight-grid" id="streetlightGrid">
-                <div class="no-data-msg">No streetlight data yet</div>
-            </div>
-        </div>
+        <!-- ===== THE NEO-PLASTIC BOARD ===== -->
+        <main class="board">
 
-        <!-- TRAFFIC LIGHT -->
-        <div class="tile-panel" id="trafficPanel">
-            <div class="tile-header">
-                <div class="tile-icon traffic">T</div>
-                <div class="tile-info">
-                    <h2>Traffic Light</h2>
-                    <div class="owner">wesley / esp32 + leds</div>
-                </div>
-            </div>
-            <div class="section-label">Recent readings</div>
-            <div class="traffic-grid" id="trafficGrid">
-                <div class="no-data-msg">No traffic light data yet</div>
-            </div>
-        </div>
+            <!-- HERO: BACKEND OVERRIDE = master control -->
+            <section class="block b-hero">
+                <div>
+                    <span class="hero-eyebrow">
+                        <!-- lucide: shield-alert -->
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />
+                            <path d="M12 8v4" />
+                            <path d="M12 16h.01" />
+                        </svg>
+                        Backend Override // Priority Channel
+                    </span>
+                    <h1>One backend.<br>Every hub.<br><span class="accent">Total command.</span></h1>
+                    <p class="hero-tagline">The control desk can overrule every tile at once. Trigger the emergency corridor and the whole city goes red.</p>
 
-        <!-- RAILROAD CROSSING -->
-        <div class="tile-panel" id="railroadPanel">
-            <div class="tile-header">
-                <div class="tile-icon railroad">R</div>
-                <div class="tile-info">
-                    <h2>Railroad Crossing</h2>
-                    <div class="owner">thijmen / esp32 + ir + oled</div>
+                    <div class="hero-actions">
+                        <button class="btn-emergency" id="emergencyBtn" type="button">
+                            <!-- lucide: siren -->
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M7 18v-6a5 5 0 1 1 10 0v6" />
+                                <path d="M5 21a1 1 0 0 0 1-1v-1a1 1 0 0 0-1-1 1 1 0 0 0-1 1v1a1 1 0 0 0 1 1z" />
+                                <path d="M21 12h1" />
+                                <path d="M18.5 4.5 18 5" />
+                                <path d="M2 12h1" />
+                                <path d="M12 2v1" />
+                                <path d="m4.929 4.929.707.707" />
+                                <path d="M12 12v6" />
+                            </svg>
+                            <span>Emergency Corridor</span>
+                        </button>
+                        <button class="btn-ghost" id="clearOverridesBtn" type="button">
+                            <!-- lucide: rotate-ccw -->
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                                <path d="M3 3v5h5" />
+                            </svg>
+                            Stand down
+                        </button>
+                    </div>
                 </div>
-            </div>
-            <div class="railroad-info" id="railroadGrid">
-            <div class="section-label">Current approaching train</div>
-            <div class="tile-stats">
-                <div class="mini-stat">
-                    <div>
-                        <div class="lbl" id="trainId">
-                            -
+
+                <p class="hero-foot">Each hub runs its own sensor logic until the backend speaks. An override is pushed down and obeyed the next time a tile polls. This reverses the data flow: hubs stop reporting up, the brain starts commanding down.</p>
+            </section>
+
+            <!-- LIVE COMMAND LOG -->
+            <section class="block b-log">
+                <div class="log-head">
+                    <span class="lh-title">
+                        <!-- lucide: terminal -->
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="m4 17 6-6-6-6" />
+                            <path d="M12 19h8" />
+                        </svg>
+                        Command Log
+                    </span>
+                </div>
+                <span id="overrideStatus">Loading overrides...</span>
+                <div id="overrideList" style="margin-top:12px; display:flex; flex-direction:column; gap:8px;"></div>
+            </section>
+
+            <!-- PARKING -->
+            <section class="block interactive b-parking" id="parkingPanel" style="--accent: var(--parking);">
+                <span class="accent-bar"></span>
+                <div class="hub-top">
+                    <div class="hub-ico">
+                        <!-- lucide: square-parking -->
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect width="18" height="18" x="3" y="3" rx="0" />
+                            <path d="M9 17V7h4a3 3 0 0 1 0 6H9" />
+                        </svg>
+                    </div>
+                    <div class="hub-meta">
+                        <h2>Parking</h2>
+                        <div class="owner">matin / esp32 + sonar</div>
+                    </div>
+                    <span class="hub-tag">HC-SR04</span>
+                </div>
+                <div class="stats">
+                    <div class="stat">
+                        <div class="val" id="pTotal">-</div>
+                        <div class="lbl">Total</div>
+                    </div>
+                    <div class="stat">
+                        <div class="val" id="pFree" style="color:var(--green)">-</div>
+                        <div class="lbl">Free</div>
+                    </div>
+                    <div class="stat">
+                        <div class="val" id="pOcc" style="color:var(--red)">-</div>
+                        <div class="lbl">Occupied</div>
+                    </div>
+                </div>
+                <div class="section-label">Spots</div>
+                <div class="spots-row" id="spotsRow">
+                    <div class="no-data-msg">No spots registered</div>
+                </div>
+                <div class="ov-block">
+                    <div class="ov-lead">Override // parking</div>
+                    <div class="ov-row">
+                        <button class="ov-preset danger" type="button" data-target="parking" data-command="full" data-reason="manual: lot closed">Mark full</button>
+                        <button class="ov-preset" type="button" data-target="parking" data-command="free" data-reason="manual: lot open">Mark free</button>
+                        <button class="ov-preset" type="button" data-target="parking" data-command="auto" data-reason="manual: resume sensor">Auto</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- STREETLIGHT -->
+            <section class="block interactive b-streetlight" id="streetlightPanel" style="--accent: var(--streetlight);">
+                <span class="accent-bar"></span>
+                <div class="hub-top">
+                    <div class="hub-ico">
+                        <!-- lucide: lightbulb -->
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5" />
+                            <path d="M9 18h6" />
+                            <path d="M10 22h4" />
+                        </svg>
+                    </div>
+                    <div class="hub-meta">
+                        <h2>Streetlight</h2>
+                        <div class="owner">gurpreet / esp32 + ldr</div>
+                    </div>
+                    <span class="hub-tag">LDR</span>
+                </div>
+                <div class="section-label">Recent readings</div>
+                <div class="streetlight-grid" id="streetlightGrid">
+                    <div class="no-data-msg">No streetlight data yet</div>
+                </div>
+                <div class="ov-block">
+                    <div class="ov-lead">Override // streetlight</div>
+                    <div class="ov-row">
+                        <button class="ov-preset" type="button" data-target="streetlight" data-command="force_on" data-reason="manual: lights on">All on</button>
+                        <button class="ov-preset danger" type="button" data-target="streetlight" data-command="force_off" data-reason="manual: lights off">All off</button>
+                        <button class="ov-preset" type="button" data-target="streetlight" data-command="auto" data-reason="manual: resume LDR logic">Auto</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- SPEED CAMERA (tall column) -->
+            <section class="block interactive b-speedcam" id="speedCameraPanel" style="--accent: var(--speedcam);">
+                <span class="accent-bar"></span>
+                <div class="hub-top">
+                    <div class="hub-ico">
+                        <!-- lucide: gauge -->
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="m12 14 4-4" />
+                            <path d="M3.34 19a10 10 0 1 1 17.32 0" />
+                        </svg>
+                    </div>
+                    <div class="hub-meta">
+                        <h2>Speed Camera</h2>
+                        <div class="owner">gurpreet / esp32 + ir sensors</div>
+                    </div>
+                    <span class="hub-tag">DUAL IR</span>
+                </div>
+                <div class="stats">
+                    <div class="stat">
+                        <div class="val" id="scTotal">-</div>
+                        <div class="lbl">Readings</div>
+                    </div>
+                    <div class="stat">
+                        <div class="val" id="scViolations" style="color:var(--red)">-</div>
+                        <div class="lbl">Violations</div>
+                    </div>
+                    <div class="stat">
+                        <div class="val" id="scAvg">-</div>
+                        <div class="lbl">Avg km/h</div>
+                    </div>
+                    <div class="stat">
+                        <div class="val" id="scMax" style="color:var(--orange)">-</div>
+                        <div class="lbl">Max km/h</div>
+                    </div>
+                </div>
+                <div class="section-label">Recent measurements</div>
+                <div class="speed-list" id="speedList">
+                    <div class="no-data-msg">No speed camera data yet</div>
+                </div>
+            </section>
+
+            <!-- TRAFFIC LIGHT -->
+            <section class="block interactive b-traffic" id="trafficPanel" style="--accent: var(--traffic);">
+                <span class="accent-bar"></span>
+                <div class="hub-top">
+                    <div class="hub-ico">
+                        <!-- lucide: traffic-cone -->
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M9.3 6.2a4.55 4.55 0 0 0 5.4 0" />
+                            <path d="M7.9 10.7c.9.8 2.4 1.3 4.1 1.3s3.2-.5 4.1-1.3" />
+                            <path d="M13.9 3.5a1.93 1.93 0 0 0-3.8-.1l-3 10c-.1.2-.1.4-.1.6 0 1.7 2.7 3 6 3s6-1.3 6-3c0-.2 0-.4-.1-.5Z" />
+                            <path d="m7.5 12.2-4.7 2.7c-.5.3-.8.7-.8 1.1 0 1.7 3.5 3 8 3s8-1.3 8-3c0-.4-.3-.8-.8-1.1l-4.7-2.7" />
+                        </svg>
+                    </div>
+                    <div class="hub-meta">
+                        <h2>Traffic Light</h2>
+                        <div class="owner">wesley / esp32 + leds</div>
+                    </div>
+                    <span class="hub-tag">LEDS</span>
+                </div>
+                <div class="section-label">Recent readings</div>
+                <div class="traffic-grid" id="trafficGrid">
+                    <div class="no-data-msg">No traffic light data yet</div>
+                </div>
+                <div class="ov-block">
+                    <div class="ov-lead">Override // traffic</div>
+                    <div class="ov-row">
+                        <button class="ov-preset danger" type="button" data-target="traffic" data-command="all_red" data-reason="manual: stop all traffic">All red</button>
+                        <button class="ov-preset" type="button" data-target="traffic" data-command="all_green" data-reason="manual: green corridor">All green</button>
+                        <button class="ov-preset" type="button" data-target="traffic" data-command="flashing" data-reason="manual: caution flashing">Flashing</button>
+                        <button class="ov-preset" type="button" data-target="traffic" data-command="normal" data-reason="manual: resume own logic">Resume</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- RAILROAD CROSSING -->
+            <section class="block interactive b-railroad" id="railroadPanel" style="--accent: var(--railroad);">
+                <span class="accent-bar"></span>
+                <div class="hub-top">
+                    <div class="hub-ico">
+                        <!-- lucide: train-front -->
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M8 3.1V7a4 4 0 0 0 8 0V3.1" />
+                            <path d="m9 15-1-1" />
+                            <path d="m15 15 1-1" />
+                            <path d="M9 19c-2.8 0-5-2.2-5-5v-4a8 8 0 0 1 16 0v4c0 2.8-2.2 5-5 5Z" />
+                            <path d="m8 19-2 3" />
+                            <path d="m16 19 2 3" />
+                        </svg>
+                    </div>
+                    <div class="hub-meta">
+                        <h2>Railroad Crossing</h2>
+                        <div class="owner">thijmen / esp32 + ir + oled</div>
+                    </div>
+                    <span class="hub-tag">IR + OLED</span>
+                </div>
+                <div class="railroad-info" id="railroadGrid">
+                    <div class="section-label">Current approaching train</div>
+                    <div class="stats">
+                        <div class="stat" style="text-align:left;">
+                            <div>
+                                <div class="lbl" id="trainId">
+                                    -
+                                </div>
+                            </div>
+                            <div class="approach-line" id="approachLine"></div>
                         </div>
                     </div>
-                    <div class="approach-line" id="approachLine"></div>
                 </div>
-            </div>
-            </div>
-        </div>
-        <!-- SPEED CAMERA -->
-        <div class="tile-panel" id="speedCameraPanel">
-            <div class="tile-header">
-                <div class="tile-icon speedcam">V</div>
-                <div class="tile-info">
-                    <h2>Speed Camera</h2>
-                    <div class="owner">gurpreet / esp32 + ir sensors</div>
-                </div>
-            </div>
-            <div class="tile-stats">
-                <div class="mini-stat">
-                    <div class="val" id="scTotal" style="color:var(--orange)">-</div>
-                    <div class="lbl">Readings</div>
-                </div>
-                <div class="mini-stat">
-                    <div class="val" id="scViolations" style="color:var(--red)">-</div>
-                    <div class="lbl">Violations</div>
-                </div>
-                <div class="mini-stat">
-                    <div class="val" id="scAvg" style="color:var(--text)">-</div>
-                    <div class="lbl">Avg km/h</div>
-                </div>
-                <div class="mini-stat">
-                    <div class="val" id="scMax" style="color:var(--amber)">-</div>
-                    <div class="lbl">Max km/h</div>
-                </div>
-            </div>
-            <div class="section-label">Recent measurements</div>
-            <div class="speed-list" id="speedList">
-                <div class="no-data-msg">No speed camera data yet</div>
-            </div>
-        </div>
-        <!-- E-INK DISPLAY -->
-        <div class="tile-panel" id="einkPanel">
-            <div class="tile-header">
-                <div class="tile-icon eink">E</div>
-                <div class="tile-info">
-                    <h2>E-ink Display</h2>
-                    <div class="owner">backend synced / 3-color panel</div>
-                </div>
-            </div>
-            <div class="eink-layout">
-                <div class="eink-form">
-                    <div class="form-field">
-                        <div class="field-label">Text</div>
-                        <input class="eink-input" id="einkText" type="text" maxlength="120" placeholder="Enter display text">
+                <div class="ov-block">
+                    <div class="ov-lead">Override // barrier</div>
+                    <div class="ov-row">
+                        <button class="ov-preset danger" type="button" data-target="barrier" data-command="close" data-reason="manual: force barrier down">Close</button>
+                        <button class="ov-preset" type="button" data-target="barrier" data-command="open" data-reason="manual: force barrier up">Open</button>
+                        <button class="ov-preset" type="button" data-target="barrier" data-command="maintenance" data-reason="manual: lock for maintenance">Maintenance</button>
                     </div>
-                    <div class="form-row">
+                </div>
+            </section>
+
+            <!-- E-INK DISPLAY -->
+            <section class="block interactive b-eink" id="einkPanel" style="--accent: var(--eink);">
+                <span class="accent-bar"></span>
+                <div class="hub-top">
+                    <div class="hub-ico">
+                        <!-- lucide: monitor -->
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect width="20" height="14" x="2" y="3" rx="0" />
+                            <line x1="8" x2="16" y1="21" y2="21" />
+                            <line x1="12" x2="12" y1="17" y2="21" />
+                        </svg>
+                    </div>
+                    <div class="hub-meta">
+                        <h2>E-ink Display</h2>
+                        <div class="owner">backend synced / 3-color panel</div>
+                    </div>
+                    <span class="hub-tag">3-COLOR</span>
+                </div>
+                <div class="eink-layout">
+                    <div class="eink-form">
                         <div class="form-field">
-                            <div class="field-label">Text color</div>
-                            <select class="eink-select" id="einkTextColor">
-                                <option value="black">Black</option>
-                                <option value="red">Red</option>
-                                <option value="white">White</option>
-                            </select>
+                            <div class="field-label">Text</div>
+                            <input class="eink-input" id="einkText" type="text" maxlength="120" placeholder="Enter display text">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-field">
+                                <div class="field-label">Text color</div>
+                                <select class="eink-select" id="einkTextColor">
+                                    <option value="black">Black</option>
+                                    <option value="red">Red</option>
+                                    <option value="white">White</option>
+                                </select>
+                            </div>
+                            <div class="form-field">
+                                <div class="field-label">Image color</div>
+                                <select class="eink-select" id="einkImageColor">
+                                    <option value="black">Black</option>
+                                    <option value="red">Red</option>
+                                    <option value="white">White</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-field">
+                                <div class="field-label">Image width</div>
+                                <input class="eink-input" id="einkImageWidth" type="number" min="0" max="200" step="1">
+                            </div>
+                            <div class="form-field">
+                                <div class="field-label">Image height</div>
+                                <input class="eink-input" id="einkImageHeight" type="number" min="0" max="200" step="1">
+                            </div>
                         </div>
                         <div class="form-field">
-                            <div class="field-label">Image color</div>
-                            <select class="eink-select" id="einkImageColor">
-                                <option value="black">Black</option>
-                                <option value="red">Red</option>
-                                <option value="white">White</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-field">
-                            <div class="field-label">Image width</div>
-                            <input class="eink-input" id="einkImageWidth" type="number" min="0" max="200" step="1">
+                            <div class="field-label">Image enabled</div>
+                            <label class="status-badge idle" style="justify-content:flex-start; width:fit-content; cursor:pointer;">
+                                <input id="einkImageEnabled" type="checkbox" style="margin-right:8px; accent-color:var(--ink);">
+                                Use bitmap image
+                            </label>
                         </div>
                         <div class="form-field">
-                            <div class="field-label">Image height</div>
-                            <input class="eink-input" id="einkImageHeight" type="number" min="0" max="200" step="1">
+                            <div class="field-label">Image rows</div>
+                            <textarea class="eink-textarea" id="einkImageRows" spellcheck="false" placeholder="1010... one row per line"></textarea>
+                        </div>
+                        <div class="eink-import-box">
+                            <div class="field-label">Import helper</div>
+                            <textarea class="eink-textarea eink-import-textarea" id="einkImportText" spellcheck="false" placeholder="Paste rows like:\n10101\n11000\n11111"></textarea>
+                            <div class="eink-import-row">
+                                <button class="eink-secondary-button" id="einkImportRowsBtn" type="button">Use pasted bitmap</button>
+                                <button class="eink-secondary-button" id="einkUploadImageBtn" type="button">Upload image</button>
+                                <input class="eink-file-input" id="einkImageFile" type="file" accept="image/*">
+                            </div>
+                            <div class="eink-status">Pasted bitmaps are normalized into 0/1 rows. Uploaded images are sampled to the current width and height.</div>
+                        </div>
+                        <div class="eink-actions">
+                            <button class="eink-button" id="einkSaveBtn" type="button">Sync to e-ink</button>
+                            <span class="eink-status" id="einkStatus">Loading current state...</span>
                         </div>
                     </div>
-                    <div class="form-field">
-                        <div class="field-label">Image enabled</div>
-                        <label class="status-badge idle" style="justify-content:flex-start; width:fit-content; cursor:pointer;">
-                            <input id="einkImageEnabled" type="checkbox" style="margin-right:8px; accent-color:var(--purple);">
-                            Use bitmap image
-                        </label>
-                    </div>
-                    <div class="form-field">
-                        <div class="field-label">Image rows</div>
-                        <textarea class="eink-textarea" id="einkImageRows" spellcheck="false" placeholder="1010... one row per line"></textarea>
-                    </div>
-                    <div class="eink-import-box">
-                        <div class="field-label">Import helper</div>
-                        <textarea class="eink-textarea eink-import-textarea" id="einkImportText" spellcheck="false" placeholder="Paste rows like:\n10101\n11000\n11111"></textarea>
-                        <div class="eink-import-row">
-                            <button class="eink-secondary-button" id="einkImportRowsBtn" type="button">Use pasted bitmap</button>
-                            <button class="eink-secondary-button" id="einkUploadImageBtn" type="button">Upload image</button>
-                            <input class="eink-file-input" id="einkImageFile" type="file" accept="image/*">
+                    <div class="eink-preview">
+                        <div class="eink-preview-header">
+                            <div class="eink-preview-title">Live preview</div>
+                            <div class="eink-preview-meta" id="einkPreviewMeta">-</div>
                         </div>
-                        <div class="eink-status">Pasted bitmaps are normalized into 0/1 rows. Uploaded images are sampled to the current width and height.</div>
-                    </div>
-                    <div class="eink-actions">
-                        <button class="eink-button" id="einkSaveBtn" type="button">Sync to e-ink</button>
-                        <span class="eink-status" id="einkStatus">Loading current state...</span>
+                        <div class="eink-preview-canvas" id="einkPreviewCanvas">
+                            <div class="eink-preview-text" id="einkPreviewText">-</div>
+                            <div class="eink-preview-image" id="einkPreviewImage"></div>
+                        </div>
+                        <div class="eink-preview-note">The backend stores the selected text color and row-encoded bitmap. The ESP32 fetches that state and renders it on the 3-color e-ink panel.</div>
                     </div>
                 </div>
-                <div class="eink-preview">
-                    <div class="eink-preview-header">
-                        <div class="eink-preview-title">Live preview</div>
-                        <div class="eink-preview-meta" id="einkPreviewMeta">-</div>
+                <div class="ov-block">
+                    <div class="ov-lead">Override // e-ink</div>
+                    <div class="ov-row">
+                        <button class="ov-preset danger" type="button" data-target="eink" data-command="show_alert" data-reason="manual: show alert">Show alert</button>
+                        <button class="ov-preset" type="button" data-target="eink" data-command="clear" data-reason="manual: clear sign">Clear sign</button>
                     </div>
-                    <div class="eink-preview-canvas" id="einkPreviewCanvas">
-                        <div class="eink-preview-text" id="einkPreviewText">-</div>
-                        <div class="eink-preview-image" id="einkPreviewImage"></div>
-                    </div>
-                    <div class="eink-preview-note">The backend stores the selected text color and row-encoded bitmap. The ESP32 fetches that state and renders it on the 3-color e-ink panel.</div>
                 </div>
-            </div>
-        </div>
+            </section>
+
+            <!-- ===== CUSTOM COMMAND BENCH ===== -->
+            <section class="block b-bench" id="overridePanel">
+                <div class="bench-title">
+                    <!-- lucide: cpu -->
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect width="16" height="16" x="4" y="4" rx="0" />
+                        <rect width="6" height="6" x="9" y="9" rx="0" />
+                        <path d="M15 2v2" />
+                        <path d="M15 20v2" />
+                        <path d="M2 15h2" />
+                        <path d="M2 9h2" />
+                        <path d="M20 15h2" />
+                        <path d="M20 9h2" />
+                        <path d="M9 2v2" />
+                        <path d="M9 20v2" />
+                    </svg>
+                    Custom command // any target, any command
+                </div>
+                <div class="bench-row">
+                    <select class="eink-select" id="ovTarget">
+                        <option value="traffic">traffic</option>
+                        <option value="barrier">barrier</option>
+                        <option value="streetlight">streetlight</option>
+                        <option value="all">all</option>
+                    </select>
+                    <input class="eink-input" id="ovCommand" type="text" placeholder="command e.g. all_red" style="max-width:200px">
+                    <input class="eink-input" id="ovReason" type="text" placeholder="reason" style="max-width:180px">
+                    <button class="eink-secondary-button" id="forceOverrideBtn" type="button">Force command</button>
+                </div>
+
+                <div class="cmd-ref">
+                    <div class="cmd-ref-head">Available commands per target</div>
+                    <div class="cmd-ref-grid">
+                        <div class="cmd-ref-cell">
+                            <div class="cr-target" style="color:var(--traffic)">traffic</div>
+                            <div class="cr-cmds">all_red &middot; all_green &middot; flashing &middot; normal</div>
+                        </div>
+                        <div class="cmd-ref-cell">
+                            <div class="cr-target" style="color:var(--railroad)">barrier</div>
+                            <div class="cr-cmds">close &middot; open &middot; maintenance</div>
+                        </div>
+                        <div class="cmd-ref-cell">
+                            <div class="cr-target" style="color:var(--orange)">streetlight</div>
+                            <div class="cr-cmds">force_on &middot; force_off &middot; auto</div>
+                        </div>
+                        <div class="cmd-ref-cell">
+                            <div class="cr-target" style="color:var(--yellow)">parking</div>
+                            <div class="cr-cmds">full &middot; free &middot; auto</div>
+                        </div>
+                        <div class="cmd-ref-cell">
+                            <div class="cr-target" style="color:var(--green)">eink</div>
+                            <div class="cr-cmds">show_alert &middot; clear</div>
+                        </div>
+                        <div class="cmd-ref-cell">
+                            <div class="cr-target" style="color:var(--red)">all <small>(emergency)</small></div>
+                            <div class="cr-cmds">use Emergency Corridor button</div>
+                        </div>
+                    </div>
+                    <div class="cmd-ref-foot">Any target + command string is accepted by the backend. A tile obeys once its firmware polls /api/v1/override/active.</div>
+                </div>
+            </section>
+        </main>
     </div>
 
     <script>
@@ -1388,15 +2654,90 @@
             } catch (e) { }
         }
 
+        async function loadOverride() {
+            try {
+                const r = await fetch(API + "/api/v1/override/active");
+                const list = await r.json();
+                const box = document.getElementById("overrideList");
+                if (!list.length) {
+                    box.innerHTML = "<div style='color:var(--text-dim,#888)'>No active overrides. Every hub runs on its own sensor logic.</div>";
+                    document.getElementById("overrideStatus").textContent = "City normal - no overrides active";
+                } else {
+                    box.innerHTML = list.map(o =>
+                        `<div style="display:flex; justify-content:space-between; align-items:center; padding:8px 10px; border-radius:6px; background:rgba(255,255,255,0.04)">
+                            <span><b style="color:var(--red)">${o.command}</b> on <b>${o.target}</b> <span style="color:var(--text-dim,#888)">(${o.reason || "-"})</span></span>
+                            <button class="eink-secondary-button" data-clear="${o.id}" type="button">Clear</button>
+                        </div>`
+                    ).join("");
+                    document.getElementById("overrideStatus").textContent = list.length + " override(s) active - backend is overruling the hubs";
+                    box.querySelectorAll("[data-clear]").forEach(btn =>
+                        btn.addEventListener("click", () => clearOverride(btn.getAttribute("data-clear")))
+                    );
+                }
+                return true;
+            } catch (e) {
+                document.getElementById("overrideStatus").textContent = "Could not load overrides";
+                return false;
+            }
+        }
+
+        async function clearOverride(id) {
+            await fetch(API + "/api/v1/override/" + id + "/clear", { method: "POST" });
+            loadOverride();
+        }
+
+        async function clearAllOverrides() {
+            const r = await fetch(API + "/api/v1/override/active");
+            const list = await r.json();
+            for (const o of list) {
+                await fetch(API + "/api/v1/override/" + o.id + "/clear", { method: "POST" });
+            }
+            loadOverride();
+        }
+
+        async function triggerEmergency() {
+            document.getElementById("overrideStatus").textContent = "Triggering emergency corridor...";
+            await fetch(API + "/api/v1/override/emergency", { method: "POST" });
+            loadOverride();
+        }
+
+        async function forceOverride() {
+            const target = document.getElementById("ovTarget").value;
+            const command = document.getElementById("ovCommand").value.trim();
+            const reason = document.getElementById("ovReason").value.trim();
+            if (!command) {
+                document.getElementById("overrideStatus").textContent = "Enter a command first";
+                return;
+            }
+            await fetch(API + "/api/v1/override", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ target, command, reason }),
+            });
+            document.getElementById("ovCommand").value = "";
+            document.getElementById("ovReason").value = "";
+            loadOverride();
+        }
+
+        async function sendOverride(target, command, reason) {
+            document.getElementById("overrideStatus").textContent = "Forcing " + command + " on " + target + "...";
+            await fetch(API + "/api/v1/override", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ target, command, reason: reason || "manual override" }),
+            });
+            loadOverride();
+        }
+
         async function refresh() {
             const ok = await loadParking();
             conn(ok);
             if (ok) {
                 loadTile("streetlight", "streetlightGrid", renderStreetlight);
                 loadTrafficDedicated();
-                loadTile("railroadCrossing", "railroadGrid", renderRailroad);
                 loadApproachingTrains();
                 loadSpeedCamera();
+                loadOverride();
                 if (!einkInitialised) {
                     loadEinkDisplay();
                 } else {
@@ -1405,6 +2746,12 @@
             }
         }
 
+        document.getElementById("emergencyBtn").addEventListener("click", triggerEmergency);
+        document.getElementById("clearOverridesBtn").addEventListener("click", clearAllOverrides);
+        document.getElementById("forceOverrideBtn").addEventListener("click", forceOverride);
+        document.querySelectorAll(".ov-preset").forEach(b =>
+            b.addEventListener("click", () => sendOverride(b.dataset.target, b.dataset.command, b.dataset.reason))
+        );
         document.getElementById("einkSaveBtn").addEventListener("click", saveEinkDisplay);
         document.getElementById("einkImportRowsBtn").addEventListener("click", () => {
             const rows = normalizeBitmapRows(document.getElementById("einkImportText").value);

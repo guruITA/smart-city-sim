@@ -1,0 +1,98 @@
+# City Sim FastAPI backend: the STATELESS tier. This is the part that autoscales.
+# Every pod is identical and holds no local state, so the HorizontalPodAutoscaler
+# can add or remove pods freely. They all connect to the one postgres Service.
+#
+# The image is the project's own build (backend/Dockerfile), NOT a public image,
+# so it has to be present in the node's containerd image store first. K3s does not
+# read Docker's image store. See README.md "Build and load the image".
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: citysim-api
+  namespace: citysim
+  labels:
+    app: citysim-api
+spec:
+  # Matches the HPA minReplicas so applying this file does not fight the autoscaler.
+  replicas: 2
+  selector:
+    matchLabels:
+      app: citysim-api
+  template:
+    metadata:
+      labels:
+        app: citysim-api
+    spec:
+      # Wait for the database to accept connections before the api starts, so the
+      # pod does not crash-loop on first boot while postgres is still initialising.
+      initContainers:
+        - name: wait-for-db
+          image: busybox:1.36
+          command:
+            - sh
+            - -c
+            - "until nc -z postgres 5432; do echo waiting for postgres; sleep 2; done"
+      containers:
+        - name: api
+          image: citysim-api:0.1
+          # The image is loaded into containerd by hand (or pulled from the GitLab
+          # registry for multi-node). Never try to pull :0.1 from Docker Hub.
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8000
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: citysim-secret
+                  key: DATABASE_URL
+          # Readiness gates traffic: a pod only receives requests once /health is OK.
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3
+          # Liveness restarts a hung pod. This is the orchestrator-level answer to
+          # failure mode 2 from the LG1 Analysis (a process that is up but stuck):
+          # if /health stops answering, Kubernetes kills and recreates the pod.
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
+          # requests.cpu is REQUIRED for the HPA: it scales on CPU used versus this
+          # requested amount. Without a CPU request the autoscaler has no baseline.
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: citysim-api
+  namespace: citysim
+  labels:
+    app: citysim-api
+spec:
+  # NodePort lets you reach the api on the Pi at http://<pi-ip>:30080 WITHOUT
+  # touching port 80, so the live docker-compose backend keeps serving on :80
+  # while you test this in parallel. The cutover to :80 happens later through the
+  # Ingress (06-ingress.yaml), after the live stack is stopped.
+  type: NodePort
+  selector:
+    app: citysim-api
+  ports:
+    - name: http
+      port: 8000
+      targetPort: 8000
+      nodePort: 30080

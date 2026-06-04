@@ -1,0 +1,18 @@
+# City Sim backend on K3s - autoscaling follow-up to Learning Goal 1 (recommendation #5).
+#
+# This whole k8s/ folder is ADDITIVE. It does not touch the live docker-compose
+# backend that the team uses on the Pi (port 80). You test it in parallel on a
+# NodePort (30080) first, and only cut over to port 80 when it is proven and the
+# team agrees. See README.md for the full runbook.
+#
+# Design rule that keeps the shared backend safe (no split brain):
+#   - the STATELESS api is autoscaled (Deployment + HorizontalPodAutoscaler)
+#   - the STATEFUL database is a SINGLE instance, never scaled, with its own volume
+# Many api pods all talk to that one database, so there is only ever one source of
+# truth and no two writers can diverge.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: citysim
+  labels:
+    app.kubernetes.io/part-of: city-sim

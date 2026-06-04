@@ -2,13 +2,15 @@
 
 ## Overview
 
-The City Sim database uses PostgreSQL and contains five tables:
+The City Sim database uses PostgreSQL and contains seven tables:
 
 1. **sensor_readings**: generic table for all sensor data from all tiles
 2. **parking_spots**: realtime state per parking spot
 3. **train**: train detection state for railroad crossing tile
 4. **barrier**: barrier open/close log for railroad crossing tile
 5. **speed_readings**: speed camera measurements from Gurpreet's tile
+6. **traffic**: latest traffic light phase per direction (Wesley's tile)
+7. **overrides**: backend overrides that force a command on a hub (Sprint 4 surprise)
 
 The generic table stores the history (every reading ever received). The parking spots table stores only the current state (last reading per spot). This separation keeps queries fast: the dashboard reads from `parking_spots` (small table), while historical analysis uses `sensor_readings` (large table).
 
@@ -96,6 +98,43 @@ Speed camera measurements from Gurpreet's tile. Each row represents one vehicle 
 | created_at | TIMESTAMP WITH TZ | no | now() | When the measurement was taken |
 
 **Indexes**: `id` (primary)
+
+---
+
+## Table: traffic
+
+Latest traffic light reading per direction from Wesley's tile.
+
+| Column | Type | Nullable | Default | Description |
+|--------|------|----------|---------|-------------|
+| id | INTEGER | no | auto increment | Primary key |
+| sensor_id | VARCHAR | no | | Which traffic light sensor sent this |
+| direction | VARCHAR(10) | no | | Direction the light controls |
+| phase | VARCHAR(20) | no | | Raw phase reported by the tile |
+| interpreted_state | VARCHAR(20) | no | | Normalized state (red, green, amber) |
+| timestamp_ms | INTEGER | no | | Tile timestamp in milliseconds |
+| valid | BOOLEAN | no | | Whether the reading is considered valid |
+| created_at | TIMESTAMP WITH TZ | no | now() | When the reading was received |
+
+**Indexes**: `id` (primary)
+
+---
+
+## Table: overrides
+
+Backend overrides that force a command on a hub, for example all traffic lights to red for an emergency vehicle. A tile polls the active overrides for its target and obeys the forced command until it is cleared. This is the Sprint 4 surprise feature and reverses the normal data flow (backend commands the tiles down instead of tiles pushing data up).
+
+| Column | Type | Nullable | Default | Description |
+|--------|------|----------|---------|-------------|
+| id | INTEGER | no | auto increment | Primary key |
+| target | VARCHAR(50) | no | | Which hub group to override (traffic, barrier, all, ...) |
+| command | VARCHAR(50) | no | | Forced command the tile must obey (all_red, ...) |
+| reason | VARCHAR(200) | yes | "" | Why the override is set (emergency_vehicle, roadworks, ...) |
+| active | BOOLEAN | no | true | Whether the override is currently in force |
+| created_at | TIMESTAMP WITH TZ | no | now() | When the override was set |
+| cleared_at | TIMESTAMP WITH TZ | yes | null | When the override was cleared |
+
+**Indexes**: `id` (primary), `target` (for filtering), `active` (for the polling query)
 
 ---
 

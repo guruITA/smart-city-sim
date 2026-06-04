@@ -1,7 +1,7 @@
 # Realisation - Professionalising the City Sim e-ink display module by transferring the breadboard prototype to perfboard
 
 * **Author:** Thijmen Walter (Embedded & Robotics Engineer Student)
-* **Date:** 31-05-2026
+* **Date:** 03-06-2026
 * **Version:** 1.0
 * **Classification:** Internal
 * **Client:** Mayor Mats Otten

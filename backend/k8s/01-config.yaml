@@ -1,0 +1,15 @@
+# Non-secret database settings, shared by the postgres pod and the api pods.
+# These mirror the defaults in backend/app/database.py and docker-compose.yml so
+# the K3s stack behaves exactly like the Docker stack the team already knows.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: citysim-config
+  namespace: citysim
+data:
+  POSTGRES_USER: "citysim"
+  POSTGRES_DB: "citysim"
+  # The api connects to the database through the postgres Service DNS name inside
+  # the cluster. In Docker this host was "db"; on K3s it is the Service "postgres".
+  DB_HOST: "postgres"
+  DB_PORT: "5432"
