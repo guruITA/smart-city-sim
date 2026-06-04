@@ -178,3 +178,24 @@ The existing health endpoint should be used to check whether the backend is reac
 Secrets should also be managed safely. Database passwords, API tokens, certificate files and private keys should not be hardcoded or committed to Git. Real values should be stored locally or in deployment-specific environment files, while safe templates such as `.env.example` can be shared in the repository.
 
 These reliability points support the HTTPS/TLS design, but they are not the main implementation focus of this document.
+
+## 8. Scope and Limitations
+
+This design focuses on the HTTPS/TLS implementation approach for the existing City Sim backend. It does not redesign the full Docker deployment.
+
+### In Scope
+
+- designing a local HTTPS/TLS prototype;
+- using a self-signed certificate for local testing;
+- keeping the existing HTTP backend available during the test;
+- defining the required certificate files and Uvicorn SSL options;
+- testing the HTTPS endpoint with the health endpoint;
+- documenting NGINX as the preferred future shared deployment approach.
+
+### Out of Scope
+
+- replacing the shared Raspberry Pi deployment directly;
+- creating a production-ready certificate setup;
+- fully configuring NGINX for the shared deployment;
+- redesigning the Docker Compose structure from scratch;
+- implementing Kubernetes, cloud fallback or a full monitoring stack.
