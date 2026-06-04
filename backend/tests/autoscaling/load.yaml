@@ -1,0 +1,39 @@
+# Load generator for the autoscaling test. It runs INSIDE the cluster as five
+# parallel pods, each hammering a real City Sim endpoint that reads the database
+# (/api/v1/parking/status). Database-backed requests use more CPU than /health, so
+# this pushes the api pods' CPU up and makes the HorizontalPodAutoscaler scale out.
+#
+# Start it:   kubectl apply -f tests/autoscaling/load.yaml
+# Watch it:   kubectl get hpa -n citysim -w     (replicas should climb 2 -> 5)
+# Stop it:    kubectl delete job citysim-loadtest -n citysim
+#             (after it stops, the HPA scales back down to 2 within ~2 minutes)
+#
+# This is our own load test against our own endpoint. The reference K3s guide drove
+# load with a single wget loop against an nginx demo; this runs several workers
+# against the actual city API so the numbers mean something for our backend.
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: citysim-loadtest
+  namespace: citysim
+spec:
+  parallelism: 5
+  completions: 5
+  backoffLimit: 0
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: load
+          image: busybox:1.36
+          command:
+            - sh
+            - -c
+            # Hammer the in-cluster Service for ~3 minutes, then exit so the Job
+            # finishes on its own and you can watch the HPA scale back down.
+            - |
+              end=$(( $(date +%s) + 180 ))
+              while [ "$(date +%s)" -lt "$end" ]; do
+                wget -q -O- http://citysim-api:8000/api/v1/parking/status >/dev/null 2>&1
+              done
+              echo "loadtest done"

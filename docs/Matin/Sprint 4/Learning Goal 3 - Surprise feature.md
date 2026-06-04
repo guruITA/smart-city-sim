@@ -46,7 +46,7 @@ The `emergency` endpoint first clears any earlier active traffic override, then 
 
 The override feature is built and integrated as the eighth router and seventh table, with every change checked by `py_compile`. The backend can now overrule a hub, which is both the stated requirement we had not built and the unexpected reversal of control Mats asked us to surprise him with. The Design deliverable is finished and submitted in Portflow.
 
-The end to end flow test result is not in yet, because it has to run against the backend on the Pi. The Realise keeps explicit `[to be filled after Pi test]` placeholders. The plan is to run `python tests/override/override_test.py --url http://145.92.8.137` on the Pi, confirm the emergency-set, tile-poll, clear, and re-check steps all pass, and paste the result into the Realise. The remaining half, making the traffic light tile actually poll and obey `all_red`, is a handover to Wesley's tile firmware and has to be agreed with him, not changed by me. The Reflection and Transfer below are written after the sprint review.
+The end to end flow test result is now in. On 2026-06-03 I ran `override_test.py` against the backend on the Pi and all four steps passed: triggering `/emergency` set an active `all_red` override, a polling tile saw it, clearing it made it inactive, and the re-check showed no active override left. The result is in the Realise document. The remaining half, making the traffic light tile actually poll and obey `all_red`, is a handover to Wesley's tile firmware and has to be agreed with him, not changed by me. The Reflection and Transfer below are written after the sprint review.
 
 ## R - Reflection
 

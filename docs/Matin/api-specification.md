@@ -199,6 +199,50 @@ Get aggregated speed camera statistics.
 
 ---
 
+## Override endpoints (backend overrules a hub)
+
+The backend can force a command on a tile, for example to set all traffic lights to red for an emergency vehicle. A tile polls `GET /override/active` for its target and obeys the forced command until the override is cleared. This reverses the normal data flow: instead of tiles pushing data up, the backend commands the tiles down.
+
+### POST /override/emergency
+
+One call for an emergency corridor: clears any earlier active traffic override, then forces every traffic light to red.
+
+**Response:**
+
+```json
+{
+  "id": 2,
+  "target": "traffic",
+  "command": "all_red",
+  "reason": "emergency_vehicle",
+  "active": true,
+  "created_at": "2026-06-03T13:03:50.265346Z",
+  "cleared_at": null
+}
+```
+
+### POST /override
+
+Force any command on any target (not just traffic). Body: `{ "target": "barrier", "command": "force_down", "reason": "..." }`.
+
+### GET /override/active
+
+List active overrides. Tiles poll this. Optional `?target=traffic` filter.
+
+**Example:** `GET /api/v1/override/active?target=traffic`
+
+### POST /override/{id}/clear
+
+Clear one override so the tile returns to its own sensor logic.
+
+### GET /override
+
+Full override history, newest first, for the dashboard and audit.
+
+The dashboard at `/` has an Emergency Override panel that calls these endpoints: an emergency button, a clear-all button, and a generic force-command form.
+
+---
+
 ## Testing with curl
 
 Send a parking reading:

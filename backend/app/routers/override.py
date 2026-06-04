@@ -68,29 +68,47 @@ def get_override_history(
     return db.query(Override).order_by(Override.created_at.desc()).limit(limit).all()
 
 
-@router.post("/emergency", response_model=OverrideResponse)
+# Emergency state forced on every hub by one call. The backend overrules the
+# whole city at once, not only the traffic lights. The command words are what each
+# tile firmware polls for and obeys; they are easy to tune per tile.
+EMERGENCY_COMMANDS = {
+    "traffic": "all_red",       # stop all traffic
+    "barrier": "close",         # lock the railroad crossing to a safe state
+    "streetlight": "force_on",  # full lighting for visibility
+    "parking": "full",          # mark the lot full so no one enters
+    "eink": "show_alert",       # display an emergency message
+}
+
+
+@router.post("/emergency", response_model=list[OverrideResponse])
 def emergency_corridor(db: Session = Depends(get_db)):
-    """One call for an emergency vehicle: force every traffic light to red.
+    """One call: put the WHOLE city into emergency mode for an emergency vehicle.
 
-    This is the surprise in action. It clears any earlier traffic override, then
-    sets a single city-wide override that all traffic light tiles obey at once.
+    The backend overrules every hub at once, not only the traffic lights. For each
+    target it clears any earlier active override, then sets the emergency command,
+    so the entire city responds to a single button.
     """
-    # Clear earlier active traffic overrides so only one is in force.
-    earlier = db.query(Override).filter(
-        Override.active.is_(True), Override.target == "traffic"
-    ).all()
-    for record in earlier:
-        record.active = False
-        record.cleared_at = datetime.now(timezone.utc)
+    created: list[Override] = []
+    for target, command in EMERGENCY_COMMANDS.items():
+        # Clear earlier active overrides for this target so only the emergency is in force.
+        earlier = db.query(Override).filter(
+            Override.active.is_(True), Override.target == target
+        ).all()
+        for record in earlier:
+            record.active = False
+            record.cleared_at = datetime.now(timezone.utc)
 
-    emergency = Override(
-        target="traffic",
-        command="all_red",
-        reason="emergency_vehicle",
-        active=True,
-    )
-    db.add(emergency)
+        override = Override(
+            target=target,
+            command=command,
+            reason="emergency_vehicle",
+            active=True,
+        )
+        db.add(override)
+        created.append(override)
+
     db.commit()
-    db.refresh(emergency)
-    print("EMERGENCY override: all traffic lights forced to red")
-    return emergency
+    for override in created:
+        db.refresh(override)
+    print(f"EMERGENCY override: whole city forced to emergency state ({len(created)} hubs)")
+    return created

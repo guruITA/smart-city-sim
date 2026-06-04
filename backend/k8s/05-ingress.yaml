@@ -1,0 +1,29 @@
+# Ingress for the CUTOVER phase only. Apply this when you are ready to make K3s
+# the real backend on port 80, AFTER the live docker-compose stack is stopped.
+#
+# It has NO host rule on purpose. The ESP32 tiles are hard-coded to the Pi's IP
+# address (145.92.8.137), not a domain name, so the ingress must answer on the raw
+# IP. A hostless rule matches every host, which is what we want here. This is the
+# main difference from the K3s guide we used as a reference, which routed on a
+# domain name; our tiles have no DNS, so we route on IP.
+#
+# Traefik (the ingress controller built into K3s) binds host port 80. That port is
+# held by the live docker-compose backend during testing, so do not apply this file
+# until the live stack is down. Until then, test on the NodePort (30080).
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: citysim-ingress
+  namespace: citysim
+spec:
+  ingressClassName: traefik
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: citysim-api
+                port:
+                  number: 8000

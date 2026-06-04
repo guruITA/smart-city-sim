@@ -1,0 +1,51 @@
+# The autoscaler. This is what Gerald asked for: scale up and down on load, on its
+# own, no operator. It watches CPU use across the api pods and changes the replica
+# count between minReplicas and maxReplicas.
+#
+# It targets ONLY the stateless api Deployment. It must never target the database.
+#
+# HPA needs the metrics-server, which K3s ships by default, and it needs a CPU
+# request on the api container (set in 04-api.yaml). It reads CPU used as a percent
+# of that request.
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: citysim-api-hpa
+  namespace: citysim
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: citysim-api
+  minReplicas: 2
+  # maxReplicas is capped at 5 on purpose: the Raspberry Pi is small ARM hardware
+  # and each api pod uses about 80 MB. Five pods plus the database plus the system
+  # is a safe ceiling for this Pi. Raise it only on bigger nodes.
+  maxReplicas: 5
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          # Scale up when average CPU passes 50% of the request. For a visible live
+          # demo on the Pi, lower this to about 25-30 so pods spawn under light load
+          # while you watch `kubectl get hpa -w`.
+          averageUtilization: 50
+  behavior:
+    scaleUp:
+      # React fast: no wait, and allow doubling the pods every 15 seconds, so the
+      # city adds capacity quickly when traffic spikes.
+      stabilizationWindowSeconds: 0
+      policies:
+        - type: Percent
+          value: 100
+          periodSeconds: 15
+    scaleDown:
+      # Scale down slowly: wait 2 minutes of calm before removing pods, so a short
+      # dip does not cause flapping (pods added and removed over and over).
+      stabilizationWindowSeconds: 120
+      policies:
+        - type: Percent
+          value: 50
+          periodSeconds: 30
