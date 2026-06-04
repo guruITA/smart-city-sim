@@ -12,34 +12,20 @@ public:
               int screenHeight, int oledAddr, int irActiveState, float sensorDistanceM,
               float speedLimitKmh, unsigned long passTimeoutUs, unsigned long measurementCooldownMs,
               unsigned long resultScreenHoldMs, unsigned long bootScreenHoldMs,
-              unsigned long uiRefreshIntervalMs, const String& camCaptureUrl);
+              unsigned long uiRefreshIntervalMs);
 
   void begin();
   void update();
-  bool isTooFast();
-  float getLastSpeedKmh();
-  String getLastDirection();
 
 private:
   enum MeasureState { IDLE, WAIT_FOR_SECOND_SENSOR, WAIT_FOR_CLEAR };
 
-  enum CameraTriggerState {
-    CAMERA_TRIGGER_IDLE,
-    CAMERA_DISCONNECT_BACKEND_WIFI,
-    CAMERA_CONNECT_TO_CAMERA_WIFI,
-    CAMERA_WAIT_FOR_CAMERA_WIFI,
-    CAMERA_SEND_CAPTURE_REQUEST,
-    CAMERA_DISCONNECT_CAMERA_WIFI,
-    CAMERA_RECONNECT_BACKEND_WIFI,
-    CAMERA_WAIT_FOR_BACKEND_WIFI
-  };
+  enum CameraCaptureState { CAMERA_CAPTURE_IDLE, CAMERA_SEND_CAPTURE_REQUEST };
 
   int _ir1Pin;
   int _ir2Pin;
   int _oledSdaPin;
   int _oledSclPin;
-  int _screenWidth;
-  int _screenHeight;
   int _oledAddr;
   int _irActiveState;
 
@@ -55,8 +41,6 @@ private:
   unsigned long _bootScreenStartMs;
   bool _bootScreenShowing;
 
-  String _camCaptureUrl;
-
   TwoWire _displayWire;
   Adafruit_SSD1306 _display;
   bool _displayReady;
@@ -65,15 +49,19 @@ private:
   int _firstSensor;
   unsigned long _tStartUs;
 
-  bool _lastIr1Active;
-  bool _lastIr2Active;
-
   float _lastSpeedKmh;
-  bool _lastTooFast;
   String _lastDirection;
   unsigned long _lastEventMs;
   unsigned long _lastMeasurementDoneMs;
   unsigned long _lastUiRefresh;
+
+  bool _okMeasurementWaitingForSpeed;
+  float _okMeasurementSpeedKmh;
+  unsigned long _okMeasurementStartMs;
+
+  bool _tooFastMeasurementWaitingForSpeed;
+  float _tooFastMeasurementSpeedKmh;
+  unsigned long _tooFastMeasurementStartMs;
 
   volatile bool _ir1EdgeDetected;
   volatile bool _ir2EdgeDetected;
@@ -82,8 +70,7 @@ private:
 
   static SpeedCamera* _instance;
 
-  CameraTriggerState _cameraTriggerState;
-  unsigned long _cameraTriggerStateStartedMs;
+  CameraCaptureState _cameraCaptureState;
 
   bool _pendingBackendUpdate;
   float _pendingBackendSpeedKmh;
@@ -104,9 +91,9 @@ private:
   void resetMeasurement();
   void processMeasurement(int fromSensor, int toSensor, unsigned long dtUs);
 
-  bool cameraTriggerBusy();
-  void startCameraTriggerOverWiFi();
-  void updateCameraTriggerOverWiFi();
+  bool cameraCaptureBusy();
+  void startCameraCapture();
+  void updateCameraCapture();
   void sendPendingBackendUpdate();
 };
 

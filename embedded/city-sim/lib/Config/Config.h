@@ -14,7 +14,7 @@ namespace Config {
         constexpr const char* WIFI_PASSWORD = "";
 
         /** @brief Base URL for the API endpoint. */
-        constexpr const char* API_BASE_URL = "";
+        constexpr const char* API_BASE_URL = "http://145.92.8.137";
     }
 
     /** @brief Configuration values for the street light. */
@@ -55,13 +55,6 @@ namespace Config {
 
         constexpr unsigned long BOOT_SCREEN_HOLD_MS = 1500;
         constexpr unsigned long UI_REFRESH_INTERVAL_MS = 150;
-
-        constexpr const char* CAMERA_WIFI_SSID = "ESP32CAM_CAPTURE";
-        constexpr const char* CAMERA_WIFI_PASSWORD = "12345678";
-
-        constexpr const char* CAMERA_CAPTURE_URL = "http://192.168.4.1/capture";
-
-        constexpr unsigned long CAMERA_WIFI_CONNECT_TIMEOUT_MS = 3000;
     }
 
     /** @brief Configuration values for the parking system. */

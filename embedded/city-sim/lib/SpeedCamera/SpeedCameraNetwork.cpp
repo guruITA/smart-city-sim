@@ -61,3 +61,43 @@ bool SpeedCameraNetwork::sendMeasurement(float speedKmh, const String& direction
 
   return true;
 }
+
+bool SpeedCameraNetwork::getCameraCaptureUrl(String& captureUrl) {
+  if (!NetworkController::connected()) {
+    Serial.println("SpeedCameraNetwork skipped: WiFi offline.");
+    return false;
+  }
+
+  int httpCode = -1;
+  String responseBody;
+
+  bool ok = httpRequest("GET", "/api/v1/speedcamera/camera/latest", "", httpCode, responseBody);
+
+  if (!ok) {
+    Serial.println("SpeedCameraNetwork getCameraCaptureUrl failed.");
+    return false;
+  }
+
+  int keyIndex = responseBody.indexOf("\"capture_url\":\"");
+  if (keyIndex < 0) {
+    Serial.println("capture_url not found in backend response.");
+    Serial.println(responseBody);
+    return false;
+  }
+
+  int valueStart = keyIndex + String("\"capture_url\":\"").length();
+  int valueEnd = responseBody.indexOf("\"", valueStart);
+
+  if (valueEnd < 0) {
+    Serial.println("Invalid capture_url response.");
+    Serial.println(responseBody);
+    return false;
+  }
+
+  captureUrl = responseBody.substring(valueStart, valueEnd);
+
+  Serial.print("Camera capture URL from backend: ");
+  Serial.println(captureUrl);
+
+  return true;
+}

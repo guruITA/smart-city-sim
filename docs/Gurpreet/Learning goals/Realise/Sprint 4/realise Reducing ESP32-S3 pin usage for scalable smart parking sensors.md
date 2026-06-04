@@ -119,7 +119,7 @@ In the current implementation, the hardware layer changed. The MCP23017 is now u
 
 The most important software changes are:
 
-| Part                  | Previous implementation              | Current implementation                      |
+| Part                  | Previous implementation              | Current implementation                       |
 | --------------------- | ------------------------------------ | -------------------------------------------- |
 | Sensor pin handling   | Direct ESP32-S3 GPIO                 | MCP23017 I/O pins through I2C                |
 | Trigger pins          | One shared trigger pin               | One trigger pin per sensor on MCP23017       |
@@ -821,7 +821,7 @@ The design document already identified important risks: MCP23017 base wiring, I2
 
 The following validation points were used to check the current realisation after the hardware and code were built:
 
-| Validation point                 | Result in the current realisation                                                                                                                           |
+| Validation point                 | Result in the current realisation                                                                                                                            |
 | -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | MCP23017 startup check           | The serial monitor confirms that the MCP23017 starts with the configured I2C address.                                                                        |
 | OLED startup check               | The OLED display starts and shows the parking status screen.                                                                                                 |
