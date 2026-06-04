@@ -5,7 +5,7 @@
 | Title | Analysis Report — Secure and Reliable Embedded-Backend Communication in Smart City Systems |
 | Author | Betül Aydin |
 | Date | 1 June 2026 |
-| Version | 1.1 |
+| Version | 2 |
 | Classification | Internal |
 | Mayor | Mats |
 | Company | Amsterdam University of Applied Sciences |
