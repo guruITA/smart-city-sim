@@ -199,3 +199,23 @@ This design focuses on the HTTPS/TLS implementation approach for the existing Ci
 - fully configuring NGINX for the shared deployment;
 - redesigning the Docker Compose structure from scratch;
 - implementing Kubernetes, cloud fallback or a full monitoring stack.
+
+## 9. Conclusion
+
+This Design report focuses on how HTTPS/TLS can be implemented for the existing City Sim backend. The title and structure make clear that HTTPS/TLS is the main design focus, while Docker is only the existing deployment context.
+
+The design proposes a local HTTPS/TLS prototype using a self-signed certificate, Uvicorn SSL options and a separate HTTPS test service. This allows encrypted communication to be tested without replacing or breaking the current HTTP backend.
+
+The Realisation phase should therefore focus on creating the local certificate files, excluding private keys from Git, starting a separate HTTPS test service and testing the /health endpoint over HTTPS. If the test succeeds, the result can be used as evidence that HTTPS/TLS is technically feasible. For a future shared deployment, HTTPS/TLS should preferably be implemented through an NGINX reverse proxy.
+
+## 10. References
+
+[My Analyse report](Analyse.md)
+
+Kirkland, W. (2026, 1 mei). The essential guide to SSL/TLS security & certificate automation (2026). Urllo. https://www.urllo.com/resources/learn/ssl-tls-security-guide
+
+Pasemko, S. (2026, 1 mei). Redirect HTTP to HTTPS: complete setup guide. Urllo. https://www.urllo.com/resources/learn/redirect-http-to-https
+
+NGINX. (2026, 4 mei). NGINX reverse proxy. NGINX Documentation. https://docs.nginx.com/nginx/admin-guide/web-server/reverse-proxy/
+
+Uvicorn. (z.d.). Deployment - Uvicorn. https://uvicorn.dev/deployment/
