@@ -5,8 +5,8 @@
 | **Author** | Matin Khajehfard, Backend Developer (junior) |
 | **Client** | Gemeente Amsterdam, afdeling Verkeer & Openbare Ruimte (V&OR), represented by the mayor (Mats Otten) |
 | **Target audience** | Technical readers: the City Sim development team (embedded and backend engineers) and the technical lead at the client side |
-| **Date** | May 2026 |
-| **Version** | 0.1 |
+| **Date** | June 2026 |
+| **Version** | 1.1 |
 | **Classification** | Internal |
 | **Company** | The Embedded Alliance |
 | **Learning outcome** | Design (third of the four outcomes: Analysis, Advise, Design, Realise) |
@@ -16,9 +16,9 @@
 ## Table of contents
 
 1. Introduction
-2. Chapter 1 - How do we design the container topology and entry point
-3. Chapter 2 - How do we design detection and recovery
-4. Chapter 3 - How do we design the configuration for the remaining requirements
+2. Chapter 1 - The container topology and the NGINX entry point
+3. Chapter 2 - The healthcheck and restart loop for detection and recovery
+4. Chapter 3 - Native configuration for the remaining requirements
 5. Conclusion
 6. Recommendation
 7. References
@@ -30,15 +30,17 @@
 
 ### Context
 
-City Sim is a miniature smart city built by our team, The Embedded Alliance, for the Studio Smart Cities semester at the Hogeschool van Amsterdam (HvA). Five students each build one physical tile, and every tile sends its sensor data to one shared backend that I maintain. The backend is a FastAPI application with a PostgreSQL database, packaged in Docker, running on one Raspberry Pi on the HvA network (145.92.8.137, port 80). When that backend stops, every tile and the dashboard stop with it.
+City Sim is a miniature smart city built by our team, The Embedded Alliance, for the Studio Smart Cities semester at the Hogeschool van Amsterdam (HvA). Five students each build one physical tile, and every tile sends its sensor data to one shared backend that we maintain. The backend is a FastAPI application with a PostgreSQL database, packaged in Docker, running on one Raspberry Pi on the HvA network (145.92.8.137, port 80). When the backend stops, every tile and the dashboard stop with it.
 
-This is the **Design** outcome for Learning Goal 1. It is the third step in our order Analysis, Advise, Design, Realise. The Analysis researched the seven failure modes. The Advise chose the technologies and weighed the alternatives. This Design takes those chosen technologies and turns them into one concrete architecture: the container topology, the NGINX entry point, the healthcheck and restart loop, and the configuration for memory, database connections, overload, and disk. The Realise document then builds and tests it.
+This is the **Design** outcome for Learning Goal 1. It is the third step in our order Analysis, Advise, Design, Realise. The Analysis researched the seven failure modes. The Advise chose the technologies and weighed the alternatives. The Design takes those chosen technologies and turns them into one concrete architecture: the container topology, the NGINX entry point, the healthcheck and restart loop, and the configuration for memory, database connections, overload, and disk. The Realise document then builds and tests it.
 
-A design document answers design questions, not research questions. So this document does not ask whether to use a healthcheck (the Advise already settled that). It asks how we lay the pieces out so they meet the requirements.
+We write for a technical audience: the City Sim development team (the embedded and backend engineers) and the technical lead on the client side. A detailed, internal, technical document fits that audience because they are the people who build and run the architecture, so they need the topology, the configuration fragments, and the named design notation in full, rather than a high-level picture for the public or a teacher. The author is the junior backend developer who owns the shared backend, which is why he draws the architecture the team will implement. The client is Gemeente Amsterdam, afdeling Verkeer & Openbare Ruimte (V&OR), represented at the mayor delivery by Mats Otten; the client sets the goal but does not implement, so the document stays Internal. The version is 1.1 because we revised it after the second round of writing feedback from mister mayor Gerald Stap.
+
+A design document answers design questions, not research questions. So the document does not ask whether to use a healthcheck, because the Advise already settled that. It asks how we lay the pieces out so they meet the requirements.
 
 ### Requirements translated into the design
 
-Gerald asked us to carry the requirements through and translate them into the design. The table below maps each requirement to the design element that satisfies it. We come back to this table in the conclusion.
+Mister mayor Gerald Stap asked us to carry the requirements through and translate them into the design. The table below maps each requirement to the design element that satisfies it. We come back to the table in the conclusion to confirm that every requirement maps to a design element.
 
 | Source | Requirement | Design element |
 |--------|-------------|----------------|
@@ -46,13 +48,13 @@ Gerald asked us to carry the requirements through and translate them into the de
 | HvA | The city works as a whole | Single stack defined in one docker-compose.yml |
 | Mats (Sprint 3) | Auto-recover within 5 seconds | Docker healthcheck on /health (interval 5s, timeout 3s, retries 1) plus restart policy |
 | Mats (Sprint 3) | Sustainable, not a one-off | Only native Docker, NGINX, and SQLAlchemy features |
-| Gerald (Sprint 3) | Load balancing | NGINX upstream across the API replicas |
-| Gerald (Sprint 3) | Failover | NGINX routes around an unhealthy replica; the healthy replica serves traffic |
-| Gerald (Sprint 3) | Upscale and downscale | docker compose up with the scale flag on the api service |
+| Mister mayor Gerald Stap (Sprint 3) | Load balancing | NGINX upstream across the API replicas |
+| Mister mayor Gerald Stap (Sprint 3) | Failover | NGINX routes around an unhealthy replica; the healthy replica serves traffic |
+| Mister mayor Gerald Stap (Sprint 3) | Upscale and downscale | docker compose up with the scale flag on the api service |
 
 ### Main question
 
-How do we design a clustering and failover architecture for the City Sim backend that meets the 5 second recovery requirement and the load balancing, failover, and scaling the mayor asked for?
+How do we design a clustering and failover architecture for the City Sim backend that meets the 5 second recovery requirement and the load balancing, failover, and scaling mister mayor Gerald Stap asked for?
 
 ### Sub-questions
 
@@ -60,27 +62,21 @@ How do we design a clustering and failover architecture for the City Sim backend
 2. How do we design detection and recovery?
 3. How do we design the configuration for the remaining requirements (memory, database, overload, disk)?
 
-### Method
-
-For each sub-question we present the design as a diagram or a configuration fragment, then explain how the design satisfies the matching requirement. The configuration fragments are the design artifact; the working, tested version lives in the Realise document.
+We work through the three sub-questions in order. For each one we present the design as a named diagram or a configuration fragment, then explain how the design satisfies the matching requirement. The configuration fragments are the design artifact; the working, tested version lives in the Realise document.
 
 ---
 
-## Chapter 1 - How do we design the container topology and entry point
+## Chapter 1 - The container topology and the NGINX entry point
 
-### Context
+The first sub-question asks how we design the container topology and the entry point. Today there is one api container bound directly to port 80, and that single container is the single point of failure. The Advise chose NGINX replicas, so the topology has to change so that traffic enters through NGINX and spreads over several API replicas. We model the new topology as a UML deployment diagram, the standard notation for showing how software runs on hardware nodes (Object Management Group, 2017), so a reviewer can see at a glance which process lives where.
 
-Today there is one api container bound directly to port 80. That single container is the single point of failure. The Advise chose NGINX replicas, so the topology has to change so that traffic enters through NGINX and spreads over several API replicas.
+The new topology has three layers. The ESP32 tiles and the dashboard talk to NGINX on port 80, NGINX balances over the API replicas, and the replicas share the one PostgreSQL database. The deployment diagram below shows the three layers on the single Raspberry Pi node.
 
-### Design
+![UML deployment diagram of the NGINX, API replicas, and database topology](failoverTopology.png)
 
-The new topology has three layers. The ESP32 tiles and the dashboard talk to NGINX on port 80. NGINX balances over the API replicas. The replicas share the one PostgreSQL database.
+*Figure 1. UML deployment diagram (OMG, 2017) of the clustered backend on one Raspberry Pi.*
 
-![alt text](failoverTopology.png)
-
-NGINX now owns port 80. The api service no longer publishes a port; it is only reachable inside the Docker network, which NGINX reaches by the service name. PostgreSQL stays internal as before.
-
-The NGINX upstream lists the api service. Docker resolves the service name to all of its replicas, so NGINX balances over them and skips one that does not answer. The relevant fragment:
+In the diagram NGINX now owns port 80. The api service no longer publishes a port; it is only reachable inside the Docker network, which NGINX reaches by the service name, and PostgreSQL stays internal as before. The NGINX upstream lists the api service, and Docker resolves the service name to all of its replicas, so NGINX balances over them and skips one that does not answer. The relevant fragment:
 
 ```nginx
 upstream citysim_api {
@@ -96,23 +92,17 @@ server {
 }
 ```
 
-The `proxy_next_upstream` line is what gives failover: if one replica returns an error or times out, NGINX retries the request on another replica, so the user does not see the failure.
+The `proxy_next_upstream` line is what gives failover: if one replica returns an error or times out, NGINX retries the request on another replica, so the user does not see the failure (NGINX, 2024).
 
 ### Sub-conclusion
 
-The topology becomes NGINX on port 80 in front of two or more internal API replicas that share one database. This satisfies the shared-backend, load balancing, and failover requirements.
+The topology becomes NGINX on port 80 in front of two or more internal API replicas that share one database. The topology satisfies the shared-backend, load balancing, and failover requirements.
 
 ---
 
-## Chapter 2 - How do we design detection and recovery
+## Chapter 2 - The healthcheck and restart loop for detection and recovery
 
-### Context
-
-Failover keeps the city online during a problem, but we still have to detect a hung replica and bring it back, inside 5 seconds. This is the healthcheck and restart loop from the Advise.
-
-### Design
-
-Each api replica gets a Docker healthcheck that calls its own /health endpoint. The endpoint already exists in main.py and returns a simple status. The design fragment for the api service:
+The second sub-question asks how we design detection and recovery. Failover keeps the city online during a problem, but we still have to detect a hung replica and bring it back inside 5 seconds, which is the healthcheck and restart loop the Advise chose. The design gives each api replica a Docker healthcheck that calls its own /health endpoint, an endpoint that already exists in main.py and returns a simple status (Docker Inc., 2024). The design fragment for the api service:
 
 ```yaml
   api:
@@ -133,7 +123,7 @@ Each api replica gets a Docker healthcheck that calls its own /health endpoint. 
       start_period: 10s
 ```
 
-The recovery loop works like this:
+The recovery loop runs in five steps. Docker calls /health every 5 seconds, and if a reply does not arrive within the 3 second timeout and the single retry also fails, Docker marks the replica unhealthy. Then `restart: unless-stopped` restarts the unhealthy replica, and while it restarts NGINX sends traffic to the healthy replica so the city stays online. When the replica passes /health again, it rejoins the pool:
 
 1. Docker calls /health every 5 seconds.
 2. If a reply does not arrive within the 3 second timeout, and the single retry also fails, Docker marks the replica unhealthy.
@@ -143,21 +133,21 @@ The recovery loop works like this:
 
 The `start_period` of 10 seconds gives a replica time to boot without being marked unhealthy too early. The timing of one interval plus the restart stays inside the 5 second target; the Realise document measures the real number.
 
+We draw the same loop as a message sequence over time in Figure 2. The notation is a UML sequence diagram (Object Management Group, 2017), which reads top to bottom: Docker probes `/health`, a hung replica is detected and restarted, and NGINX keeps the city online by serving from the healthy replica while the sick one comes back.
+
+![UML sequence diagram of the healthcheck and failover loop, after Object Management Group (2017)](failoverSequence.png)
+
 ### Sub-conclusion
 
-A per-replica Docker healthcheck on /health, with a 5 second interval and a single retry, plus `restart: unless-stopped`, detects a hung replica and restarts it within the target, while NGINX keeps the city online.
+A per-replica Docker healthcheck on /health, with a 5 second interval and a single retry, plus `restart: unless-stopped`, detects a hung replica and restarts it within the target, while NGINX keeps the city online. The loop answers the detection and recovery sub-question.
 
 ---
 
-## Chapter 3 - How do we design the configuration for the remaining requirements
+## Chapter 3 - Native configuration for the remaining requirements
 
-### Context
+The third sub-question asks how we design the configuration for the remaining requirements: memory pressure, a dropped database connection, overload, and a full disk that the Analysis and Advise covered. Each one becomes a small piece of native configuration in the design, so no requirement is left without a design element.
 
-The Analysis and Advise also covered memory pressure, a dropped database connection, overload, and a full disk. Each one becomes a small piece of configuration in this design.
-
-### Design
-
-**Memory limits.** Both services get a memory limit so one cannot starve the other on the Pi.
+The first element is the memory limit. Both services get a memory limit so one cannot starve the other on the Pi (Docker Inc., 2024).
 
 ```yaml
     deploy:
@@ -168,7 +158,7 @@ The Analysis and Advise also covered memory pressure, a dropped database connect
 
 The exact numbers are tuned in the Realise; the design point is that every container has a cap.
 
-**Database connection resilience.** The SQLAlchemy engine in database.py is configured to check and recycle connections.
+The second element is database connection resilience. The SQLAlchemy engine in database.py is configured to check and recycle connections (SQLAlchemy, 2024).
 
 ```python
 engine = create_engine(
@@ -178,9 +168,7 @@ engine = create_engine(
 )
 ```
 
-`pool_pre_ping` tests a connection before use and reconnects a dead one. `pool_recycle` drops a connection after 30 minutes so it never goes stale.
-
-**Overload protection.** NGINX limits how fast one client can post, so a misbehaving ESP32 cannot flood the database the way it did before.
+`pool_pre_ping` tests a connection before use and reconnects a dead one, and `pool_recycle` drops a connection after 30 minutes so it never goes stale. The third element is overload protection: NGINX limits how fast one client can post, so a misbehaving ESP32 cannot flood the database the way it did before (NGINX, 2024).
 
 ```nginx
 limit_req_zone $binary_remote_addr zone=tiles:10m rate=10r/s;
@@ -191,17 +179,21 @@ location / {
 }
 ```
 
-**Disk cleanup.** A small scheduled job deletes sensor_readings older than a set age, so the pgdata volume on the SD card does not grow forever. The design keeps this as a priority-2 element.
+The fourth element is disk cleanup. A small scheduled job deletes sensor_readings older than a set age, so the pgdata volume on the SD card does not grow forever, and the design keeps the cleanup as a priority-2 element.
 
 ### Sub-conclusion
 
-Memory limits, `pool_pre_ping` with `pool_recycle`, NGINX `limit_req`, and a scheduled cleanup each translate one remaining requirement into native configuration.
+Memory limits, `pool_pre_ping` with `pool_recycle`, NGINX `limit_req`, and a scheduled cleanup each translate one remaining requirement into native configuration, which answers the third sub-question.
 
 ---
 
 ## Conclusion
 
-This design answers the main question. The backend becomes an NGINX entry point on port 80 in front of two or more API replicas that share one PostgreSQL database. Detection and recovery come from a per-replica Docker healthcheck on /health with `restart: unless-stopped`, which restarts a hung replica within 5 seconds while NGINX routes around it for failover. The remaining requirements become small native settings: memory limits, `pool_pre_ping` with `pool_recycle`, NGINX `limit_req`, and a scheduled cleanup. Every row in the requirements table from the introduction now maps to a concrete design element, so the design is traceable to the HvA brief and to both mayor deliveries.
+We set out to answer how we design a clustering and failover architecture for the City Sim backend that meets the 5 second recovery requirement and the load balancing, failover, and scaling mister mayor Gerald Stap asked for.
+
+First, the container topology becomes an NGINX entry point on port 80 in front of two or more API replicas that share one PostgreSQL database, shown as a UML deployment diagram. Second, detection and recovery come from a per-replica Docker healthcheck on /health with `restart: unless-stopped`, which restarts a hung replica within 5 seconds while NGINX routes around it for failover. Third, the remaining requirements become small native settings: memory limits, `pool_pre_ping` with `pool_recycle`, NGINX `limit_req`, and a scheduled cleanup.
+
+Together the three parts form one architecture that is traceable to the requirements. We checked the requirements table from the introduction against the design, and every row, from serving all five tiles to surviving a full disk, now maps to a concrete design element, which Appendix B lists in full. So the answer to the main question is the NGINX-plus-replicas architecture with the healthcheck, the restart policy, and the native settings, an architecture that meets the 5 second recovery target and the load balancing, failover, and scaling the client and mister mayor Gerald Stap asked for, and that stays traceable to the HvA brief and to both mayor deliveries.
 
 ---
 
@@ -219,19 +211,22 @@ The full docker-compose.yml is sketched in Appendix A as the starting point for 
 
 ## References
 
-- Docker Inc. (2024a). *Dockerfile reference: HEALTHCHECK* [Online]. Retrieved May 2026, from https://docs.docker.com/reference/dockerfile/#healthcheck
-- Docker Inc. (2024b). *Compose file reference: restart and deploy.resources* [Online]. Retrieved May 2026, from https://docs.docker.com/reference/compose-file/
-- NGINX. (2024). *Using nginx as HTTP load balancer* [Online]. Retrieved May 2026, from https://nginx.org/en/docs/http/load_balancing.html
-- Nygard, M. T. (2018). *Release It! Design and deploy production-ready software* (2nd ed.) [Print]. Pragmatic Bookshelf.
-- Otten, M. (2026). *Sprint 3 mayor delivery feedback* [Verbal feedback, offline]. Hogeschool van Amsterdam.
-- SQLAlchemy. (2024). *Engine configuration: pool_pre_ping* [Online]. Retrieved May 2026, from https://docs.sqlalchemy.org/en/20/core/pooling.html
-- Stap, G. (2026). *Sprint 4 feedback on Smart City deliverables* [Verbal feedback, offline]. Hogeschool van Amsterdam.
+- Docker Inc. (2024). *Compose Deploy Specification: resources*. [Online]. Retrieved June 5, 2026, from https://docs.docker.com/reference/compose-file/deploy/
+- Docker Inc. (2024). *Dockerfile reference: HEALTHCHECK instruction*. [Online]. Retrieved June 5, 2026, from https://docs.docker.com/reference/dockerfile/#healthcheck
+- NGINX. (2024). *Using nginx as HTTP load balancer*. [Online]. Retrieved June 5, 2026, from https://nginx.org/en/docs/http/load_balancing.html
+- Nygard, M. T. (2018). *Release It! Design and deploy production-ready software* (2nd ed.). Pragmatic Bookshelf. [Print].
+- Object Management Group. (2017). *OMG Unified Modeling Language (OMG UML), version 2.5.1*. [Online]. Retrieved June 5, 2026, from https://www.omg.org/spec/UML/2.5.1/
+- Otten, M. (2026, May 20). *Sprint 4 mayor delivery feedback (Mats)*. Hogeschool van Amsterdam. [Verbal, offline].
+- SQLAlchemy. (2024). *Connection pooling: Dealing with disconnects (pool_pre_ping)*. [Online]. Retrieved June 5, 2026, from https://docs.sqlalchemy.org/en/20/core/pooling.html
+- Stap, G. (2026, May 20). *Sprint 4 feedback on Smart City deliverables (mister mayor Gerald Stap)*. Hogeschool van Amsterdam. [Verbal, offline].
 
 ---
 
 ## Appendix
 
 ### Appendix A - Target docker-compose.yml (design sketch)
+
+The fragment below pulls the whole design into one Compose file as the starting point for the build. It shows the NGINX entry, the two API replicas with the healthcheck and memory limit, and the database with its volume. The Realise document reports the honest changes the real build forced on the sketch.
 
 ```yaml
 services:
@@ -287,6 +282,8 @@ volumes:
 
 ### Appendix B - Requirement to design traceability
 
+The table below is the full trace from each requirement to its design element and the chapter that designs it. We use it in the conclusion to confirm that no requirement is left without a design element.
+
 | Requirement | Design element | Document section |
 |-------------|----------------|------------------|
 | Serve all five tiles | NGINX on port 80 in front of replicas | Chapter 1 |
@@ -298,3 +295,7 @@ volumes:
 | Survive DB drop | pool_pre_ping, pool_recycle | Chapter 3 |
 | Survive overload | NGINX limit_req | Chapter 3 |
 | Survive full disk | scheduled cleanup | Chapter 3 |
+
+### Appendix C - Use of AI
+
+We used an AI assistant (Claude) as a writing aid for this document. It helped restructure the text to the agreed feedback standard, check the APA formatting and the in-text citations, and rephrase passages for clarity. It did not produce the engineering work or the measured results: the architecture, the choices, the code, and the test numbers are our own and were reviewed by the author, who is responsible for the content.

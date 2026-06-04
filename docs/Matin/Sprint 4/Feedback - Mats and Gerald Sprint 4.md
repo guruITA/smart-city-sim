@@ -163,6 +163,61 @@ These are fixed across every Sprint 4 deliverable so the documents stay consiste
 
 ---
 
+## Gerald round-2 feedback (2026-05-20)
+
+Mister mayor Gerald Stap gave a second round of writing feedback while reading the Sprint 3 and Sprint 4 documents. It is about how we write, so most of it lands on all four outcomes. The full standard and the approved source list live in the revision guide: [_revision-guide-gerald-round2.md](_revision-guide-gerald-round2.md). The 17 round-2 points in plain words are below, grouped the same way as the guide.
+
+### Applies to all four outcomes (the writing itself)
+
+1. Name the target audience inside the running text of the introduction, not only in the metadata table, and say why a detailed internal technical document fits that audience.
+2. Weave the document properties (author and role, client, classification, version) into the introduction so the reader sees why the document is set up the way it is.
+3. The main question and the sub-questions start with "how" or "why", never "what". The choice stays out of the question.
+4. Chapter titles are statements, not questions, and do not repeat the sub-question word for word.
+5. Cite in the text in APA, right next to each claim or choice, not only in the reference list.
+6. Use stable, academic sources: a permalink or version-pinned page, or a book or paper, over a random web page.
+7. No vague pointer words. Do not open a sentence with "this", "that", "these", or "it" without naming the thing.
+8. Findings read as a story with a beginning, middle, and end, not a bare list. The whole document is a story too.
+9. The conclusion walks the sub-conclusions in order and builds to the main answer, and names the main question again.
+10. Add an appendix that states an AI assistant was used and how, honestly and specifically.
+11. Give full dates in references (the day too), for retrieval dates and dated feedback.
+12. Refer to Gerald as "mister mayor Gerald Stap" (then "mister mayor") in the running text.
+13. Where it fits, make an appendix a clear numbered step-by-step plan a colleague can follow.
+
+### Extra for Advise
+
+14. The Advise must choose and convince: pick the option and argue for it with reasons tied to the criteria, do not stay neutral.
+15. Bring the decision or options table into the text: introduce it, then justify the chosen row in prose underneath it.
+
+### Extra for Design
+
+16. Name the design method each diagram uses (UML deployment diagram, ERD, DFD) and cite its source, show the diagram itself, and state that the design meets the requirements.
+
+### Extra for Realise
+
+17. Show a test scenario table (scenario, steps, expected result, actual result, pass/fail) before the measured results.
+
+### Mapping: round-2 points to outcomes
+
+| # | Feedback (short) | Deliverable / outcome |
+|---|------------------|------------------------|
+| 1 | Target audience named in the intro story | All |
+| 2 | Document properties woven into the intro | All |
+| 3 | Main and sub-questions start with how/why | All |
+| 4 | Chapter titles are statements, not questions | All |
+| 5 | In-text APA citations next to each claim | All |
+| 6 | Stable, academic, version-pinned sources | All |
+| 7 | No vague pointer words without a noun | All |
+| 8 | Findings read as a story, not a list | All |
+| 9 | Conclusion builds from the sub-conclusions | All |
+| 10 | Appendix on AI use | All |
+| 11 | Full dates in references | All |
+| 12 | Call Gerald "mister mayor Gerald Stap" | All + STARRT |
+| 13 | Appendix as a numbered step-by-step plan | Realise (mainly) |
+| 14 | Advise must choose and convince | Advise |
+| 15 | Decision table introduced and justified in prose | Advise |
+| 16 | Name the design method, cite it, map design to requirements | Design |
+| 17 | Test scenario table before the results | Realise |
+
 ## How I will submit this in Portflow
 
 Per learning group review (Analysis / Advise / Design / Realise), I attach the feedback rows that map to that outcome:

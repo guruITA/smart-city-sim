@@ -8,7 +8,9 @@ How do I make sure sensor data is never lost, even when the database crashes or 
 
 PostgreSQL runs in a Docker container with a named volume. If the container crashes, the volume survives. But if the volume gets corrupted, the SD card fails, or someone runs `docker compose down -v` by accident, all historical sensor data is gone. There are no backups, no export scripts, and no way to restore.
 
-Gerald said in our Sprint 4 conversation: database upgrade and backup, make sure data is never lost. Right now we have zero protection against data loss.
+This goal builds on the Sprint 4 feedback. In our Sprint 4 conversation mister mayor Gerald Stap said: database upgrade and backup, make sure data is never lost. Mats Otten added the same durability point, asking us to research how data loss happens, how to prevent it, and how to catch it. Right now we have zero protection against data loss, so this learning goal takes that Sprint 4 feedback as its starting point.
+
+Backend reliability is the challenge that runs across this whole sprint. Learning Goal 1 keeps the backend itself online, this goal keeps the stored data safe, and Learning Goal 3 lets the backend take control of the city, so we reuse the same "keep the backend dependable" thread in more than one outcome.
 
 ## T - Task
 
@@ -36,7 +38,7 @@ The built backup scripts, cron jobs, tested restore procedure, and upgrade verif
 
 ## A - Action
 
-We followed the same four outcomes. In the **Analysis** we went through our own `docker-compose.yml` and listed six realistic data loss scenarios: SD card failure (highest impact, the only copy lives on the card), power loss mid-write, an accidental `docker compose down -v`, accidental deletion, file corruption, and a failed PostgreSQL upgrade. Our setup protected against none of them. In the **Advise** we weighed the options and chose `pg_dump` (logical, compressed) over a raw file copy, a two-tier store with every dump copied off the Pi, `cron` for scheduling, and a dump-restore-verify-switch path for Gerald's upgrade. In the **Design** we laid out the backup flow, the retention table, and the exact restore and upgrade procedures, keeping every requirement traceable.
+We followed the same four outcomes. In the **Analysis** we went through our own `docker-compose.yml` and listed six realistic data loss scenarios: SD card failure (highest impact, the only copy lives on the card), power loss mid-write, an accidental `docker compose down -v`, accidental deletion, file corruption, and a failed PostgreSQL upgrade. Our setup protected against none of them. In the **Advise** we weighed the options and chose `pg_dump` (logical, compressed) over a raw file copy, a two-tier store with every dump copied off the Pi, `cron` for scheduling, and a dump-restore-verify-switch path for the upgrade mister mayor Gerald Stap asked for. In the **Design** we laid out the backup flow, the retention table, and the exact restore and upgrade procedures, keeping every requirement traceable.
 
 In the **Realise** we built three scripts in `backend/scripts/`, all running against the existing `db` container so no extra service is added:
 
@@ -50,7 +52,7 @@ One practical fix came up during the build: the Windows mount wrote the scripts 
 
 The three scripts are built and syntax-checked. `backup.sh` produces one timestamped compressed dump and copies it off the Pi, `restore.sh` rebuilds the data into a throwaway database and prints the row counts so a backup is proven usable and not just present, and `check_backup.sh` catches a silently failed job. A single `cron` entry runs the backup daily. The Analysis, Advise, and Design deliverables are finished and submitted in Portflow.
 
-The measured results are now in. On 2026-06-03 I ran the backup against the live database on the Pi (it kept serving, because `pg_dump` does not lock writes), then restored the dump into a throwaway `citysim_verify` database: the row counts matched exactly (183 sensor readings and 4 parking spots, source and restored), and the throwaway database was dropped afterwards so the live data was never touched. The freshness check passes on a fresh dump and correctly fails when the newest dump is forced too old or too small. The tier-2 off-Pi copy also worked. The numbers are in the Realise document. The Reflection and Transfer below are written after the sprint review.
+The measured results are now in. On 2026-06-03 we ran the backup against the live database on the Pi (it kept serving, because `pg_dump` does not lock writes), then restored the dump into a throwaway `citysim_verify` database: the row counts matched exactly (183 sensor readings and 4 parking spots, source and restored), and the throwaway database was dropped afterwards so the live data was never touched. The freshness check passes on a fresh dump and correctly fails when the newest dump is forced too old or too small. The tier-2 off-Pi copy also worked. The numbers are in the Realise document. The Reflection and Transfer below are written after the sprint review.
 
 ## R - Reflection
 
@@ -62,10 +64,14 @@ The measured results are now in. On 2026-06-03 I ran the backup against the live
 
 ## References
 
-Matin. (2026). Analysis: Data persistence risks and backup strategies [Analysis deliverable]. [Analysis - Data persistence risks and backup strategies](Analysis%20-%20Data%20persistence%20risks%20and%20backup%20strategies.md)
+Khajehfard, M. (2026). *Analysis: Data persistence risks and backup strategies* [Analysis deliverable]. Hogeschool van Amsterdam. [Online]. [Analysis - Data persistence risks and backup strategies](Analysis%20-%20Data%20persistence%20risks%20and%20backup%20strategies.md)
 
-Matin. (2026). Advise: Backup and persistence technology choices [Advise deliverable]. [Advise - Backup and persistence technology choices](Advise%20-%20Backup%20and%20persistence%20technology%20choices.md)
+Khajehfard, M. (2026). *Advise: Backup and persistence technology choices* [Advise deliverable]. Hogeschool van Amsterdam. [Online]. [Advise - Backup and persistence technology choices](Advise%20-%20Backup%20and%20persistence%20technology%20choices.md)
 
-Matin. (2026). Design: Backup and restore architecture [Design deliverable]. [Design - Backup and restore architecture](Design%20-%20Backup%20and%20restore%20architecture.md)
+Khajehfard, M. (2026). *Design: Backup and restore architecture* [Design deliverable]. Hogeschool van Amsterdam. [Online]. [Design - Backup and restore architecture](Design%20-%20Backup%20and%20restore%20architecture.md)
 
-Matin. (2026). Realise: Database backup implementation [Realise deliverable]. [Realise - Database backup implementation](Realise%20-%20Database%20backup%20implementation.md)
+Khajehfard, M. (2026). *Realise: Database backup implementation* [Realise deliverable]. Hogeschool van Amsterdam. [Online]. [Realise - Database backup implementation](Realise%20-%20Database%20backup%20implementation.md)
+
+Otten, M. (2026, May 20). *Sprint 4 mayor delivery feedback (Mats)*. Hogeschool van Amsterdam. [Verbal, offline].
+
+Stap, G. (2026, May 20). *Sprint 4 feedback on Smart City deliverables (mister mayor Gerald Stap)*. Hogeschool van Amsterdam. [Verbal, offline].

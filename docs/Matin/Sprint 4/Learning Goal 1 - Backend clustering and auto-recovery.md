@@ -8,7 +8,9 @@ How do I make the backend recover automatically when it crashes, so the city sta
 
 The backend runs as a single Docker container on the Raspberry Pi (145.92.8.137:80). If that container crashes, the entire city goes down. All 5 tiles lose their API, the dashboard goes blank, and sensor data gets lost until someone SSHs in and restarts it manually.
 
-In the Sprint 3 mayor delivery, Mats said: "cluster the backend, if it crashes, auto-fix within 5 seconds." Gerald added: do something with load balancing, failover, upscale and downscale. Right now we have none of that.
+This goal builds directly on the Sprint 3 mayor delivery feedback. At that delivery Mats Otten, the client's representative, said: "cluster the backend, if it crashes, auto-fix within 5 seconds." Mister mayor Gerald Stap added: do something with load balancing, failover, upscale and downscale. Right now we have none of that, so this learning goal takes that Sprint 3 feedback as its starting point.
+
+Backend reliability is the challenge that runs across this whole sprint. It shows up here as auto-recovery, again in Learning Goal 2 as never losing the stored data, and again in Learning Goal 3 where the backend takes control of the city, so we reuse the same "keep the backend dependable" thread in more than one outcome.
 
 ## T - Task
 
@@ -62,7 +64,7 @@ Building and deploying it forced three honest corrections versus the Design: `py
 
 The cluster setup is built and starts with `docker compose -f docker-compose.cluster.yml up --build --scale api=2`. NGINX owns port 80, balances over the replicas, and routes around an unhealthy one, so a single hung replica no longer takes the city down. The Analysis, Advise, and Design deliverables are finished and submitted in Portflow.
 
-The measured results are now in, and the cluster is live. On 2026-06-03 I ran the resilience tests on the Pi and then, with the team, deployed the cluster as the real backend on port 80. The deploy reused the existing database volume so the live data was preserved (183 readings and 4 parking spots before and after). The cluster served concurrent load with zero errors and a 5 minute soak showed no memory leak (replica RSS flat at ~79 MB). Failover needed one honest fix the live test forced: the first runs were inconsistent (sometimes ~4 seconds of errors) because NGINX waited out the full connect timeout on a dead replica, so I lowered `proxy_connect_timeout` to 1 second with a retry. After that, three replica kills in a row gave zero failed requests. A genuinely crashed process is also auto-restarted by the restart policy in about a second. Both recovery paths are inside the 5 second target Mats asked for. The numbers are in the Realise document. The Reflection and Transfer below are written after the sprint review.
+The measured results are now in, and the cluster is live. On 2026-06-03 we ran the resilience tests on the Pi and then, with the team, deployed the cluster as the real backend on port 80. The deploy reused the existing database volume so the live data was preserved (183 readings and 4 parking spots before and after). The cluster served concurrent load with zero errors and a 5 minute soak showed no memory leak (replica RSS flat at ~79 MB). Failover needed one honest fix the live test forced: the first runs were inconsistent (sometimes ~4 seconds of errors) because NGINX waited out the full connect timeout on a dead replica, so we lowered `proxy_connect_timeout` to 1 second with a retry. After that, three replica kills in a row gave zero failed requests. A genuinely crashed process is also auto-restarted by the restart policy in about a second. Both recovery paths are inside the 5 second target Mats asked for. The numbers are in the Realise document. The Reflection and Transfer below are written after the sprint review.
 
 ## R - Reflection
 
@@ -74,10 +76,14 @@ The measured results are now in, and the cluster is live. On 2026-06-03 I ran th
 
 ## References
 
-Matin. (2026). Analysis: Backend failure modes and prevention strategies [Analysis deliverable]. [Analysis - Backend failure modes and prevention strategies](Analysis%20-%20Backend%20failure%20modes%20and%20prevention%20strategies.md)
+Khajehfard, M. (2026). *Analysis: Backend failure modes and prevention strategies* [Analysis deliverable]. Hogeschool van Amsterdam. [Online]. [Analysis - Backend failure modes and prevention strategies](Analysis%20-%20Backend%20failure%20modes%20and%20prevention%20strategies.md)
 
-Matin. (2026). Advise: Backend resilience technology choices [Advise deliverable]. [Advise - Backend resilience technology choices](Advise%20-%20Backend%20resilience%20technology%20choices.md)
+Khajehfard, M. (2026). *Advise: Backend resilience technology choices* [Advise deliverable]. Hogeschool van Amsterdam. [Online]. [Advise - Backend resilience technology choices](Advise%20-%20Backend%20resilience%20technology%20choices.md)
 
-Matin. (2026). Design: Backend clustering and failover architecture [Design deliverable]. [Design - Backend clustering and failover architecture](Design%20-%20Backend%20clustering%20and%20failover%20architecture.md)
+Khajehfard, M. (2026). *Design: Backend clustering and failover architecture* [Design deliverable]. Hogeschool van Amsterdam. [Online]. [Design - Backend clustering and failover architecture](Design%20-%20Backend%20clustering%20and%20failover%20architecture.md)
 
-Matin. (2026). Realise: Backend clustering implementation [Realise deliverable]. [Realise - Backend clustering implementation](Realise%20-%20Backend%20clustering%20implementation.md)
+Khajehfard, M. (2026). *Realise: Backend clustering implementation* [Realise deliverable]. Hogeschool van Amsterdam. [Online]. [Realise - Backend clustering implementation](Realise%20-%20Backend%20clustering%20implementation.md)
+
+Otten, M. (2026). *Sprint 3 mayor delivery feedback (Mats)*. Hogeschool van Amsterdam. [Verbal, offline].
+
+Stap, G. (2026). *Sprint 3 mayor delivery feedback (mister mayor Gerald Stap)*. Hogeschool van Amsterdam. [Verbal, offline].
