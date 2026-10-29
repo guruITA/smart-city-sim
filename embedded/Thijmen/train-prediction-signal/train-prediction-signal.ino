@@ -1,6 +1,5 @@
 #include <Arduino.h>
 #include <ESP32Servo.h>
-#include <ESP32Servo.h>
 
 // Output LED pins (warning lights)
 #define LED_1 37
@@ -38,7 +37,6 @@ State currentState = IDLE;
 
 Servo servo;
 
-Servo servo;
 
 const unsigned int safetyMargin = 5000;
 

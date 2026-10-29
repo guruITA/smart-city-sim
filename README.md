@@ -195,7 +195,32 @@ The sketches use **Arduino CLI sketch profiles** (`sketch.yaml`). A profile pins
    | `embedded/city-sim-e-ink-only` | ESP32-C3 |
    | `embedded/Parking`, `embedded/hello-world`, `embedded/Gurpreet/streetlight`, `embedded/Gurpreet/speed_camera/*` | ESP32-S3 / ESP32-CAM |
 
-   The sketches in the personal folders without a `sketch.yaml` are prototypes; open them in the Arduino IDE and pick an ESP32-S3 board.
+   The sketches in the personal folders without a `sketch.yaml` are each member's own prototypes. They all build for a generic ESP32-S3 with core 3.3.7:
+
+   ```bash
+   arduino-cli core install esp32:esp32@3.3.7
+   arduino-cli lib install FastLED@3.10.3 ESP32Servo@3.1.3      # only the libraries the sketch uses
+   arduino-cli compile --fqbn esp32:esp32:esp32s3 embedded/Wesley/traffic_light
+   arduino-cli upload  --fqbn esp32:esp32:esp32s3 -p COM9 embedded/Wesley/traffic_light
+   ```
+
+   In the Arduino IDE, pick the board **ESP32S3 Dev Module** and install the same libraries.
+
+   | Prototype | What it is | Libraries | Before you build |
+   |-----------|-----------|-----------|------------------|
+   | `Thijmen/blink-alternating` | two LEDs blinking in turn | — | — |
+   | `Thijmen/blink-rgb-led` | onboard RGB LED with the BOOT button | FastLED | — |
+   | `Thijmen/train-prediction-signal` | railroad crossing with lights, buzzer and barrier | ESP32Servo | — |
+   | `Wesley/blink`, `blink_switch`, `flash_button` | onboard RGB LED and BOOT button tests | FastLED | — |
+   | `Wesley/traffic_light` | one traffic light | — | — |
+   | `Wesley/crossroad_traffic_light` | four-way crossroads on an MCP23017 + ULN2803 | — | — |
+   | `Wesley/crossroad_traffic_light_with_sensor`, `..._v2` | crossroads with a KY-021 car sensor that posts to the backend | — | create `secrets.h` (see step 1) |
+   | `Wesley/ky021_sensor_test` | KY-021 sensor test | — | — |
+   | `Wesley/testing traffic lights with MCP23017 and ULN2803/*` | I²C scanner and driver tests | — | — |
+   | `Wesley/wifi_backend_httpbin_test` | WiFi + HTTP POST test against httpbin.org | — | create `secrets.h` |
+   | `betül/pedestrian_crossing` | two-sided pedestrian crossing with buttons | — | — |
+   | `matin/parking` | first parking tile, one ultrasonic sensor | — | fill in `WIFI_SSID`, `WIFI_PASS`, `API_BASE_URL` in the sketch |
+   | `esp32-mac-address` | prints the board's MAC address (9600 baud) | — | — |
 
    Good to know:
 
@@ -230,6 +255,15 @@ The backend runs on the team's Raspberry Pi 4 on the HvA network.
 - **Cluster with failover:** `backend/docker-compose.cluster.yml` puts NGINX in front of two or more API replicas:
   `docker compose -f docker-compose.cluster.yml up --build --scale api=2`
 - **K3s with autoscaling:** [`backend/k8s/README.md`](backend/k8s/README.md) covers the K3s install, the secret, the manifests (2 to 5 API replicas at 50% CPU, one PostgreSQL pod), testing on port 30080 and rollback.
+- **Try K3s without a Pi:** [k3d](https://k3d.io) runs K3s inside Docker on your laptop. Create the cluster with the same settings as on the Pi, then follow steps 2–5 of `backend/k8s/README.md`; only the image import differs:
+
+  ```bash
+  k3d cluster create citysim --k3s-arg "--disable=traefik@server:0" -p "30080:30080@server:0" --wait
+  docker build -t citysim-api:0.1 backend/
+  k3d image import citysim-api:0.1 -c citysim     # instead of: docker save ... | sudo k3s ctr images import -
+  # steps 3-5 as in backend/k8s/README.md; the API answers on http://localhost:30080
+  k3d cluster delete citysim                     # when you are done
+  ```
 - **Backups:** `backend/scripts/backup.sh` makes a `pg_dump` (7 days kept), `check_backup.sh` warns when the newest backup is too old or too small, and `restore.sh` restores a dump into a test database.
 
 ## Tests

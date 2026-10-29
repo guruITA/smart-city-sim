@@ -95,7 +95,7 @@ Apply in order. Do **not** run `kubectl apply -f k8s/` over the whole folder: th
 would also apply the example secret and the cutover ingress too early.
 
 ```bash
-cd backend
+cd ..      # from backend/k8s (step 3) back to backend/
 kubectl apply -f k8s/00-namespace.yaml
 kubectl apply -f k8s/01-config.yaml
 kubectl apply -f k8s/02-secret.yaml
