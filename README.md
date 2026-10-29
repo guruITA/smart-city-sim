@@ -121,6 +121,8 @@ curl -X POST http://localhost/api/v1/readings \
 curl -X POST http://localhost/api/v1/override/emergency
 ```
 
+Run them in a terminal on Linux or macOS. You can also paste them into [Bruno](https://www.usebruno.com/) or [Postman](https://www.postman.com/), one command at a time: both turn a curl command into a request you can send with one click. On Windows that is the easiest way, because PowerShell has its own `curl` that does not understand these options.
+
 Stop with `Ctrl+C` or `docker compose down`. Add `-v` to also throw away the database.
 
 ### 3. Put the firmware on a board
@@ -183,15 +185,32 @@ Things that can trip you up:
 
 ### 4. Run the documentation site
 
+On Linux or macOS:
+
 ```bash
-python3.11 -m venv .venv           # Windows: py -3.11 -m venv .venv
-source .venv/bin/activate          # Windows: .venv\Scripts\activate
+python3.11 -m venv .venv
+source .venv/bin/activate
 pip install -r requirements.txt
 cd mdocotion && python setup.py install && cd ..
 mkdocs serve
 ```
 
-Then open <http://127.0.0.1:8000>. The pages are Markdown files in `docs/`. After the install step, `git status` shows `mdocotion` as changed. Those are build files, so leave them out of your commits.
+On Windows, in PowerShell:
+
+```powershell
+py -3.11 -m venv .venv
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+cd mdocotion
+python setup.py install
+cd ..
+mkdocs serve
+```
+
+PowerShell blocks the activate script by default. The `Set-ExecutionPolicy` line allows it only in that window, so the rest of your computer stays as it was.
+
+Then open <http://127.0.0.1:8000>. The pages are Markdown files in `docs/`.
 
 The site at the top of this README was built by the team's GitLab (`.gitlab-ci.yml`). This GitHub copy does not publish it.
 
@@ -214,6 +233,8 @@ The site at the top of this README was built by the team's GitLab (`.gitlab-ci.y
 ## Tests
 
 Run these from `backend/` while the backend is up.
+
+On Windows, type `py` instead of `python3` (`python3` only opens the Microsoft Store there), and use `http://127.0.0.1` instead of `http://localhost`. Python on Windows first tries `localhost` over IPv6, which makes every request wait 5 seconds.
 
 ```bash
 # emergency mode: switch it on, check all 5 tiles, switch it off again

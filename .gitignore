@@ -27,3 +27,5 @@ graphify-out/
 # database backups (never commit data dumps)
 backend/backups/
 *.dump
+# local Python environment for the documentation site
+.venv/
