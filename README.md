@@ -1,44 +1,27 @@
-# City Sim — City of The Embedded Alliance
+# City Sim: City of The Embedded Alliance
 
-A miniature smart city built for **Studio Smart Cities** at the Hogeschool van Amsterdam (HBO-ICT, semester 2, 2025-2026).
-Every team member built one or more physical city tiles with an ESP32 and sensors. The tiles send their data over WiFi to one shared backend, which stores it, shows it on a live dashboard and can steer the tiles back (for example an emergency mode that turns every traffic light red).
+A small smart city we built for Studio Smart Cities at the Hogeschool van Amsterdam (HBO-ICT, semester 2, 2025-2026).
+Each of us built one or more city tiles with an ESP32 and sensors. The tiles send their data over WiFi to one backend. The backend stores it, shows it on a live dashboard and can also send commands back, for example an emergency mode that turns every traffic light red.
 
-- **Documentation site:** <http://city-the-embedded-alliance-city-sim-learning-group-4a0740.dev.hihva.nl>
-- **Team:** The Embedded Alliance — Betül Aydin, Gurpreet Singh, Matin Khajehfard, Thijmen Walter, Wesley Oerlemans
-- **Client:** Gemeente Amsterdam, department Verkeer & Openbare Ruimte, represented by "the mayor" Mats Otten
+- **Team:** Betül Aydin, Gurpreet Singh, Matin Khajehfard, Thijmen Walter and Wesley Oerlemans
+- **Client:** Gemeente Amsterdam (Verkeer & Openbare Ruimte), played by "the mayor" Mats Otten
 - **Coaches:** Mats Otten and Gerald Stap
-- **Period:** February – June 2026 (Sprint 0 to Sprint 4)
+- **Period:** February to June 2026
+- **Documentation site:** <http://city-the-embedded-alliance-city-sim-learning-group-4a0740.dev.hihva.nl>
 
-## Contents
-
-- [What is in the city](#what-is-in-the-city)
-- [How it works](#how-it-works)
-- [Repository layout](#repository-layout)
-- [What you need](#what-you-need)
-- [Getting started](#getting-started)
-  - [1. Clone the repository](#1-clone-the-repository)
-  - [2. Run the backend](#2-run-the-backend)
-  - [3. Build and upload the firmware](#3-build-and-upload-the-firmware)
-  - [4. Run the documentation site](#4-run-the-documentation-site)
-- [Deployment on the Raspberry Pi](#deployment-on-the-raspberry-pi)
-- [Tests](#tests)
-- [API overview](#api-overview)
-- [Who did what](#who-did-what)
-- [Timeline](#timeline)
-
-## What is in the city
+## The tiles
 
 | Tile | What it does | Hardware | Built by |
 |------|--------------|----------|----------|
-| Smart streetlight | Switches the light on when it gets dark | ESP32-S3, LDR, relay | Gurpreet |
-| Speed camera | Measures the speed between two IR sensors (converted to real speed at scale 1:64) and takes a photo of cars that are too fast | ESP32-S3, 2 IR sensors, OLED, ESP32-CAM | Gurpreet |
-| Smart parking | Detects which parking spots are taken and shows the free spots | ESP32-S3, 4× HC-SR04 via an MCP23017, OLED | Matin (first tile), Gurpreet (city-sim version) |
-| Railroad crossing | Predicts when a reported train arrives, warns with lights and a buzzer and closes the barrier | ESP32-S3, push button as train sensor, LEDs, buzzer, servo | Thijmen |
-| E-ink city display | Shows the city name, logo and messages sent from the backend | ESP32-C3 / ESP32-S3, e-ink display | Thijmen |
-| Four-way traffic light | Runs a crossroads and reports waiting cars to the backend | ESP32-S3, MCP23017, ULN2803, KY-021 sensor | Wesley |
-| Pedestrian crossing | Two opposite crossings with push buttons and red/green lights | ESP32-S3, buttons, LEDs | Betül |
+| Streetlight | Turns the light on when it gets dark | ESP32-S3, LDR, relay | Gurpreet |
+| Speed camera | Measures the speed between two IR sensors, converts it to real speed (scale 1:64) and takes a photo of cars that drive too fast | ESP32-S3, 2 IR sensors, OLED, ESP32-CAM | Gurpreet |
+| Parking | Sees which spots are taken and shows how many are free | ESP32-S3, 4 HC-SR04 sensors on an MCP23017, OLED | Matin (first version), Gurpreet (City Hub version) |
+| Railroad crossing | Predicts when a train arrives, warns with lights and a buzzer and closes the barrier | ESP32-S3, push button as train sensor, LEDs, buzzer, servo | Thijmen |
+| E-ink display | Shows the city name, the logo and messages from the backend | ESP32-C3 or ESP32-S3, e-ink screen | Thijmen |
+| Traffic lights | Runs a four-way crossing and reports waiting cars to the backend | ESP32-S3, MCP23017, ULN2803, KY-021 sensor | Wesley |
+| Pedestrian crossing | Two crossings facing each other, with push buttons and red/green lights | ESP32-S3, buttons, LEDs | Betül |
 
-The shared firmware in `embedded/city-sim` runs the streetlight, speed camera, parking, railroad crossing and e-ink display together on one ESP32-S3 ("City Hub").
+The streetlight, speed camera, parking, railroad crossing and e-ink display also run together on one ESP32-S3, the "City Hub" (`embedded/city-sim`).
 
 ## How it works
 
@@ -49,7 +32,7 @@ flowchart LR
         C[Speed camera + ESP32-CAM]
         P[Parking]
         R[Railroad crossing]
-        T[Traffic light]
+        T[Traffic lights]
         E[E-ink display]
     end
     subgraph Pi["Raspberry Pi 4"]
@@ -60,178 +43,145 @@ flowchart LR
     Tiles -- "HTTP over WiFi" --> API
     API --> DB
     API --> D
-    API -- "overrides, display text" --> Tiles
+    API -- "commands, display text" --> Tiles
 ```
 
-- The tiles talk **HTTP** (no MQTT) to the backend under `/api/v1/...`.
-- The backend is a **FastAPI** app with a **PostgreSQL** database. It runs in Docker on the team's Raspberry Pi, and there is also a K3s (Kubernetes) setup with autoscaling.
-- The dashboard at `/` refreshes every 2 seconds. The interactive API docs (Swagger) are at `/docs`.
-- The full architecture is described in [`docs/Matin/system-architecture.md`](docs/Matin/system-architecture.md) and the database in [`docs/Matin/database-schema.md`](docs/Matin/database-schema.md).
+The tiles send plain HTTP requests to `/api/v1/...`. The backend is a FastAPI app with a PostgreSQL database, running in Docker on our Raspberry Pi. There is also a K3s (Kubernetes) setup that adds API copies when it gets busy. The dashboard at `/` refreshes every 2 seconds, and `/docs` shows every endpoint.
 
-## Repository layout
+More detail: [`docs/Matin/system-architecture.md`](docs/Matin/system-architecture.md) and [`docs/Matin/database-schema.md`](docs/Matin/database-schema.md).
+
+## What is where
 
 ```
-.
-├── backend/              FastAPI backend, Docker Compose, K3s manifests, scripts, tests
-│   ├── app/              the API (main.py, models.py, routers/, static/ dashboard)
-│   ├── k8s/              K3s manifests with autoscaling (see backend/k8s/README.md)
-│   ├── scripts/          database backup, restore and backup check
-│   └── tests/            override, resilience and autoscaling tests
-├── embedded/             ESP32 firmware
-│   ├── city-sim/         shared City Hub firmware (all tiles in one sketch, lib/ per tile)
-│   ├── city-sim-cam/     ESP32-CAM firmware for the speed camera photos
-│   ├── city-sim-e-ink-only/  e-ink display on its own (ESP32-C3)
-│   └── <name>/           each team member's own prototypes and experiments
-├── docs/                 MkDocs documentation: project pages and one folder per team member
-├── mdocotion/            HBO-ICT MkDocs theme (git submodule)
-├── mkdocs.yml            documentation site configuration
-├── requirements.txt      Python packages for the documentation site
-└── .gitlab-ci.yml        builds the documentation site on GitLab Pages
+backend/                 the API, Docker files, K3s files, scripts and tests
+  app/                   the API itself, with the dashboard in static/
+  k8s/                   K3s setup (own README)
+  scripts/               database backup, restore and backup check
+  tests/                 emergency mode, load, recovery and autoscaling tests
+embedded/                firmware for the boards
+  city-sim/              the City Hub: five tiles in one sketch, one lib/ folder per tile
+  city-sim-cam/          ESP32-CAM that takes the speed camera photos
+  city-sim-e-ink-only/   the e-ink display on its own board (ESP32-C3)
+  <name>/                each team member's own prototypes
+docs/                    the documentation site, with a folder per team member
+mdocotion/               HBO-ICT theme for the site (git submodule)
 ```
 
 ## What you need
 
-**Software**
-
-| For | Tool |
-|-----|------|
-| Backend | [Docker](https://docs.docker.com/get-docker/) with Docker Compose |
-| Firmware | [Arduino CLI](https://arduino.github.io/arduino-cli/) (or the Arduino IDE 2) with the `esp32:esp32` core |
-| Documentation site | Python **3.11**, the version GitLab CI uses for the pinned (older) MkDocs packages |
-| K3s deployment (optional) | A Raspberry Pi 4 with K3s |
-
-**Hardware** (only to run the physical city)
-
-- ESP32-S3 boards for the tiles, an ESP32-CAM for the speed camera photos and an ESP32-C3 for the stand-alone e-ink display
-- The sensors and actuators listed in [What is in the city](#what-is-in-the-city)
-- A Raspberry Pi 4 for the backend, and a WiFi network that the boards and the Pi share
+- [Docker](https://docs.docker.com/get-docker/) to run the backend
+- [Arduino CLI](https://arduino.github.io/arduino-cli/) or the Arduino IDE 2 for the firmware
+- Python 3.11 for the documentation site (its packages are pinned to older versions that go with 3.11)
+- For the real city: the boards and parts from the table above, a Raspberry Pi 4 for the backend, and one WiFi network for all of them
 
 ## Getting started
 
-### 1. Clone the repository
+### 1. Clone
 
-The documentation theme is a git submodule, so clone with `--recurse-submodules`:
+The site theme is a git submodule, so add `--recurse-submodules`:
 
 ```bash
-git clone --recurse-submodules git@gitlab.fdmci.hva.nl:studio/smart-cities/projecten/2025-2026-semester-2/city-sim-learning-group/city-the-embedded-alliance-city-sim-learning-group.git city-sim
-cd city-sim
+git clone --recurse-submodules https://github.com/guruITA/smart-city-sim.git
+cd smart-city-sim
 ```
 
-Already cloned without it? Run `git submodule update --init`.
+Forgot it? Run `git submodule update --init`.
 
-### 2. Run the backend
+### 2. Start the backend
 
 ```bash
 cd backend
-cp .env.example .env        # Windows (cmd): copy .env.example .env
-```
-
-`.env` holds the database connection for the API (`DATABASE_URL`) and the user, password and database the PostgreSQL container creates (`POSTGRES_*`). The defaults (`citysim`) are fine on your own machine. On the Pi, choose a real password and put it in both `POSTGRES_PASSWORD` and `DATABASE_URL`.
-
-Start the API and the database:
-
-```bash
+cp .env.example .env        # Windows cmd: copy .env.example .env
 docker compose up --build
 ```
 
-The API listens on **port 80** of your machine:
+`.env` holds the database login. The default `citysim` is fine on your own computer. On the Pi, pick a real password and put it in both `POSTGRES_PASSWORD` and `DATABASE_URL`.
 
-| What | URL |
-|------|-----|
-| Dashboard | <http://localhost/> |
-| Health check | <http://localhost/health> |
-| Swagger API docs | <http://localhost/docs> |
+The backend runs on port 80:
 
-Port 80 already in use? Change `"80:8000"` under `api` → `ports` in `docker-compose.yml`, for example to `"8000:8000"`, and use `http://localhost:8000`.
+- dashboard: <http://localhost/>
+- health check: <http://localhost/health>
+- all endpoints: <http://localhost/docs>
 
-Try it with a few requests:
+Is port 80 taken? Change `"80:8000"` in `docker-compose.yml` to `"8000:8000"` and use `http://localhost:8000`.
+
+A few requests to try:
 
 ```bash
-# mark parking spot 1 as taken, then read the parking status
+# mark parking spot 1 as taken, then ask how many spots are free
 curl -X POST "http://localhost/api/v1/parking/update/1?is_occupied=true"
 curl http://localhost/api/v1/parking/status
 
-# send a generic reading from any tile
+# send a reading, as a tile would
 curl -X POST http://localhost/api/v1/readings \
   -H "Content-Type: application/json" \
   -d '{"tile": "streetlight", "sensor_type": "ldr", "value": 650, "unit": "lux"}'
 
-# emergency mode: every tile switches at once (traffic all red, barrier closed, ...)
+# emergency mode: traffic lights red, barrier down, and so on
 curl -X POST http://localhost/api/v1/override/emergency
 ```
 
-Stop it with `Ctrl+C`, or `docker compose down` (add `-v` to also delete the database).
+Stop with `Ctrl+C` or `docker compose down`. Add `-v` to also throw away the database.
 
-### 3. Build and upload the firmware
+### 3. Put the firmware on a board
 
-The sketches use **Arduino CLI sketch profiles** (`sketch.yaml`). A profile pins the board, the ESP32 core version and every library, so Arduino CLI installs the right versions itself.
+**Network settings first.** These files are in git with empty values. Fill them in, but never commit your own WiFi password.
 
-1. **Fill in your network settings.** These files are committed with empty values; never commit your own WiFi password.
-   `API_BASE_URL` is the address of the machine that runs the backend as the board sees it, for example `http://145.92.8.137` for the team's Pi or `http://<your-laptop-ip>` for a backend on your laptop. `localhost` does not work: on the board that is the board itself. The board and the backend must be on the same network.
+| Sketch | File | What to fill in |
+|--------|------|-----------------|
+| `embedded/city-sim` and `embedded/city-sim-e-ink-only` | `lib/Config/Config.h` | `WIFI_SSID`, `WIFI_PASSWORD`, `API_BASE_URL` |
+| `embedded/city-sim-cam` | `lib/esp32cam/esp32cam.h` | `WIFI_SSID`, `WIFI_PASSWORD`, `BACKEND_CAMERA_REGISTER_URL`, `CAMERA_ID` |
+| Wesley's sketches that use WiFi | make a `secrets.h` next to the `.ino` (git ignores it) | `#define WIFI_SSID "..."` and `#define WIFI_PASSWORD "..."` |
+| `matin/parking` | the `.ino` itself | `WIFI_SSID`, `WIFI_PASS`, `API_BASE_URL` |
 
-   | Sketch | File | Settings |
-   |--------|------|----------|
-   | `embedded/city-sim` | `lib/Config/Config.h` | `WIFI_SSID`, `WIFI_PASSWORD`, `API_BASE_URL` (address of the backend) |
-   | `embedded/city-sim-e-ink-only` | `lib/Config/Config.h` | `WIFI_SSID`, `WIFI_PASSWORD`, `API_BASE_URL` |
-   | `embedded/city-sim-cam` | `lib/esp32cam/esp32cam.h` | `WIFI_SSID`, `WIFI_PASSWORD`, `BACKEND_CAMERA_REGISTER_URL`, `CAMERA_ID` |
-   | Wesley's network sketches | a new `secrets.h` next to the `.ino` (gitignored) | `#define WIFI_SSID "..."` and `#define WIFI_PASSWORD "..."` |
+`API_BASE_URL` is the address where the board can reach the backend: `http://145.92.8.137` for our Pi, or your laptop's IP address. `localhost` won't work, because on the board that means the board itself. The board and the backend have to be on the same network. The pin numbers are in `Config.h` too.
 
-   All pin numbers are in the same `Config.h`, one namespace per tile.
+**Build and upload.** Most sketches come with a `sketch.yaml`. That file fixes the board, the ESP32 core version and the libraries, so Arduino CLI downloads the right versions by itself. Use the name on the second line of that file as the profile:
 
-2. **Compile and upload** (replace the port with your board's port, e.g. `COM9` on Windows or `/dev/ttyACM0` on Linux):
+```bash
+arduino-cli compile --profile city-sim embedded/city-sim
+arduino-cli upload  --profile city-sim -p COM9 embedded/city-sim     # Linux: -p /dev/ttyACM0
+arduino-cli monitor -p COM9 -c baudrate=115200
+```
 
-   ```bash
-   arduino-cli compile --profile city-sim embedded/city-sim
-   arduino-cli upload  --profile city-sim -p COM9 embedded/city-sim
-   arduino-cli monitor -p COM9 -c baudrate=115200
-   ```
+| Sketch | Board |
+|--------|-------|
+| `city-sim`, `Parking`, `hello-world`, `Gurpreet/streetlight`, `Gurpreet/speed_camera/speed_camera_s3` | ESP32-S3 |
+| `city-sim-cam`, `Gurpreet/speed_camera/speed_camera_cam` | ESP32-CAM |
+| `city-sim-e-ink-only` | ESP32-C3 |
 
-   The other sketches with a `sketch.yaml` work the same way with their own profile name (shown at the top of that file):
+The prototypes in the personal folders have no `sketch.yaml`. Build them for a plain ESP32-S3 (in the Arduino IDE: **ESP32S3 Dev Module**):
 
-   | Sketch | Board |
-   |--------|-------|
-   | `embedded/city-sim` | ESP32-S3 (City Hub) |
-   | `embedded/city-sim-cam` | ESP32-CAM |
-   | `embedded/city-sim-e-ink-only` | ESP32-C3 |
-   | `embedded/Parking`, `embedded/hello-world`, `embedded/Gurpreet/streetlight`, `embedded/Gurpreet/speed_camera/*` | ESP32-S3 / ESP32-CAM |
+```bash
+arduino-cli core install esp32:esp32@3.3.7
+arduino-cli lib install FastLED@3.10.3 ESP32Servo@3.1.3
+arduino-cli compile --fqbn esp32:esp32:esp32s3 embedded/Wesley/traffic_light
+arduino-cli upload  --fqbn esp32:esp32:esp32s3 -p COM9 embedded/Wesley/traffic_light
+```
 
-   The sketches in the personal folders without a `sketch.yaml` are each member's own prototypes. They all build for a generic ESP32-S3 with core 3.3.7:
+| Prototype | What it is | Libraries |
+|-----------|-----------|-----------|
+| `Thijmen/blink-alternating` | two LEDs blinking in turn | |
+| `Thijmen/blink-rgb-led` | the built-in RGB LED and the BOOT button | FastLED |
+| `Thijmen/train-prediction-signal` | railroad crossing with lights, buzzer and barrier | ESP32Servo |
+| `Wesley/blink`, `blink_switch`, `flash_button` | tests with the built-in RGB LED and the BOOT button | FastLED |
+| `Wesley/traffic_light` | one traffic light | |
+| `Wesley/crossroad_traffic_light` | four-way crossing on an MCP23017 and ULN2803 | |
+| `Wesley/crossroad_traffic_light_with_sensor` and `_v2` | the same crossing with a KY-021 car sensor that reports to the backend (needs `secrets.h`) | |
+| `Wesley/ky021_sensor_test` | tests the KY-021 sensor | |
+| `Wesley/testing traffic lights with MCP23017 and ULN2803/` | I²C scanner and driver tests | |
+| `Wesley/wifi_backend_httpbin_test` | tests WiFi and a POST to httpbin.org (needs `secrets.h`) | |
+| `betül/pedestrian_crossing` | pedestrian crossing with buttons | |
+| `matin/parking` | the first parking tile, with one sensor | |
+| `esp32-mac-address` | prints the board's MAC address, at 9600 baud instead of 115200 | |
 
-   ```bash
-   arduino-cli core install esp32:esp32@3.3.7
-   arduino-cli lib install FastLED@3.10.3 ESP32Servo@3.1.3      # only the libraries the sketch uses
-   arduino-cli compile --fqbn esp32:esp32:esp32s3 embedded/Wesley/traffic_light
-   arduino-cli upload  --fqbn esp32:esp32:esp32s3 -p COM9 embedded/Wesley/traffic_light
-   ```
+Things that can trip you up:
 
-   In the Arduino IDE, pick the board **ESP32S3 Dev Module** and install the same libraries.
-
-   | Prototype | What it is | Libraries | Before you build |
-   |-----------|-----------|-----------|------------------|
-   | `Thijmen/blink-alternating` | two LEDs blinking in turn | — | — |
-   | `Thijmen/blink-rgb-led` | onboard RGB LED with the BOOT button | FastLED | — |
-   | `Thijmen/train-prediction-signal` | railroad crossing with lights, buzzer and barrier | ESP32Servo | — |
-   | `Wesley/blink`, `blink_switch`, `flash_button` | onboard RGB LED and BOOT button tests | FastLED | — |
-   | `Wesley/traffic_light` | one traffic light | — | — |
-   | `Wesley/crossroad_traffic_light` | four-way crossroads on an MCP23017 + ULN2803 | — | — |
-   | `Wesley/crossroad_traffic_light_with_sensor`, `..._v2` | crossroads with a KY-021 car sensor that posts to the backend | — | create `secrets.h` (see step 1) |
-   | `Wesley/ky021_sensor_test` | KY-021 sensor test | — | — |
-   | `Wesley/testing traffic lights with MCP23017 and ULN2803/*` | I²C scanner and driver tests | — | — |
-   | `Wesley/wifi_backend_httpbin_test` | WiFi + HTTP POST test against httpbin.org | — | create `secrets.h` |
-   | `betül/pedestrian_crossing` | two-sided pedestrian crossing with buttons | — | — |
-   | `matin/parking` | first parking tile, one ultrasonic sensor | — | fill in `WIFI_SSID`, `WIFI_PASS`, `API_BASE_URL` in the sketch |
-   | `esp32-mac-address` | prints the board's MAC address (9600 baud) | — | — |
-
-   Good to know:
-
-   - **The first compile takes a while.** Arduino CLI downloads the ESP32 core and its toolchains on its own: several GB per core version, and the profiles use two versions (3.2.0 and 3.3.7), so expect about 14 GB in total.
-   - **The upload does not start?** Hold the **BOOT** button of the ESP32-S3 while the upload begins, and check that the board shows up as a port (`arduino-cli board list`).
-   - **ESP32-CAM:** this board has no USB port of its own. Flash it on an ESP32-CAM-MB programmer board or through a USB-serial adapter.
-   - **Serial monitor:** use 115200 baud. The exception is `esp32-mac-address`, which uses 9600.
+- The first build is slow. Arduino CLI downloads the ESP32 core with all its tools, and the profiles use two versions (3.2.0 and 3.3.7). Count on about 14 GB.
+- If the upload won't start, hold the **BOOT** button on the ESP32-S3 while it begins. `arduino-cli board list` shows whether the board is connected.
+- The ESP32-CAM has no USB port. Flash it on an ESP32-CAM-MB board or with a USB-to-serial adapter.
 
 ### 4. Run the documentation site
-
-The site is built with MkDocs, the Material theme and the HBO-ICT `mdocotion` theme, the same way GitLab CI does it:
 
 ```bash
 python3.11 -m venv .venv           # Windows: py -3.11 -m venv .venv
@@ -241,91 +191,84 @@ cd mdocotion && python setup.py install && cd ..
 mkdocs serve
 ```
 
-Open <http://127.0.0.1:8000>. Every push to `main` publishes the site to GitLab Pages (the `pages` job in `.gitlab-ci.yml`).
+Then open <http://127.0.0.1:8000>. The pages are Markdown files in `docs/`. After the install step, `git status` shows `mdocotion` as changed. Those are build files, so leave them out of your commits.
 
-`python setup.py install` leaves build files in the `mdocotion` folder, so `git status` shows the submodule as modified. That is only build output; do not commit it.
+The site at the top of this README was built by the team's GitLab (`.gitlab-ci.yml`). This GitHub copy does not publish it.
 
-All documentation lives in `docs/` as Markdown: the project pages ([`index.md`](docs/index.md), [`tile objectives.md`](docs/tile%20objectives.md), [`raspberry-pi-deployment.md`](docs/raspberry-pi-deployment.md)) and one folder per team member with their sprint deliverables and learning goals.
+## Running it on the Raspberry Pi
 
-## Deployment on the Raspberry Pi
-
-The backend runs on the team's Raspberry Pi 4 on the HvA network.
-
-- **Docker Compose:** [`docs/raspberry-pi-deployment.md`](docs/raspberry-pi-deployment.md) explains the Pi setup. `cd backend && ./deploy.sh` creates `.env` from `.env.example` when it is missing, starts the stack in the background and waits for `/health`. Set a real password in `.env` before the first start (see [step 2](#2-run-the-backend)).
-- **Cluster with failover:** `backend/docker-compose.cluster.yml` puts NGINX in front of two or more API replicas:
+- **Docker:** [`docs/raspberry-pi-deployment.md`](docs/raspberry-pi-deployment.md) explains how the Pi is set up. On the Pi, `cd backend && ./deploy.sh` starts everything in the background and waits until the API answers. Set a real password in `.env` first.
+- **Two API copies behind NGINX**, so one can crash without the city going down:
   `docker compose -f docker-compose.cluster.yml up --build --scale api=2`
-- **K3s with autoscaling:** [`backend/k8s/README.md`](backend/k8s/README.md) covers the K3s install, the secret, the manifests (2 to 5 API replicas at 50% CPU, one PostgreSQL pod), testing on port 30080 and rollback.
-- **Try K3s without a Pi:** [k3d](https://k3d.io) runs K3s inside Docker on your laptop. Create the cluster with the same settings as on the Pi, then follow steps 2–5 of `backend/k8s/README.md`; only the image import differs:
+- **K3s:** [`backend/k8s/README.md`](backend/k8s/README.md) explains the full setup. It runs 2 to 5 copies of the API depending on how busy it is, and one database. It answers on port 30080.
+- **K3s on your laptop:** [k3d](https://k3d.io) runs K3s inside Docker, so you can try the K3s setup without a Pi. Start a cluster like the one on the Pi, then follow steps 2 to 5 of the K3s README. Only the image import is different:
 
   ```bash
   k3d cluster create citysim --k3s-arg "--disable=traefik@server:0" -p "30080:30080@server:0" --wait
   docker build -t citysim-api:0.1 backend/
-  k3d image import citysim-api:0.1 -c citysim     # instead of: docker save ... | sudo k3s ctr images import -
-  # steps 3-5 as in backend/k8s/README.md; the API answers on http://localhost:30080
-  k3d cluster delete citysim                     # when you are done
+  k3d image import citysim-api:0.1 -c citysim
+  k3d cluster delete citysim       # when you are done
   ```
-- **Backups:** `backend/scripts/backup.sh` makes a `pg_dump` (7 days kept), `check_backup.sh` warns when the newest backup is too old or too small, and `restore.sh` restores a dump into a test database.
+- **Backups:** `scripts/backup.sh` saves the database and keeps 7 days of backups. `check_backup.sh` warns when the last backup is too old or too small, and `restore.sh` puts a backup back into a test database.
 
 ## Tests
 
-The tests are plain Python and shell scripts that run against a running backend.
+Run these from `backend/` while the backend is up.
 
 ```bash
-cd backend
-
-# emergency override: trigger, check all 5 tiles, clear, check the city is back to normal
+# emergency mode: switch it on, check all 5 tiles, switch it off again
 python3 tests/override/override_test.py --url http://localhost
 
-# load, soak and recovery tests against the cluster stack (see tests/resilience/README.md)
+# load and recovery: start the NGINX setup first
 docker compose -f docker-compose.cluster.yml up --build -d --scale api=2
 python3 tests/resilience/resilience_test.py load --url http://localhost/health --seconds 30 --concurrency 20
 docker ps --filter "name=api" --format "{{.ID}} {{.Names}}"
-python3 tests/resilience/resilience_test.py recovery --url http://localhost/health --container <api-container-id>
+python3 tests/resilience/resilience_test.py recovery --url http://localhost/health --container <id from docker ps>
 
-# K3s autoscaling: 5 pods load the API for 3 minutes (see tests/autoscaling/README.md)
+# K3s autoscaling: 3 minutes of load, the API should grow from 2 to 5 copies
 kubectl apply -f tests/autoscaling/load.yaml
 kubectl get hpa -n citysim -w
 
-# everything in one go on the Pi, results in tests/pi_results_<date>.txt
+# all tests at once on the Pi, results go to tests/pi_results_<date>.txt
 ./tests/run_pi_tests.sh
 ```
 
-The load test sends far more than the 10 requests per second per IP that NGINX allows for the tiles (`limit_req` in `nginx.conf`). Its error percentage therefore counts the `503` answers of that rate limit, and from one machine most requests end up there; the team's own run on the Pi recorded 93.75%. To measure the API itself, raise the limit in `nginx.conf` while testing.
+Don't be surprised by the high error rate of the load test. NGINX lets each IP address make 10 requests per second, so the tiles can't flood the backend. The test sends far more than that from one computer, so most requests get a `503` and count as errors. On our Pi it was 93.75%. Raise the limit in `nginx.conf` if you want to measure the API itself.
 
-The recovery test kills one API replica and should report it healthy again within 5 seconds.
+The recovery test stops one API copy and passes when the backend answers again within 5 seconds.
 
-## API overview
+## API endpoints
 
-All endpoints start with `/api/v1`. Swagger at `/docs` lists every parameter.
+Everything starts with `/api/v1`. `/docs` shows every parameter.
 
-| Area | Endpoints |
+| Part | Endpoints |
 |------|-----------|
-| Readings (any tile) | `POST /readings`, `GET /readings`, `GET /readings/latest/{tile}` |
+| Readings from any tile | `POST /readings`, `GET /readings`, `GET /readings/latest/{tile}` |
 | Parking | `GET /parking/status`, `POST /parking/update/{spot}?is_occupied=`, `GET /parking/spots`, `GET /parking/spots/{spot}` |
-| Railroad crossing | `/railroadcrossing/train` (first sensor, second sensor, crossed) and `/railroadcrossing/barrier` (log, `is-closed`) |
+| Railroad crossing | `/railroadcrossing/train` and `/railroadcrossing/barrier` |
 | Speed camera | `POST /speedcamera/`, `GET /speedcamera/violations`, `GET /speedcamera/stats`, `POST /speedcamera/camera/register` |
-| Traffic light | `POST /traffic`, `GET /traffic`, `GET /traffic/latest` |
+| Traffic lights | `POST /traffic`, `GET /traffic`, `GET /traffic/latest` |
 | E-ink display | `GET /eink-display/payload`, `PUT /eink-display` |
-| Overrides | `POST /override`, `GET /override/active?target=`, `POST /override/{id}/clear`, `POST /override/emergency` |
+| Emergency and manual commands | `POST /override`, `GET /override/active?target=`, `POST /override/{id}/clear`, `POST /override/emergency` |
 
 ## Who did what
 
-| Team member | Role | Contribution |
-|-------------|------|--------------|
-| **Betül Aydin** | Scrum Master, developer | Pedestrian crossing tile (`embedded/betül/pedestrian_crossing`). Backend endpoint for the traffic light data (`backend/app/routers/traffic.py`). Security and reliability: HTTPS through an NGINX reverse proxy, container separation and health checks (`backend/nginx.conf`, `docker-compose.https-test.yml`). |
-| **Gurpreet Singh** | Developer | Smart streetlight and the shared City Hub firmware (`embedded/city-sim`). Speed camera with ESP32-CAM photos (`embedded/Gurpreet/speed_camera`, `lib/SpeedCamera`). Smart parking in the City Hub with four sensors on an MCP23017 that only sends changes (`lib/Parking`). |
-| **Matin Khajehfard** | Developer / Backend | First parking tile (`embedded/matin/parking`). The shared FastAPI backend, database and Docker setup. Raspberry Pi deployment, dashboard and speed camera API. Cluster with failover, backups, K3s autoscaling and the emergency override "surprise" (`backend/app/routers/override.py`). |
-| **Thijmen Walter** | Developer | Railroad crossing with train prediction signal and barrier (`embedded/Thijmen/train-prediction-signal`, `lib/TrainPredictionSignal`, train and barrier tables). E-ink city display with text from the backend (`lib/EinkDisplay`, `embedded/city-sim-e-ink-only`, `routers/eink_display.py`). Perfboard and KiCad PCB for the e-ink module. |
-| **Wesley Oerlemans** | Developer | Traffic light and four-way crossroads with an MCP23017 and ULN2803 (`embedded/Wesley`). KY-021 sensor that reports waiting cars to the backend. ESP32-S3 pinout research, and moving the circuit from breadboard to perfboard. |
+Next to their tiles (see [The tiles](#the-tiles)), everyone took on part of the rest:
 
-Each member's sprint deliverables, research and learning goals are in their own folder under [`docs/`](docs/).
+- **Betül Aydin** (Scrum Master) built the backend part for the traffic lights and made the backend safer and more reliable: HTTPS through NGINX, separate containers and health checks.
+- **Gurpreet Singh** set up the City Hub firmware that runs five tiles on one board, and moved the parking sensors to an MCP23017 so they need fewer pins and only send changes.
+- **Matin Khajehfard** built the backend, the database, the Docker setup and the dashboard, and put it all on the Raspberry Pi. In the last sprint he made the backend keep running when one part fails, and added the backups, K3s autoscaling and the emergency mode.
+- **Thijmen Walter** built the train and barrier parts of the backend and the e-ink endpoint, and designed a perfboard and a KiCad PCB for the e-ink module.
+- **Wesley Oerlemans** researched the ESP32-S3 pins and moved his traffic light circuit from a breadboard to a perfboard.
 
-## Timeline
+Everyone's sprint work, research and learning goals are in their own folder in [`docs/`](docs/).
 
-| Phase | What | Weeks |
-|-------|------|-------|
-| Sprint 0 | Planning and requirements | 1–3 |
-| Sprint 1 | Analysis, design, first prototype per tile, show & tell | 3–6 |
-| Sprint 2 | Integration into the shared firmware, Raspberry Pi deployment | 6–9 |
-| Sprint 3 | Iteration: more tiles talking to the backend, dashboard, e-ink display | 9–12 |
-| Sprint 4 | Professionalising: perfboards and PCB, HTTPS, failover, backups, K3s autoscaling, emergency override | 12–15 |
+## Sprints
+
+| Sprint | Weeks | What we did |
+|--------|-------|-------------|
+| 0 | 1 to 3 | Planning and requirements |
+| 1 | 3 to 6 | Research, design and a first prototype of each tile |
+| 2 | 6 to 9 | Combined the tiles in one firmware and put the backend on the Pi |
+| 3 | 9 to 12 | Connected more tiles to the backend, added the dashboard and the e-ink display |
+| 4 | 12 to 15 | Perfboards and a PCB, HTTPS, failover, backups, K3s autoscaling and the emergency mode |
